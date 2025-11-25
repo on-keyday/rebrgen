@@ -527,6 +527,16 @@ namespace ebmcodegen::util {
         { d.item_id };
     };
 
+    template <class D, class T>
+    concept has_item_id_typed = requires(D d) {
+        { d.item_id } -> std::convertible_to<T>;
+    };
+
+    template <class D>
+    concept has_type = requires(D d) {
+        { d.type } -> std::convertible_to<ebm::TypeRef>;
+    };
+
     template <class D>
     struct ContextBase {
        private:
@@ -543,6 +553,18 @@ namespace ebmcodegen::util {
             requires has_item_id<D>
         {
             return derived().visitor.module_.get_associated_identifier(derived().item_id);
+        }
+
+        decltype(auto) identifier(ebm::StatementRef stmt) const {
+            return derived().visitor.module_.get_associated_identifier(stmt);
+        }
+
+        decltype(auto) identifier(ebm::ExpressionRef expr) const {
+            return derived().visitor.module_.get_associated_identifier(expr);
+        }
+
+        decltype(auto) identifier(ebm::TypeRef type) const {
+            return derived().visitor.module_.get_associated_identifier(type);
         }
 
         auto& module() const {
@@ -618,6 +640,53 @@ namespace ebmcodegen::util {
 
         decltype(auto) get(ebm::ExpressionRef expr_ref) const {
             return derived().module().get_expression(expr_ref);
+        }
+
+        decltype(auto) get_kind(ebm::TypeRef type_ref) const {
+            return derived().module().get_type_kind(type_ref);
+        }
+
+        decltype(auto) get_kind(ebm::StatementRef stmt_ref) const {
+            return derived().module().get_statement_kind(stmt_ref);
+        }
+
+        decltype(auto) get_kind(ebm::ExpressionRef expr_ref) const {
+            return derived().module().get_expression_kind(expr_ref);
+        }
+
+        bool is(ebm::TypeKind kind, ebm::TypeRef ref) const {
+            return get_kind(ref) == kind;
+        }
+
+        bool is(ebm::StatementKind kind, ebm::StatementRef ref) const {
+            return get_kind(ref) == kind;
+        }
+
+        bool is(ebm::ExpressionKind kind, ebm::ExpressionRef ref) const {
+            return get_kind(ref) == kind;
+        }
+
+        bool is(ebm::TypeKind kind) const
+            requires has_type<D> || has_item_id_typed<D, ebm::TypeRef>
+        {
+            if constexpr (has_type<D>) {
+                return get_kind(derived().type) == kind;
+            }
+            else {
+                return get_kind(derived().item_id) == kind;
+            }
+        }
+
+        bool is(ebm::StatementKind kind) const
+            requires has_item_id_typed<D, ebm::StatementRef>
+        {
+            return get_kind(derived().item_id) == kind;
+        }
+
+        bool is(ebm::ExpressionKind kind) const
+            requires has_item_id_typed<D, ebm::ExpressionRef>
+        {
+            return get_kind(derived().item_id) == kind;
         }
     };
 }  // namespace ebmcodegen::util

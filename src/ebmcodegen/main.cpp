@@ -283,6 +283,9 @@ int print_spec_json(std::map<std::string_view, ebmcodegen::Struct>& struct_map, 
                             element([&](Stringer& js) {
                                 auto object = js.object();
                                 object("name", s.name);
+                                if (s.alt_name.size()) {
+                                    object("alt_name", s.alt_name);
+                                }
                                 object("value", s.value);
                             });
                         }

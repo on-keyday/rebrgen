@@ -312,9 +312,32 @@ namespace ebmcodegen {
         return context_classes;
     }
 
+    struct UserConfigIncludes {
+        std::string_view visitor = prefixes[prefix_visitor];
+        std::string_view post_includes = prefixes[prefix_post_includes];
+        std::string_view includes = prefixes[prefix_includes];
+        std::string_view flags = prefixes[prefix_flags];
+        std::string flags_bind = std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_bind]);
+        std::string flags_struct = std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_struct]);
+        std::string_view output = prefixes[prefix_output];
+        std::string_view result = prefixes[prefix_result];
+
+        void foreach (auto&& cb) {
+            cb(visitor);
+            cb(post_includes);
+            cb(includes);
+            cb(flags);
+            cb(flags_bind);
+            cb(flags_struct);
+            cb(output);
+            cb(result);
+        }
+    };
+
     struct IncludeInfo {
         const IncludeLocations& includes;
         const std::vector<HookType>& hooks;
+        UserConfigIncludes user_include;
     };
 
     void user_config_include_per_base(CodeWriter& w, std::string_view base_name, const IncludeInfo& includes_info) {
@@ -858,12 +881,6 @@ namespace ebmcodegen {
         return utility_classes;
     }
 
-    struct UserConfigIncludes {
-        std::string_view visitor = prefixes[prefix_visitor];
-        std::string_view post_includes = prefixes[prefix_post_includes];
-        std::string_view includes = prefixes[prefix_includes];
-    };
-
     void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info, const UtilityClass& base_visitor) {
         w.writeln("struct BaseVisitor {");
         {
@@ -876,7 +893,7 @@ namespace ebmcodegen {
                 }
                 w.writeln(";");
             }
-            user_config_include(w, prefixes[prefix_visitor], includes_info);
+            user_config_include(w, includes_info.user_include.visitor, includes_info);
         }
         w.writeln("};");
 
@@ -989,7 +1006,7 @@ namespace ebmcodegen {
             }
             w.writeln();
 
-            user_config_include(w, prefixes[prefix_flags], includes_info);
+            user_config_include(w, includes_info.user_include.flags, includes_info);
             w.writeln("#undef DEFINE_FLAG");
             w.writeln("#undef WEB_FILTERED");
             w.writeln("#undef DEFINE_BOOL_FLAG");
@@ -1007,7 +1024,7 @@ namespace ebmcodegen {
         {
             auto flag_scope = w.indent_scope();
             with_flag_bind(true);
-            user_config_include(w, std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_struct]), includes_info);
+            user_config_include(w, includes_info.user_include.flags_struct, includes_info);
             w.writeln("void bind(futils::cmdline::option::Context& ctx) {");
             auto nested_scope = w.indent_scope();
             w.writeln("lang_name = \"", flags.lang, "\";");
@@ -1017,7 +1034,7 @@ namespace ebmcodegen {
             w.writeln("file_extensions = {\".", flags.lang, "\"};");
             w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
             with_flag_bind(false);
-            user_config_include(w, std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_bind]), includes_info);
+            user_config_include(w, includes_info.user_include.flags_bind, includes_info);
             nested_scope.execute();
             w.writeln("}");
         }
@@ -1026,7 +1043,7 @@ namespace ebmcodegen {
 
     void generate_Output(CodeWriter& w, const IncludeInfo& includes_info) {
         w.writeln("struct Output : ebmcodegen::Output {");
-        user_config_include(w, prefixes[prefix_output], includes_info);
+        user_config_include(w, includes_info.user_include.output, includes_info);
         w.writeln("};");
     }
 
@@ -1050,7 +1067,7 @@ namespace ebmcodegen {
             w.indent_writeln("return value;");
             w.writeln("}");
         }
-        user_config_include(w, prefixes[prefix_result], includes_info);
+        user_config_include(w, includes_info.user_include.result, includes_info);
         result_scope.execute();
         w.writeln("};");
     }
@@ -1220,11 +1237,11 @@ namespace ebmcodegen {
     }
 
     void generate_user_include_before(CodeWriter& w, const IncludeInfo& includes_locations) {
-        user_config_include(w, prefixes[prefix_includes], includes_locations);
+        user_config_include(w, includes_locations.user_include.includes, includes_locations);
     }
 
     void generate_user_include_after(CodeWriter& w, const IncludeInfo& includes_locations) {
-        user_config_include(w, prefixes[prefix_post_includes], includes_locations);
+        user_config_include(w, includes_locations.user_include.post_includes, includes_locations);
     }
 
     void generate_dummy_macro_for_class(CodeWriter& w, std::string_view ns_name, const HookType& hook, const ContextClass& cls) {
@@ -1653,6 +1670,13 @@ namespace ebmcodegen {
                 }
             }
         }
+        UserConfigIncludes incs;
+        incs.foreach ([&](auto&& v) {
+            names.push_back(std::string(v));
+            // before/after
+            names.push_back(std::format("{}{}", v, suffixes[suffix_before]));
+            names.push_back(std::format("{}{}", v, suffixes[suffix_after]));
+        });
         return names;
     }
 

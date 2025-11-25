@@ -46,6 +46,17 @@ json_source = sp.check_output(
 if rewrite_if_needed("src/ebmgen/json_conv.cpp", json_source.decode("utf-8")):
     something_changed = True
 
+ops = (
+    sp.check_output(["python", "script/ebmop.py"], stderr=sys.stderr)
+    .decode("utf-8")
+    .replace("\r", "")
+)
+if rewrite_if_needed(
+    "src/ebmcodegen/stub/ops_macros.hpp",
+    ops,
+):
+    something_changed = True
+
 if something_changed:
     # rerun script/build.py to build the tools again
     sp.check_call(["python", "script/build.py"], stdout=sys.stdout, stderr=sys.stderr)

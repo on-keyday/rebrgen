@@ -37,6 +37,9 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
+    if (auto lowered = ctx.read_data.lowered_statement()) {
+        return ctx.visit(lowered->io_statement.id);
+    }
     if (auto is_bytes = is_bytes_type(ctx, ctx.read_data.data_type)) {
         auto input = ctx.config().input;
     }

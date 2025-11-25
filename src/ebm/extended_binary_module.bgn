@@ -817,3 +817,182 @@ format ExtendedBinaryModule:
     aliases :[aliases_len.value]RefAlias # Centralized alias table
     debug_info :DebugInfo # Debugging information
 
+
+
+
+# for stack based Interpreter
+
+enum OpCode:
+    :u8
+    # --- 0x00: System & Flow Control ---
+    NOP             = 0x00
+    HALT            = 0x01
+    JUMP            = 0x02 
+    JUMP_IF_TRUE    = 0x03 
+    JUMP_IF_FALSE   = 0x04 
+    CALL            = 0x05 
+    RET             = 0x06 
+    ERROR           = 0x07 
+    ASSERT          = 0x08 
+
+    # --- 0x10: Stack & Memory ---
+    POP             = 0x10
+    DUP             = 0x11
+    SWAP            = 0x12
+    PUSH_NULL       = 0x13 
+    PUSH_IMM_INT    = 0x14 
+    PUSH_IMM_STR    = 0x15 
+    LOAD_LOCAL      = 0x16 
+    STORE_LOCAL     = 0x17 
+    LOAD_PARAM      = 0x18
+    LOAD_SELF       = 0x19
+    
+    # --- 0x20: Arithmetic & Logic ---
+    # name mapping with BinaryOp enum
+    ADD             = 0x20, "add"
+    SUB             = 0x21, "sub"
+    MUL             = 0x22, "mul"
+    DIV             = 0x23, "div"
+    MOD             = 0x24, "mod" 
+    NEG             = 0x25, "minus_sign" 
+    
+    BIT_AND         = 0x26, "bit_and"
+    BIT_OR          = 0x27, "bit_or"
+    BIT_XOR         = 0x28, "bit_xor"
+    BIT_NOT         = 0x29, "bit_not"
+    LSHIFT          = 0x2A, "left_shift"
+    RSHIFT          = 0x2B, "right_shift"
+    
+    LOGICAL_AND     = 0x2C, "logical_and"
+    LOGICAL_OR      = 0x2D, "logical_or"
+    LOGICAL_NOT     = 0x2E, "logical_not"
+
+    # --- 0x30: Comparison ---
+    EQ              = 0x30, "equal"
+    NEQ             = 0x31, "not_equal"
+    LT              = 0x32, "less"
+    LE              = 0x33, "less_or_eq"
+    GT              = 0x34, "greater"
+    GE              = 0x35, "greater_or_eq"
+
+    # --- 0x40: Type Casting ---
+    CAST            = 0x40 
+
+    # --- 0x50: Stream Input (Mapping) ---
+    READ_U8         = 0x50
+    READ_U16        = 0x51
+    READ_U32        = 0x52
+    READ_U64        = 0x53
+    READ_I8         = 0x54
+    READ_I16        = 0x55
+    READ_I32        = 0x56
+    READ_I64        = 0x57
+    READ_F32        = 0x58
+    READ_F64        = 0x59
+
+    # Variable length / Bit manipulation
+    READ_BITS_U     = 0x60 
+    READ_BITS_I     = 0x61 
+    
+    # Byte Arrays
+    READ_BYTES      = 0x62 
+    
+    # Stream Control
+    PEEK_U8         = 0x65
+    SEEK_REL        = 0x66 
+    SEEK_ABS        = 0x67 
+    AVAILABLE       = 0x68 
+    GET_OFFSET      = 0x69 
+    SET_ENDIAN      = 0x6A 
+
+    # --- 0x70: Stream Output ---
+    WRITE_U8        = 0x70
+    WRITE_U16       = 0x71
+    WRITE_U32       = 0x72
+    WRITE_U64       = 0x73
+    WRITE_BYTES     = 0x74
+    WRITE_BITS      = 0x75 
+
+    # --- 0x90: Object & Structure ---
+    NEW_STRUCT      = 0x90 
+    SET_MEMBER      = 0x91 
+    GET_MEMBER      = 0x92 
+    NEW_ARRAY       = 0x93 
+    ARRAY_SET       = 0x94 
+    ARRAY_GET       = 0x95 
+    ARRAY_LEN       = 0x96 
+
+    MAX_OPCODE      = 0xFF
+
+# ------------------------------------------
+
+format JumpOffset:
+    offset :Varint 
+
+format RegisterIndex:
+    index :Varint 
+
+format OptionalImmediateSize:
+    is_immediate :u1
+    reserved :u7 # Padding for byte alignment
+    if is_immediate == 1:
+        size :Varint
+
+format SetEndian:
+    endian :Endian
+    reserved :u5 # Endian is u3, padding to u8
+
+format Instruction:
+    op :OpCode
+    match op:
+        # -- Flow Control Arguments --
+        OpCode.JUMP:
+            target :JumpOffset
+        OpCode.JUMP_IF_TRUE:
+            target :JumpOffset
+        OpCode.JUMP_IF_FALSE:
+            target :JumpOffset
+        OpCode.CALL:
+            func_id :Varint 
+        OpCode.ERROR:
+            msg_id :StringRef 
+        OpCode.ASSERT:
+            msg_id :StringRef 
+
+        # -- Immediate Values --
+        OpCode.PUSH_IMM_INT:
+            value :Varint 
+        OpCode.PUSH_IMM_STR:
+            str_id :StringRef
+
+        # -- Variable Access --
+        OpCode.LOAD_LOCAL:
+            reg :RegisterIndex
+        OpCode.STORE_LOCAL:
+            reg :RegisterIndex
+        OpCode.LOAD_PARAM:
+            reg :RegisterIndex
+
+        # -- Stream Ops with Optimization Flags --
+        # Align to byte boundary after boolean flag
+        OpCode.READ_BITS_U:
+            imm :OptionalImmediateSize
+        OpCode.READ_BITS_I:
+            imm :OptionalImmediateSize
+        OpCode.READ_BYTES:
+            imm :OptionalImmediateSize
+
+        OpCode.SET_ENDIAN:
+            set_endian :SetEndian
+    
+        # -- Type Casting --
+        OpCode.CAST:
+            cast_type :CastType
+
+        # -- Object Operations --
+        OpCode.NEW_STRUCT:
+            type_id :TypeRef 
+        OpCode.SET_MEMBER:
+            member_id :IdentifierRef 
+        OpCode.GET_MEMBER:
+            member_id :IdentifierRef

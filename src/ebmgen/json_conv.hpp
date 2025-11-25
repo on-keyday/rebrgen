@@ -53,6 +53,10 @@ namespace ebm {
     
     bool from_json(InitCheck& obj, const futils::json::JSON& j);
     
+    bool from_json(Instruction& obj, const futils::json::JSON& j);
+    
+    bool from_json(JumpOffset& obj, const futils::json::JSON& j);
+    
     bool from_json(Loc& obj, const futils::json::JSON& j);
     
     bool from_json(LoopFlowControl& obj, const futils::json::JSON& j);
@@ -73,6 +77,8 @@ namespace ebm {
     
     bool from_json(Metadata& obj, const futils::json::JSON& j);
     
+    bool from_json(OptionalImmediateSize& obj, const futils::json::JSON& j);
+    
     bool from_json(ParameterDecl& obj, const futils::json::JSON& j);
     
     bool from_json(PropertyDecl& obj, const futils::json::JSON& j);
@@ -80,6 +86,10 @@ namespace ebm {
     bool from_json(PropertyMemberDecl& obj, const futils::json::JSON& j);
     
     bool from_json(RefAlias& obj, const futils::json::JSON& j);
+    
+    bool from_json(RegisterIndex& obj, const futils::json::JSON& j);
+    
+    bool from_json(SetEndian& obj, const futils::json::JSON& j);
     
     bool from_json(Size& obj, const futils::json::JSON& j);
     
@@ -130,6 +140,8 @@ namespace ebm {
     bool from_json(LoweringIOType& obj, const futils::json::JSON& j);
     
     bool from_json(MergeMode& obj, const futils::json::JSON& j);
+    
+    bool from_json(OpCode& obj, const futils::json::JSON& j);
     
     bool from_json(SetterStatus& obj, const futils::json::JSON& j);
     

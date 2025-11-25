@@ -161,6 +161,25 @@
       //"symbolSearchPath": "lib\\"
     },
     {
+      "name": "Debug ebm2rmw",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/tool/ebm2rmw",
+      "args": [
+        "-i",
+        "${workspaceRoot}/save/ebm_schema.ebm",
+        "--entry-point",
+        "ExtendedBinaryModule",
+        "--debug-unimplemented"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}",
+      "environment": [],
+      "console": "integratedTerminal"
+      //"preLaunchTask": "build",
+      //"symbolSearchPath": "lib\\"
+    },
+    {
       "name": "Attach",
       "type": "cppvsdbg",
       "request": "attach",

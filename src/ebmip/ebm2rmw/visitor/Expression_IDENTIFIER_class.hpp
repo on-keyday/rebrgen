@@ -25,19 +25,17 @@ DEFINE_VISITOR(Expression_IDENTIFIER) {
     /*here to write the hook*/
     auto ident = ctx.identifier(ctx.id);
     if (ctx.is(ebm::StatementKind::VARIABLE_DECL, ctx.id)) {
-        Instruction instr;
-        instr.str_repr = ident;
-        instr.instr.op = ebm::OpCode::LOAD_LOCAL;
-        instr.instr.reg(ebm::RegisterIndex{.index = ctx.id});
-        ctx.config().env.instructions.push_back(std::move(instr));
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::LOAD_LOCAL;
+        instr.reg(ebm::RegisterIndex{.index = ctx.id});
+        ctx.config().env.add_instruction(instr, std::move(ident));
         return Result{.str_repr = ident};
     }
     if (ctx.is(ebm::StatementKind::PARAMETER_DECL, ctx.id)) {
-        Instruction instr;
-        instr.str_repr = ident;
-        instr.instr.op = ebm::OpCode::LOAD_PARAM;
-        instr.instr.reg(ebm::RegisterIndex{.index = ctx.id});
-        ctx.config().env.instructions.push_back(std::move(instr));
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::LOAD_PARAM;
+        instr.reg(ebm::RegisterIndex{.index = ctx.id});
+        ctx.config().env.add_instruction(instr, std::move(ident));
         return Result{.str_repr = ident};
     }
     auto kind = ctx.get_kind(ctx.id);

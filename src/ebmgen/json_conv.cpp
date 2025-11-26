@@ -1290,6 +1290,28 @@ namespace ebm {
     }
     
     bool from_json(JumpOffset& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("backward")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.backward(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("offset")) {
             if(!futils::json::convert_from_json(*got, obj.offset)) {
                 return false;
@@ -3254,6 +3276,10 @@ namespace ebm {
                 obj = OpCode::ASSERT;
                 return true;
             }
+            if (s == "IS_ERROR") {
+                obj = OpCode::IS_ERROR;
+                return true;
+            }
             if (s == "POP") {
                 obj = OpCode::POP;
                 return true;
@@ -3296,6 +3322,10 @@ namespace ebm {
             }
             if (s == "STORE_REF") {
                 obj = OpCode::STORE_REF;
+                return true;
+            }
+            if (s == "PUSH_SUCCESS") {
+                obj = OpCode::PUSH_SUCCESS;
                 return true;
             }
             if (s == "ADD") {

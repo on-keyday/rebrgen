@@ -8,6 +8,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-futils::view::rvec input;
-size_t input_pos = 0;
 Env env;

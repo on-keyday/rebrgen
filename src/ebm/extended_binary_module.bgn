@@ -834,6 +834,7 @@ enum OpCode:
     RET             = 0x06 
     ERROR           = 0x07 
     ASSERT          = 0x08 
+    IS_ERROR        = 0x09
 
     # --- 0x10: Stack & Memory ---
     POP             = 0x10
@@ -847,6 +848,7 @@ enum OpCode:
     LOAD_PARAM      = 0x18
     LOAD_SELF       = 0x19
     STORE_REF       = 0x1A
+    PUSH_SUCCESS    = 0x1B
     
     # --- 0x20: Arithmetic & Logic ---
     # name mapping with BinaryOp enum
@@ -930,6 +932,8 @@ enum OpCode:
 # ------------------------------------------
 
 format JumpOffset:
+    backward :u1 # 0 for forward jump, 1 for backward jump
+    reserved :u7 # Padding for byte alignment
     offset :Varint 
 
 format RegisterIndex:

@@ -26,11 +26,6 @@ DEFINE_VISITOR(Expression_INDEX_ACCESS) {
     MAYBE(base, ctx.visit(ctx.base));
     MAYBE(index, ctx.visit(ctx.index));
     auto str_repr = std::format("({}[{}])", base.str_repr, index.str_repr);
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::ARRAY_GET,
-        },
-        .str_repr = str_repr,
-    });
+    ctx.config().env.add_instruction({.op = ebm::OpCode::ARRAY_GET}, str_repr);
     return Result{.str_repr = str_repr};
 }

@@ -31,9 +31,6 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS) {
     instr.op = ebm::OpCode::LOAD_MEMBER;
     instr.member_id(name.id);
     auto str_repr = std::format("{}.{}", base.str_repr, name.body.data);
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = instr,
-        .str_repr = str_repr,
-    });
+    ctx.config().env.add_instruction(instr, str_repr);
     return Result{.str_repr = str_repr};
 }

@@ -31,15 +31,44 @@ DEFINE_VISITOR(Statement_IF_STATEMENT) {
         .instr = {
             .op = ebm::OpCode::JUMP_IF_FALSE,
         },
-        .str_repr = std::format("if ({})", tidy_condition_brace(std::move(cond_expr.str_repr))),
+        .str_repr = std::format("if ({}) {{", tidy_condition_brace(std::move(cond_expr.str_repr))),
     });
     auto current_instr_index = ctx.config().env.instructions.size() - 1;
     MAYBE(then_res, ctx.visit(ctx.if_statement.then_block));
     auto then_block_end_index = ctx.config().env.instructions.size();
-    ebm::Instruction& jump_if_false_instr = ctx.config().env.instructions[current_instr_index].instr;
-    ebm::JumpOffset jump_offset;
-    MAYBE(offset, varint(then_block_end_index - current_instr_index));
-    jump_offset.offset = offset;
-    jump_if_false_instr.target(jump_offset);
+    auto insert_jump_if_false = [&]() -> expected<void> {
+        ebm::Instruction& jump_if_false_instr = ctx.config().env.instructions[current_instr_index].instr;
+        ebm::JumpOffset jump_offset;
+        MAYBE(offset, varint(then_block_end_index - current_instr_index));
+        jump_offset.offset = offset;
+        jump_if_false_instr.target(jump_offset);
+        return {};
+    };
+    if (!is_nil(ctx.if_statement.else_block)) {
+        ctx.config().env.instructions.push_back(Instruction{
+            .instr = {
+                .op = ebm::OpCode::JUMP,
+            },
+            .str_repr = " } else { ",
+        });
+        insert_jump_if_false();
+        auto jump_instr_index = ctx.config().env.instructions.size() - 1;
+        MAYBE(else_res, ctx.visit(ctx.if_statement.else_block));
+        auto else_block_end_index = ctx.config().env.instructions.size();
+        ebm::Instruction& jump_instr = ctx.config().env.instructions[jump_instr_index].instr;
+        ebm::JumpOffset else_jump_offset;
+        MAYBE(else_offset, varint(else_block_end_index - jump_instr_index));
+        else_jump_offset.offset = else_offset;
+        jump_instr.target(else_jump_offset);
+    }
+    else {
+        insert_jump_if_false();
+    }
+    ctx.config().env.instructions.push_back(Instruction{
+        .instr = {
+            .op = ebm::OpCode::NOP,
+        },
+        .str_repr = " } ",
+    });
     return {};
 }

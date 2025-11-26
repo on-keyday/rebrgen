@@ -34,14 +34,35 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+#include <string>
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
     if (auto lowered = ctx.read_data.lowered_statement()) {
         return ctx.visit(lowered->io_statement.id);
     }
     if (auto is_bytes = is_bytes_type(ctx, ctx.read_data.data_type)) {
-        auto input = ctx.config().input;
+        MAYBE(target, ctx.visit(ctx.read_data.target));
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::READ_BYTES;
+        ebm::OptionalImmediateSize imm;
+        std::string str_repr;
+        if (auto size = ctx.read_data.size.size()) {
+            imm.is_immediate(true);
+            imm.size(*size);
+            str_repr = std::format("read_bytes({}, {})", target.str_repr, size->value());
+        }
+        else if (auto ref = ctx.read_data.size.ref()) {
+            MAYBE(size_expr, ctx.visit(*ref));
+            str_repr = std::format("read_bytes({}, {})", target.str_repr, size_expr.str_repr);
+        }
+        instr.imm(imm);
+        ctx.config().env.instructions.push_back(Instruction{
+            .instr = instr,
+            .str_repr = str_repr,
+        });
+        return Result{.str_repr = str_repr};
     }
     return {};
 }

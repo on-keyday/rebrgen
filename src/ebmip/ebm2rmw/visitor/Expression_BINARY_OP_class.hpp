@@ -33,11 +33,6 @@ DEFINE_VISITOR(Expression_BINARY_OP) {
     if (op == ebm::OpCode::NOP) {
         return ebmgen::unexpect_error("unsupported binary operation: {}", to_string(ctx.bop));
     }
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = op,
-        },
-        .str_repr = str_repr,
-    });
+    ctx.config().env.add_instruction({.op = op}, str_repr);
     return Result{.str_repr = str_repr};
 }

@@ -48,6 +48,32 @@ constexpr auto BinaryOp_to_OpCode(BinaryOp op) -> OpCode {
     }
     return OpCode::NOP;
 }
+
+constexpr auto OpCode_to_BinaryOp(OpCode op) -> std::optional<BinaryOp> {
+    switch(op) {
+        case OpCode::MUL: return BinaryOp::mul;
+        case OpCode::DIV: return BinaryOp::div;
+        case OpCode::MOD: return BinaryOp::mod;
+        case OpCode::LSHIFT: return BinaryOp::left_shift;
+        case OpCode::RSHIFT: return BinaryOp::right_shift;
+        case OpCode::BIT_AND: return BinaryOp::bit_and;
+        case OpCode::ADD: return BinaryOp::add;
+        case OpCode::SUB: return BinaryOp::sub;
+        case OpCode::BIT_OR: return BinaryOp::bit_or;
+        case OpCode::BIT_XOR: return BinaryOp::bit_xor;
+        case OpCode::EQ: return BinaryOp::equal;
+        case OpCode::NEQ: return BinaryOp::not_equal;
+        case OpCode::LT: return BinaryOp::less;
+        case OpCode::LE: return BinaryOp::less_or_eq;
+        case OpCode::GT: return BinaryOp::greater;
+        case OpCode::GE: return BinaryOp::greater_or_eq;
+        case OpCode::LOGICAL_AND: return BinaryOp::logical_and;
+        case OpCode::LOGICAL_OR: return BinaryOp::logical_or;
+        default:
+            return std::nullopt;
+    }
+}
+
 constexpr auto UnaryOp_to_OpCode(UnaryOp op) -> OpCode {
     switch(op) {
         case UnaryOp::logical_not: return OpCode::LOGICAL_NOT;
@@ -55,5 +81,15 @@ constexpr auto UnaryOp_to_OpCode(UnaryOp op) -> OpCode {
         case UnaryOp::bit_not: return OpCode::BIT_NOT;
     }
     return OpCode::NOP;
+}
+
+constexpr auto OpCode_to_UnaryOp(OpCode op) -> std::optional<UnaryOp> {
+    switch(op) {
+        case OpCode::LOGICAL_NOT: return UnaryOp::logical_not;
+        case OpCode::NEG: return UnaryOp::minus_sign;
+        case OpCode::BIT_NOT: return UnaryOp::bit_not;
+        default:
+            return std::nullopt;
+    }
 }
 } // namespace ebm

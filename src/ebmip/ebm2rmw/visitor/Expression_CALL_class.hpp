@@ -36,9 +36,6 @@ DEFINE_VISITOR(Expression_CALL) {
     ebm::Instruction instr;
     instr.op = ebm::OpCode::CALL;
     instr.arg_num(*varint(static_cast<std::uint64_t>(ctx.call_desc.arguments.container.size())));
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = instr,
-        .str_repr = str_repr,
-    });
+    ctx.config().env.add_instruction(instr, str_repr);
     return Result{.str_repr = str_repr};
 }

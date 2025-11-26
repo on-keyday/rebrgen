@@ -21,11 +21,6 @@
 DEFINE_VISITOR(Expression_SELF) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::LOAD_SELF,
-        },
-        .str_repr = "self",
-    });
+    ctx.config().env.add_instruction({.op = ebm::OpCode::LOAD_SELF}, "self");
     return Result{.str_repr = "self"};
 }

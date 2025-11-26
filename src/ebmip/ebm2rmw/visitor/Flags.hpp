@@ -22,4 +22,5 @@
 
 /*here to write the hook*/
 DEFINE_STRING_FLAG(entry_point, "", "entry-point", "entry point format to parse", "FORMAT");
+DEFINE_STRING_FLAG(binary_file, "", "binary-file", "input binary file", "FILE");
 FILE_EXTENSIONS(".txt", ".json", ".md");

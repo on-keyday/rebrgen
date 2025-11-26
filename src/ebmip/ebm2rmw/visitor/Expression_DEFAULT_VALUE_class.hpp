@@ -27,10 +27,7 @@ DEFINE_VISITOR(Expression_DEFAULT_VALUE) {
         ebm::Instruction instr;
         instr.op = ebm::OpCode::PUSH_IMM_INT;
         instr.value(*varint(0));
-        ctx.config().env.instructions.push_back(Instruction{
-            .instr = instr,
-            .str_repr = "0",
-        });
+        ctx.config().env.add_instruction(instr, "0");
         return Result{.str_repr = "0"};
     }
     if (auto bytes = is_bytes_type(ctx, ctx.type); bytes) {
@@ -44,12 +41,31 @@ DEFINE_VISITOR(Expression_DEFAULT_VALUE) {
             imm.size(size);
             instr.imm(imm);
             auto str_repr = std::format("new byte[{}]{{}}", size.value());
-            ctx.config().env.instructions.push_back(Instruction{
-                .instr = instr,
-                .str_repr = str_repr,
-            });
+            ctx.config().env.add_instruction(instr, str_repr);
             return Result{.str_repr = str_repr};
         }
+    }
+    if (ctx.is(ebm::TypeKind::BOOL)) {
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::PUSH_IMM_INT;
+        instr.value(*varint(0));
+        ctx.config().env.add_instruction(instr, "false");
+        return Result{.str_repr = "false"};
+    }
+    if (ctx.is(ebm::TypeKind::STRUCT)) {
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::NEW_STRUCT;
+        instr.type_id(ctx.type);
+        MAYBE(ident, ctx.identifier(ctx.type));
+        auto str_repr = std::format("new {}", ident);
+        ctx.config().env.add_instruction(instr, str_repr);
+        return Result{.str_repr = str_repr};
+    }
+    if (ctx.is(ebm::TypeKind::DECODER_RETURN)) {
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::PUSH_SUCCESS;
+        ctx.config().env.add_instruction(instr, "<success>");
+        return Result{.str_repr = "<success>"};
     }
     auto k = ctx.get_kind(ctx.type);
     return unexpect_error("unsupported default value type: {}", k ? to_string(*k) : "unknown");

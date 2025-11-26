@@ -39,15 +39,15 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     MAYBE(entry_stmt, ctx.get(ebmgen::from_any_ref<ebm::StatementRef>(entry_stmt_ref)));
     auto entry_decode_fn = *entry_stmt.body.struct_decl()->decode_fn();
     auto res = ctx.visit(entry_decode_fn);
-    if (!res) {
-        if (ctx.flags().debug_unimplemented) {
-            for (auto& instr : ctx.config().env.instructions) {
-                futils::wrap::cerr_wrap() << to_string(instr.instr.op, true) << " // " << tidy_condition_brace(std::move(instr.str_repr)) << "\n";
-            }
+    if (ctx.flags().debug_unimplemented) {
+        for (auto& instr : ctx.config().env.instructions) {
+            futils::wrap::cerr_wrap() << to_string(instr.instr.op, true) << " // " << tidy_condition_brace(std::move(instr.str_repr)) << "\n";
         }
+    }
+    if (!res) {
         return res;
     }
     RuntimeEnv runtime;
-    runtime.interpret(ctx.visitor);
+    MAYBE_VOID(rt, runtime.interpret(ctx.visitor));
     return res;
 }

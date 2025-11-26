@@ -62,6 +62,24 @@ for op in binary_ops:
 print("    }")
 print("    return OpCode::NOP;")
 print("}")
+print()
+print("constexpr auto OpCode_to_BinaryOp(OpCode op) -> std::optional<BinaryOp> {")
+print("    switch(op) {")
+for op in binary_ops:
+    print(
+        "        case OpCode::"
+        + [x for x in op_codes if x.get("alt_name") == op["name"]][0]["name"]
+        + ": return BinaryOp::"
+        + op["name"]
+        + ";"
+    )
+print("        default:")
+print("            return std::nullopt;")
+print("    }")
+print("}")
+print()
+
+
 print("constexpr auto UnaryOp_to_OpCode(UnaryOp op) -> OpCode {")
 print("    switch(op) {")
 for op in unary_ops:
@@ -75,4 +93,20 @@ for op in unary_ops:
 print("    }")
 print("    return OpCode::NOP;")
 print("}")
+print()
+print("constexpr auto OpCode_to_UnaryOp(OpCode op) -> std::optional<UnaryOp> {")
+print("    switch(op) {")
+for op in unary_ops:
+    print(
+        "        case OpCode::"
+        + [x for x in op_codes if x.get("alt_name") == op["name"]][0]["name"]
+        + ": return UnaryOp::"
+        + op["name"]
+        + ";"
+    )
+print("        default:")
+print("            return std::nullopt;")
+print("    }")
+print("}")
+
 print("} // namespace ebm")

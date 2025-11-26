@@ -70,6 +70,6 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     runtime.input = futils::view::rvec(file.data(), file.size());
     runtime.input_pos = 0;
     InitialContext initial_ctx{.visitor = ctx.visitor};
-    MAYBE_VOID(rt, runtime.interpret(initial_ctx, params));
+    MAYBE_VOID(rt, runtime.interpret(initial_ctx, entry_stmt.id, params));
     return res;
 }

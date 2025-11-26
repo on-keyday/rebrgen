@@ -79,7 +79,7 @@ namespace ebm2rmw {
             return obj;
         }
 
-        ebmgen::expected<void> interpret(InitialContext& ctx, std::map<std::uint64_t, std::shared_ptr<Value>>& params) {
+        ebmgen::expected<void> interpret(InitialContext& ctx, ebm::StatementRef self_type, std::map<std::uint64_t, std::shared_ptr<Value>>& params) {
             size_t ip = 0;
             call_stack.emplace_back();
             auto _end = futils::helper::defer([&] {
@@ -87,6 +87,8 @@ namespace ebm2rmw {
             });
             auto& this_ = call_stack.back();
             this_.params = params;
+            MAYBE(self_obj, new_object(ctx, self_type));
+            this_.self = self_obj;
             auto res = interpret_impl(ctx, ip);
             if (!res) {
                 if (ip < ctx.config().env.get_instructions().size()) {
@@ -349,6 +351,15 @@ namespace ebm2rmw {
                     case ebm::OpCode::CALL: {
                         size_t func_ip = 0;
                         MAYBE_VOID(r, interpret_impl(ctx, func_ip));
+                        break;
+                    }
+                    case ebm::OpCode::NEW_STRUCT: {
+                        auto struct_id = instr.instr.struct_id();
+                        if (!struct_id) {
+                            return ebmgen::unexpect_error("missing struct id in NEW_STRUCT");
+                        }
+                        MAYBE(obj, new_object(ctx, *struct_id));
+                        stack.push_back(Value{obj});
                         break;
                     }
                     default:

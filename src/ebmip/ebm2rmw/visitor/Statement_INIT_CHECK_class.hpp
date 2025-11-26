@@ -27,10 +27,13 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
     /*here to write the hook*/
     if (ctx.init_check.init_check_type == ebm::InitCheckType::field_init_decode) {
         MAYBE(got, ctx.get(ctx.init_check.expect_value));
-        MAYBE(type_name, ctx.identifier(got.body.type));
-        ebm::Instruction instr;
-        instr.op = ebm::OpCode::NEW_STRUCT;
-        ctx.config().env.add_instruction(std::move(instr), std::format("new {}::default()", type_name));
+        if (ctx.is(ebm::TypeKind::STRUCT, got.body.type) || ctx.is(ebm::TypeKind::RECURSIVE_STRUCT, got.body.type)) {
+            MAYBE(type_name, ctx.identifier(got.body.type));
+            ebm::Instruction instr;
+            instr.op = ebm::OpCode::NEW_STRUCT;
+            instr.struct_id(got.body.type);
+            ctx.config().env.add_instruction(std::move(instr), std::format("new {}", type_name));
+        }
     }
     return {};
 }

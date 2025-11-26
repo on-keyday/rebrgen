@@ -22,6 +22,7 @@
 #include "../codegen.hpp"
 #include <ebmgen/interactive/debugger.hpp>
 #include "ebmcodegen/stub/util.hpp"
+#include "file/file_view.h"
 #include "interpret.hpp"
 #include "wrap/cout.h"
 DEFINE_VISITOR(Statement_PROGRAM_DECL) {
@@ -38,16 +39,36 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     auto entry_stmt_ref = query_result.first[0];
     MAYBE(entry_stmt, ctx.get(ebmgen::from_any_ref<ebm::StatementRef>(entry_stmt_ref)));
     auto entry_decode_fn = *entry_stmt.body.struct_decl()->decode_fn();
+    auto f = ctx.config().env.new_function(entry_decode_fn);
     auto res = ctx.visit(entry_decode_fn);
     if (ctx.flags().debug_unimplemented) {
-        for (auto& instr : ctx.config().env.instructions) {
-            futils::wrap::cerr_wrap() << to_string(instr.instr.op, true) << " // " << tidy_condition_brace(std::move(instr.str_repr)) << "\n";
+        for (auto& instr : ctx.config().env.get_instructions()) {
+            futils::wrap::cerr_wrap() << to_string(instr.instr.op, true) << " // " << tidy_condition_brace(instr.str_repr) << "\n";
         }
     }
     if (!res) {
         return res;
     }
+    if (ctx.flags().binary_file.empty()) {
+        return res;
+    }
+    futils::file::View file;
+    if (auto res = file.open(ctx.flags().binary_file); !res) {
+        return unexpect_error("Failed to open binary file {}: {}", ctx.flags().binary_file, res.error().error<std::string>());
+    }
+    if (file.size() == 0) {
+        return unexpect_error("Binary file is empty: {}", ctx.flags().binary_file);
+    }
+    MAYBE(fnt, ctx.module().get_statement(entry_decode_fn));
+    MAYBE(decl, fnt.body.func_decl());
     RuntimeEnv runtime;
-    MAYBE_VOID(rt, runtime.interpret(ctx.visitor));
+    std::map<std::uint64_t, std::shared_ptr<Value>> params;
+    for (auto& param : decl.params.container) {
+        // dummy
+        params[param.id.value()] = std::make_shared<Value>();
+    }
+    runtime.input = futils::view::rvec(file.data(), file.size());
+    runtime.input_pos = 0;
+    MAYBE_VOID(rt, runtime.interpret(ctx.visitor, params));
     return res;
 }

@@ -27,11 +27,6 @@ DEFINE_VISITOR(Statement_ASSERT) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     MAYBE(res, ctx.visit(ctx.assert_desc.condition.cond));
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::ASSERT,
-        },
-        .str_repr = std::format("assert({})", tidy_condition_brace(std::move(res.str_repr))),
-    });
+    ctx.config().env.add_instruction({.op = ebm::OpCode::ASSERT}, std::format("assert({})", tidy_condition_brace(std::move(res.str_repr))));
     return {};
 }

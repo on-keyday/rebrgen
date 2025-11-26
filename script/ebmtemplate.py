@@ -498,6 +498,21 @@ def interactive():
             print("Invalid choice. Please enter a number from 1 to 5.")
 
 
+def use_class_default(target: str) -> str:
+    replace_target = [
+        "Statement",
+        "Expression",
+        "Type",
+        "entry",
+        "post_entry",
+        "pre_visitor",
+    ]
+    isClassTarget = any([target.startswith(r) for r in replace_target])
+    if isClassTarget and not target.endswith("_class") and not target.endswith("_old"):
+        target += "_class"
+    return target.removesuffix("_old")
+
+
 def main(mode: str):
     if mode != "codegen" and mode != "interpret":
         print(
@@ -575,8 +590,10 @@ def main(mode: str):
         list_defined_templates(lang_arg, mode)
     elif len(sys.argv) == 3:
         lang_arg = sys.argv[2]
+        target_arg = use_class_default(target_arg)
         run_save_template(tool_path, target_arg, mode, lang_arg)
     else:
+        target_arg = use_class_default(target_arg)
         run_single_template(tool_path, target_arg)
 
 

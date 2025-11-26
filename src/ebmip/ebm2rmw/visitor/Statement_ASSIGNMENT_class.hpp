@@ -25,11 +25,9 @@ DEFINE_VISITOR(Statement_ASSIGNMENT) {
     /*here to write the hook*/
     MAYBE(val, ctx.visit(ctx.value));
     MAYBE(ref, ctx.visit(ctx.target));
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::STORE_LOCAL,
-        },
-        .str_repr = std::format("{} = {}", ref.str_repr, val.str_repr),
-    });
+    ctx.config().env.add_instruction({
+                                         .op = ebm::OpCode::STORE_REF,
+                                     },
+                                     std::format("{} = {}", ref.str_repr, val.str_repr));
     return {};
 }

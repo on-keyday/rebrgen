@@ -262,8 +262,8 @@ namespace ebmgen {
         }
 
         // TODO: add arguments
+        MAYBE(init_field, make_field_init_check(ctx, base_ref, true));
         MAYBE(typ_ref, get_encoder_return_type(ctx));
-
         EBM_CALL(call_ref, typ_ref, std::move(call_desc));
         EBM_DEFINE_VARIABLE(result, {}, typ_ref, call_ref, ebm::VariableDeclKind::IMMUTABLE, false);
         EBM_IS_ERROR(is_error, result);
@@ -271,7 +271,8 @@ namespace ebmgen {
         EBM_IF_STATEMENT(if_stmt, is_error, error_return, {});
 
         ebm::Block block;
-        block.container.reserve(2);
+        block.container.reserve(3);
+        append(block, init_field);
         append(block, result_def);
         append(block, if_stmt);
         EBM_BLOCK(block_ref, std::move(block));

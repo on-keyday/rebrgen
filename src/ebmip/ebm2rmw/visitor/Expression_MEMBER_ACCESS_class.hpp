@@ -26,11 +26,20 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     MAYBE(base, ctx.visit(ctx.base));
-    MAYBE(name, ctx.module().get_identifier(ctx.member));
+    MAYBE(name, ctx.module().get_expression(ctx.member));
+    MAYBE(id, name.body.id());
+    // maybe add function
+    if (ctx.is(ebm::StatementKind::FUNCTION_DECL, id)) {
+        if (!ctx.config().env.has_function(id)) {
+            auto f = ctx.config().env.new_function(id);
+            MAYBE(_, ctx.visit(id));  // add function to instructions
+        }
+    }
     ebm::Instruction instr;
     instr.op = ebm::OpCode::LOAD_MEMBER;
-    instr.member_id(name.id);
-    auto str_repr = std::format("{}.{}", base.str_repr, name.body.data);
+    instr.member_id(id);
+    auto identifier = ctx.identifier(id);
+    auto str_repr = std::format("{}.{}", base.str_repr, identifier);
     ctx.config().env.add_instruction(instr, str_repr);
     return Result{.str_repr = str_repr};
 }

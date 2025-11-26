@@ -546,10 +546,12 @@ format Condition:
 
 enum InitCheckType:
     :u8
-    encode
-    decode
+    union_init_encode
+    union_init_decode
     union_get
     union_set
+    field_init_encode
+    field_init_decode
 
 format InitCheck:
     init_check_type :InitCheckType
@@ -998,8 +1000,8 @@ format Instruction:
 
         # -- Object Operations --
         OpCode.NEW_STRUCT:
-            type_id :TypeRef 
+            struct_id :StatementRef
         OpCode.LOAD_MEMBER:
-            member_id :IdentifierRef
+            member_id :StatementRef
         OpCode.NEW_BYTES:
             imm :OptionalImmediateSize

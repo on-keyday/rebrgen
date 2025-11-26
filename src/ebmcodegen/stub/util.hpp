@@ -56,6 +56,10 @@ namespace ebmcodegen::util {
         return std::move(brace);
     }
 
+    inline std::string tidy_condition_brace(const std::string& brace) {
+        return tidy_condition_brace(std::string(brace));
+    }
+
     ebmgen::expected<std::string> get_size_str(auto&& ctx, const ebm::Size& s) {
         if (auto size = s.size()) {
             return std::format("{}", size->value());

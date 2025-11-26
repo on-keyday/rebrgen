@@ -31,11 +31,6 @@ DEFINE_VISITOR(Expression_UNARY_OP) {
     if (op == ebm::OpCode::NOP) {
         return ebmgen::unexpect_error("unsupported unary operation: {}", to_string(ctx.uop));
     }
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = op,
-        },
-        .str_repr = str_repr,
-    });
+    ctx.config().env.add_instruction({.op = op}, str_repr);
     return Result{.str_repr = str_repr};
 }

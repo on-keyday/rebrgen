@@ -38,23 +38,19 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
     if (auto init = ctx.loop.init()) {
         MAYBE(res, ctx.visit(*init));
     }
-    size_t loop_start_index = ctx.config().env.instructions.size();
+    size_t loop_start_index = ctx.config().env.access_instructions().size();
     if (auto cond = ctx.loop.condition()) {
         MAYBE(res, ctx.visit(cond->cond));
-        ctx.config().env.instructions.push_back(Instruction{
-            .instr = {
-                .op = ebm::OpCode::JUMP_IF_FALSE,
-            },
-            .str_repr = std::format("while ({}) {{", tidy_condition_brace(std::move(res.str_repr))),
-        });
+        ctx.config().env.add_instruction({
+                                             .op = ebm::OpCode::JUMP_IF_FALSE,
+                                         },
+                                         std::format("while ({}) {{", tidy_condition_brace(std::move(res.str_repr))));
     }
     else {
-        ctx.config().env.instructions.push_back(Instruction{
-            .instr = {
-                .op = ebm::OpCode::NOP,
-            },
-            .str_repr = "loop {",
-        });
+        ctx.config().env.add_instruction({
+                                             .op = ebm::OpCode::NOP,
+                                         },
+                                         "loop {");
     }
     MAYBE(body_res, ctx.visit(ctx.loop.body));
     if (auto incr = ctx.loop.increment()) {
@@ -62,25 +58,17 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
     }
     ebm::Instruction instr;
     instr.op = ebm::OpCode::JUMP;
-    MAYBE(to_top, varint(ctx.config().env.instructions.size() - loop_start_index + 1));
+    MAYBE(to_top, varint(ctx.config().env.access_instructions().size() - loop_start_index + 1));
     ebm::JumpOffset jump_offset;
     jump_offset.offset = to_top;
     jump_offset.backward(true);
     instr.target(jump_offset);
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = instr,
-        .str_repr = "}",
-    });
-    ebm::Instruction& jump_instr = ctx.config().env.instructions.back().instr;
-    MAYBE(offset, varint(ctx.config().env.instructions.size() - loop_start_index + 1));
+    ctx.config().env.add_instruction(instr, "}");
+    ebm::Instruction& jump_instr = ctx.config().env.access_instructions().back().instr;
+    MAYBE(offset, varint(ctx.config().env.access_instructions().size() - loop_start_index + 1));
     jump_offset.offset = offset;
     jump_offset.backward(false);
     jump_instr.target(jump_offset);
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::NOP,
-        },
-        .str_repr = " end_loop ",
-    });
+    ctx.config().env.add_instruction({.op = ebm::OpCode::NOP}, "end_loop");
     return {};
 }

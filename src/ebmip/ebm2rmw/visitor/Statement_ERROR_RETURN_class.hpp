@@ -22,11 +22,9 @@ DEFINE_VISITOR(Statement_ERROR_RETURN) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     MAYBE(val, ctx.visit(ctx.value));
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::ERROR,
-        },
-        .str_repr = std::format("error_return {}", val.str_repr),
-    });
+    ctx.config().env.add_instruction({
+                                         .op = ebm::OpCode::ERROR,
+                                     },
+                                     std::format("error_return {}", val.str_repr));
     return Result{.str_repr = std::format("error_return {}", val.str_repr)};
 }

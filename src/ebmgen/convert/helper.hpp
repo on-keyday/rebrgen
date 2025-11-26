@@ -381,6 +381,10 @@ namespace ebmgen {
 #define EBM_SELF(ref_name, typ) \
     EBM_AST_EXPRESSION(ref_name, make_self, typ)
 
+    ebm::StatementBody make_init_check_statement(ebm::InitCheck&& init_check);
+#define EBM_INIT_CHECK_STATEMENT(ref_name, init_check__) \
+    EBM_AST_STATEMENT(ref_name, make_init_check_statement, init_check__)
+
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
     ebm::Size get_size(size_t bit_size);

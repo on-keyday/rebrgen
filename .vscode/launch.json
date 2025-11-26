@@ -170,7 +170,9 @@
         "${workspaceRoot}/save/ebm_schema.ebm",
         "--entry-point",
         "ExtendedBinaryModule",
-        "--debug-unimplemented"
+        "--debug-unimplemented",
+        "--binary-file",
+        "${workspaceRoot}/save/ebm_schema.ebm"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

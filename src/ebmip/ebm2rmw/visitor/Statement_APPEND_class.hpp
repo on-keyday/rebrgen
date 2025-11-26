@@ -24,11 +24,6 @@ DEFINE_VISITOR(Statement_APPEND) {
     /*here to write the hook*/
     MAYBE(target, ctx.visit(ctx.target));
     MAYBE(value, ctx.visit(ctx.value));
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::VECTOR_PUSH,
-        },
-        .str_repr = std::format("{}.append({})", target.str_repr, value.str_repr),
-    });
+    ctx.config().env.add_instruction({.op = ebm::OpCode::VECTOR_PUSH}, std::format("{}.append({})", target.str_repr, value.str_repr));
     return {};
 }

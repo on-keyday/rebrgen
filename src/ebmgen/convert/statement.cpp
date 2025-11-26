@@ -435,7 +435,7 @@ namespace ebmgen {
         if (is_nil(alt_type)) {
             return std::nullopt;
         }
-        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::encode : ebm::InitCheckType::decode);
+        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::union_init_encode : ebm::InitCheckType::union_init_decode);
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {

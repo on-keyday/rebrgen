@@ -37,12 +37,16 @@
 #include <string>
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
-    if (auto lowered = ctx.read_data.lowered_statement()) {
-        return ctx.visit(lowered->io_statement.id);
+    auto is_bytes = is_bytes_type(ctx, ctx.read_data.data_type);
+    if (!is_bytes) {
+        if (auto lowered = ctx.read_data.lowered_statement()) {
+            return ctx.visit(lowered->io_statement.id);
+        }
     }
-    if (auto is_bytes = is_bytes_type(ctx, ctx.read_data.data_type)) {
+    if (is_bytes) {
         MAYBE(target, ctx.visit(ctx.read_data.target));
         ebm::Instruction instr;
         instr.op = ebm::OpCode::READ_BYTES;
@@ -58,11 +62,8 @@ DEFINE_VISITOR(Statement_READ_DATA) {
             str_repr = std::format("read_bytes({}, {})", target.str_repr, size_expr.str_repr);
         }
         instr.imm(imm);
-        ctx.config().env.instructions.push_back(Instruction{
-            .instr = instr,
-            .str_repr = str_repr,
-        });
+        ctx.config().env.add_instruction(instr, str_repr);
         return Result{.str_repr = str_repr};
     }
-    return {};
+    return ebmgen::unexpect_error("READ_DATA only supports byte array type in this implementation");
 }

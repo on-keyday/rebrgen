@@ -21,7 +21,7 @@
 #define EBM_API
 #endif
 #endif
-namespace ebm {
+namespace ebm::zc {
     enum class GenerateType {
         Normal = 0,
         Encode = 1,
@@ -2036,7 +2036,7 @@ namespace ebm {
     };
     struct EBM_API String{
         Varint length;
-        std::string data;
+        ::futils::view::rvec data;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "String";
@@ -4912,5 +4912,5 @@ namespace ebm {
             v(v, "debug_info",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().debug_info),false>{});
         }
     };
-} // namespace ebm
+} // namespace ebm::zc
 

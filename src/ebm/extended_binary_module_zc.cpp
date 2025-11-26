@@ -7,7 +7,7 @@
 #endif
 #endif
 #include "extended_binary_module.hpp"
-namespace ebm {
+namespace ebm::zc {
     const StatementRef* IOAttribute::dynamic_ref() const {
         if (((*this).endian() == Endian::dynamic)==true) {
         if(!std::holds_alternative<union_struct_6>(union_variant_5)) {
@@ -20439,5 +20439,5 @@ namespace ebm {
         }
         return ::futils::error::Error<>();
     }
-} // namespace ebm
+} // namespace ebm::zc
 

@@ -416,4 +416,11 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_init_check_statement(ebm::InitCheck&& init_check) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementKind::INIT_CHECK;
+        body.init_check(std::move(init_check));
+        return body;
+    }
+
 }  // namespace ebmgen

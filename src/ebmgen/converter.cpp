@@ -245,4 +245,15 @@ namespace ebmgen {
         return type_ref;
     }
 
+    expected<ebm::StatementRef> make_field_init_check(ConverterContext& ctx, ebm::ExpressionRef base_ref, bool encode) {
+        ebm::InitCheck init_check;
+        init_check.init_check_type = encode ? ebm::InitCheckType::field_init_encode : ebm::InitCheckType::field_init_decode;
+        init_check.target_field = base_ref;
+        MAYBE(base_ref_type, ctx.repository().get_expression(base_ref));
+        EBM_DEFAULT_VALUE(default_, base_ref_type.body.type);
+        init_check.expect_value = default_;
+        EBM_INIT_CHECK_STATEMENT(init_check_ref, std::move(init_check));
+        return init_check_ref;
+    }
+
 }  // namespace ebmgen

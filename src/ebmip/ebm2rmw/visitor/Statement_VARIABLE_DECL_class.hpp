@@ -24,6 +24,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_VARIABLE_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
@@ -32,9 +33,6 @@ DEFINE_VISITOR(Statement_VARIABLE_DECL) {
     ebm::Instruction instr;
     instr.op = ebm::OpCode::STORE_LOCAL;
     instr.reg(ebm::RegisterIndex{.index = ctx.item_id});
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = instr,
-        .str_repr = std::format("{} := {}", identifier, initial_value.str_repr),
-    });
+    ctx.config().env.add_instruction(instr, std::format("{} := {}", identifier, initial_value.str_repr));
     return {};
 }

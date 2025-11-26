@@ -18,7 +18,10 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-
+if (init_check.init_check_type == ebm::InitCheckType::field_init_encode ||
+    init_check.init_check_type == ebm::InitCheckType::field_init_decode) {
+    return Result{};
+}
 MAYBE(target_expr, module_.get_expression(init_check.target_field));
 MAYBE(target_type, module_.get_type(target_expr.body.type));
 MAYBE(expect_expr, module_.get_expression(init_check.expect_value));
@@ -38,7 +41,7 @@ auto matches = CODE("matches!(", target.to_writer(), ", ", alt, "(_))");
 auto variant_hold = std::format("variant_hold_{}", get_id(expect_expr.body.type));
 
 CodeWriter w;
-if (init_check.init_check_type == ebm::InitCheckType::encode) {
+if (init_check.init_check_type == ebm::InitCheckType::union_init_encode) {
     w.writeln("let ", variant_hold, " = if let ", alt, "(x) = &", target.to_writer(), " {");
     {
         auto scope = w.indent_scope();
@@ -52,7 +55,7 @@ if (init_check.init_check_type == ebm::InitCheckType::encode) {
     }
     w.writeln("};");
 }
-else if (init_check.init_check_type == ebm::InitCheckType::decode || init_check.init_check_type == ebm::InitCheckType::union_set) {
+else if (init_check.init_check_type == ebm::InitCheckType::union_init_decode || init_check.init_check_type == ebm::InitCheckType::union_set) {
     w.writeln("let ", variant_hold, " = if let ", alt, "(x) = &mut ", target.to_writer(), " {");
     {
         auto scope = w.indent_scope();

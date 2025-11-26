@@ -28,15 +28,15 @@ DEFINE_VISITOR(Expression_IDENTIFIER) {
         ebm::Instruction instr;
         instr.op = ebm::OpCode::LOAD_LOCAL;
         instr.reg(ebm::RegisterIndex{.index = ctx.id});
-        ctx.config().env.add_instruction(instr, std::move(ident));
-        return Result{.str_repr = ident};
+        ctx.config().env.add_instruction(instr, ident);
+        return Result{.str_repr = std::move(ident)};
     }
     if (ctx.is(ebm::StatementKind::PARAMETER_DECL, ctx.id)) {
         ebm::Instruction instr;
         instr.op = ebm::OpCode::LOAD_PARAM;
         instr.reg(ebm::RegisterIndex{.index = ctx.id});
-        ctx.config().env.add_instruction(instr, std::move(ident));
-        return Result{.str_repr = ident};
+        ctx.config().env.add_instruction(instr, ident);
+        return Result{.str_repr = std::move(ident)};
     }
     auto kind = ctx.get_kind(ctx.id);
     return ebmgen::unexpect_error("identifier does not refer to a variable declaration: {}", kind ? to_string(*kind) : "unknown");

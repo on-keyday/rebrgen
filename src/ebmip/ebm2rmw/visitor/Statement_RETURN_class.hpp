@@ -18,30 +18,16 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_RETURN) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     if (is_nil(ctx.value)) {
-        ctx.config().env.instructions.push_back(Instruction{
-            .instr = {
-                .op = ebm::OpCode::PUSH_NULL,
-            },
-            .str_repr = "<void>",
-        });
-        ctx.config().env.instructions.push_back(Instruction{
-            .instr = {
-                .op = ebm::OpCode::RET,
-            },
-            .str_repr = "return",
-        });
+        ctx.config().env.add_instruction({.op = ebm::OpCode::PUSH_NULL}, "<void>");
+        ctx.config().env.add_instruction({.op = ebm::OpCode::RET}, "return");
         return {};
     }
     MAYBE(val, ctx.visit(ctx.value));
-    ctx.config().env.instructions.push_back(Instruction{
-        .instr = {
-            .op = ebm::OpCode::RET,
-        },
-        .str_repr = std::format("return {}", val.str_repr),
-    });
+    ctx.config().env.add_instruction({.op = ebm::OpCode::RET}, std::format("return {}", val.str_repr));
     return {};
 }

@@ -71769,7 +71769,7 @@ DEFINE_ENTRY(ebm2python::Flags, ebm2python::Output) {
     ebm2python::VisitorsImpl visitors_impl;
     ebm2python::MergedVisitor visitor{ebm,flags,output,w,visitors_impl};
     auto entry_function = [&]() -> ebmgen::expected<ebm2python::Result> {
-        ebm2python::InitialContext initial_ctx{visitor};
+        ebm2python::InitialContext initial_ctx{.visitor=visitor};
         auto pre_visit_result = ebm2python::dispatch_pre_visitor(initial_ctx,ebm);
         if (!pre_visit_result) {
             if(!ebmcodegen::util::is_pass_error(pre_visit_result.error())) {

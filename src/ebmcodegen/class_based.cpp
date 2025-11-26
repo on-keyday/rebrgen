@@ -1466,15 +1466,16 @@ namespace ebmcodegen {
         w.writeln("}");
     }
 
-    void generate_user_interface(CodeWriter& w, std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
-        w.writeln("template<typename VisitorImpl>");
-        w.writeln("struct InitialContext {");
+    void generate_initial_context(CodeWriter& w) {
+        w.writeln("struct InitialContext : ebmcodegen::util::ContextBase<InitialContext> {");
         {
             auto scope = w.indent_scope();
-            w.writeln("VisitorImpl& visitor;");
+            w.writeln("BaseVisitor& visitor;");
         }
         w.writeln("};");
+    }
 
+    void generate_user_interface(CodeWriter& w, std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
         w.writeln("// for backward compatibility");
         w.writeln();
 
@@ -1494,7 +1495,7 @@ namespace ebmcodegen {
             w.writeln("auto entry_function = [&]() -> ", fq_result_type, " {");
             {
                 auto entry_scope = w.indent_scope();
-                w.writeln(ns_name, "::InitialContext initial_ctx{visitor};");
+                w.writeln(ns_name, "::InitialContext initial_ctx{.visitor = visitor};");
                 w.writeln("auto pre_visit_result = ", ns_name, "::dispatch_pre_visitor(initial_ctx,ebm);");
                 handle_hijack_logic(w, "pre_visit_result");
                 w.writeln("if(!visitor.module_.valid()) {");
@@ -1573,6 +1574,7 @@ namespace ebmcodegen {
         }
         generate_user_interface(hdr, context_classes, result_type);
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);
+        generate_initial_context(hdr);
 
         generate_visitor_customization_point(hdr);
         for (auto& cls_group : context_classes) {

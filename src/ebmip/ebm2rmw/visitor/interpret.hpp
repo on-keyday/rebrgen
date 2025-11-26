@@ -6,6 +6,7 @@
 #include <variant>
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/util.hpp"
 #include "ebmgen/common.hpp"
 #include "inst.hpp"
 #include "ebmcodegen/stub/ops_macros.hpp"
@@ -50,7 +51,35 @@ namespace ebm2rmw {
         futils::view::rvec input;
         size_t input_pos = 0;
 
-        ebmgen::expected<void> interpret(BaseVisitor& ctx, std::map<std::uint64_t, std::shared_ptr<Value>>& params) {
+        ebmgen::expected<std::shared_ptr<Value>> new_object(InitialContext& ctx, ebm::StatementRef ref) {
+            auto obj = std::make_shared<Value>();
+            std::unordered_map<std::uint64_t, std::shared_ptr<Value>> c{};
+            MAYBE(fields, ctx.get(ref));
+            MAYBE(field_list, fields.body.struct_decl());
+            auto res = handle_fields(ctx, field_list.fields, true, [&](ebm::StatementRef field_ref, const ebm::Statement& field) -> ebmgen::expected<void> {
+                if (field.body.property_decl()) {
+                    // skip property fields
+                    return {};
+                }
+                MAYBE(field_body, field.body.field_decl());
+                if (ctx.is(ebm::TypeKind::STRUCT, field_body.field_type)) {
+                    MAYBE(type_impl, ctx.get(field_body.field_type));
+                    MAYBE(struct_, type_impl.body.id());
+                    MAYBE(nested_obj, new_object(ctx, struct_));
+                    c[get_id(field_ref)] = nested_obj;
+                }
+                else {
+                    c[get_id(field_ref)] = std::make_shared<Value>();
+                }
+                return {};
+            });
+            if (!res) {
+                return ebmgen::unexpect_error(std::move(res.error()));
+            }
+            return obj;
+        }
+
+        ebmgen::expected<void> interpret(InitialContext& ctx, std::map<std::uint64_t, std::shared_ptr<Value>>& params) {
             size_t ip = 0;
             call_stack.emplace_back();
             auto _end = futils::helper::defer([&] {
@@ -60,8 +89,8 @@ namespace ebm2rmw {
             this_.params = params;
             auto res = interpret_impl(ctx, ip);
             if (!res) {
-                if (ip < ctx.env.get_instructions().size()) {
-                    return ebmgen::unexpect_error("Runtime error at instruction {}: {}:{}:{}", ip, to_string(ctx.env.get_instructions()[ip].instr.op), ctx.env.get_instructions()[ip].str_repr, res.error().error());
+                if (ip < ctx.config().env.get_instructions().size()) {
+                    return ebmgen::unexpect_error("Runtime error at instruction {}: {}:{}:{}", ip, to_string(ctx.config().env.get_instructions()[ip].instr.op), ctx.config().env.get_instructions()[ip].str_repr, res.error().error());
                 }
             }
             return res;
@@ -70,8 +99,8 @@ namespace ebm2rmw {
        private:
         std::vector<StackFrame> call_stack;
 
-        ebmgen::expected<void> interpret_impl(BaseVisitor& ctx, size_t& ip) {
-            auto& env = ctx.env;
+        ebmgen::expected<void> interpret_impl(InitialContext& ctx, size_t& ip) {
+            auto& env = ctx.config().env;
             auto& this_ = call_stack.back();
             auto& self = this_.self;
             auto& params = this_.params;

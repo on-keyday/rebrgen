@@ -71769,7 +71769,7 @@ DEFINE_ENTRY(ebm2rust::Flags, ebm2rust::Output) {
     ebm2rust::VisitorsImpl visitors_impl;
     ebm2rust::MergedVisitor visitor{ebm,flags,output,w,visitors_impl};
     auto entry_function = [&]() -> ebmgen::expected<ebm2rust::Result> {
-        ebm2rust::InitialContext initial_ctx{visitor};
+        ebm2rust::InitialContext initial_ctx{.visitor=visitor};
         auto pre_visit_result = ebm2rust::dispatch_pre_visitor(initial_ctx,ebm);
         if (!pre_visit_result) {
             if(!ebmcodegen::util::is_pass_error(pre_visit_result.error())) {

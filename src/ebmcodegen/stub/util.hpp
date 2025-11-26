@@ -316,7 +316,7 @@ namespace ebmcodegen::util {
         return false;
     }
 
-    ebmgen::expected<void> handle_fields(auto&& ctx, auto&& fields, bool recurse_composite, auto&& callback) {
+    ebmgen::expected<void> handle_fields(auto&& ctx, const ebm::Block& fields, bool recurse_composite, auto&& callback) {
         auto& visitor = get_visitor(ctx);
         ebmgen::expected<void> result = {};
         for (auto& field_ref : fields.container) {

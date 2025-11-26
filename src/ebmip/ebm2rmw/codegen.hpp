@@ -805,10 +805,6 @@ namespace ebm2rmw {
         }
         return {};
     }
-    template<typename VisitorImpl>
-    struct InitialContext {
-        VisitorImpl& visitor;
-    };
     // for backward compatibility
     
     // generic visitor for Statement
@@ -936,6 +932,9 @@ namespace ebm2rmw {
     };
     template<typename V>
     concept BaseVisitorLike = std::derived_from<V,BaseVisitor>;
+    struct InitialContext : ebmcodegen::util::ContextBase<InitialContext> {
+        BaseVisitor& visitor;
+    };
     template<typename Tag>
     struct Visitor; // Customization point struct
     struct Context_entry : ebmcodegen::util::ContextBase<Context_entry> {
@@ -6364,4 +6363,25 @@ namespace ebm2rmw {
     #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2RMW_CODEGEN_CONTEXT_PARAMETERS_##name
     #define CODEGEN_CONTEXT(name) EBM2RMW_CODEGEN_CONTEXT_##name
 }  // namespace ebm2rmw
+#if __has_include("visitor/post_includes_before.hpp")
+#include "visitor/post_includes_before.hpp"
+#elif __has_include("visitor/dsl/post_includes_before_dsl.hpp")
+#include "visitor/dsl/post_includes_before_dsl.hpp"
+#elif __has_include("ebmcodegen/default_interpret_visitor/post_includes_before.hpp")
+#include "ebmcodegen/default_interpret_visitor/post_includes_before.hpp"
+#endif
+#if __has_include("visitor/post_includes.hpp")
+#include "visitor/post_includes.hpp"
+#elif __has_include("visitor/dsl/post_includes_dsl.hpp")
+#include "visitor/dsl/post_includes_dsl.hpp"
+#elif __has_include("ebmcodegen/default_interpret_visitor/post_includes.hpp")
+#include "ebmcodegen/default_interpret_visitor/post_includes.hpp"
+#endif
+#if __has_include("visitor/post_includes_after.hpp")
+#include "visitor/post_includes_after.hpp"
+#elif __has_include("visitor/dsl/post_includes_after_dsl.hpp")
+#include "visitor/dsl/post_includes_after_dsl.hpp"
+#elif __has_include("ebmcodegen/default_interpret_visitor/post_includes_after.hpp")
+#include "ebmcodegen/default_interpret_visitor/post_includes_after.hpp"
+#endif
 #endif // EBM_CODEGEN_COMMON_INCLUDE_GUARD

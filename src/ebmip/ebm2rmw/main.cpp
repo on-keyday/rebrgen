@@ -71769,7 +71769,7 @@ DEFINE_ENTRY(ebm2rmw::Flags, ebm2rmw::Output) {
     ebm2rmw::VisitorsImpl visitors_impl;
     ebm2rmw::MergedVisitor visitor{ebm,flags,output,w,visitors_impl};
     auto entry_function = [&]() -> ebmgen::expected<ebm2rmw::Result> {
-        ebm2rmw::InitialContext initial_ctx{visitor};
+        ebm2rmw::InitialContext initial_ctx{.visitor=visitor};
         auto pre_visit_result = ebm2rmw::dispatch_pre_visitor(initial_ctx,ebm);
         if (!pre_visit_result) {
             if(!ebmcodegen::util::is_pass_error(pre_visit_result.error())) {

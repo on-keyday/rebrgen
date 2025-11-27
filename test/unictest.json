@@ -8,6 +8,9 @@
         },
         {
             "file": "$WORK_DIR/src/ebmip/ebm2rmw/unictest_runner.json"
+        },
+        {
+            "file": "$WORK_DIR/src/ebmcg/ebm2p4/unictest_runner.json"
         }
     ],
     "inputs": {

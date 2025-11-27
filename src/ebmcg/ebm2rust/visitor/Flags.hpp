@@ -10,6 +10,7 @@
     WEB_FILTERED(filtered_flag_names...)
     DEFINE_BOOL_FLAG(name,default,flag_name,help)
     DEFINE_STRING_FLAG(name,default,flag_name,help,arg_description)
+    DEFINE_INT_FLAG(name,type,default,flag_name,help,arg_description)
     BEGIN_MAP_FLAG(name,MappedType,default,flag_name,help)
       MAP_FLAG_ITEM(key,value) // repeat this line for each item
     END_MAP_FLAG()

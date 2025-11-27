@@ -16,13 +16,17 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     ctx.config().uint_prefix = "bit<";
     ctx.config().uint_suffix = ">";
-    ctx.config().int_prefix = "bit<";
+    ctx.config().int_prefix = "int<";
     ctx.config().int_suffix = ">";
     ctx.config().byte_aligned_int = false;
+    ctx.config().use_base_type_of_enum = true;
+    ctx.config().struct_keyword = "header";
+    ctx.config().module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Header");
     return pass;
 }

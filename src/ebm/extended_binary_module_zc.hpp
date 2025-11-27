@@ -570,6 +570,38 @@ namespace ebm::zc {
     constexpr const char* visit_enum(VariableDeclKind) {
         return "VariableDeclKind";
     }
+    enum class CompositeFieldKind : std::uint8_t {
+        BULK = 0,
+        PREFIXED_UNION = 1,
+        SANDWICHED_UNION = 2,
+    };
+    constexpr const char* to_string(CompositeFieldKind e, bool origin_form = false) {
+        switch(e) {
+            case CompositeFieldKind::BULK: return origin_form ? "BULK":"BULK" ;
+            case CompositeFieldKind::PREFIXED_UNION: return origin_form ? "PREFIXED_UNION":"PREFIXED_UNION" ;
+            case CompositeFieldKind::SANDWICHED_UNION: return origin_form ? "SANDWICHED_UNION":"SANDWICHED_UNION" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<CompositeFieldKind> CompositeFieldKind_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "BULK") {
+            return CompositeFieldKind::BULK;
+        }
+        if (str == "PREFIXED_UNION") {
+            return CompositeFieldKind::PREFIXED_UNION;
+        }
+        if (str == "SANDWICHED_UNION") {
+            return CompositeFieldKind::SANDWICHED_UNION;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(CompositeFieldKind) {
+        return "CompositeFieldKind";
+    }
     enum class FunctionKind : std::uint8_t {
         NORMAL = 0,
         METHOD = 1,
@@ -3157,6 +3189,7 @@ namespace ebm::zc {
     struct EBM_API CompositeFieldDecl{
         Block fields;
         TypeRef composite_type;
+        CompositeFieldKind kind{};
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "CompositeFieldDecl";
@@ -3164,11 +3197,13 @@ namespace ebm::zc {
         constexpr void visit(Visitor&& v) {
             v(v, "fields",(*this).fields);
             v(v, "composite_type",(*this).composite_type);
+            v(v, "kind",(*this).kind);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
             v(v, "fields",(*this).fields);
             v(v, "composite_type",(*this).composite_type);
+            v(v, "kind",(*this).kind);
         }
         template<typename T,bool rvalue = false>
         struct visitor_tag {
@@ -3179,6 +3214,7 @@ namespace ebm::zc {
         static constexpr void visit_static(Visitor&& v) {
             v(v, "fields",visitor_tag<decltype(std::declval<CompositeFieldDecl>().fields),false>{});
             v(v, "composite_type",visitor_tag<decltype(std::declval<CompositeFieldDecl>().composite_type),false>{});
+            v(v, "kind",visitor_tag<decltype(std::declval<CompositeFieldDecl>().kind),false>{});
         }
     };
     struct EBM_API SubByteRange{

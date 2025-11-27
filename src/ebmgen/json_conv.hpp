@@ -129,6 +129,8 @@ namespace ebm {
     
     bool from_json(CastType& obj, const futils::json::JSON& j);
     
+    bool from_json(CompositeFieldKind& obj, const futils::json::JSON& j);
+    
     bool from_json(Endian& obj, const futils::json::JSON& j);
     
     bool from_json(ExpressionKind& obj, const futils::json::JSON& j);

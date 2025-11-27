@@ -985,6 +985,7 @@ namespace ebmcodegen {
 
             w.writeln("#define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)");
             w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
+            w.writeln("#define DEFINE_INT_FLAG(name,type,default_,flag_name,desc,arg_desc) DEFINE_FLAG(type,name,default_,flag_name,VarInt,desc,arg_desc)");
             w.write("#define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)");
             if (on_define) {
                 w.write(ensure_c_ident, "MappedType name = default_;");
@@ -1011,6 +1012,7 @@ namespace ebmcodegen {
             w.writeln("#undef WEB_FILTERED");
             w.writeln("#undef DEFINE_BOOL_FLAG");
             w.writeln("#undef DEFINE_STRING_FLAG");
+            w.writeln("#undef DEFINE_INT_FLAG");
             w.writeln("#undef BEGIN_MAP_FLAG");
             w.writeln("#undef MAP_FLAG_ITEM");
             w.writeln("#undef END_MAP_FLAG");

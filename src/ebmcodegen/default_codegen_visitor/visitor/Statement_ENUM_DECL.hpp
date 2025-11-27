@@ -29,5 +29,5 @@ w.writeln("enum ", name, " ", visitor.begin_block);
     MAYBE(block, visit_Block(*this, enum_decl.members));
     w.write(block.to_writer());
 }
-w.writeln(visitor.end_block);
+w.writeln(visitor.end_block, visitor.endof_enum_definition);
 return w;

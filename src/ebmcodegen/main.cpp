@@ -1213,6 +1213,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                         w.writeln("WEB_FILTERED(filtered_flag_names...)");
                         w.writeln("DEFINE_BOOL_FLAG(name,default,flag_name,help)");
                         w.writeln("DEFINE_STRING_FLAG(name,default,flag_name,help,arg_description)");
+                        w.writeln("DEFINE_INT_FLAG(name,type,default,flag_name,help,arg_description)");
                         w.writeln("BEGIN_MAP_FLAG(name,MappedType,default,flag_name,help)");
                         w.writeln("  MAP_FLAG_ITEM(key,value) // repeat this line for each item");
                         w.writeln("END_MAP_FLAG()");

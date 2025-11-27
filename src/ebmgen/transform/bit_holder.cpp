@@ -11,36 +11,41 @@
 
 namespace ebmgen {
 
-    expected<std::optional<size_t>> sizeof_type(TransformContext& tctx, ebm::TypeRef type) {
+    struct SizeofResult {
+        size_t size = 0;
+        bool fixed = false;
+    };
+
+    expected<std::optional<SizeofResult>> sizeof_type(TransformContext& tctx, ebm::TypeRef type) {
         MAYBE(field_type, tctx.type_repository().get(type));
         if (auto size = field_type.body.size()) {
-            return size->value();
+            return SizeofResult{size->value(), true};
         }
         else if (auto base_type = field_type.body.base_type(); base_type && !is_nil(*base_type)) {
             return sizeof_type(tctx, *base_type);
         }
-        else if (auto members = field_type.body.members(); members) {
+        else if (auto members = field_type.body.members(); members) {  // for VARIANT
             size_t size = 0;
             for (const auto& member : members->container) {
                 MAYBE(member_size, sizeof_type(tctx, member));
                 if (member_size) {
-                    size = std::max(size, *member_size);
+                    size = std::max(size, member_size->size);
                 }
                 else {
                     return std::nullopt;
                 }
             }
-            return size;
+            return SizeofResult{size, false};
         }
         else if (auto id = field_type.body.id()) {
             MAYBE(stmt, tctx.statement_repository().get(*id));
             if (auto decl = stmt.body.struct_decl()) {
                 if (auto size = decl->size()) {
                     if (size->unit == ebm::SizeUnit::BIT_FIXED) {
-                        return size->size()->value();
+                        return SizeofResult{size->size()->value(), true};
                     }
                     else if (size->unit == ebm::SizeUnit::BYTE_FIXED) {
-                        return size->size()->value() * 8;
+                        return SizeofResult{size->size()->value() * 8, true};
                     }
                 }
             }
@@ -139,6 +144,22 @@ namespace ebmgen {
         return std::pair{getter_stmt, setter_stmt};
     }
 
+    ebm::CompositeFieldKind determine_composite_field_kind(std::vector<bool>& fixed_map) {
+        ebm::CompositeFieldKind kind = ebm::CompositeFieldKind::BULK;
+        size_t i = 0;
+        for (; i < fixed_map.size(); i++) {
+            if (!fixed_map[i]) {
+                kind = ebm::CompositeFieldKind::PREFIXED_UNION;
+                i++;
+                break;
+            }
+        }
+        if (i == fixed_map.size()) {
+            return kind;
+        }
+        return ebm::CompositeFieldKind::SANDWICHED_UNION;
+    }
+
     expected<void> merge_bit_field(TransformContext& tctx) {
         auto& ctx = tctx.context();
         auto& all_statements = tctx.statement_repository().get_all();
@@ -146,7 +167,7 @@ namespace ebmgen {
         for (size_t i = 0; i < current_size; i++) {
             if (auto struct_decl = all_statements[i].body.struct_decl()) {
                 auto fields = struct_decl->fields.container;  // copy to avoid relocation
-                std::vector<std::pair<size_t, std::optional<size_t>>> sized_fields;
+                std::vector<std::pair<size_t, std::optional<SizeofResult>>> sized_fields;
                 std::vector<size_t> not_added_index;
                 size_t added = 0;
                 for (size_t index = 0; index < fields.size(); index++) {
@@ -161,24 +182,24 @@ namespace ebmgen {
                         not_added_index.push_back(index);
                     }
                 }
-                std::vector<std::pair<std::optional<size_t>, std::vector<std::pair<size_t /*index*/, size_t /*size*/>>>> merged;
+                std::vector<std::pair<std::optional<size_t>, std::vector<std::pair<size_t /*index*/, SizeofResult /*size*/>>>> merged;
                 for (auto& [index, size] : sized_fields) {
                     if (!size) {
-                        merged.push_back({std::nullopt, {{index, 0}}});
+                        merged.push_back({std::nullopt, {{index, {0, false}}}});
                         continue;
                     }
                     if (merged.empty()) {
-                        merged.push_back({size, {{index, *size}}});
+                        merged.push_back({size->size, {{index, *size}}});
                         continue;
                     }
                     auto& [last_size, last_indexes] = merged.back();
                     if (!last_size) {
-                        merged.push_back({size, {{index, *size}}});
+                        merged.push_back({size->size, {{index, *size}}});
                         continue;
                     }
                     if (*last_size % 8 != 0) {
                         last_indexes.push_back({index, *size});
-                        *last_size += *size;
+                        *last_size += size->size;
                         continue;
                     }
                     auto is_common = [](size_t size) {
@@ -186,15 +207,15 @@ namespace ebmgen {
                     };
                     if (!is_common(*last_size)) {
                         last_indexes.push_back({index, *size});
-                        *last_size += *size;
+                        *last_size += size->size;
                         continue;
                     }
-                    if (!is_common(*size) && is_common(*last_size + *size)) {
+                    if (!is_common(size->size) && is_common(*last_size + size->size)) {
                         last_indexes.push_back({index, *size});
-                        *last_size += *size;
+                        *last_size += size->size;
                         continue;
                     }
-                    merged.push_back({size, {{index, *size}}});
+                    merged.push_back({size->size, {{index, *size}}});
                 }
                 if (merged.size() == added) {
                     continue;
@@ -219,9 +240,12 @@ namespace ebmgen {
                     }
                     else {
                         ebm::CompositeFieldDecl comp_decl;
+                        std::vector<bool> fixed_map;
                         for (auto& idx : indexes) {
                             append(comp_decl.fields, fields[idx.first]);
+                            fixed_map.push_back(idx.second.fixed);
                         }
+                        comp_decl.kind = determine_composite_field_kind(fixed_map);
                         EBMU_UINT_TYPE(composite_type, *size);
                         comp_decl.composite_type = composite_type;
                         ebm::StatementBody body;
@@ -242,10 +266,10 @@ namespace ebmgen {
                                                           field_decl.name,
                                                           all_statements[i].id,
                                                           *size,
-                                                          idx.second,
+                                                          idx.second.size,
                                                           offset /* offset */));
                                 getter_setter = getter_setter_;
-                                offset += idx.second;
+                                offset += idx.second.size;
                             }
                             // refetch because of memory relocation
                             MAYBE(field_stmt, tctx.statement_repository().get(fields[idx.first]));

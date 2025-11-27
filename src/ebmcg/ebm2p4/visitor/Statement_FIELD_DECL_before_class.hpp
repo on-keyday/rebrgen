@@ -32,8 +32,25 @@ DEFINE_VISITOR(Statement_FIELD_DECL_before) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     MAYBE(members, struct_union_members(ctx, ctx.field_decl.field_type));
-    for (auto& member : members) {
-        ctx.config().decl_toplevel.push_back(member.to_writer());
+    if (members.size()) {
+        for (auto& member : members) {
+            ctx.config().decl_toplevel.push_back(member.to_writer());
+        }
+        auto enum_name = std::format("Variant{}", get_id(ctx.field_decl.field_type));
+        CodeWriter w;
+        w.writeln("header_union ", enum_name, " {");
+        {
+            auto scope = w.indent_scope();
+            MAYBE(type, ctx.get(ctx.field_decl.field_type));
+            MAYBE(members, type.body.members());
+            for (auto& member_type_ref : members.container) {
+                MAYBE(type, ctx.visit(member_type_ref));
+                auto tmp_field_name = std::format("union{}", get_id(member_type_ref));
+                w.writeln(type.to_writer(), " ", tmp_field_name, ";");
+            }
+        }
+        w.writeln("}");
+        ctx.config().decl_toplevel.push_back(std::move(w));
     }
     return pass;
 }

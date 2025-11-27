@@ -26,6 +26,8 @@ std::string metadata_comment_suffix = "*/";
 std::string self_value = "this";
 DefaultValueOption default_value_option;
 std::string endof_statement = "";
+std::string endof_struct_definition = "";
+std::string endof_enum_definition = "";
 std::string enum_member_accessor = ".";
 std::string array_size_get_function = "len";
 bool surrounded_array_size = false; /*true: len(x) false: x.len()*/

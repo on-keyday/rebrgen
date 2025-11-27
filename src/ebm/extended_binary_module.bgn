@@ -352,9 +352,16 @@ format PropertyMemberDecl:
     condition :ExpressionRef
     field :StatementRef # FieldDecl or null
 
+enum CompositeFieldKind:
+    :u8
+    BULK   
+    PREFIXED_UNION
+    SANDWICHED_UNION
+
 format CompositeFieldDecl:
     fields :Block # List of FieldDecl or CompositeFieldDecl
     composite_type :TypeRef # Type of the composite field 
+    kind :CompositeFieldKind
 
 format PropertyDecl:
     name :IdentifierRef # Property name

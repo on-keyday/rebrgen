@@ -89,6 +89,7 @@ namespace ebm2python {
         #define FILE_EXTENSIONS(...) 
         #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
         #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
+        #define DEFINE_INT_FLAG(name,type,default_,flag_name,desc,arg_desc) DEFINE_FLAG(type,name,default_,flag_name,VarInt,desc,arg_desc)
         #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)static_assert(ebmcodegen::util::internal::is_c_ident(#name),"name must be a valid C identifier");MappedType name = default_;
         #define MAP_FLAG_ITEM(key,value) 
         #define END_MAP_FLAG() 
@@ -117,6 +118,7 @@ namespace ebm2python {
         #undef WEB_FILTERED
         #undef DEFINE_BOOL_FLAG
         #undef DEFINE_STRING_FLAG
+        #undef DEFINE_INT_FLAG
         #undef BEGIN_MAP_FLAG
         #undef MAP_FLAG_ITEM
         #undef END_MAP_FLAG
@@ -161,6 +163,7 @@ namespace ebm2python {
             #define FILE_EXTENSIONS(...) file_extensions = std::vector<std::string_view>{__VA_ARGS__}
             #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
             #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
+            #define DEFINE_INT_FLAG(name,type,default_,flag_name,desc,arg_desc) DEFINE_FLAG(type,name,default_,flag_name,VarInt,desc,arg_desc)
             #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc){ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = "{"; 
             #define MAP_FLAG_ITEM(key,value) map__[key] = value;if (!arg_desc__.empty() && arg_desc__.back() != '{') { arg_desc__ += ","; }arg_desc__ += key;
             #define END_MAP_FLAG() ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + "}",std::move(map__)); }
@@ -189,6 +192,7 @@ namespace ebm2python {
             #undef WEB_FILTERED
             #undef DEFINE_BOOL_FLAG
             #undef DEFINE_STRING_FLAG
+            #undef DEFINE_INT_FLAG
             #undef BEGIN_MAP_FLAG
             #undef MAP_FLAG_ITEM
             #undef END_MAP_FLAG

@@ -249,13 +249,13 @@ namespace ebm2python {
     template <typename Tag>
     struct UserHook {}; // Hook tag
     template <typename Tag>
-    struct UserDSLHook {}; // Hook tag
-    template <typename Tag>
-    struct DefaultCodegenVisitorHook {}; // Hook tag
-    template <typename Tag>
     struct UserInlinedHook {}; // Hook tag
     template <typename Tag>
+    struct UserDSLHook {}; // Hook tag
+    template <typename Tag>
     struct UserInlinedDSLHook {}; // Hook tag
+    template <typename Tag>
+    struct DefaultCodegenVisitorHook {}; // Hook tag
     template <typename Tag>
     struct DefaultCodegenVisitorInlinedHook {}; // Hook tag
     template<typename T>

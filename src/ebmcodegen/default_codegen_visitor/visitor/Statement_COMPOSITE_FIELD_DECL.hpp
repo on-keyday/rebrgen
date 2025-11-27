@@ -15,6 +15,7 @@
         len: Varint
         container: std::vector<StatementRef>
       composite_type: TypeRef
+      kind: CompositeFieldKind
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

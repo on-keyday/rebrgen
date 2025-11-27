@@ -1523,16 +1523,14 @@ namespace ebmcodegen {
     }
 
     auto generate_hooks() {
+        // Inlined hooks are for backward compatibility
         std::vector<HookType> hooks = {
             {.name = "UserHook"},
-            {.name = "UserDSLHook"},
-            {.name = "DefaultCodegenVisitorHook"},
-
-            // for backward compatibility
             {.name = "UserInlinedHook", .is_config_include_target = true},
+            {.name = "UserDSLHook"},
             {.name = "UserInlinedDSLHook", .is_config_include_target = true},
+            {.name = "DefaultCodegenVisitorHook"},
             {.name = "DefaultCodegenVisitorInlinedHook", .is_config_include_target = true},
-
             {.name = "GeneratorDefaultHook"},  // this is hidden
         };
         return hooks;

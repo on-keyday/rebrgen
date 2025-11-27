@@ -18,6 +18,7 @@
           len: Varint
           container: std::vector<StatementRef>
         composite_type: TypeRef
+        kind: CompositeFieldKind
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
@@ -26,5 +27,67 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto len = ctx.composite_field_decl.fields.container.size();
+    if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::BULK) {
+        auto bulk = ctx.visit(ctx.composite_field_decl.fields);
+        if (!bulk) {
+            return bulk;
+        }
+        auto struct_name = std::format("Header{}", get_id(ctx.item_id));
+        CodeWriter w;
+        w.writeln("header ", struct_name, " {");
+        {
+            auto scope = w.indent_scope();
+            w.write(bulk->to_writer());
+        }
+        w.writeln("}");
+        ctx.config().decl_toplevel.push_back(w);
+    }
+    if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::PREFIXED_UNION) {
+        auto& union_ = ctx.composite_field_decl.fields.container.back();
+        CodeWriter common;
+        for (auto& field : ctx.composite_field_decl.fields.container) {
+            if (&field != &union_) {
+                auto res = ctx.visit(field);
+                if (!res) {
+                    return res;
+                }
+                common.write(res->to_writer());
+            }
+        }
+        MAYBE(union_field_stmt, ctx.get(union_));
+        MAYBE(union_field_decl, union_field_stmt.body.field_decl());
+        MAYBE(union_type_stmt, ctx.get(union_field_decl.field_type));
+        MAYBE(members, union_type_stmt.body.members());
+        CodeWriter union_writer;
+        std::vector<std::string> variant_names;
+        for (auto& member : members.container) {
+            MAYBE(member_typ, ctx.get(member));
+            MAYBE(member_field_decl, member_typ.body.id());
+            MAYBE(member_stmt, ctx.get(member_field_decl));
+            MAYBE(field_member_decl, member_stmt.body.struct_decl());
+            MAYBE(fields, ctx.visit(field_member_decl.fields));
+            auto var_name = std::format("Struct{}", get_id(member));
+            union_writer.writeln("header ", var_name, " {");
+            {
+                auto scope = union_writer.indent_scope();
+                union_writer.write(common);
+                union_writer.write(fields.to_writer());
+            }
+            union_writer.writeln("}");
+            ctx.config().decl_toplevel.push_back(union_writer);
+            variant_names.push_back(var_name);
+        }
+        CodeWriter w;
+        auto enum_name = std::format("Header{}", get_id(ctx.item_id));
+        w.writeln("header_union ", enum_name, " {");
+        {
+            auto scope = w.indent_scope();
+            for (auto& var_name : variant_names) {
+                w.writeln(var_name, " variant_", var_name, ";");
+            }
+        }
+        w.writeln("}");
+        ctx.config().decl_toplevel.push_back(w);
+    }
     return {};
 }

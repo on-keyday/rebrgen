@@ -34,15 +34,36 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-auto name = module_.get_associated_identifier(item_id);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_STRUCT_DECL) {
+    using namespace CODEGEN_NAMESPACE;
+    /*here to write the hook*/
+    auto name = ctx.identifier();
 
-CodeWriter w;
+    CodeWriter w;
 
-w.writeln("struct ", name, " {");
-{
-    auto scope = w.indent_scope();
-    MAYBE(block, visit_Block(*this, struct_decl.fields));
-    w.write(block.to_writer());
+    w.writeln(ctx.config().struct_keyword, " ", name, " {");
+    {
+        auto scope = w.indent_scope();
+        MAYBE(block, ctx.visit(ctx.struct_decl.fields));
+        w.write(block.to_writer());
+    }
+    w.writeln("};");
+
+    if (auto enc = ctx.struct_decl.encode_fn()) {
+        MAYBE(encode_fn, ctx.visit(*enc));
+        w.writeln(encode_fn.to_writer());
+    }
+    if (auto dec = ctx.struct_decl.decode_fn()) {
+        MAYBE(decode_fn, ctx.visit(*dec));
+        w.writeln(decode_fn.to_writer());
+    }
+    if (auto methods = ctx.struct_decl.methods()) {
+        for (const auto& method_ref : methods->container) {
+            MAYBE(method, ctx.visit(method_ref));
+            w.writeln(method.to_writer());
+        }
+    }
+
+    return w;
 }
-w.writeln("};");
-return w;

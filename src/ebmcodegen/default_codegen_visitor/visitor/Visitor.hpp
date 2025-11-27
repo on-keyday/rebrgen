@@ -8,6 +8,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 bool use_brace_for_condition = true;
 bool use_elif = false;
+std::string struct_keyword = "struct";
 std::string begin_block = "{";
 std::string end_block = "}";
 std::string empty_block_marker = "";
@@ -30,3 +31,16 @@ std::string array_size_get_function = "len";
 bool surrounded_array_size = false; /*true: len(x) false: x.len()*/
 std::string append_function = "append";
 std::string infinity_loop_keyword = "";
+bool field_name_prior_to_type = false;
+std::string usize_type_name = "usize";
+bool byte_aligned_int = true;
+std::string uint_prefix = "u";
+std::string uint_suffix = "";
+std::string int_prefix = "i";
+std::string int_suffix = "";
+std::string function_define_keyword = "fn";
+bool forward_type_in_function_decl = false;
+std::string function_return_type_separator = "->";
+bool use_base_type_of_enum = false;
+
+std::vector<CodeWriter> decl_toplevel;

@@ -50,7 +50,7 @@ def run_save_template(tool_path, template_target, gmode, lang):
     isInterpreter = gmode == "interpret"
     if lang == "default":
         lang_dir = None
-        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor"
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor/visitor"
     else:
         lang_dir = f"src/{get_mode_dir(gmode)}/ebm2{lang}"
         if not os.path.isdir(lang_dir):
@@ -106,6 +106,16 @@ DEFINE_VISITOR({class_name}) {{
             if os.path.exists(main_file):
                 os.utime(main_file, None)
                 print(f"Touched '{main_file}' to update its timestamp.")
+        else:
+            # list ebmcg or ebmip directory and touch all main.cpp files
+            parent_dir = f"src/{get_mode_dir(gmode)}"
+            for entry in os.listdir(parent_dir):
+                entry_path = os.path.join(parent_dir, entry)
+                if os.path.isdir(entry_path) and entry.startswith("ebm2"):
+                    main_file = os.path.join(entry_path, "main.cpp")
+                    if os.path.exists(main_file):
+                        os.utime(main_file, None)
+                        print(f"Touched '{main_file}' to update its timestamp.")
     except subprocess.CalledProcessError as e:
         print(
             f"Error: ebmcodegen failed for target '{template_target}' with exit code {e.returncode}",
@@ -317,7 +327,7 @@ def get_available_templates() -> list[str]:
 def list_defined_templates(lang: str, gmode: str):
     """List all defined templates for a given language."""
     if lang == "default":
-        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor"
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor/visitor"
     else:
         visitor_dir = os.path.join("src", get_mode_dir(gmode), f"ebm2{lang}", "visitor")
     if not os.path.isdir(visitor_dir):

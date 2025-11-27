@@ -15,4 +15,17 @@
       container: std::vector<StatementRef>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-#include "Statement_BLOCK.hpp"
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_PROGRAM_DECL) {
+    using namespace CODEGEN_NAMESPACE;
+    CodeWriter w;
+    for (const auto& stmt : ctx.block.container) {
+        MAYBE(stmt_code, ctx.visit(stmt));
+        for (auto& toplevel : ctx.config().decl_toplevel) {
+            w.writeln(toplevel);
+        }
+        ctx.config().decl_toplevel.clear();
+        w.write(stmt_code.to_writer());
+    }
+    return w;
+}

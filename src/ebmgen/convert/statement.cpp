@@ -594,16 +594,20 @@ namespace ebmgen {
             ebm::TypeBody b;
             b.kind = typ == GenerateType::Encode ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
             EBMA_ADD_TYPE(fn_return, std::move(b));
+            ebm::FuncTypeDesc fn_type;
+            b.kind = ebm::TypeKind::FUNCTION;
+            b.func_desc(ebm::FuncTypeDesc{});
             if (fn) {
                 MAYBE(fn_type_body, ctx.get_type_converter().convert_function_type(fn->func_type));
-                fn_type_body.return_type(fn_return);
+                fn_type_body.func_desc()->return_type = fn_return;
                 b = std::move(fn_type_body);
             }
             else {
                 b.kind = ebm::TypeKind::FUNCTION;
-                b.return_type(fn_return);
+                b.func_desc()->return_type = fn_return;
             }
-            auto& param = *b.params();
+            b.func_desc()->annotation(ebm::FuncTypeAnnotation::METHOD);
+            auto& param = b.func_desc()->params;
             param.len = varint(param.len.value() + 1).value();
             param.container.insert(param.container.begin(), typ == GenerateType::Encode ? encoder_input : decoder_input);
             EBMA_ADD_TYPE(fn_typ, std::move(b));

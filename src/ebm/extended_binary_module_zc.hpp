@@ -1325,6 +1325,38 @@ namespace ebm::zc {
     constexpr const char* visit_enum(TypeKind) {
         return "TypeKind";
     }
+    enum class FuncTypeAnnotation : std::uint8_t {
+        NORMAL = 0,
+        METHOD = 1,
+        FUNC_PTR = 2,
+    };
+    constexpr const char* to_string(FuncTypeAnnotation e, bool origin_form = false) {
+        switch(e) {
+            case FuncTypeAnnotation::NORMAL: return origin_form ? "NORMAL":"NORMAL" ;
+            case FuncTypeAnnotation::METHOD: return origin_form ? "METHOD":"METHOD" ;
+            case FuncTypeAnnotation::FUNC_PTR: return origin_form ? "FUNC_PTR":"FUNC_PTR" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<FuncTypeAnnotation> FuncTypeAnnotation_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "NORMAL") {
+            return FuncTypeAnnotation::NORMAL;
+        }
+        if (str == "METHOD") {
+            return FuncTypeAnnotation::METHOD;
+        }
+        if (str == "FUNC_PTR") {
+            return FuncTypeAnnotation::FUNC_PTR;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(FuncTypeAnnotation) {
+        return "FuncTypeAnnotation";
+    }
     enum class AliasHint : std::uint8_t {
         IDENTIFIER = 0,
         STRING = 1,
@@ -1830,6 +1862,7 @@ namespace ebm::zc {
     struct StatementBody;
     struct Statement;
     struct Types;
+    struct FuncTypeDesc;
     struct TypeBody;
     struct Type;
     struct Loc;
@@ -4355,11 +4388,44 @@ namespace ebm::zc {
             v(v, "container",visitor_tag<decltype(std::declval<Types>().container),false>{});
         }
     };
+    struct EBM_API FuncTypeDesc{
+        TypeRef return_type;
+        Types params;
+        ::futils::binary::flags_t<std::uint8_t, 2, 6> flags_135_;
+        bits_flag_alias_method_with_enum(flags_135_,0,annotation,FuncTypeAnnotation);
+        bits_flag_alias_method(flags_135_,1,reserved);
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "FuncTypeDesc";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "return_type",(*this).return_type);
+            v(v, "params",(*this).params);
+            v(v, "annotation",(*this).annotation());
+            v(v, "reserved",(*this).reserved());
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "return_type",(*this).return_type);
+            v(v, "params",(*this).params);
+            v(v, "annotation",(*this).annotation());
+            v(v, "reserved",(*this).reserved());
+        }
+        template<typename T,bool rvalue = false>
+        struct visitor_tag {
+            using type = T;
+            static constexpr bool is_rvalue = rvalue;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "return_type",visitor_tag<decltype(std::declval<FuncTypeDesc>().return_type),false>{});
+            v(v, "params",visitor_tag<decltype(std::declval<FuncTypeDesc>().params),false>{});
+            v(v, "annotation",visitor_tag<decltype(std::declval<FuncTypeDesc>().annotation()),true>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<FuncTypeDesc>().reserved()),true>{});
+        }
+    };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_137{
-            Varint size;
-        };
         struct EBM_API union_struct_138{
             Varint size;
         };
@@ -4367,43 +4433,45 @@ namespace ebm::zc {
             Varint size;
         };
         struct EBM_API union_struct_140{
+            Varint size;
         };
         struct EBM_API union_struct_141{
-            TypeRef element_type;
-            Varint length;
         };
         struct EBM_API union_struct_142{
             TypeRef element_type;
+            Varint length;
         };
         struct EBM_API union_struct_143{
-            StatementRef id;
+            TypeRef element_type;
         };
         struct EBM_API union_struct_144{
             StatementRef id;
         };
         struct EBM_API union_struct_145{
             StatementRef id;
-            TypeRef base_type;
         };
         struct EBM_API union_struct_146{
+            StatementRef id;
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_147{
             TypeRef common_type;
             Types members;
             StatementRef related_field;
         };
-        struct EBM_API union_struct_147{
+        struct EBM_API union_struct_148{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_148{
+        struct EBM_API union_struct_149{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_149{
+        struct EBM_API union_struct_150{
             TypeRef base_type;
         };
-        struct EBM_API union_struct_150{
-            TypeRef return_type;
-            Types params;
+        struct EBM_API union_struct_151{
+            FuncTypeDesc func_desc;
         };
-        std::variant<std::monostate, union_struct_137, union_struct_138, union_struct_139, union_struct_140, union_struct_141, union_struct_142, union_struct_143, union_struct_144, union_struct_145, union_struct_146, union_struct_147, union_struct_148, union_struct_149, union_struct_150> union_variant_136;
+        std::variant<std::monostate, union_struct_138, union_struct_139, union_struct_140, union_struct_141, union_struct_142, union_struct_143, union_struct_144, union_struct_145, union_struct_146, union_struct_147, union_struct_148, union_struct_149, union_struct_150, union_struct_151> union_variant_137;
         const TypeRef* base_type() const;
         TypeRef* base_type();
         bool base_type(TypeRef&& v);
@@ -4416,6 +4484,10 @@ namespace ebm::zc {
         TypeRef* element_type();
         bool element_type(TypeRef&& v);
         bool element_type(const TypeRef& v);
+        const FuncTypeDesc* func_desc() const;
+        FuncTypeDesc* func_desc();
+        bool func_desc(FuncTypeDesc&& v);
+        bool func_desc(const FuncTypeDesc& v);
         const StatementRef* id() const;
         StatementRef* id();
         bool id(StatementRef&& v);
@@ -4432,10 +4504,6 @@ namespace ebm::zc {
         Types* members();
         bool members(Types&& v);
         bool members(const Types& v);
-        const Types* params() const;
-        Types* params();
-        bool params(Types&& v);
-        bool params(const Types& v);
         const TypeRef* pointee_type() const;
         TypeRef* pointee_type();
         bool pointee_type(TypeRef&& v);
@@ -4444,10 +4512,6 @@ namespace ebm::zc {
         StatementRef* related_field();
         bool related_field(StatementRef&& v);
         bool related_field(const StatementRef& v);
-        const TypeRef* return_type() const;
-        TypeRef* return_type();
-        bool return_type(TypeRef&& v);
-        bool return_type(const TypeRef& v);
         const Varint* size() const;
         Varint* size();
         bool size(Varint&& v);
@@ -4462,14 +4526,13 @@ namespace ebm::zc {
             v(v, "base_type",(*this).base_type());
             v(v, "common_type",(*this).common_type());
             v(v, "element_type",(*this).element_type());
+            v(v, "func_desc",(*this).func_desc());
             v(v, "id",(*this).id());
             v(v, "inner_type",(*this).inner_type());
             v(v, "length",(*this).length());
             v(v, "members",(*this).members());
-            v(v, "params",(*this).params());
             v(v, "pointee_type",(*this).pointee_type());
             v(v, "related_field",(*this).related_field());
-            v(v, "return_type",(*this).return_type());
             v(v, "size",(*this).size());
         }
         template<typename Visitor>
@@ -4478,14 +4541,13 @@ namespace ebm::zc {
             v(v, "base_type",(*this).base_type());
             v(v, "common_type",(*this).common_type());
             v(v, "element_type",(*this).element_type());
+            v(v, "func_desc",(*this).func_desc());
             v(v, "id",(*this).id());
             v(v, "inner_type",(*this).inner_type());
             v(v, "length",(*this).length());
             v(v, "members",(*this).members());
-            v(v, "params",(*this).params());
             v(v, "pointee_type",(*this).pointee_type());
             v(v, "related_field",(*this).related_field());
-            v(v, "return_type",(*this).return_type());
             v(v, "size",(*this).size());
         }
         template<typename T,bool rvalue = false>
@@ -4499,14 +4561,13 @@ namespace ebm::zc {
             v(v, "base_type",visitor_tag<decltype(std::declval<TypeBody>().base_type()),false>{});
             v(v, "common_type",visitor_tag<decltype(std::declval<TypeBody>().common_type()),false>{});
             v(v, "element_type",visitor_tag<decltype(std::declval<TypeBody>().element_type()),false>{});
+            v(v, "func_desc",visitor_tag<decltype(std::declval<TypeBody>().func_desc()),false>{});
             v(v, "id",visitor_tag<decltype(std::declval<TypeBody>().id()),false>{});
             v(v, "inner_type",visitor_tag<decltype(std::declval<TypeBody>().inner_type()),false>{});
             v(v, "length",visitor_tag<decltype(std::declval<TypeBody>().length()),false>{});
             v(v, "members",visitor_tag<decltype(std::declval<TypeBody>().members()),false>{});
-            v(v, "params",visitor_tag<decltype(std::declval<TypeBody>().params()),false>{});
             v(v, "pointee_type",visitor_tag<decltype(std::declval<TypeBody>().pointee_type()),false>{});
             v(v, "related_field",visitor_tag<decltype(std::declval<TypeBody>().related_field()),false>{});
-            v(v, "return_type",visitor_tag<decltype(std::declval<TypeBody>().return_type()),false>{});
             v(v, "size",visitor_tag<decltype(std::declval<TypeBody>().size()),false>{});
         }
     };
@@ -4671,9 +4732,6 @@ namespace ebm::zc {
     };
     struct EBM_API Instruction{
         OpCode op{};
-        struct EBM_API union_struct_153{
-            JumpOffset target;
-        };
         struct EBM_API union_struct_154{
             JumpOffset target;
         };
@@ -4681,22 +4739,22 @@ namespace ebm::zc {
             JumpOffset target;
         };
         struct EBM_API union_struct_156{
-            Varint arg_num;
+            JumpOffset target;
         };
         struct EBM_API union_struct_157{
-            StringRef msg_id;
+            Varint arg_num;
         };
         struct EBM_API union_struct_158{
             StringRef msg_id;
         };
         struct EBM_API union_struct_159{
-            Varint value;
+            StringRef msg_id;
         };
         struct EBM_API union_struct_160{
-            StringRef str_id;
+            Varint value;
         };
         struct EBM_API union_struct_161{
-            RegisterIndex reg;
+            StringRef str_id;
         };
         struct EBM_API union_struct_162{
             RegisterIndex reg;
@@ -4705,7 +4763,7 @@ namespace ebm::zc {
             RegisterIndex reg;
         };
         struct EBM_API union_struct_164{
-            OptionalImmediateSize imm;
+            RegisterIndex reg;
         };
         struct EBM_API union_struct_165{
             OptionalImmediateSize imm;
@@ -4714,21 +4772,24 @@ namespace ebm::zc {
             OptionalImmediateSize imm;
         };
         struct EBM_API union_struct_167{
-            SetEndian set_endian;
-        };
-        struct EBM_API union_struct_168{
-            CastType cast_type{};
-        };
-        struct EBM_API union_struct_169{
-            StatementRef struct_id;
-        };
-        struct EBM_API union_struct_170{
-            StatementRef member_id;
-        };
-        struct EBM_API union_struct_171{
             OptionalImmediateSize imm;
         };
-        std::variant<std::monostate, union_struct_153, union_struct_154, union_struct_155, union_struct_156, union_struct_157, union_struct_158, union_struct_159, union_struct_160, union_struct_161, union_struct_162, union_struct_163, union_struct_164, union_struct_165, union_struct_166, union_struct_167, union_struct_168, union_struct_169, union_struct_170, union_struct_171> union_variant_152;
+        struct EBM_API union_struct_168{
+            SetEndian set_endian;
+        };
+        struct EBM_API union_struct_169{
+            CastType cast_type{};
+        };
+        struct EBM_API union_struct_170{
+            StatementRef struct_id;
+        };
+        struct EBM_API union_struct_171{
+            StatementRef member_id;
+        };
+        struct EBM_API union_struct_172{
+            OptionalImmediateSize imm;
+        };
+        std::variant<std::monostate, union_struct_154, union_struct_155, union_struct_156, union_struct_157, union_struct_158, union_struct_159, union_struct_160, union_struct_161, union_struct_162, union_struct_163, union_struct_164, union_struct_165, union_struct_166, union_struct_167, union_struct_168, union_struct_169, union_struct_170, union_struct_171, union_struct_172> union_variant_153;
         const Varint* arg_num() const;
         Varint* arg_num();
         bool arg_num(Varint&& v);

@@ -26,12 +26,12 @@
 DEFINE_VISITOR(Expression_CALL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    MAYBE(callee, ctx.visit(ctx.call_desc.callee));
     std::vector<std::string> arg_strs;
-    for (auto& arg : ctx.call_desc.arguments.container) {
+    for (auto& arg : ctx.call_desc.arguments.container | std::views::reverse) {
         MAYBE(arg_res, ctx.visit(arg));
         arg_strs.push_back(arg_res.str_repr);
     }
+    MAYBE(callee, ctx.visit(ctx.call_desc.callee));
     auto str_repr = std::format("{}({})", callee.str_repr, join(", ", arg_strs));
     ebm::Instruction instr;
     instr.op = ebm::OpCode::CALL;

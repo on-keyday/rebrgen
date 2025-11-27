@@ -37,6 +37,8 @@ namespace ebm {
     
     bool from_json(FieldDecl& obj, const futils::json::JSON& j);
     
+    bool from_json(FuncTypeDesc& obj, const futils::json::JSON& j);
+    
     bool from_json(FunctionDecl& obj, const futils::json::JSON& j);
     
     bool from_json(IOAttribute& obj, const futils::json::JSON& j);
@@ -130,6 +132,8 @@ namespace ebm {
     bool from_json(Endian& obj, const futils::json::JSON& j);
     
     bool from_json(ExpressionKind& obj, const futils::json::JSON& j);
+    
+    bool from_json(FuncTypeAnnotation& obj, const futils::json::JSON& j);
     
     bool from_json(FunctionKind& obj, const futils::json::JSON& j);
     

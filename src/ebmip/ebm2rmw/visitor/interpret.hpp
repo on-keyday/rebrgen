@@ -12,8 +12,12 @@
 #include "ebmcodegen/stub/ops_macros.hpp"
 
 namespace ebm2rmw {
+    struct Function {
+        ebm::StatementRef id;
+    };
+
     struct Value {
-        std::variant<std::monostate, std::uint64_t, std::string, std::uint8_t*, std::shared_ptr<Value>, std::unordered_map<std::uint64_t, std::shared_ptr<Value>>> value;
+        std::variant<std::monostate, std::uint64_t, std::string, std::uint8_t*, std::shared_ptr<Value>, std::unordered_map<std::uint64_t, std::shared_ptr<Value>>, Function> value;
 
         void unref() {
             if (auto ptr = std::get_if<std::shared_ptr<Value>>(&value)) {
@@ -76,6 +80,17 @@ namespace ebm2rmw {
             if (!res) {
                 return ebmgen::unexpect_error(std::move(res.error()));
             }
+            if (auto enc = field_list.encode_fn()) {
+                c[get_id(*enc)] = std::make_shared<Value>(Function{*enc});
+            }
+            if (auto dec = field_list.decode_fn()) {
+                c[get_id(*dec)] = std::make_shared<Value>(Function{*dec});
+            }
+            if (auto funcs = field_list.methods()) {
+                for (auto& func_ref : funcs->container) {
+                    c[get_id(func_ref)] = std::make_shared<Value>(Function{func_ref});
+                }
+            }
             return obj;
         }
 
@@ -100,6 +115,13 @@ namespace ebm2rmw {
 
        private:
         std::vector<StackFrame> call_stack;
+
+        auto new_frame() {
+            call_stack.emplace_back();
+            return futils::helper::defer([&] {
+                call_stack.pop_back();
+            });
+        }
 
         ebmgen::expected<void> interpret_impl(InitialContext& ctx, size_t& ip) {
             auto& env = ctx.config().env;
@@ -349,6 +371,32 @@ namespace ebm2rmw {
                         break;
                     }
                     case ebm::OpCode::CALL: {
+                        auto num_args = instr.instr.arg_num();
+                        if (!num_args) {
+                            return ebmgen::unexpect_error("missing argument number in CALL");
+                        }
+                        if (stack.size() < num_args->value() + 1) {
+                            return ebmgen::unexpect_error("stack underflow on CALL");
+                        }
+                        auto callee = stack.back();
+                        stack.pop_back();
+                        callee.unref();
+                        if (!std::holds_alternative<Function>(callee.value)) {
+                            return ebmgen::unexpect_error("CALL target is not a function");
+                        }
+                        auto func = std::get<Function>(callee.value);
+                        MAYBE(func_def, ctx.get(func.id));
+                        MAYBE(decl, func_def.body.func_decl());
+                        std::map<std::uint64_t, std::shared_ptr<Value>> call_params;
+                        for (int i = static_cast<int>(num_args->value()) - 1; i >= 0; i--) {
+                            auto arg_val = stack.back();
+                            stack.pop_back();
+                            arg_val.unref();
+                            auto arg_ptr = std::make_shared<Value>(std::move(arg_val));
+                            auto param_ref = decl.params.container[i];
+                            call_params[param_ref.id.value()] = arg_ptr;
+                        }
+
                         size_t func_ip = 0;
                         MAYBE_VOID(r, interpret_impl(ctx, func_ip));
                         break;

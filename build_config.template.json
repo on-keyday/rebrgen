@@ -9,6 +9,12 @@
     "AUTO_SETUP_BRGEN": false,
     "AUTO_SETUP_FUTILS": true,
     "AUTO_SETUP_EMSDK": false,
-    "CODEGEN_TARGET_LANGUAGE": [],
-    "INTERPERT_TARGET_LANGUAGE": []
+    "TARGET_LANGUAGE": [
+        "python",
+        "rust",
+        "p4"
+    ],
+    "INTERPRET_TARGET_LANGUAGE": [
+        "rmw"
+    ]
 }

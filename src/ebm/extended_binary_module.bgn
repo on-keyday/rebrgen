@@ -729,6 +729,18 @@ format Types:
     len :Varint # Number of types
     container :[len.value]TypeRef # List of type definitions
 
+enum FuncTypeAnnotation:
+    :u2
+    NORMAL = 0 # Normal function
+    METHOD = 1 # Method (has self parameter)
+    FUNC_PTR = 2 # Function pointer (maybe like std::function in C++, not pure C function pointer)
+
+format FuncTypeDesc:
+    return_type :TypeRef # Return type of the function
+    params :Types # List of parameter types
+    annotation :FuncTypeAnnotation # Function type annotation
+    reserved :u6 # Reserved for future use
+
 format TypeBody:
     kind :TypeKind
     match kind:
@@ -759,8 +771,7 @@ format TypeBody:
         TypeKind.RANGE:
             base_type :TypeRef # Base type of the range (e.g., u8, u16) (maybe null)
         TypeKind.FUNCTION:
-            return_type :TypeRef # Return type of the function
-            params :Types # List of parameter types
+            func_desc :FuncTypeDesc # Function type description
 
 format AnyRef:
     id :Varint # Reference to an entry in the identifiers, types, or expressions table

@@ -14991,10 +14991,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::Vis
 template <>
 struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_Types_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/entry_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/entry_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_entry>>
 #define CODEGEN_CONTEXT(dummy_name) Context_entry
-#include "ebmcodegen/default_codegen_visitor/entry_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/entry_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_entry"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15015,10 +15015,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_entry>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/entry_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/entry_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_entry_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_entry_before
-#include "ebmcodegen/default_codegen_visitor/entry_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/entry_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_entry_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15039,10 +15039,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/entry_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/entry_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_entry_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_entry_after
-#include "ebmcodegen/default_codegen_visitor/entry_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/entry_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_entry_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15063,10 +15063,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_entry_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/pre_visitor_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/pre_visitor_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor>>
 #define CODEGEN_CONTEXT(dummy_name) Context_pre_visitor
-#include "ebmcodegen/default_codegen_visitor/pre_visitor_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/pre_visitor_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_pre_visitor"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15087,10 +15087,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/pre_visitor_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/pre_visitor_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_pre_visitor_before
-#include "ebmcodegen/default_codegen_visitor/pre_visitor_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/pre_visitor_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_pre_visitor_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15111,10 +15111,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/pre_visitor_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/pre_visitor_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_pre_visitor_after
-#include "ebmcodegen/default_codegen_visitor/pre_visitor_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/pre_visitor_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_pre_visitor_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15135,10 +15135,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/post_entry_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry>>
 #define CODEGEN_CONTEXT(dummy_name) Context_post_entry
-#include "ebmcodegen/default_codegen_visitor/post_entry_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/post_entry_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15159,10 +15159,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/post_entry_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_post_entry_before
-#include "ebmcodegen/default_codegen_visitor/post_entry_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/post_entry_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15183,10 +15183,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/post_entry_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_post_entry_after
-#include "ebmcodegen/default_codegen_visitor/post_entry_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/post_entry_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15207,10 +15207,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_BLOCK
-#include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_BLOCK"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15231,10 +15231,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_BLOCK_before
-#include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_BLOCK_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15255,10 +15255,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_BLOCK_after
-#include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_BLOCK_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15279,10 +15279,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSIGNMENT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ASSIGNMENT
-#include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ASSIGNMENT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15303,10 +15303,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSIGNMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ASSIGNMENT_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ASSIGNMENT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15327,10 +15327,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ASSIGNMENT_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ASSIGNMENT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15351,10 +15351,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_YIELD>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_YIELD
-#include "ebmcodegen/default_codegen_visitor/Statement_YIELD_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_YIELD"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15375,10 +15375,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_YIELD>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_YIELD_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_YIELD_before
-#include "ebmcodegen/default_codegen_visitor/Statement_YIELD_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_YIELD_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15399,10 +15399,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_YIELD_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_YIELD_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_YIELD_after
-#include "ebmcodegen/default_codegen_visitor/Statement_YIELD_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_YIELD_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15423,10 +15423,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_YIELD_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_APPEND>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_APPEND
-#include "ebmcodegen/default_codegen_visitor/Statement_APPEND_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_APPEND"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15447,10 +15447,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_APPEND>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_APPEND_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_APPEND_before
-#include "ebmcodegen/default_codegen_visitor/Statement_APPEND_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_APPEND_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15471,10 +15471,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_APPEND_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_APPEND_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_APPEND_after
-#include "ebmcodegen/default_codegen_visitor/Statement_APPEND_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_APPEND_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15495,10 +15495,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_APPEND_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_RETURN>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_RETURN
-#include "ebmcodegen/default_codegen_visitor/Statement_RETURN_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_RETURN"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15519,10 +15519,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_RETURN_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_RETURN_before
-#include "ebmcodegen/default_codegen_visitor/Statement_RETURN_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_RETURN_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15543,10 +15543,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_RETURN_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_RETURN_after
-#include "ebmcodegen/default_codegen_visitor/Statement_RETURN_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_RETURN_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15567,10 +15567,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_RETURN>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ERROR_RETURN
-#include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ERROR_RETURN"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15591,10 +15591,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ERROR_RETURN_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ERROR_RETURN_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15615,10 +15615,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ERROR_RETURN_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ERROR_RETURN_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15639,10 +15639,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSERT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ASSERT
-#include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ASSERT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15663,10 +15663,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSERT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSERT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ASSERT_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ASSERT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15687,10 +15687,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSERT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSERT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ASSERT_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ASSERT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15711,10 +15711,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ASSERT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_READ_DATA>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_READ_DATA
-#include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_READ_DATA"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15735,10 +15735,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_READ_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_READ_DATA_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_READ_DATA_before
-#include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_READ_DATA_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15759,10 +15759,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_READ_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_READ_DATA_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_READ_DATA_after
-#include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_READ_DATA_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15783,10 +15783,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_READ_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_WRITE_DATA>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_WRITE_DATA
-#include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_WRITE_DATA"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15807,10 +15807,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_WRITE_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_WRITE_DATA_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_WRITE_DATA_before
-#include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_WRITE_DATA_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15831,10 +15831,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_WRITE_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_WRITE_DATA_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_WRITE_DATA_after
-#include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_WRITE_DATA_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15855,10 +15855,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_WRITE_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IF_STATEMENT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_IF_STATEMENT
-#include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_IF_STATEMENT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15879,10 +15879,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IF_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_IF_STATEMENT_before
-#include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_IF_STATEMENT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15903,10 +15903,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_IF_STATEMENT_after
-#include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_IF_STATEMENT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15927,10 +15927,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_LOOP_STATEMENT
-#include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LOOP_STATEMENT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15951,10 +15951,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_LOOP_STATEMENT_before
-#include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LOOP_STATEMENT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15975,10 +15975,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_LOOP_STATEMENT_after
-#include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LOOP_STATEMENT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -15999,10 +15999,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_MATCH_STATEMENT
-#include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_MATCH_STATEMENT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16023,10 +16023,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_MATCH_STATEMENT_before
-#include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_MATCH_STATEMENT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16047,10 +16047,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_MATCH_STATEMENT_after
-#include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_MATCH_STATEMENT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16071,10 +16071,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_MATCH_BRANCH
-#include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_MATCH_BRANCH"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16095,10 +16095,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_MATCH_BRANCH_before
-#include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_MATCH_BRANCH_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16119,10 +16119,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_MATCH_BRANCH_after
-#include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_MATCH_BRANCH_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16143,10 +16143,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BREAK>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_BREAK
-#include "ebmcodegen/default_codegen_visitor/Statement_BREAK_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_BREAK"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16167,10 +16167,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BREAK>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BREAK_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_BREAK_before
-#include "ebmcodegen/default_codegen_visitor/Statement_BREAK_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_BREAK_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16191,10 +16191,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BREAK_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BREAK_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_BREAK_after
-#include "ebmcodegen/default_codegen_visitor/Statement_BREAK_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_BREAK_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16215,10 +16215,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BREAK_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_CONTINUE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_CONTINUE
-#include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_CONTINUE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16239,10 +16239,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_CONTINUE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_CONTINUE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_CONTINUE_before
-#include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_CONTINUE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16263,10 +16263,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_CONTINUE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_CONTINUE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_CONTINUE_after
-#include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_CONTINUE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16287,10 +16287,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_CONTINUE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_FUNCTION_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_FUNCTION_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16311,10 +16311,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_FUNCTION_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_FUNCTION_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16335,10 +16335,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_FUNCTION_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_FUNCTION_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16359,10 +16359,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_VARIABLE_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_VARIABLE_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16383,10 +16383,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_VARIABLE_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_VARIABLE_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16407,10 +16407,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_VARIABLE_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_VARIABLE_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16431,10 +16431,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PARAMETER_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PARAMETER_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16455,10 +16455,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PARAMETER_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PARAMETER_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16479,10 +16479,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PARAMETER_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PARAMETER_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16503,10 +16503,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FIELD_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_FIELD_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_FIELD_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16527,10 +16527,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FIELD_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FIELD_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_FIELD_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_FIELD_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16551,10 +16551,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FIELD_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FIELD_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_FIELD_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_FIELD_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16575,10 +16575,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_FIELD_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_COMPOSITE_FIELD_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_COMPOSITE_FIELD_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16599,10 +16599,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_COMPOSITE_FIELD_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_COMPOSITE_FIELD_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16623,10 +16623,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_COMPOSITE_FIELD_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_COMPOSITE_FIELD_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16647,10 +16647,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENUM_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENUM_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16671,10 +16671,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENUM_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENUM_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16695,10 +16695,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENUM_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENUM_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16719,10 +16719,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENUM_MEMBER_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENUM_MEMBER_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16743,10 +16743,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENUM_MEMBER_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENUM_MEMBER_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16767,10 +16767,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENUM_MEMBER_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENUM_MEMBER_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16791,10 +16791,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_STRUCT_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_STRUCT_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_STRUCT_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16815,10 +16815,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_STRUCT_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_STRUCT_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_STRUCT_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16839,10 +16839,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_STRUCT_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_STRUCT_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16863,10 +16863,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_UNION_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_UNION_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16887,10 +16887,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_UNION_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_UNION_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16911,10 +16911,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_UNION_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_UNION_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16935,10 +16935,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_UNION_MEMBER_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_UNION_MEMBER_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16959,10 +16959,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_UNION_MEMBER_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_UNION_MEMBER_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -16983,10 +16983,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_UNION_MEMBER_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_UNION_MEMBER_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17007,10 +17007,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROGRAM_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROGRAM_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17031,10 +17031,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROGRAM_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROGRAM_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17055,10 +17055,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROGRAM_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROGRAM_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17079,10 +17079,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROPERTY_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROPERTY_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17103,10 +17103,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROPERTY_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROPERTY_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17127,10 +17127,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROPERTY_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROPERTY_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17151,10 +17151,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROPERTY_MEMBER_DECL
-#include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROPERTY_MEMBER_DECL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17175,10 +17175,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROPERTY_MEMBER_DECL_before
-#include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROPERTY_MEMBER_DECL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17199,10 +17199,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_PROPERTY_MEMBER_DECL_after
-#include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_PROPERTY_MEMBER_DECL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17223,10 +17223,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_METADATA>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_METADATA
-#include "ebmcodegen/default_codegen_visitor/Statement_METADATA_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_METADATA"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17247,10 +17247,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_METADATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_METADATA_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_METADATA_before
-#include "ebmcodegen/default_codegen_visitor/Statement_METADATA_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_METADATA_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17271,10 +17271,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_METADATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_METADATA_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_METADATA_after
-#include "ebmcodegen/default_codegen_visitor/Statement_METADATA_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_METADATA_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17295,10 +17295,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_METADATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_IMPORT_MODULE
-#include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_IMPORT_MODULE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17319,10 +17319,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_IMPORT_MODULE_before
-#include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_IMPORT_MODULE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17343,10 +17343,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_IMPORT_MODULE_after
-#include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_IMPORT_MODULE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17367,10 +17367,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_EXPRESSION>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_EXPRESSION
-#include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_EXPRESSION"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17391,10 +17391,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_EXPRESSION>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_EXPRESSION_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_EXPRESSION_before
-#include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_EXPRESSION_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17415,10 +17415,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_EXPRESSION_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_EXPRESSION_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_EXPRESSION_after
-#include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_EXPRESSION_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17439,10 +17439,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_EXPRESSION_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_REPORT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ERROR_REPORT
-#include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ERROR_REPORT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17463,10 +17463,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_REPORT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ERROR_REPORT_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ERROR_REPORT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17487,10 +17487,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ERROR_REPORT_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ERROR_REPORT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17511,10 +17511,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_LOWERED_IO_STATEMENTS
-#include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LOWERED_IO_STATEMENTS"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17535,10 +17535,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_LOWERED_IO_STATEMENTS_before
-#include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LOWERED_IO_STATEMENTS_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17559,10 +17559,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_LOWERED_IO_STATEMENTS_after
-#include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LOWERED_IO_STATEMENTS_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17583,10 +17583,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_SUB_BYTE_RANGE
-#include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_SUB_BYTE_RANGE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17607,10 +17607,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_SUB_BYTE_RANGE_before
-#include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_SUB_BYTE_RANGE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17631,10 +17631,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_SUB_BYTE_RANGE_after
-#include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_SUB_BYTE_RANGE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17655,10 +17655,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_INIT_CHECK>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_INIT_CHECK
-#include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INIT_CHECK"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17679,10 +17679,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_INIT_CHECK>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_INIT_CHECK_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_INIT_CHECK_before
-#include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INIT_CHECK_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17703,10 +17703,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_INIT_CHECK_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_INIT_CHECK_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_INIT_CHECK_after
-#include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INIT_CHECK_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17727,10 +17727,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_INIT_CHECK_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENDIAN_VARIABLE
-#include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENDIAN_VARIABLE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17751,10 +17751,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENDIAN_VARIABLE_before
-#include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENDIAN_VARIABLE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17775,10 +17775,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_ENDIAN_VARIABLE_after
-#include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ENDIAN_VARIABLE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17799,10 +17799,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
-#include "ebmcodegen/default_codegen_visitor/Statement_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17823,10 +17823,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_before_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_before
-#include "ebmcodegen/default_codegen_visitor/Statement_before_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17847,10 +17847,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_after_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_after
-#include "ebmcodegen/default_codegen_visitor/Statement_after_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17871,10 +17871,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Block_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Block_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Block>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Block
-#include "ebmcodegen/default_codegen_visitor/Block_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Block_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Block"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17895,10 +17895,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Block>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Block_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Block_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Block_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Block_before
-#include "ebmcodegen/default_codegen_visitor/Block_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Block_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Block_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17919,10 +17919,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Block_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Block_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Block_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Block_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Block_after
-#include "ebmcodegen/default_codegen_visitor/Block_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Block_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Block_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17943,10 +17943,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Block_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_INT
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_INT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17967,10 +17967,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_INT_before
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_INT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -17991,10 +17991,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_INT_after
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_INT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18015,10 +18015,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT64>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_INT64
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_INT64"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18039,10 +18039,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT64>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_INT64_before
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_INT64_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18063,10 +18063,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_INT64_after
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_INT64_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18087,10 +18087,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_BOOL
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_BOOL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18111,10 +18111,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_BOOL_before
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_BOOL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18135,10 +18135,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_BOOL_after
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_BOOL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18159,10 +18159,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_STRING>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_STRING
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_STRING"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18183,10 +18183,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_STRING>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_STRING_before
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_STRING_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18207,10 +18207,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_STRING_after
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_STRING_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18231,10 +18231,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_TYPE
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_TYPE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18255,10 +18255,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_TYPE_before
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_TYPE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18279,10 +18279,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_TYPE_after
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_TYPE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18303,10 +18303,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_CHAR
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_CHAR"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18327,10 +18327,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_CHAR_before
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_CHAR_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18351,10 +18351,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_LITERAL_CHAR_after
-#include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_LITERAL_CHAR_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18375,10 +18375,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IDENTIFIER>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IDENTIFIER
-#include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IDENTIFIER"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18399,10 +18399,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IDENTIFIER>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IDENTIFIER_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IDENTIFIER_before
-#include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IDENTIFIER_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18423,10 +18423,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IDENTIFIER_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IDENTIFIER_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IDENTIFIER_after
-#include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IDENTIFIER_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18447,10 +18447,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IDENTIFIER_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_BINARY_OP>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_BINARY_OP
-#include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_BINARY_OP"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18471,10 +18471,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_BINARY_OP>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_BINARY_OP_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_BINARY_OP_before
-#include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_BINARY_OP_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18495,10 +18495,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_BINARY_OP_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_BINARY_OP_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_BINARY_OP_after
-#include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_BINARY_OP_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18519,10 +18519,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_BINARY_OP_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_UNARY_OP>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_UNARY_OP
-#include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_UNARY_OP"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18543,10 +18543,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_UNARY_OP>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_UNARY_OP_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_UNARY_OP_before
-#include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_UNARY_OP_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18567,10 +18567,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_UNARY_OP_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_UNARY_OP_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_UNARY_OP_after
-#include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_UNARY_OP_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18591,10 +18591,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_UNARY_OP_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CALL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CALL
-#include "ebmcodegen/default_codegen_visitor/Expression_CALL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CALL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18615,10 +18615,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CALL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CALL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CALL_before
-#include "ebmcodegen/default_codegen_visitor/Expression_CALL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CALL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18639,10 +18639,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CALL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CALL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CALL_after
-#include "ebmcodegen/default_codegen_visitor/Expression_CALL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CALL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18663,10 +18663,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CALL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_INDEX_ACCESS
-#include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_INDEX_ACCESS"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18687,10 +18687,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_INDEX_ACCESS_before
-#include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_INDEX_ACCESS_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18711,10 +18711,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_INDEX_ACCESS_after
-#include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_INDEX_ACCESS_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18735,10 +18735,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_MEMBER_ACCESS
-#include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_MEMBER_ACCESS"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18759,10 +18759,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_MEMBER_ACCESS_before
-#include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_MEMBER_ACCESS_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18783,10 +18783,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_MEMBER_ACCESS_after
-#include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_MEMBER_ACCESS_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18807,10 +18807,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ENUM_MEMBER
-#include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ENUM_MEMBER"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18831,10 +18831,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ENUM_MEMBER_before
-#include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ENUM_MEMBER_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18855,10 +18855,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ENUM_MEMBER_after
-#include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ENUM_MEMBER_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18879,10 +18879,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_TYPE_CAST>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_TYPE_CAST
-#include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_TYPE_CAST"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18903,10 +18903,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_TYPE_CAST>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_TYPE_CAST_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_TYPE_CAST_before
-#include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_TYPE_CAST_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18927,10 +18927,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_TYPE_CAST_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_TYPE_CAST_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_TYPE_CAST_after
-#include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_TYPE_CAST_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18951,10 +18951,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_TYPE_CAST_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_RANGE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_RANGE
-#include "ebmcodegen/default_codegen_visitor/Expression_RANGE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_RANGE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18975,10 +18975,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_RANGE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_RANGE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_RANGE_before
-#include "ebmcodegen/default_codegen_visitor/Expression_RANGE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_RANGE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -18999,10 +18999,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_RANGE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_RANGE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_RANGE_after
-#include "ebmcodegen/default_codegen_visitor/Expression_RANGE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_RANGE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19023,10 +19023,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_RANGE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_DEFAULT_VALUE
-#include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_DEFAULT_VALUE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19047,10 +19047,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_DEFAULT_VALUE_before
-#include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_DEFAULT_VALUE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19071,10 +19071,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_DEFAULT_VALUE_after
-#include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_DEFAULT_VALUE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19095,10 +19095,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IS_LITTLE_ENDIAN
-#include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IS_LITTLE_ENDIAN"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19119,10 +19119,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IS_LITTLE_ENDIAN_before
-#include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IS_LITTLE_ENDIAN_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19143,10 +19143,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IS_LITTLE_ENDIAN_after
-#include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IS_LITTLE_ENDIAN_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19167,10 +19167,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_GET_STREAM_OFFSET
-#include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_GET_STREAM_OFFSET"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19191,10 +19191,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_GET_STREAM_OFFSET_before
-#include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_GET_STREAM_OFFSET_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19215,10 +19215,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_GET_STREAM_OFFSET_after
-#include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_GET_STREAM_OFFSET_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19239,10 +19239,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_GET_REMAINING_BYTES
-#include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_GET_REMAINING_BYTES"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19263,10 +19263,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_GET_REMAINING_BYTES_before
-#include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_GET_REMAINING_BYTES_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19287,10 +19287,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_GET_REMAINING_BYTES_after
-#include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_GET_REMAINING_BYTES_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19311,10 +19311,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CAN_READ_STREAM
-#include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CAN_READ_STREAM"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19335,10 +19335,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CAN_READ_STREAM_before
-#include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CAN_READ_STREAM_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19359,10 +19359,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CAN_READ_STREAM_after
-#include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CAN_READ_STREAM_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19383,10 +19383,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ARRAY_SIZE
-#include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ARRAY_SIZE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19407,10 +19407,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ARRAY_SIZE_before
-#include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ARRAY_SIZE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19431,10 +19431,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ARRAY_SIZE_after
-#include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ARRAY_SIZE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19455,10 +19455,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ENUM_IS_DEFINED
-#include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ENUM_IS_DEFINED"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19479,10 +19479,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ENUM_IS_DEFINED_before
-#include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ENUM_IS_DEFINED_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19503,10 +19503,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ENUM_IS_DEFINED_after
-#include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ENUM_IS_DEFINED_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19527,10 +19527,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_ERROR>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IS_ERROR
-#include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IS_ERROR"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19551,10 +19551,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_ERROR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_ERROR_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IS_ERROR_before
-#include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IS_ERROR_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19575,10 +19575,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_ERROR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_ERROR_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_IS_ERROR_after
-#include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_IS_ERROR_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19599,10 +19599,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_IS_ERROR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MAX_VALUE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_MAX_VALUE
-#include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_MAX_VALUE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19623,10 +19623,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MAX_VALUE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MAX_VALUE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_MAX_VALUE_before
-#include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_MAX_VALUE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19647,10 +19647,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MAX_VALUE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MAX_VALUE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_MAX_VALUE_after
-#include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_MAX_VALUE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19671,10 +19671,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_MAX_VALUE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_READ_DATA>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_READ_DATA
-#include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_READ_DATA"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19695,10 +19695,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_READ_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_READ_DATA_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_READ_DATA_before
-#include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_READ_DATA_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19719,10 +19719,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_READ_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_READ_DATA_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_READ_DATA_after
-#include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_READ_DATA_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19743,10 +19743,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_READ_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_WRITE_DATA>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_WRITE_DATA
-#include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_WRITE_DATA"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19767,10 +19767,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_WRITE_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_WRITE_DATA_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_WRITE_DATA_before
-#include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_WRITE_DATA_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19791,10 +19791,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_WRITE_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_WRITE_DATA_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_WRITE_DATA_after
-#include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_WRITE_DATA_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19815,10 +19815,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_WRITE_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CONDITIONAL_STATEMENT
-#include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CONDITIONAL_STATEMENT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19839,10 +19839,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CONDITIONAL_STATEMENT_before
-#include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CONDITIONAL_STATEMENT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19863,10 +19863,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CONDITIONAL_STATEMENT_after
-#include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CONDITIONAL_STATEMENT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19887,10 +19887,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CONDITIONAL
-#include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CONDITIONAL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19911,10 +19911,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CONDITIONAL_before
-#include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CONDITIONAL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19935,10 +19935,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_CONDITIONAL_after
-#include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_CONDITIONAL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19959,10 +19959,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_CONDITIONAL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AVAILABLE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_AVAILABLE
-#include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_AVAILABLE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -19983,10 +19983,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AVAILABLE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AVAILABLE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_AVAILABLE_before
-#include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_AVAILABLE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20007,10 +20007,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AVAILABLE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AVAILABLE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_AVAILABLE_after
-#include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_AVAILABLE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20031,10 +20031,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AVAILABLE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SIZEOF>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SIZEOF
-#include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SIZEOF"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20055,10 +20055,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SIZEOF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SIZEOF_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SIZEOF_before
-#include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SIZEOF_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20079,10 +20079,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SIZEOF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SIZEOF_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SIZEOF_after
-#include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SIZEOF_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20103,10 +20103,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SIZEOF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SUB_RANGE_INIT
-#include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SUB_RANGE_INIT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20127,10 +20127,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SUB_RANGE_INIT_before
-#include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SUB_RANGE_INIT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20151,10 +20151,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SUB_RANGE_INIT_after
-#include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SUB_RANGE_INIT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20175,10 +20175,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OR_COND>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_OR_COND
-#include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_OR_COND"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20199,10 +20199,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OR_COND>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OR_COND_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_OR_COND_before
-#include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_OR_COND_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20223,10 +20223,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OR_COND_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OR_COND_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_OR_COND_after
-#include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_OR_COND_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20247,10 +20247,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OR_COND_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ADDRESS_OF>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ADDRESS_OF
-#include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ADDRESS_OF"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20271,10 +20271,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ADDRESS_OF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ADDRESS_OF_before
-#include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ADDRESS_OF_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20295,10 +20295,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_ADDRESS_OF_after
-#include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_ADDRESS_OF_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20319,10 +20319,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_OPTIONAL_OF
-#include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_OPTIONAL_OF"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20343,10 +20343,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_OPTIONAL_OF_before
-#include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_OPTIONAL_OF_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20367,10 +20367,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_OPTIONAL_OF_after
-#include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_OPTIONAL_OF_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20391,10 +20391,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SETTER_STATUS>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SETTER_STATUS
-#include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SETTER_STATUS"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20415,10 +20415,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SETTER_STATUS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SETTER_STATUS_before
-#include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SETTER_STATUS_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20439,10 +20439,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SETTER_STATUS_after
-#include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SETTER_STATUS_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20463,10 +20463,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SELF>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SELF
-#include "ebmcodegen/default_codegen_visitor/Expression_SELF_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SELF"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20487,10 +20487,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SELF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SELF_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SELF_before
-#include "ebmcodegen/default_codegen_visitor/Expression_SELF_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SELF_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20511,10 +20511,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SELF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SELF_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_SELF_after
-#include "ebmcodegen/default_codegen_visitor/Expression_SELF_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_SELF_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20535,10 +20535,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_SELF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AS_ARG_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AS_ARG>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_AS_ARG
-#include "ebmcodegen/default_codegen_visitor/Expression_AS_ARG_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_AS_ARG"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20559,10 +20559,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AS_ARG>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AS_ARG_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AS_ARG_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_AS_ARG_before
-#include "ebmcodegen/default_codegen_visitor/Expression_AS_ARG_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_AS_ARG_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20583,10 +20583,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AS_ARG_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AS_ARG_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AS_ARG_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_AS_ARG_after
-#include "ebmcodegen/default_codegen_visitor/Expression_AS_ARG_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_AS_ARG_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20607,10 +20607,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_AS_ARG_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression
-#include "ebmcodegen/default_codegen_visitor/Expression_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20631,10 +20631,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_before_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_before
-#include "ebmcodegen/default_codegen_visitor/Expression_before_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20655,10 +20655,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_after_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_after
-#include "ebmcodegen/default_codegen_visitor/Expression_after_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20679,10 +20679,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expression_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expressions_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expressions_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expressions>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expressions
-#include "ebmcodegen/default_codegen_visitor/Expressions_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expressions_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expressions"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20703,10 +20703,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expressions>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expressions_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expressions_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expressions_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expressions_before
-#include "ebmcodegen/default_codegen_visitor/Expressions_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expressions_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expressions_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20727,10 +20727,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expressions_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expressions_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expressions_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expressions_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expressions_after
-#include "ebmcodegen/default_codegen_visitor/Expressions_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expressions_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expressions_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20751,10 +20751,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Expressions_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_INT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_INT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_INT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_INT
-#include "ebmcodegen/default_codegen_visitor/Type_INT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_INT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_INT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20775,10 +20775,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_INT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_INT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_INT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_INT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_INT_before
-#include "ebmcodegen/default_codegen_visitor/Type_INT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_INT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_INT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20799,10 +20799,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_INT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_INT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_INT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_INT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_INT_after
-#include "ebmcodegen/default_codegen_visitor/Type_INT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_INT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_INT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20823,10 +20823,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_INT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_UINT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_UINT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_UINT
-#include "ebmcodegen/default_codegen_visitor/Type_UINT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_UINT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_UINT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20847,10 +20847,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_UINT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_UINT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_UINT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_UINT_before
-#include "ebmcodegen/default_codegen_visitor/Type_UINT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_UINT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_UINT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20871,10 +20871,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_UINT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_UINT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_UINT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_UINT_after
-#include "ebmcodegen/default_codegen_visitor/Type_UINT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_UINT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_UINT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20895,10 +20895,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_UINT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_USIZE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_USIZE
-#include "ebmcodegen/default_codegen_visitor/Type_USIZE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_USIZE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20919,10 +20919,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_USIZE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_USIZE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_USIZE_before
-#include "ebmcodegen/default_codegen_visitor/Type_USIZE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_USIZE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20943,10 +20943,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_USIZE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_USIZE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_USIZE_after
-#include "ebmcodegen/default_codegen_visitor/Type_USIZE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_USIZE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20967,10 +20967,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_USIZE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FLOAT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_FLOAT
-#include "ebmcodegen/default_codegen_visitor/Type_FLOAT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_FLOAT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20991,10 +20991,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FLOAT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FLOAT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_FLOAT_before
-#include "ebmcodegen/default_codegen_visitor/Type_FLOAT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_FLOAT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21015,10 +21015,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FLOAT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FLOAT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_FLOAT_after
-#include "ebmcodegen/default_codegen_visitor/Type_FLOAT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_FLOAT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21039,10 +21039,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FLOAT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_STRUCT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_STRUCT
-#include "ebmcodegen/default_codegen_visitor/Type_STRUCT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_STRUCT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21063,10 +21063,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_STRUCT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_STRUCT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_STRUCT_before
-#include "ebmcodegen/default_codegen_visitor/Type_STRUCT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_STRUCT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21087,10 +21087,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_STRUCT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_STRUCT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_STRUCT_after
-#include "ebmcodegen/default_codegen_visitor/Type_STRUCT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_STRUCT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21111,10 +21111,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_STRUCT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_RECURSIVE_STRUCT
-#include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_RECURSIVE_STRUCT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21135,10 +21135,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_RECURSIVE_STRUCT_before
-#include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_RECURSIVE_STRUCT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21159,10 +21159,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_RECURSIVE_STRUCT_after
-#include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_RECURSIVE_STRUCT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21183,10 +21183,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_BOOL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_BOOL
-#include "ebmcodegen/default_codegen_visitor/Type_BOOL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_BOOL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21207,10 +21207,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_BOOL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_BOOL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_BOOL_before
-#include "ebmcodegen/default_codegen_visitor/Type_BOOL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_BOOL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21231,10 +21231,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_BOOL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_BOOL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_BOOL_after
-#include "ebmcodegen/default_codegen_visitor/Type_BOOL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_BOOL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21255,10 +21255,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_BOOL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VOID_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VOID>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VOID
-#include "ebmcodegen/default_codegen_visitor/Type_VOID_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VOID_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VOID"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21279,10 +21279,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VOID>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VOID_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VOID_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VOID_before
-#include "ebmcodegen/default_codegen_visitor/Type_VOID_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VOID_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VOID_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21303,10 +21303,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VOID_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VOID_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VOID_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VOID_after
-#include "ebmcodegen/default_codegen_visitor/Type_VOID_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VOID_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VOID_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21327,10 +21327,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VOID_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_META_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_META_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_META>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_META
-#include "ebmcodegen/default_codegen_visitor/Type_META_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_META_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_META"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21351,10 +21351,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_META>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_META_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_META_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_META_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_META_before
-#include "ebmcodegen/default_codegen_visitor/Type_META_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_META_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_META_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21375,10 +21375,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_META_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_META_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_META_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_META_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_META_after
-#include "ebmcodegen/default_codegen_visitor/Type_META_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_META_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_META_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21399,10 +21399,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_META_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENUM>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENUM
-#include "ebmcodegen/default_codegen_visitor/Type_ENUM_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENUM"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21423,10 +21423,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENUM>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENUM_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENUM_before
-#include "ebmcodegen/default_codegen_visitor/Type_ENUM_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENUM_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21447,10 +21447,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENUM_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENUM_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENUM_after
-#include "ebmcodegen/default_codegen_visitor/Type_ENUM_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENUM_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21471,10 +21471,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENUM_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ARRAY>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ARRAY
-#include "ebmcodegen/default_codegen_visitor/Type_ARRAY_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ARRAY"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21495,10 +21495,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ARRAY>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ARRAY_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ARRAY_before
-#include "ebmcodegen/default_codegen_visitor/Type_ARRAY_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ARRAY_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21519,10 +21519,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ARRAY_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ARRAY_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ARRAY_after
-#include "ebmcodegen/default_codegen_visitor/Type_ARRAY_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ARRAY_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21543,10 +21543,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ARRAY_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VECTOR>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VECTOR
-#include "ebmcodegen/default_codegen_visitor/Type_VECTOR_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VECTOR"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21567,10 +21567,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VECTOR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VECTOR_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VECTOR_before
-#include "ebmcodegen/default_codegen_visitor/Type_VECTOR_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VECTOR_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21591,10 +21591,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VECTOR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VECTOR_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VECTOR_after
-#include "ebmcodegen/default_codegen_visitor/Type_VECTOR_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VECTOR_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21615,10 +21615,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VECTOR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VARIANT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VARIANT
-#include "ebmcodegen/default_codegen_visitor/Type_VARIANT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VARIANT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21639,10 +21639,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VARIANT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VARIANT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VARIANT_before
-#include "ebmcodegen/default_codegen_visitor/Type_VARIANT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VARIANT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21663,10 +21663,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VARIANT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VARIANT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_VARIANT_after
-#include "ebmcodegen/default_codegen_visitor/Type_VARIANT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_VARIANT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21687,10 +21687,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_VARIANT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RANGE>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_RANGE
-#include "ebmcodegen/default_codegen_visitor/Type_RANGE_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_RANGE"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21711,10 +21711,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RANGE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RANGE_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_RANGE_before
-#include "ebmcodegen/default_codegen_visitor/Type_RANGE_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_RANGE_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21735,10 +21735,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RANGE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RANGE_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_RANGE_after
-#include "ebmcodegen/default_codegen_visitor/Type_RANGE_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_RANGE_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21759,10 +21759,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_RANGE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_RETURN>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENCODER_RETURN
-#include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENCODER_RETURN"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21783,10 +21783,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENCODER_RETURN_before
-#include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENCODER_RETURN_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21807,10 +21807,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENCODER_RETURN_after
-#include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENCODER_RETURN_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21831,10 +21831,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_RETURN>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_DECODER_RETURN
-#include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_DECODER_RETURN"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21855,10 +21855,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_RETURN_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_DECODER_RETURN_before
-#include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_DECODER_RETURN_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21879,10 +21879,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_RETURN_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_DECODER_RETURN_after
-#include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_DECODER_RETURN_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21903,10 +21903,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_INPUT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENCODER_INPUT
-#include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENCODER_INPUT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21927,10 +21927,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_INPUT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENCODER_INPUT_before
-#include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENCODER_INPUT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21951,10 +21951,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_ENCODER_INPUT_after
-#include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_ENCODER_INPUT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21975,10 +21975,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_INPUT>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_DECODER_INPUT
-#include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_DECODER_INPUT"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -21999,10 +21999,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_INPUT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_INPUT_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_DECODER_INPUT_before
-#include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_DECODER_INPUT_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22023,10 +22023,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_INPUT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_INPUT_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_DECODER_INPUT_after
-#include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_DECODER_INPUT_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22047,10 +22047,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_DECODER_INPUT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_PROPERTY_SETTER_RETURN
-#include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_PROPERTY_SETTER_RETURN"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22071,10 +22071,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_PROPERTY_SETTER_RETURN_before
-#include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_PROPERTY_SETTER_RETURN_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22095,10 +22095,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_PROPERTY_SETTER_RETURN_after
-#include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_PROPERTY_SETTER_RETURN_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22119,10 +22119,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_OPTIONAL>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_OPTIONAL
-#include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_OPTIONAL"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22143,10 +22143,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_OPTIONAL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_OPTIONAL_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_OPTIONAL_before
-#include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_OPTIONAL_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22167,10 +22167,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_OPTIONAL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_OPTIONAL_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_OPTIONAL_after
-#include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_OPTIONAL_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22191,10 +22191,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_OPTIONAL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PTR_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PTR>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_PTR
-#include "ebmcodegen/default_codegen_visitor/Type_PTR_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_PTR_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_PTR"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22215,10 +22215,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PTR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PTR_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PTR_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_PTR_before
-#include "ebmcodegen/default_codegen_visitor/Type_PTR_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_PTR_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_PTR_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22239,10 +22239,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PTR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PTR_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PTR_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_PTR_after
-#include "ebmcodegen/default_codegen_visitor/Type_PTR_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_PTR_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_PTR_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22263,10 +22263,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_PTR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FUNCTION>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_FUNCTION
-#include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_FUNCTION"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22287,10 +22287,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FUNCTION>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FUNCTION_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_FUNCTION_before
-#include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_FUNCTION_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22311,10 +22311,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FUNCTION_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FUNCTION_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_FUNCTION_after
-#include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_FUNCTION_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22335,10 +22335,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_FUNCTION_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type
-#include "ebmcodegen/default_codegen_visitor/Type_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22359,10 +22359,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_before_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_before
-#include "ebmcodegen/default_codegen_visitor/Type_before_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22383,10 +22383,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_after_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_after
-#include "ebmcodegen/default_codegen_visitor/Type_after_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22407,10 +22407,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Type_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Types_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Types_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Types>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Types
-#include "ebmcodegen/default_codegen_visitor/Types_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Types_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Types"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22431,10 +22431,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Types>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Types_before_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Types_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Types_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Types_before
-#include "ebmcodegen/default_codegen_visitor/Types_before_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Types_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Types_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -22455,10 +22455,10 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Types_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Types_after_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Types_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Types_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Types_after
-#include "ebmcodegen/default_codegen_visitor/Types_after_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Types_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Types_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -41823,7 +41823,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2pyth
 template <>
 struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_Types_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/entry.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/entry.hpp")
 // Inlined hook for entry for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_entry>> {
@@ -41842,7 +41842,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/entry.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/entry.hpp"
         return {};
     }
 };
@@ -41854,7 +41854,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_entry>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/entry_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/entry_before.hpp")
 // Inlined hook for entry_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_entry_before>> {
@@ -41873,7 +41873,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/entry_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/entry_before.hpp"
         return pass;
     }
 };
@@ -41885,7 +41885,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/entry_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/entry_after.hpp")
 // Inlined hook for entry_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_entry_after>> {
@@ -41904,7 +41904,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/entry_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/entry_after.hpp"
         return pass;
     }
 };
@@ -41916,7 +41916,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_entry_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/pre_visitor.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/pre_visitor.hpp")
 // Inlined hook for pre_visitor for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor>> {
@@ -41935,7 +41935,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/pre_visitor.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/pre_visitor.hpp"
         return pass;
     }
 };
@@ -41947,7 +41947,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/pre_visitor_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/pre_visitor_before.hpp")
 // Inlined hook for pre_visitor_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor_before>> {
@@ -41966,7 +41966,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/pre_visitor_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/pre_visitor_before.hpp"
         return pass;
     }
 };
@@ -41978,7 +41978,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/pre_visitor_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/pre_visitor_after.hpp")
 // Inlined hook for pre_visitor_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor_after>> {
@@ -41997,7 +41997,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/pre_visitor_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/pre_visitor_after.hpp"
         return pass;
     }
 };
@@ -42009,7 +42009,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_entry.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/post_entry.hpp")
 // Inlined hook for post_entry for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry>> {
@@ -42028,7 +42028,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/post_entry.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/post_entry.hpp"
         return pass;
     }
 };
@@ -42040,7 +42040,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/post_entry_before.hpp")
 // Inlined hook for post_entry_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_before>> {
@@ -42059,7 +42059,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/post_entry_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/post_entry_before.hpp"
         return pass;
     }
 };
@@ -42071,7 +42071,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/post_entry_after.hpp")
 // Inlined hook for post_entry_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_after>> {
@@ -42090,7 +42090,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/post_entry_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/post_entry_after.hpp"
         return pass;
     }
 };
@@ -42102,7 +42102,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK.hpp")
 // Inlined hook for Statement_BLOCK for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BLOCK>> {
@@ -42121,7 +42121,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK.hpp"
         return {};
     }
 };
@@ -42133,7 +42133,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BLOCK>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_before.hpp")
 // Inlined hook for Statement_BLOCK_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BLOCK_before>> {
@@ -42152,7 +42152,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_before.hpp"
         return pass;
     }
 };
@@ -42164,7 +42164,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BLOCK_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_after.hpp")
 // Inlined hook for Statement_BLOCK_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BLOCK_after>> {
@@ -42183,7 +42183,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_BLOCK_after.hpp"
         return pass;
     }
 };
@@ -42195,7 +42195,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BLOCK_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT.hpp")
 // Inlined hook for Statement_ASSIGNMENT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSIGNMENT>> {
@@ -42214,7 +42214,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT.hpp"
         return {};
     }
 };
@@ -42226,7 +42226,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSIGNMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_before.hpp")
 // Inlined hook for Statement_ASSIGNMENT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_before>> {
@@ -42245,7 +42245,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_before.hpp"
         return pass;
     }
 };
@@ -42257,7 +42257,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_after.hpp")
 // Inlined hook for Statement_ASSIGNMENT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_after>> {
@@ -42276,7 +42276,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSIGNMENT_after.hpp"
         return pass;
     }
 };
@@ -42288,7 +42288,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD.hpp")
 // Inlined hook for Statement_YIELD for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_YIELD>> {
@@ -42307,7 +42307,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_YIELD.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD.hpp"
         return {};
     }
 };
@@ -42319,7 +42319,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_YIELD>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_before.hpp")
 // Inlined hook for Statement_YIELD_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_YIELD_before>> {
@@ -42338,7 +42338,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_before.hpp"
         return pass;
     }
 };
@@ -42350,7 +42350,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_YIELD_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_after.hpp")
 // Inlined hook for Statement_YIELD_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_YIELD_after>> {
@@ -42369,7 +42369,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_YIELD_after.hpp"
         return pass;
     }
 };
@@ -42381,7 +42381,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_YIELD_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND.hpp")
 // Inlined hook for Statement_APPEND for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_APPEND>> {
@@ -42400,7 +42400,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_APPEND.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND.hpp"
         return {};
     }
 };
@@ -42412,7 +42412,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_APPEND>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_before.hpp")
 // Inlined hook for Statement_APPEND_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_APPEND_before>> {
@@ -42431,7 +42431,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_APPEND_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_before.hpp"
         return pass;
     }
 };
@@ -42443,7 +42443,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_APPEND_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_after.hpp")
 // Inlined hook for Statement_APPEND_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_APPEND_after>> {
@@ -42462,7 +42462,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_APPEND_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_APPEND_after.hpp"
         return pass;
     }
 };
@@ -42474,7 +42474,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_APPEND_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN.hpp")
 // Inlined hook for Statement_RETURN for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_RETURN>> {
@@ -42493,7 +42493,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_RETURN.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN.hpp"
         return {};
     }
 };
@@ -42505,7 +42505,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_before.hpp")
 // Inlined hook for Statement_RETURN_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_RETURN_before>> {
@@ -42524,7 +42524,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_RETURN_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_before.hpp"
         return pass;
     }
 };
@@ -42536,7 +42536,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_after.hpp")
 // Inlined hook for Statement_RETURN_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_RETURN_after>> {
@@ -42555,7 +42555,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_RETURN_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_RETURN_after.hpp"
         return pass;
     }
 };
@@ -42567,7 +42567,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN.hpp")
 // Inlined hook for Statement_ERROR_RETURN for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_RETURN>> {
@@ -42586,7 +42586,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN.hpp"
         return {};
     }
 };
@@ -42598,7 +42598,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_before.hpp")
 // Inlined hook for Statement_ERROR_RETURN_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_before>> {
@@ -42617,7 +42617,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_before.hpp"
         return pass;
     }
 };
@@ -42629,7 +42629,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_after.hpp")
 // Inlined hook for Statement_ERROR_RETURN_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_after>> {
@@ -42648,7 +42648,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_RETURN_after.hpp"
         return pass;
     }
 };
@@ -42660,7 +42660,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT.hpp")
 // Inlined hook for Statement_ASSERT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSERT>> {
@@ -42679,7 +42679,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT.hpp"
         return {};
     }
 };
@@ -42691,7 +42691,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSERT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_before.hpp")
 // Inlined hook for Statement_ASSERT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSERT_before>> {
@@ -42710,7 +42710,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_before.hpp"
         return pass;
     }
 };
@@ -42722,7 +42722,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSERT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_after.hpp")
 // Inlined hook for Statement_ASSERT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSERT_after>> {
@@ -42741,7 +42741,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ASSERT_after.hpp"
         return pass;
     }
 };
@@ -42753,7 +42753,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ASSERT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA.hpp")
 // Inlined hook for Statement_READ_DATA for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_READ_DATA>> {
@@ -42772,7 +42772,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA.hpp"
         return {};
     }
 };
@@ -42784,7 +42784,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_READ_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_before.hpp")
 // Inlined hook for Statement_READ_DATA_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_READ_DATA_before>> {
@@ -42803,7 +42803,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_before.hpp"
         return pass;
     }
 };
@@ -42815,7 +42815,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_READ_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_after.hpp")
 // Inlined hook for Statement_READ_DATA_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_READ_DATA_after>> {
@@ -42834,7 +42834,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_READ_DATA_after.hpp"
         return pass;
     }
 };
@@ -42846,7 +42846,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_READ_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA.hpp")
 // Inlined hook for Statement_WRITE_DATA for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_WRITE_DATA>> {
@@ -42865,7 +42865,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA.hpp"
         return {};
     }
 };
@@ -42877,7 +42877,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_WRITE_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_before.hpp")
 // Inlined hook for Statement_WRITE_DATA_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_WRITE_DATA_before>> {
@@ -42896,7 +42896,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_before.hpp"
         return pass;
     }
 };
@@ -42908,7 +42908,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_WRITE_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_after.hpp")
 // Inlined hook for Statement_WRITE_DATA_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_WRITE_DATA_after>> {
@@ -42927,7 +42927,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_WRITE_DATA_after.hpp"
         return pass;
     }
 };
@@ -42939,7 +42939,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_WRITE_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT.hpp")
 // Inlined hook for Statement_IF_STATEMENT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IF_STATEMENT>> {
@@ -42958,7 +42958,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT.hpp"
         return {};
     }
 };
@@ -42970,7 +42970,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IF_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_before.hpp")
 // Inlined hook for Statement_IF_STATEMENT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_before>> {
@@ -42989,7 +42989,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_before.hpp"
         return pass;
     }
 };
@@ -43001,7 +43001,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_after.hpp")
 // Inlined hook for Statement_IF_STATEMENT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_after>> {
@@ -43020,7 +43020,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_IF_STATEMENT_after.hpp"
         return pass;
     }
 };
@@ -43032,7 +43032,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT.hpp")
 // Inlined hook for Statement_LOOP_STATEMENT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT>> {
@@ -43051,7 +43051,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT.hpp"
         return {};
     }
 };
@@ -43063,7 +43063,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_before.hpp")
 // Inlined hook for Statement_LOOP_STATEMENT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_before>> {
@@ -43082,7 +43082,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_before.hpp"
         return pass;
     }
 };
@@ -43094,7 +43094,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_after.hpp")
 // Inlined hook for Statement_LOOP_STATEMENT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_after>> {
@@ -43113,7 +43113,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOOP_STATEMENT_after.hpp"
         return pass;
     }
 };
@@ -43125,7 +43125,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT.hpp")
 // Inlined hook for Statement_MATCH_STATEMENT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT>> {
@@ -43144,7 +43144,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT.hpp"
         return {};
     }
 };
@@ -43156,7 +43156,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_before.hpp")
 // Inlined hook for Statement_MATCH_STATEMENT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_before>> {
@@ -43175,7 +43175,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_before.hpp"
         return pass;
     }
 };
@@ -43187,7 +43187,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_after.hpp")
 // Inlined hook for Statement_MATCH_STATEMENT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_after>> {
@@ -43206,7 +43206,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_STATEMENT_after.hpp"
         return pass;
     }
 };
@@ -43218,7 +43218,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH.hpp")
 // Inlined hook for Statement_MATCH_BRANCH for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH>> {
@@ -43237,7 +43237,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH.hpp"
         return {};
     }
 };
@@ -43249,7 +43249,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_before.hpp")
 // Inlined hook for Statement_MATCH_BRANCH_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_before>> {
@@ -43268,7 +43268,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_before.hpp"
         return pass;
     }
 };
@@ -43280,7 +43280,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_after.hpp")
 // Inlined hook for Statement_MATCH_BRANCH_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_after>> {
@@ -43299,7 +43299,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_MATCH_BRANCH_after.hpp"
         return pass;
     }
 };
@@ -43311,7 +43311,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK.hpp")
 // Inlined hook for Statement_BREAK for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BREAK>> {
@@ -43330,7 +43330,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_BREAK.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK.hpp"
         return {};
     }
 };
@@ -43342,7 +43342,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BREAK>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_before.hpp")
 // Inlined hook for Statement_BREAK_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BREAK_before>> {
@@ -43361,7 +43361,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_BREAK_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_before.hpp"
         return pass;
     }
 };
@@ -43373,7 +43373,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BREAK_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_after.hpp")
 // Inlined hook for Statement_BREAK_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BREAK_after>> {
@@ -43392,7 +43392,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_BREAK_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_BREAK_after.hpp"
         return pass;
     }
 };
@@ -43404,7 +43404,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_BREAK_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE.hpp")
 // Inlined hook for Statement_CONTINUE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_CONTINUE>> {
@@ -43423,7 +43423,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE.hpp"
         return {};
     }
 };
@@ -43435,7 +43435,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_CONTINUE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_before.hpp")
 // Inlined hook for Statement_CONTINUE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_CONTINUE_before>> {
@@ -43454,7 +43454,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_before.hpp"
         return pass;
     }
 };
@@ -43466,7 +43466,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_CONTINUE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_after.hpp")
 // Inlined hook for Statement_CONTINUE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_CONTINUE_after>> {
@@ -43485,7 +43485,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_CONTINUE_after.hpp"
         return pass;
     }
 };
@@ -43497,7 +43497,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_CONTINUE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL.hpp")
 // Inlined hook for Statement_FUNCTION_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL>> {
@@ -43516,7 +43516,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL.hpp"
         return {};
     }
 };
@@ -43528,7 +43528,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_before.hpp")
 // Inlined hook for Statement_FUNCTION_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_before>> {
@@ -43547,7 +43547,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_before.hpp"
         return pass;
     }
 };
@@ -43559,7 +43559,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_after.hpp")
 // Inlined hook for Statement_FUNCTION_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_after>> {
@@ -43578,7 +43578,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_FUNCTION_DECL_after.hpp"
         return pass;
     }
 };
@@ -43590,7 +43590,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL.hpp")
 // Inlined hook for Statement_VARIABLE_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL>> {
@@ -43609,7 +43609,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL.hpp"
         return {};
     }
 };
@@ -43621,7 +43621,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_before.hpp")
 // Inlined hook for Statement_VARIABLE_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_before>> {
@@ -43640,7 +43640,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_before.hpp"
         return pass;
     }
 };
@@ -43652,7 +43652,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_after.hpp")
 // Inlined hook for Statement_VARIABLE_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_after>> {
@@ -43671,7 +43671,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_VARIABLE_DECL_after.hpp"
         return pass;
     }
 };
@@ -43683,7 +43683,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL.hpp")
 // Inlined hook for Statement_PARAMETER_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL>> {
@@ -43702,7 +43702,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL.hpp"
         return {};
     }
 };
@@ -43714,7 +43714,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_before.hpp")
 // Inlined hook for Statement_PARAMETER_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_before>> {
@@ -43733,7 +43733,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_before.hpp"
         return pass;
     }
 };
@@ -43745,7 +43745,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_after.hpp")
 // Inlined hook for Statement_PARAMETER_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_after>> {
@@ -43764,7 +43764,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PARAMETER_DECL_after.hpp"
         return pass;
     }
 };
@@ -43776,7 +43776,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL.hpp")
 // Inlined hook for Statement_FIELD_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FIELD_DECL>> {
@@ -43795,7 +43795,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL.hpp"
         return {};
     }
 };
@@ -43807,7 +43807,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FIELD_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_before.hpp")
 // Inlined hook for Statement_FIELD_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FIELD_DECL_before>> {
@@ -43826,7 +43826,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_before.hpp"
         return pass;
     }
 };
@@ -43838,7 +43838,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FIELD_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_after.hpp")
 // Inlined hook for Statement_FIELD_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FIELD_DECL_after>> {
@@ -43857,7 +43857,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_FIELD_DECL_after.hpp"
         return pass;
     }
 };
@@ -43869,7 +43869,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_FIELD_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL.hpp")
 // Inlined hook for Statement_COMPOSITE_FIELD_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL>> {
@@ -43888,7 +43888,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL.hpp"
         return {};
     }
 };
@@ -43900,7 +43900,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp")
 // Inlined hook for Statement_COMPOSITE_FIELD_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>> {
@@ -43919,7 +43919,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp"
         return pass;
     }
 };
@@ -43931,7 +43931,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp")
 // Inlined hook for Statement_COMPOSITE_FIELD_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>> {
@@ -43950,7 +43950,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp"
         return pass;
     }
 };
@@ -43962,7 +43962,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL.hpp")
 // Inlined hook for Statement_ENUM_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_DECL>> {
@@ -43981,7 +43981,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL.hpp"
         return {};
     }
 };
@@ -43993,7 +43993,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_before.hpp")
 // Inlined hook for Statement_ENUM_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_DECL_before>> {
@@ -44012,7 +44012,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_before.hpp"
         return pass;
     }
 };
@@ -44024,7 +44024,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_after.hpp")
 // Inlined hook for Statement_ENUM_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_DECL_after>> {
@@ -44043,7 +44043,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_DECL_after.hpp"
         return pass;
     }
 };
@@ -44055,7 +44055,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL.hpp")
 // Inlined hook for Statement_ENUM_MEMBER_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL>> {
@@ -44074,7 +44074,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL.hpp"
         return {};
     }
 };
@@ -44086,7 +44086,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_before.hpp")
 // Inlined hook for Statement_ENUM_MEMBER_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_before>> {
@@ -44105,7 +44105,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_before.hpp"
         return pass;
     }
 };
@@ -44117,7 +44117,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_after.hpp")
 // Inlined hook for Statement_ENUM_MEMBER_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_after>> {
@@ -44136,7 +44136,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENUM_MEMBER_DECL_after.hpp"
         return pass;
     }
 };
@@ -44148,7 +44148,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL.hpp")
 // Inlined hook for Statement_STRUCT_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_STRUCT_DECL>> {
@@ -44167,7 +44167,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL.hpp"
         return {};
     }
 };
@@ -44179,7 +44179,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_STRUCT_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_before.hpp")
 // Inlined hook for Statement_STRUCT_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_before>> {
@@ -44198,7 +44198,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_before.hpp"
         return pass;
     }
 };
@@ -44210,7 +44210,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_after.hpp")
 // Inlined hook for Statement_STRUCT_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_after>> {
@@ -44229,7 +44229,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_STRUCT_DECL_after.hpp"
         return pass;
     }
 };
@@ -44241,7 +44241,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL.hpp")
 // Inlined hook for Statement_UNION_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_DECL>> {
@@ -44260,7 +44260,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL.hpp"
         return {};
     }
 };
@@ -44272,7 +44272,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_before.hpp")
 // Inlined hook for Statement_UNION_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_DECL_before>> {
@@ -44291,7 +44291,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_before.hpp"
         return pass;
     }
 };
@@ -44303,7 +44303,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_after.hpp")
 // Inlined hook for Statement_UNION_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_DECL_after>> {
@@ -44322,7 +44322,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_DECL_after.hpp"
         return pass;
     }
 };
@@ -44334,7 +44334,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL.hpp")
 // Inlined hook for Statement_UNION_MEMBER_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL>> {
@@ -44353,7 +44353,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL.hpp"
         return {};
     }
 };
@@ -44365,7 +44365,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_before.hpp")
 // Inlined hook for Statement_UNION_MEMBER_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_before>> {
@@ -44384,7 +44384,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_before.hpp"
         return pass;
     }
 };
@@ -44396,7 +44396,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_after.hpp")
 // Inlined hook for Statement_UNION_MEMBER_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_after>> {
@@ -44415,7 +44415,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_UNION_MEMBER_DECL_after.hpp"
         return pass;
     }
 };
@@ -44427,7 +44427,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL.hpp")
 // Inlined hook for Statement_PROGRAM_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL>> {
@@ -44446,7 +44446,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL.hpp"
         return {};
     }
 };
@@ -44458,7 +44458,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_before.hpp")
 // Inlined hook for Statement_PROGRAM_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_before>> {
@@ -44477,7 +44477,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_before.hpp"
         return pass;
     }
 };
@@ -44489,7 +44489,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_after.hpp")
 // Inlined hook for Statement_PROGRAM_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_after>> {
@@ -44508,7 +44508,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROGRAM_DECL_after.hpp"
         return pass;
     }
 };
@@ -44520,7 +44520,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL.hpp")
 // Inlined hook for Statement_PROPERTY_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL>> {
@@ -44539,7 +44539,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL.hpp"
         return {};
     }
 };
@@ -44551,7 +44551,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_before.hpp")
 // Inlined hook for Statement_PROPERTY_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_before>> {
@@ -44570,7 +44570,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_before.hpp"
         return pass;
     }
 };
@@ -44582,7 +44582,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_after.hpp")
 // Inlined hook for Statement_PROPERTY_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_after>> {
@@ -44601,7 +44601,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_DECL_after.hpp"
         return pass;
     }
 };
@@ -44613,7 +44613,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL.hpp")
 // Inlined hook for Statement_PROPERTY_MEMBER_DECL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL>> {
@@ -44632,7 +44632,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL.hpp"
         return {};
     }
 };
@@ -44644,7 +44644,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp")
 // Inlined hook for Statement_PROPERTY_MEMBER_DECL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>> {
@@ -44663,7 +44663,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp"
         return pass;
     }
 };
@@ -44675,7 +44675,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp")
 // Inlined hook for Statement_PROPERTY_MEMBER_DECL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>> {
@@ -44694,7 +44694,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp"
         return pass;
     }
 };
@@ -44706,7 +44706,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA.hpp")
 // Inlined hook for Statement_METADATA for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_METADATA>> {
@@ -44725,7 +44725,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_METADATA.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA.hpp"
         return {};
     }
 };
@@ -44737,7 +44737,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_METADATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_before.hpp")
 // Inlined hook for Statement_METADATA_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_METADATA_before>> {
@@ -44756,7 +44756,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_METADATA_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_before.hpp"
         return pass;
     }
 };
@@ -44768,7 +44768,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_METADATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_after.hpp")
 // Inlined hook for Statement_METADATA_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_METADATA_after>> {
@@ -44787,7 +44787,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_METADATA_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_METADATA_after.hpp"
         return pass;
     }
 };
@@ -44799,7 +44799,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_METADATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE.hpp")
 // Inlined hook for Statement_IMPORT_MODULE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE>> {
@@ -44818,7 +44818,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE.hpp"
         return {};
     }
 };
@@ -44830,7 +44830,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_before.hpp")
 // Inlined hook for Statement_IMPORT_MODULE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_before>> {
@@ -44849,7 +44849,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_before.hpp"
         return pass;
     }
 };
@@ -44861,7 +44861,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_after.hpp")
 // Inlined hook for Statement_IMPORT_MODULE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_after>> {
@@ -44880,7 +44880,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_IMPORT_MODULE_after.hpp"
         return pass;
     }
 };
@@ -44892,7 +44892,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION.hpp")
 // Inlined hook for Statement_EXPRESSION for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_EXPRESSION>> {
@@ -44911,7 +44911,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION.hpp"
         return {};
     }
 };
@@ -44923,7 +44923,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_EXPRESSION>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_before.hpp")
 // Inlined hook for Statement_EXPRESSION_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_EXPRESSION_before>> {
@@ -44942,7 +44942,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_before.hpp"
         return pass;
     }
 };
@@ -44954,7 +44954,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_EXPRESSION_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_after.hpp")
 // Inlined hook for Statement_EXPRESSION_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_EXPRESSION_after>> {
@@ -44973,7 +44973,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_EXPRESSION_after.hpp"
         return pass;
     }
 };
@@ -44985,7 +44985,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_EXPRESSION_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT.hpp")
 // Inlined hook for Statement_ERROR_REPORT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_REPORT>> {
@@ -45004,7 +45004,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT.hpp"
         return {};
     }
 };
@@ -45016,7 +45016,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_REPORT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_before.hpp")
 // Inlined hook for Statement_ERROR_REPORT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_before>> {
@@ -45035,7 +45035,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_before.hpp"
         return pass;
     }
 };
@@ -45047,7 +45047,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_after.hpp")
 // Inlined hook for Statement_ERROR_REPORT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_after>> {
@@ -45066,7 +45066,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ERROR_REPORT_after.hpp"
         return pass;
     }
 };
@@ -45078,7 +45078,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS.hpp")
 // Inlined hook for Statement_LOWERED_IO_STATEMENTS for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS>> {
@@ -45097,7 +45097,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS.hpp"
         return {};
     }
 };
@@ -45109,7 +45109,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp")
 // Inlined hook for Statement_LOWERED_IO_STATEMENTS_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>> {
@@ -45128,7 +45128,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp"
         return pass;
     }
 };
@@ -45140,7 +45140,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp")
 // Inlined hook for Statement_LOWERED_IO_STATEMENTS_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>> {
@@ -45159,7 +45159,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp"
         return pass;
     }
 };
@@ -45171,7 +45171,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE.hpp")
 // Inlined hook for Statement_SUB_BYTE_RANGE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE>> {
@@ -45190,7 +45190,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE.hpp"
         return {};
     }
 };
@@ -45202,7 +45202,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_before.hpp")
 // Inlined hook for Statement_SUB_BYTE_RANGE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_before>> {
@@ -45221,7 +45221,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_before.hpp"
         return pass;
     }
 };
@@ -45233,7 +45233,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_after.hpp")
 // Inlined hook for Statement_SUB_BYTE_RANGE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_after>> {
@@ -45252,7 +45252,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_SUB_BYTE_RANGE_after.hpp"
         return pass;
     }
 };
@@ -45264,7 +45264,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK.hpp")
 // Inlined hook for Statement_INIT_CHECK for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_INIT_CHECK>> {
@@ -45283,7 +45283,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK.hpp"
         return {};
     }
 };
@@ -45295,7 +45295,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_INIT_CHECK>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_before.hpp")
 // Inlined hook for Statement_INIT_CHECK_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_INIT_CHECK_before>> {
@@ -45314,7 +45314,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_before.hpp"
         return pass;
     }
 };
@@ -45326,7 +45326,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_INIT_CHECK_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_after.hpp")
 // Inlined hook for Statement_INIT_CHECK_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_INIT_CHECK_after>> {
@@ -45345,7 +45345,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_INIT_CHECK_after.hpp"
         return pass;
     }
 };
@@ -45357,7 +45357,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_INIT_CHECK_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE.hpp")
 // Inlined hook for Statement_ENDIAN_VARIABLE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE>> {
@@ -45376,7 +45376,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE.hpp"
         return {};
     }
 };
@@ -45388,7 +45388,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_before.hpp")
 // Inlined hook for Statement_ENDIAN_VARIABLE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_before>> {
@@ -45407,7 +45407,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_before.hpp"
         return pass;
     }
 };
@@ -45419,7 +45419,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_after.hpp")
 // Inlined hook for Statement_ENDIAN_VARIABLE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {
@@ -45438,7 +45438,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_ENDIAN_VARIABLE_after.hpp"
         return pass;
     }
 };
@@ -45450,7 +45450,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch.hpp")
 // Inlined hook for Statement for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement>> {
@@ -45469,7 +45469,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch.hpp"
         return {};
     }
 };
@@ -45481,7 +45481,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_before_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch.hpp")
 // Inlined hook for Statement_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_before>> {
@@ -45500,7 +45500,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_before_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch.hpp"
         return pass;
     }
 };
@@ -45512,7 +45512,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Statement_after_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch.hpp")
 // Inlined hook for Statement_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_after>> {
@@ -45531,7 +45531,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Statement_after_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch.hpp"
         return pass;
     }
 };
@@ -45543,7 +45543,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Statement_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Block.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Block.hpp")
 // Inlined hook for Block for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Block>> {
@@ -45562,7 +45562,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Block.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Block.hpp"
         return {};
     }
 };
@@ -45574,7 +45574,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Block>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Block_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Block_before.hpp")
 // Inlined hook for Block_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Block_before>> {
@@ -45593,7 +45593,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Block_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Block_before.hpp"
         return pass;
     }
 };
@@ -45605,7 +45605,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Block_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Block_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Block_after.hpp")
 // Inlined hook for Block_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Block_after>> {
@@ -45624,7 +45624,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Block_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Block_after.hpp"
         return pass;
     }
 };
@@ -45636,7 +45636,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Block_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT.hpp")
 // Inlined hook for Expression_LITERAL_INT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT>> {
@@ -45655,7 +45655,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT.hpp"
         return {};
     }
 };
@@ -45667,7 +45667,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_before.hpp")
 // Inlined hook for Expression_LITERAL_INT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT_before>> {
@@ -45686,7 +45686,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_before.hpp"
         return pass;
     }
 };
@@ -45698,7 +45698,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_after.hpp")
 // Inlined hook for Expression_LITERAL_INT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT_after>> {
@@ -45717,7 +45717,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT_after.hpp"
         return pass;
     }
 };
@@ -45729,7 +45729,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64.hpp")
 // Inlined hook for Expression_LITERAL_INT64 for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT64>> {
@@ -45748,7 +45748,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64.hpp"
         return {};
     }
 };
@@ -45760,7 +45760,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT64>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_before.hpp")
 // Inlined hook for Expression_LITERAL_INT64_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_before>> {
@@ -45779,7 +45779,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_before.hpp"
         return pass;
     }
 };
@@ -45791,7 +45791,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_after.hpp")
 // Inlined hook for Expression_LITERAL_INT64_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_after>> {
@@ -45810,7 +45810,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_INT64_after.hpp"
         return pass;
     }
 };
@@ -45822,7 +45822,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL.hpp")
 // Inlined hook for Expression_LITERAL_BOOL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL>> {
@@ -45841,7 +45841,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL.hpp"
         return {};
     }
 };
@@ -45853,7 +45853,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_before.hpp")
 // Inlined hook for Expression_LITERAL_BOOL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_before>> {
@@ -45872,7 +45872,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_before.hpp"
         return pass;
     }
 };
@@ -45884,7 +45884,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_after.hpp")
 // Inlined hook for Expression_LITERAL_BOOL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_after>> {
@@ -45903,7 +45903,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_BOOL_after.hpp"
         return pass;
     }
 };
@@ -45915,7 +45915,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING.hpp")
 // Inlined hook for Expression_LITERAL_STRING for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_STRING>> {
@@ -45934,7 +45934,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING.hpp"
         return {};
     }
 };
@@ -45946,7 +45946,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_STRING>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_before.hpp")
 // Inlined hook for Expression_LITERAL_STRING_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_before>> {
@@ -45965,7 +45965,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_before.hpp"
         return pass;
     }
 };
@@ -45977,7 +45977,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_after.hpp")
 // Inlined hook for Expression_LITERAL_STRING_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_after>> {
@@ -45996,7 +45996,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_STRING_after.hpp"
         return pass;
     }
 };
@@ -46008,7 +46008,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE.hpp")
 // Inlined hook for Expression_LITERAL_TYPE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE>> {
@@ -46027,7 +46027,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE.hpp"
         return {};
     }
 };
@@ -46039,7 +46039,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_before.hpp")
 // Inlined hook for Expression_LITERAL_TYPE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_before>> {
@@ -46058,7 +46058,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_before.hpp"
         return pass;
     }
 };
@@ -46070,7 +46070,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_after.hpp")
 // Inlined hook for Expression_LITERAL_TYPE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_after>> {
@@ -46089,7 +46089,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_TYPE_after.hpp"
         return pass;
     }
 };
@@ -46101,7 +46101,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR.hpp")
 // Inlined hook for Expression_LITERAL_CHAR for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR>> {
@@ -46120,7 +46120,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR.hpp"
         return {};
     }
 };
@@ -46132,7 +46132,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_before.hpp")
 // Inlined hook for Expression_LITERAL_CHAR_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_before>> {
@@ -46151,7 +46151,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_before.hpp"
         return pass;
     }
 };
@@ -46163,7 +46163,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_after.hpp")
 // Inlined hook for Expression_LITERAL_CHAR_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_after>> {
@@ -46182,7 +46182,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_LITERAL_CHAR_after.hpp"
         return pass;
     }
 };
@@ -46194,7 +46194,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER.hpp")
 // Inlined hook for Expression_IDENTIFIER for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IDENTIFIER>> {
@@ -46213,7 +46213,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER.hpp"
         return {};
     }
 };
@@ -46225,7 +46225,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IDENTIFIER>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_before.hpp")
 // Inlined hook for Expression_IDENTIFIER_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IDENTIFIER_before>> {
@@ -46244,7 +46244,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_before.hpp"
         return pass;
     }
 };
@@ -46256,7 +46256,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IDENTIFIER_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_after.hpp")
 // Inlined hook for Expression_IDENTIFIER_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IDENTIFIER_after>> {
@@ -46275,7 +46275,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IDENTIFIER_after.hpp"
         return pass;
     }
 };
@@ -46287,7 +46287,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IDENTIFIER_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP.hpp")
 // Inlined hook for Expression_BINARY_OP for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_BINARY_OP>> {
@@ -46306,7 +46306,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP.hpp"
         return {};
     }
 };
@@ -46318,7 +46318,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_BINARY_OP>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_before.hpp")
 // Inlined hook for Expression_BINARY_OP_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_BINARY_OP_before>> {
@@ -46337,7 +46337,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_before.hpp"
         return pass;
     }
 };
@@ -46349,7 +46349,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_BINARY_OP_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_after.hpp")
 // Inlined hook for Expression_BINARY_OP_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_BINARY_OP_after>> {
@@ -46368,7 +46368,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_BINARY_OP_after.hpp"
         return pass;
     }
 };
@@ -46380,7 +46380,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_BINARY_OP_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP.hpp")
 // Inlined hook for Expression_UNARY_OP for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_UNARY_OP>> {
@@ -46399,7 +46399,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP.hpp"
         return {};
     }
 };
@@ -46411,7 +46411,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_UNARY_OP>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_before.hpp")
 // Inlined hook for Expression_UNARY_OP_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_UNARY_OP_before>> {
@@ -46430,7 +46430,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_before.hpp"
         return pass;
     }
 };
@@ -46442,7 +46442,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_UNARY_OP_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_after.hpp")
 // Inlined hook for Expression_UNARY_OP_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_UNARY_OP_after>> {
@@ -46461,7 +46461,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_UNARY_OP_after.hpp"
         return pass;
     }
 };
@@ -46473,7 +46473,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_UNARY_OP_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CALL.hpp")
 // Inlined hook for Expression_CALL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CALL>> {
@@ -46492,7 +46492,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CALL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CALL.hpp"
         return {};
     }
 };
@@ -46504,7 +46504,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CALL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_before.hpp")
 // Inlined hook for Expression_CALL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CALL_before>> {
@@ -46523,7 +46523,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CALL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_before.hpp"
         return pass;
     }
 };
@@ -46535,7 +46535,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CALL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_after.hpp")
 // Inlined hook for Expression_CALL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CALL_after>> {
@@ -46554,7 +46554,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CALL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CALL_after.hpp"
         return pass;
     }
 };
@@ -46566,7 +46566,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CALL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS.hpp")
 // Inlined hook for Expression_INDEX_ACCESS for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS>> {
@@ -46585,7 +46585,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS.hpp"
         return {};
     }
 };
@@ -46597,7 +46597,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_before.hpp")
 // Inlined hook for Expression_INDEX_ACCESS_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_before>> {
@@ -46616,7 +46616,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_before.hpp"
         return pass;
     }
 };
@@ -46628,7 +46628,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_after.hpp")
 // Inlined hook for Expression_INDEX_ACCESS_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_after>> {
@@ -46647,7 +46647,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_INDEX_ACCESS_after.hpp"
         return pass;
     }
 };
@@ -46659,7 +46659,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS.hpp")
 // Inlined hook for Expression_MEMBER_ACCESS for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS>> {
@@ -46678,7 +46678,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS.hpp"
         return {};
     }
 };
@@ -46690,7 +46690,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_before.hpp")
 // Inlined hook for Expression_MEMBER_ACCESS_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_before>> {
@@ -46709,7 +46709,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_before.hpp"
         return pass;
     }
 };
@@ -46721,7 +46721,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_after.hpp")
 // Inlined hook for Expression_MEMBER_ACCESS_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_after>> {
@@ -46740,7 +46740,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_MEMBER_ACCESS_after.hpp"
         return pass;
     }
 };
@@ -46752,7 +46752,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER.hpp")
 // Inlined hook for Expression_ENUM_MEMBER for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER>> {
@@ -46771,7 +46771,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER.hpp"
         return {};
     }
 };
@@ -46783,7 +46783,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_before.hpp")
 // Inlined hook for Expression_ENUM_MEMBER_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_before>> {
@@ -46802,7 +46802,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_before.hpp"
         return pass;
     }
 };
@@ -46814,7 +46814,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_after.hpp")
 // Inlined hook for Expression_ENUM_MEMBER_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_after>> {
@@ -46833,7 +46833,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_MEMBER_after.hpp"
         return pass;
     }
 };
@@ -46845,7 +46845,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST.hpp")
 // Inlined hook for Expression_TYPE_CAST for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_TYPE_CAST>> {
@@ -46864,7 +46864,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST.hpp"
         return {};
     }
 };
@@ -46876,7 +46876,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_TYPE_CAST>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_before.hpp")
 // Inlined hook for Expression_TYPE_CAST_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_TYPE_CAST_before>> {
@@ -46895,7 +46895,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_before.hpp"
         return pass;
     }
 };
@@ -46907,7 +46907,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_TYPE_CAST_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_after.hpp")
 // Inlined hook for Expression_TYPE_CAST_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_TYPE_CAST_after>> {
@@ -46926,7 +46926,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_TYPE_CAST_after.hpp"
         return pass;
     }
 };
@@ -46938,7 +46938,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_TYPE_CAST_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE.hpp")
 // Inlined hook for Expression_RANGE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_RANGE>> {
@@ -46957,7 +46957,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_RANGE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE.hpp"
         return {};
     }
 };
@@ -46969,7 +46969,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_RANGE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_before.hpp")
 // Inlined hook for Expression_RANGE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_RANGE_before>> {
@@ -46988,7 +46988,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_RANGE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_before.hpp"
         return pass;
     }
 };
@@ -47000,7 +47000,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_RANGE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_after.hpp")
 // Inlined hook for Expression_RANGE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_RANGE_after>> {
@@ -47019,7 +47019,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_RANGE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_RANGE_after.hpp"
         return pass;
     }
 };
@@ -47031,7 +47031,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_RANGE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE.hpp")
 // Inlined hook for Expression_DEFAULT_VALUE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE>> {
@@ -47050,7 +47050,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE.hpp"
         return {};
     }
 };
@@ -47062,7 +47062,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_before.hpp")
 // Inlined hook for Expression_DEFAULT_VALUE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_before>> {
@@ -47081,7 +47081,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_before.hpp"
         return pass;
     }
 };
@@ -47093,7 +47093,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_after.hpp")
 // Inlined hook for Expression_DEFAULT_VALUE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_after>> {
@@ -47112,7 +47112,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_DEFAULT_VALUE_after.hpp"
         return pass;
     }
 };
@@ -47124,7 +47124,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN.hpp")
 // Inlined hook for Expression_IS_LITTLE_ENDIAN for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN>> {
@@ -47143,7 +47143,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN.hpp"
         return {};
     }
 };
@@ -47155,7 +47155,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_before.hpp")
 // Inlined hook for Expression_IS_LITTLE_ENDIAN_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>> {
@@ -47174,7 +47174,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_before.hpp"
         return pass;
     }
 };
@@ -47186,7 +47186,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_after.hpp")
 // Inlined hook for Expression_IS_LITTLE_ENDIAN_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>> {
@@ -47205,7 +47205,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_LITTLE_ENDIAN_after.hpp"
         return pass;
     }
 };
@@ -47217,7 +47217,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET.hpp")
 // Inlined hook for Expression_GET_STREAM_OFFSET for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET>> {
@@ -47236,7 +47236,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET.hpp"
         return {};
     }
 };
@@ -47248,7 +47248,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_before.hpp")
 // Inlined hook for Expression_GET_STREAM_OFFSET_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_before>> {
@@ -47267,7 +47267,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_before.hpp"
         return pass;
     }
 };
@@ -47279,7 +47279,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_after.hpp")
 // Inlined hook for Expression_GET_STREAM_OFFSET_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_after>> {
@@ -47298,7 +47298,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_STREAM_OFFSET_after.hpp"
         return pass;
     }
 };
@@ -47310,7 +47310,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES.hpp")
 // Inlined hook for Expression_GET_REMAINING_BYTES for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES>> {
@@ -47329,7 +47329,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES.hpp"
         return {};
     }
 };
@@ -47341,7 +47341,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_before.hpp")
 // Inlined hook for Expression_GET_REMAINING_BYTES_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_before>> {
@@ -47360,7 +47360,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_before.hpp"
         return pass;
     }
 };
@@ -47372,7 +47372,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_after.hpp")
 // Inlined hook for Expression_GET_REMAINING_BYTES_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_after>> {
@@ -47391,7 +47391,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_GET_REMAINING_BYTES_after.hpp"
         return pass;
     }
 };
@@ -47403,7 +47403,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM.hpp")
 // Inlined hook for Expression_CAN_READ_STREAM for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM>> {
@@ -47422,7 +47422,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM.hpp"
         return {};
     }
 };
@@ -47434,7 +47434,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_before.hpp")
 // Inlined hook for Expression_CAN_READ_STREAM_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_before>> {
@@ -47453,7 +47453,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_before.hpp"
         return pass;
     }
 };
@@ -47465,7 +47465,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_after.hpp")
 // Inlined hook for Expression_CAN_READ_STREAM_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_after>> {
@@ -47484,7 +47484,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CAN_READ_STREAM_after.hpp"
         return pass;
     }
 };
@@ -47496,7 +47496,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE.hpp")
 // Inlined hook for Expression_ARRAY_SIZE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE>> {
@@ -47515,7 +47515,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE.hpp"
         return {};
     }
 };
@@ -47527,7 +47527,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_before.hpp")
 // Inlined hook for Expression_ARRAY_SIZE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_before>> {
@@ -47546,7 +47546,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_before.hpp"
         return pass;
     }
 };
@@ -47558,7 +47558,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_after.hpp")
 // Inlined hook for Expression_ARRAY_SIZE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_after>> {
@@ -47577,7 +47577,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ARRAY_SIZE_after.hpp"
         return pass;
     }
 };
@@ -47589,7 +47589,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED.hpp")
 // Inlined hook for Expression_ENUM_IS_DEFINED for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED>> {
@@ -47608,7 +47608,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED.hpp"
         return {};
     }
 };
@@ -47620,7 +47620,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_before.hpp")
 // Inlined hook for Expression_ENUM_IS_DEFINED_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_before>> {
@@ -47639,7 +47639,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_before.hpp"
         return pass;
     }
 };
@@ -47651,7 +47651,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_after.hpp")
 // Inlined hook for Expression_ENUM_IS_DEFINED_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_after>> {
@@ -47670,7 +47670,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ENUM_IS_DEFINED_after.hpp"
         return pass;
     }
 };
@@ -47682,7 +47682,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR.hpp")
 // Inlined hook for Expression_IS_ERROR for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_ERROR>> {
@@ -47701,7 +47701,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR.hpp"
         return {};
     }
 };
@@ -47713,7 +47713,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_ERROR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_before.hpp")
 // Inlined hook for Expression_IS_ERROR_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_ERROR_before>> {
@@ -47732,7 +47732,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_before.hpp"
         return pass;
     }
 };
@@ -47744,7 +47744,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_ERROR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_after.hpp")
 // Inlined hook for Expression_IS_ERROR_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_ERROR_after>> {
@@ -47763,7 +47763,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_IS_ERROR_after.hpp"
         return pass;
     }
 };
@@ -47775,7 +47775,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_IS_ERROR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE.hpp")
 // Inlined hook for Expression_MAX_VALUE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MAX_VALUE>> {
@@ -47794,7 +47794,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE.hpp"
         return {};
     }
 };
@@ -47806,7 +47806,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MAX_VALUE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_before.hpp")
 // Inlined hook for Expression_MAX_VALUE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MAX_VALUE_before>> {
@@ -47825,7 +47825,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_before.hpp"
         return pass;
     }
 };
@@ -47837,7 +47837,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MAX_VALUE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_after.hpp")
 // Inlined hook for Expression_MAX_VALUE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MAX_VALUE_after>> {
@@ -47856,7 +47856,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_MAX_VALUE_after.hpp"
         return pass;
     }
 };
@@ -47868,7 +47868,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_MAX_VALUE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA.hpp")
 // Inlined hook for Expression_READ_DATA for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_READ_DATA>> {
@@ -47887,7 +47887,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA.hpp"
         return {};
     }
 };
@@ -47899,7 +47899,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_READ_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_before.hpp")
 // Inlined hook for Expression_READ_DATA_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_READ_DATA_before>> {
@@ -47918,7 +47918,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_before.hpp"
         return pass;
     }
 };
@@ -47930,7 +47930,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_READ_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_after.hpp")
 // Inlined hook for Expression_READ_DATA_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_READ_DATA_after>> {
@@ -47949,7 +47949,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_READ_DATA_after.hpp"
         return pass;
     }
 };
@@ -47961,7 +47961,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_READ_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA.hpp")
 // Inlined hook for Expression_WRITE_DATA for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_WRITE_DATA>> {
@@ -47980,7 +47980,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA.hpp"
         return {};
     }
 };
@@ -47992,7 +47992,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_WRITE_DATA>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_before.hpp")
 // Inlined hook for Expression_WRITE_DATA_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_WRITE_DATA_before>> {
@@ -48011,7 +48011,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_before.hpp"
         return pass;
     }
 };
@@ -48023,7 +48023,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_WRITE_DATA_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_after.hpp")
 // Inlined hook for Expression_WRITE_DATA_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_WRITE_DATA_after>> {
@@ -48042,7 +48042,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_WRITE_DATA_after.hpp"
         return pass;
     }
 };
@@ -48054,7 +48054,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_WRITE_DATA_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT.hpp")
 // Inlined hook for Expression_CONDITIONAL_STATEMENT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT>> {
@@ -48073,7 +48073,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT.hpp"
         return {};
     }
 };
@@ -48085,7 +48085,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_before.hpp")
 // Inlined hook for Expression_CONDITIONAL_STATEMENT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>> {
@@ -48104,7 +48104,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_before.hpp"
         return pass;
     }
 };
@@ -48116,7 +48116,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_after.hpp")
 // Inlined hook for Expression_CONDITIONAL_STATEMENT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>> {
@@ -48135,7 +48135,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_STATEMENT_after.hpp"
         return pass;
     }
 };
@@ -48147,7 +48147,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL.hpp")
 // Inlined hook for Expression_CONDITIONAL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL>> {
@@ -48166,7 +48166,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL.hpp"
         return {};
     }
 };
@@ -48178,7 +48178,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_before.hpp")
 // Inlined hook for Expression_CONDITIONAL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_before>> {
@@ -48197,7 +48197,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_before.hpp"
         return pass;
     }
 };
@@ -48209,7 +48209,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_after.hpp")
 // Inlined hook for Expression_CONDITIONAL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_after>> {
@@ -48228,7 +48228,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_CONDITIONAL_after.hpp"
         return pass;
     }
 };
@@ -48240,7 +48240,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_CONDITIONAL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE.hpp")
 // Inlined hook for Expression_AVAILABLE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AVAILABLE>> {
@@ -48259,7 +48259,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE.hpp"
         return {};
     }
 };
@@ -48271,7 +48271,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AVAILABLE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_before.hpp")
 // Inlined hook for Expression_AVAILABLE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AVAILABLE_before>> {
@@ -48290,7 +48290,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_before.hpp"
         return pass;
     }
 };
@@ -48302,7 +48302,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AVAILABLE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_after.hpp")
 // Inlined hook for Expression_AVAILABLE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AVAILABLE_after>> {
@@ -48321,7 +48321,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_AVAILABLE_after.hpp"
         return pass;
     }
 };
@@ -48333,7 +48333,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AVAILABLE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF.hpp")
 // Inlined hook for Expression_SIZEOF for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SIZEOF>> {
@@ -48352,7 +48352,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF.hpp"
         return {};
     }
 };
@@ -48364,7 +48364,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SIZEOF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_before.hpp")
 // Inlined hook for Expression_SIZEOF_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SIZEOF_before>> {
@@ -48383,7 +48383,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_before.hpp"
         return pass;
     }
 };
@@ -48395,7 +48395,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SIZEOF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_after.hpp")
 // Inlined hook for Expression_SIZEOF_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SIZEOF_after>> {
@@ -48414,7 +48414,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SIZEOF_after.hpp"
         return pass;
     }
 };
@@ -48426,7 +48426,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SIZEOF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT.hpp")
 // Inlined hook for Expression_SUB_RANGE_INIT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT>> {
@@ -48445,7 +48445,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT.hpp"
         return {};
     }
 };
@@ -48457,7 +48457,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_before.hpp")
 // Inlined hook for Expression_SUB_RANGE_INIT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_before>> {
@@ -48476,7 +48476,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_before.hpp"
         return pass;
     }
 };
@@ -48488,7 +48488,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_after.hpp")
 // Inlined hook for Expression_SUB_RANGE_INIT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_after>> {
@@ -48507,7 +48507,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SUB_RANGE_INIT_after.hpp"
         return pass;
     }
 };
@@ -48519,7 +48519,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND.hpp")
 // Inlined hook for Expression_OR_COND for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OR_COND>> {
@@ -48538,7 +48538,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND.hpp"
         return {};
     }
 };
@@ -48550,7 +48550,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OR_COND>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_before.hpp")
 // Inlined hook for Expression_OR_COND_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OR_COND_before>> {
@@ -48569,7 +48569,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_before.hpp"
         return pass;
     }
 };
@@ -48581,7 +48581,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OR_COND_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_after.hpp")
 // Inlined hook for Expression_OR_COND_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OR_COND_after>> {
@@ -48600,7 +48600,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_OR_COND_after.hpp"
         return pass;
     }
 };
@@ -48612,7 +48612,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OR_COND_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF.hpp")
 // Inlined hook for Expression_ADDRESS_OF for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ADDRESS_OF>> {
@@ -48631,7 +48631,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF.hpp"
         return {};
     }
 };
@@ -48643,7 +48643,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ADDRESS_OF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_before.hpp")
 // Inlined hook for Expression_ADDRESS_OF_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_before>> {
@@ -48662,7 +48662,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_before.hpp"
         return pass;
     }
 };
@@ -48674,7 +48674,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_after.hpp")
 // Inlined hook for Expression_ADDRESS_OF_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_after>> {
@@ -48693,7 +48693,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_ADDRESS_OF_after.hpp"
         return pass;
     }
 };
@@ -48705,7 +48705,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF.hpp")
 // Inlined hook for Expression_OPTIONAL_OF for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF>> {
@@ -48724,7 +48724,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF.hpp"
         return {};
     }
 };
@@ -48736,7 +48736,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_before.hpp")
 // Inlined hook for Expression_OPTIONAL_OF_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_before>> {
@@ -48755,7 +48755,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_before.hpp"
         return pass;
     }
 };
@@ -48767,7 +48767,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_after.hpp")
 // Inlined hook for Expression_OPTIONAL_OF_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_after>> {
@@ -48786,7 +48786,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_OPTIONAL_OF_after.hpp"
         return pass;
     }
 };
@@ -48798,7 +48798,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS.hpp")
 // Inlined hook for Expression_SETTER_STATUS for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SETTER_STATUS>> {
@@ -48817,7 +48817,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS.hpp"
         return {};
     }
 };
@@ -48829,7 +48829,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SETTER_STATUS>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_before.hpp")
 // Inlined hook for Expression_SETTER_STATUS_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_before>> {
@@ -48848,7 +48848,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_before.hpp"
         return pass;
     }
 };
@@ -48860,7 +48860,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_after.hpp")
 // Inlined hook for Expression_SETTER_STATUS_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_after>> {
@@ -48879,7 +48879,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SETTER_STATUS_after.hpp"
         return pass;
     }
 };
@@ -48891,7 +48891,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SELF.hpp")
 // Inlined hook for Expression_SELF for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SELF>> {
@@ -48910,7 +48910,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SELF.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SELF.hpp"
         return {};
     }
 };
@@ -48922,7 +48922,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SELF>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_before.hpp")
 // Inlined hook for Expression_SELF_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SELF_before>> {
@@ -48941,7 +48941,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SELF_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_before.hpp"
         return pass;
     }
 };
@@ -48953,7 +48953,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SELF_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_after.hpp")
 // Inlined hook for Expression_SELF_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SELF_after>> {
@@ -48972,7 +48972,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_SELF_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_SELF_after.hpp"
         return pass;
     }
 };
@@ -48984,7 +48984,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_SELF_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AS_ARG.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG.hpp")
 // Inlined hook for Expression_AS_ARG for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AS_ARG>> {
@@ -49003,7 +49003,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_AS_ARG.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG.hpp"
         return {};
     }
 };
@@ -49015,7 +49015,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AS_ARG>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AS_ARG_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_before.hpp")
 // Inlined hook for Expression_AS_ARG_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AS_ARG_before>> {
@@ -49034,7 +49034,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_AS_ARG_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_before.hpp"
         return pass;
     }
 };
@@ -49046,7 +49046,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AS_ARG_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_AS_ARG_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_after.hpp")
 // Inlined hook for Expression_AS_ARG_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AS_ARG_after>> {
@@ -49065,7 +49065,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_AS_ARG_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_AS_ARG_after.hpp"
         return pass;
     }
 };
@@ -49077,7 +49077,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_AS_ARG_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch.hpp")
 // Inlined hook for Expression for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression>> {
@@ -49096,7 +49096,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch.hpp"
         return {};
     }
 };
@@ -49108,7 +49108,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_before_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch.hpp")
 // Inlined hook for Expression_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_before>> {
@@ -49127,7 +49127,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_before_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch.hpp"
         return pass;
     }
 };
@@ -49139,7 +49139,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expression_after_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch.hpp")
 // Inlined hook for Expression_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_after>> {
@@ -49158,7 +49158,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expression_after_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch.hpp"
         return pass;
     }
 };
@@ -49170,7 +49170,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expression_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expressions.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expressions.hpp")
 // Inlined hook for Expressions for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expressions>> {
@@ -49189,7 +49189,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expressions.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expressions.hpp"
         return {};
     }
 };
@@ -49201,7 +49201,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expressions>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expressions_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expressions_before.hpp")
 // Inlined hook for Expressions_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expressions_before>> {
@@ -49220,7 +49220,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expressions_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expressions_before.hpp"
         return pass;
     }
 };
@@ -49232,7 +49232,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expressions_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Expressions_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expressions_after.hpp")
 // Inlined hook for Expressions_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expressions_after>> {
@@ -49251,7 +49251,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Expressions_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expressions_after.hpp"
         return pass;
     }
 };
@@ -49263,7 +49263,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Expressions_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_INT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_INT.hpp")
 // Inlined hook for Type_INT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_INT>> {
@@ -49282,7 +49282,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_INT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_INT.hpp"
         return {};
     }
 };
@@ -49294,7 +49294,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_INT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_INT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_INT_before.hpp")
 // Inlined hook for Type_INT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_INT_before>> {
@@ -49313,7 +49313,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_INT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_INT_before.hpp"
         return pass;
     }
 };
@@ -49325,7 +49325,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_INT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_INT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_INT_after.hpp")
 // Inlined hook for Type_INT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_INT_after>> {
@@ -49344,7 +49344,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_INT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_INT_after.hpp"
         return pass;
     }
 };
@@ -49356,7 +49356,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_INT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_UINT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_UINT.hpp")
 // Inlined hook for Type_UINT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_UINT>> {
@@ -49375,7 +49375,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_UINT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_UINT.hpp"
         return {};
     }
 };
@@ -49387,7 +49387,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_UINT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_UINT_before.hpp")
 // Inlined hook for Type_UINT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_UINT_before>> {
@@ -49406,7 +49406,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_UINT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_UINT_before.hpp"
         return pass;
     }
 };
@@ -49418,7 +49418,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_UINT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_UINT_after.hpp")
 // Inlined hook for Type_UINT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_UINT_after>> {
@@ -49437,7 +49437,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_UINT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_UINT_after.hpp"
         return pass;
     }
 };
@@ -49449,7 +49449,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_UINT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_USIZE.hpp")
 // Inlined hook for Type_USIZE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_USIZE>> {
@@ -49468,7 +49468,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_USIZE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_USIZE.hpp"
         return {};
     }
 };
@@ -49480,7 +49480,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_USIZE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_before.hpp")
 // Inlined hook for Type_USIZE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_USIZE_before>> {
@@ -49499,7 +49499,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_USIZE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_before.hpp"
         return pass;
     }
 };
@@ -49511,7 +49511,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_USIZE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_after.hpp")
 // Inlined hook for Type_USIZE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_USIZE_after>> {
@@ -49530,7 +49530,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_USIZE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_USIZE_after.hpp"
         return pass;
     }
 };
@@ -49542,7 +49542,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_USIZE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT.hpp")
 // Inlined hook for Type_FLOAT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FLOAT>> {
@@ -49561,7 +49561,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_FLOAT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT.hpp"
         return {};
     }
 };
@@ -49573,7 +49573,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FLOAT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_before.hpp")
 // Inlined hook for Type_FLOAT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FLOAT_before>> {
@@ -49592,7 +49592,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_FLOAT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_before.hpp"
         return pass;
     }
 };
@@ -49604,7 +49604,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FLOAT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_after.hpp")
 // Inlined hook for Type_FLOAT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FLOAT_after>> {
@@ -49623,7 +49623,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_FLOAT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_FLOAT_after.hpp"
         return pass;
     }
 };
@@ -49635,7 +49635,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FLOAT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT.hpp")
 // Inlined hook for Type_STRUCT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_STRUCT>> {
@@ -49654,7 +49654,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_STRUCT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT.hpp"
         return {};
     }
 };
@@ -49666,7 +49666,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_STRUCT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_before.hpp")
 // Inlined hook for Type_STRUCT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_STRUCT_before>> {
@@ -49685,7 +49685,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_STRUCT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_before.hpp"
         return pass;
     }
 };
@@ -49697,7 +49697,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_STRUCT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_after.hpp")
 // Inlined hook for Type_STRUCT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_STRUCT_after>> {
@@ -49716,7 +49716,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_STRUCT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_STRUCT_after.hpp"
         return pass;
     }
 };
@@ -49728,7 +49728,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_STRUCT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT.hpp")
 // Inlined hook for Type_RECURSIVE_STRUCT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT>> {
@@ -49747,7 +49747,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT.hpp"
         return {};
     }
 };
@@ -49759,7 +49759,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_before.hpp")
 // Inlined hook for Type_RECURSIVE_STRUCT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_before>> {
@@ -49778,7 +49778,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_before.hpp"
         return pass;
     }
 };
@@ -49790,7 +49790,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_after.hpp")
 // Inlined hook for Type_RECURSIVE_STRUCT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_after>> {
@@ -49809,7 +49809,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_RECURSIVE_STRUCT_after.hpp"
         return pass;
     }
 };
@@ -49821,7 +49821,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_BOOL.hpp")
 // Inlined hook for Type_BOOL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_BOOL>> {
@@ -49840,7 +49840,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_BOOL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_BOOL.hpp"
         return {};
     }
 };
@@ -49852,7 +49852,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_BOOL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_before.hpp")
 // Inlined hook for Type_BOOL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_BOOL_before>> {
@@ -49871,7 +49871,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_BOOL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_before.hpp"
         return pass;
     }
 };
@@ -49883,7 +49883,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_BOOL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_after.hpp")
 // Inlined hook for Type_BOOL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_BOOL_after>> {
@@ -49902,7 +49902,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_BOOL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_BOOL_after.hpp"
         return pass;
     }
 };
@@ -49914,7 +49914,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_BOOL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VOID.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VOID.hpp")
 // Inlined hook for Type_VOID for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VOID>> {
@@ -49933,7 +49933,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VOID.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VOID.hpp"
         return {};
     }
 };
@@ -49945,7 +49945,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VOID>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VOID_before.hpp")
 // Inlined hook for Type_VOID_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VOID_before>> {
@@ -49964,7 +49964,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VOID_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VOID_before.hpp"
         return pass;
     }
 };
@@ -49976,7 +49976,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VOID_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VOID_after.hpp")
 // Inlined hook for Type_VOID_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VOID_after>> {
@@ -49995,7 +49995,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VOID_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VOID_after.hpp"
         return pass;
     }
 };
@@ -50007,7 +50007,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VOID_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_META.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_META.hpp")
 // Inlined hook for Type_META for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_META>> {
@@ -50026,7 +50026,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_META.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_META.hpp"
         return {};
     }
 };
@@ -50038,7 +50038,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_META>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_META_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_META_before.hpp")
 // Inlined hook for Type_META_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_META_before>> {
@@ -50057,7 +50057,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_META_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_META_before.hpp"
         return pass;
     }
 };
@@ -50069,7 +50069,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_META_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_META_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_META_after.hpp")
 // Inlined hook for Type_META_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_META_after>> {
@@ -50088,7 +50088,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_META_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_META_after.hpp"
         return pass;
     }
 };
@@ -50100,7 +50100,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_META_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENUM.hpp")
 // Inlined hook for Type_ENUM for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENUM>> {
@@ -50119,7 +50119,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENUM.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENUM.hpp"
         return {};
     }
 };
@@ -50131,7 +50131,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENUM>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_before.hpp")
 // Inlined hook for Type_ENUM_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENUM_before>> {
@@ -50150,7 +50150,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENUM_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_before.hpp"
         return pass;
     }
 };
@@ -50162,7 +50162,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENUM_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_after.hpp")
 // Inlined hook for Type_ENUM_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENUM_after>> {
@@ -50181,7 +50181,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENUM_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENUM_after.hpp"
         return pass;
     }
 };
@@ -50193,7 +50193,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENUM_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY.hpp")
 // Inlined hook for Type_ARRAY for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ARRAY>> {
@@ -50212,7 +50212,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ARRAY.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY.hpp"
         return {};
     }
 };
@@ -50224,7 +50224,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ARRAY>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_before.hpp")
 // Inlined hook for Type_ARRAY_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ARRAY_before>> {
@@ -50243,7 +50243,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ARRAY_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_before.hpp"
         return pass;
     }
 };
@@ -50255,7 +50255,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ARRAY_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_after.hpp")
 // Inlined hook for Type_ARRAY_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ARRAY_after>> {
@@ -50274,7 +50274,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ARRAY_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ARRAY_after.hpp"
         return pass;
     }
 };
@@ -50286,7 +50286,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ARRAY_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR.hpp")
 // Inlined hook for Type_VECTOR for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VECTOR>> {
@@ -50305,7 +50305,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VECTOR.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR.hpp"
         return {};
     }
 };
@@ -50317,7 +50317,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VECTOR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_before.hpp")
 // Inlined hook for Type_VECTOR_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VECTOR_before>> {
@@ -50336,7 +50336,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VECTOR_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_before.hpp"
         return pass;
     }
 };
@@ -50348,7 +50348,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VECTOR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_after.hpp")
 // Inlined hook for Type_VECTOR_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VECTOR_after>> {
@@ -50367,7 +50367,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VECTOR_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VECTOR_after.hpp"
         return pass;
     }
 };
@@ -50379,7 +50379,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VECTOR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT.hpp")
 // Inlined hook for Type_VARIANT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VARIANT>> {
@@ -50398,7 +50398,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VARIANT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT.hpp"
         return {};
     }
 };
@@ -50410,7 +50410,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VARIANT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_before.hpp")
 // Inlined hook for Type_VARIANT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VARIANT_before>> {
@@ -50429,7 +50429,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VARIANT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_before.hpp"
         return pass;
     }
 };
@@ -50441,7 +50441,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VARIANT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_after.hpp")
 // Inlined hook for Type_VARIANT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VARIANT_after>> {
@@ -50460,7 +50460,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_VARIANT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_VARIANT_after.hpp"
         return pass;
     }
 };
@@ -50472,7 +50472,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_VARIANT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RANGE.hpp")
 // Inlined hook for Type_RANGE for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RANGE>> {
@@ -50491,7 +50491,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_RANGE.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_RANGE.hpp"
         return {};
     }
 };
@@ -50503,7 +50503,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RANGE>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_before.hpp")
 // Inlined hook for Type_RANGE_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RANGE_before>> {
@@ -50522,7 +50522,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_RANGE_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_before.hpp"
         return pass;
     }
 };
@@ -50534,7 +50534,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RANGE_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_after.hpp")
 // Inlined hook for Type_RANGE_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RANGE_after>> {
@@ -50553,7 +50553,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_RANGE_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_RANGE_after.hpp"
         return pass;
     }
 };
@@ -50565,7 +50565,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_RANGE_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN.hpp")
 // Inlined hook for Type_ENCODER_RETURN for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_RETURN>> {
@@ -50584,7 +50584,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN.hpp"
         return {};
     }
 };
@@ -50596,7 +50596,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_before.hpp")
 // Inlined hook for Type_ENCODER_RETURN_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_before>> {
@@ -50615,7 +50615,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_before.hpp"
         return pass;
     }
 };
@@ -50627,7 +50627,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_after.hpp")
 // Inlined hook for Type_ENCODER_RETURN_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_after>> {
@@ -50646,7 +50646,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_RETURN_after.hpp"
         return pass;
     }
 };
@@ -50658,7 +50658,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN.hpp")
 // Inlined hook for Type_DECODER_RETURN for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_RETURN>> {
@@ -50677,7 +50677,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN.hpp"
         return {};
     }
 };
@@ -50689,7 +50689,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_before.hpp")
 // Inlined hook for Type_DECODER_RETURN_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_RETURN_before>> {
@@ -50708,7 +50708,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_before.hpp"
         return pass;
     }
 };
@@ -50720,7 +50720,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_after.hpp")
 // Inlined hook for Type_DECODER_RETURN_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_RETURN_after>> {
@@ -50739,7 +50739,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_RETURN_after.hpp"
         return pass;
     }
 };
@@ -50751,7 +50751,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT.hpp")
 // Inlined hook for Type_ENCODER_INPUT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_INPUT>> {
@@ -50770,7 +50770,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT.hpp"
         return {};
     }
 };
@@ -50782,7 +50782,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_INPUT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_before.hpp")
 // Inlined hook for Type_ENCODER_INPUT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_before>> {
@@ -50801,7 +50801,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_before.hpp"
         return pass;
     }
 };
@@ -50813,7 +50813,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_after.hpp")
 // Inlined hook for Type_ENCODER_INPUT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_after>> {
@@ -50832,7 +50832,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_ENCODER_INPUT_after.hpp"
         return pass;
     }
 };
@@ -50844,7 +50844,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT.hpp")
 // Inlined hook for Type_DECODER_INPUT for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_INPUT>> {
@@ -50863,7 +50863,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT.hpp"
         return {};
     }
 };
@@ -50875,7 +50875,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_INPUT>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_before.hpp")
 // Inlined hook for Type_DECODER_INPUT_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_INPUT_before>> {
@@ -50894,7 +50894,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_before.hpp"
         return pass;
     }
 };
@@ -50906,7 +50906,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_INPUT_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_after.hpp")
 // Inlined hook for Type_DECODER_INPUT_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_INPUT_after>> {
@@ -50925,7 +50925,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_DECODER_INPUT_after.hpp"
         return pass;
     }
 };
@@ -50937,7 +50937,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_DECODER_INPUT_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN.hpp")
 // Inlined hook for Type_PROPERTY_SETTER_RETURN for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN>> {
@@ -50956,7 +50956,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN.hpp"
         return {};
     }
 };
@@ -50968,7 +50968,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_before.hpp")
 // Inlined hook for Type_PROPERTY_SETTER_RETURN_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>> {
@@ -50987,7 +50987,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_before.hpp"
         return pass;
     }
 };
@@ -50999,7 +50999,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_after.hpp")
 // Inlined hook for Type_PROPERTY_SETTER_RETURN_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>> {
@@ -51018,7 +51018,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_PROPERTY_SETTER_RETURN_after.hpp"
         return pass;
     }
 };
@@ -51030,7 +51030,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL.hpp")
 // Inlined hook for Type_OPTIONAL for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_OPTIONAL>> {
@@ -51049,7 +51049,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL.hpp"
         return {};
     }
 };
@@ -51061,7 +51061,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_OPTIONAL>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_before.hpp")
 // Inlined hook for Type_OPTIONAL_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_OPTIONAL_before>> {
@@ -51080,7 +51080,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_before.hpp"
         return pass;
     }
 };
@@ -51092,7 +51092,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_OPTIONAL_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_after.hpp")
 // Inlined hook for Type_OPTIONAL_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_OPTIONAL_after>> {
@@ -51111,7 +51111,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_OPTIONAL_after.hpp"
         return pass;
     }
 };
@@ -51123,7 +51123,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_OPTIONAL_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PTR.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PTR.hpp")
 // Inlined hook for Type_PTR for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PTR>> {
@@ -51142,7 +51142,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_PTR.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_PTR.hpp"
         return {};
     }
 };
@@ -51154,7 +51154,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PTR>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PTR_before.hpp")
 // Inlined hook for Type_PTR_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PTR_before>> {
@@ -51173,7 +51173,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_PTR_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_PTR_before.hpp"
         return pass;
     }
 };
@@ -51185,7 +51185,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PTR_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_PTR_after.hpp")
 // Inlined hook for Type_PTR_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PTR_after>> {
@@ -51204,7 +51204,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_PTR_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_PTR_after.hpp"
         return pass;
     }
 };
@@ -51216,7 +51216,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_PTR_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION.hpp")
 // Inlined hook for Type_FUNCTION for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FUNCTION>> {
@@ -51235,7 +51235,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION.hpp"
         return {};
     }
 };
@@ -51247,7 +51247,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FUNCTION>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_before.hpp")
 // Inlined hook for Type_FUNCTION_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FUNCTION_before>> {
@@ -51266,7 +51266,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_before.hpp"
         return pass;
     }
 };
@@ -51278,7 +51278,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FUNCTION_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_after.hpp")
 // Inlined hook for Type_FUNCTION_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FUNCTION_after>> {
@@ -51297,7 +51297,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_FUNCTION_after.hpp"
         return pass;
     }
 };
@@ -51309,7 +51309,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_FUNCTION_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_dispatch.hpp")
 // Inlined hook for Type for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type>> {
@@ -51328,7 +51328,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_dispatch.hpp"
         return {};
     }
 };
@@ -51340,7 +51340,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_before_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch.hpp")
 // Inlined hook for Type_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_before>> {
@@ -51359,7 +51359,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_before_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch.hpp"
         return pass;
     }
 };
@@ -51371,7 +51371,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Type_after_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch.hpp")
 // Inlined hook for Type_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_after>> {
@@ -51390,7 +51390,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Type_after_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch.hpp"
         return pass;
     }
 };
@@ -51402,7 +51402,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Type_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Types.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Types.hpp")
 // Inlined hook for Types for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Types>> {
@@ -51421,7 +51421,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Types.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Types.hpp"
         return {};
     }
 };
@@ -51433,7 +51433,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Types>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Types_before.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Types_before.hpp")
 // Inlined hook for Types_before for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Types_before>> {
@@ -51452,7 +51452,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Types_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Types_before.hpp"
         return pass;
     }
 };
@@ -51464,7 +51464,7 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Types_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/Types_after.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Types_after.hpp")
 // Inlined hook for Types_after for backward compatibility
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_Types_after>> {
@@ -51483,7 +51483,7 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/Types_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Types_after.hpp"
         return pass;
     }
 };
@@ -56946,21 +56946,16 @@ namespace ebm2python {
     template<typename Context>
     expected<Result> dispatch_Type_FUNCTION(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
-        if (!in.body.params()) {
-            return unexpect_error("Unexpected null pointer for TypeBody::params");
+        if (!in.body.func_desc()) {
+            return unexpect_error("Unexpected null pointer for TypeBody::func_desc");
         }
-        auto& params = *in.body.params();
-        if (!in.body.return_type()) {
-            return unexpect_error("Unexpected null pointer for TypeBody::return_type");
-        }
-        auto& return_type = *in.body.return_type();
+        auto& func_desc = *in.body.func_desc();
         auto main_logic = [&]() -> expected<Result>{
             Context_Type_FUNCTION new_ctx{
                 .visitor = get_visitor_from_context(ctx),
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
-                .params = params,
-                .return_type = return_type,
+                .func_desc = func_desc,
             };
             return get_visitor_from_context(ctx).visit(new_ctx);
         };
@@ -56968,8 +56963,7 @@ namespace ebm2python {
             .visitor = get_visitor_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
-            .params = params,
-            .return_type = return_type,
+            .func_desc = func_desc,
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context(ctx).visit(before_ctx);
@@ -56986,8 +56980,7 @@ namespace ebm2python {
             .visitor = get_visitor_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
-            .params = params,
-            .return_type = return_type,
+            .func_desc = func_desc,
             .main_logic = main_logic,
             .result = main_result,
         };
@@ -71769,7 +71762,7 @@ DEFINE_ENTRY(ebm2python::Flags, ebm2python::Output) {
     ebm2python::VisitorsImpl visitors_impl;
     ebm2python::MergedVisitor visitor{ebm,flags,output,w,visitors_impl};
     auto entry_function = [&]() -> ebmgen::expected<ebm2python::Result> {
-        ebm2python::InitialContext initial_ctx{.visitor=visitor};
+        ebm2python::InitialContext initial_ctx{.visitor = visitor};
         auto pre_visit_result = ebm2python::dispatch_pre_visitor(initial_ctx,ebm);
         if (!pre_visit_result) {
             if(!ebmcodegen::util::is_pass_error(pre_visit_result.error())) {

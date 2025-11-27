@@ -174,7 +174,7 @@ def run_update_hooks(tool_path, lang, gmode):
             sys.exit(1)
 
     if lang == "default":
-        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor"
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor/visitor"
         dsl_dir = None
     else:
         visitor_dir = os.path.join("src", get_mode_dir(gmode), f"ebm2{lang}", "visitor")

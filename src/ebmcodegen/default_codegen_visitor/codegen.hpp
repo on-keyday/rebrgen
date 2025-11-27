@@ -19,24 +19,24 @@
 #include "visitor/includes_before.hpp"
 #elif __has_include("visitor/dsl/includes_before_dsl.hpp")
 #include "visitor/dsl/includes_before_dsl.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes_before.hpp")
-#include "ebmcodegen/default_codegen_visitor/visitor/includes_before.hpp"
+#elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorincludes_before.hpp")
+#include "src/ebmcodegen/default_codegen_visitor/visitorincludes_before.hpp"
 #endif
 #if __has_include("visitor/includes.hpp")
 #include "visitor/includes.hpp"
 #elif __has_include("visitor/dsl/includes_dsl.hpp")
 #include "visitor/dsl/includes_dsl.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes.hpp")
-#include "ebmcodegen/default_codegen_visitor/visitor/includes.hpp"
+#elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorincludes.hpp")
+#include "src/ebmcodegen/default_codegen_visitor/visitorincludes.hpp"
 #endif
 #if __has_include("visitor/includes_after.hpp")
 #include "visitor/includes_after.hpp"
 #elif __has_include("visitor/dsl/includes_after_dsl.hpp")
 #include "visitor/dsl/includes_after_dsl.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes_after.hpp")
-#include "ebmcodegen/default_codegen_visitor/visitor/includes_after.hpp"
+#elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorincludes_after.hpp")
+#include "src/ebmcodegen/default_codegen_visitor/visitorincludes_after.hpp"
 #endif
-namespace ebm2p4 {
+namespace ebm2all {
     struct MergedVisitor;
     using namespace ebmgen;
     using namespace ebmcodegen::util;
@@ -61,22 +61,22 @@ namespace ebm2p4 {
         #include "visitor/Result_before.hpp"
         #elif __has_include("visitor/dsl/Result_before_dsl.hpp")
         #include "visitor/dsl/Result_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Result_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Result_before.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorResult_before.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorResult_before.hpp"
         #endif
         #if __has_include("visitor/Result.hpp")
         #include "visitor/Result.hpp"
         #elif __has_include("visitor/dsl/Result_dsl.hpp")
         #include "visitor/dsl/Result_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Result.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Result.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorResult.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorResult.hpp"
         #endif
         #if __has_include("visitor/Result_after.hpp")
         #include "visitor/Result_after.hpp"
         #elif __has_include("visitor/dsl/Result_after_dsl.hpp")
         #include "visitor/dsl/Result_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Result_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Result_after.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorResult_after.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorResult_after.hpp"
         #endif
     };
     struct Flags : ebmcodegen::Flags {
@@ -96,22 +96,22 @@ namespace ebm2p4 {
         #include "visitor/Flags_before.hpp"
         #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
         #include "visitor/dsl/Flags_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_before.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_before.hpp"
         #endif
         #if __has_include("visitor/Flags.hpp")
         #include "visitor/Flags.hpp"
         #elif __has_include("visitor/dsl/Flags_dsl.hpp")
         #include "visitor/dsl/Flags_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Flags.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorFlags.hpp"
         #endif
         #if __has_include("visitor/Flags_after.hpp")
         #include "visitor/Flags_after.hpp"
         #elif __has_include("visitor/dsl/Flags_after_dsl.hpp")
         #include "visitor/dsl/Flags_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_after.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_after.hpp"
         #endif
         #undef DEFINE_FLAG
         #undef WEB_FILTERED
@@ -128,29 +128,29 @@ namespace ebm2p4 {
         #include "visitor/Flags_struct_before.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_before_dsl.hpp")
         #include "visitor/dsl/Flags_struct_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_struct_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct_before.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_struct_before.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_struct_before.hpp"
         #endif
         #if __has_include("visitor/Flags_struct.hpp")
         #include "visitor/Flags_struct.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_dsl.hpp")
         #include "visitor/dsl/Flags_struct_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_struct.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_struct.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_struct.hpp"
         #endif
         #if __has_include("visitor/Flags_struct_after.hpp")
         #include "visitor/Flags_struct_after.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_after_dsl.hpp")
         #include "visitor/dsl/Flags_struct_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_struct_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct_after.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_struct_after.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_struct_after.hpp"
         #endif
         void bind(futils::cmdline::option::Context& ctx) {
-            lang_name = "p4";
+            lang_name = "all";
             ui_lang_name = lang_name;
             lsp_name = lang_name;
-            webworker_name = "ebm2p4";
-            file_extensions = {".p4"};
+            webworker_name = "ebm2all";
+            file_extensions = {".all"};
             ebmcodegen::Flags::bind(ctx); // bind basis
             #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
                 ctx.flag_func(&name,flag_name,__VA_ARGS__)
@@ -168,22 +168,22 @@ namespace ebm2p4 {
             #include "visitor/Flags_before.hpp"
             #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
             #include "visitor/dsl/Flags_before_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp")
-            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp"
+            #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_before.hpp")
+            #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_before.hpp"
             #endif
             #if __has_include("visitor/Flags.hpp")
             #include "visitor/Flags.hpp"
             #elif __has_include("visitor/dsl/Flags_dsl.hpp")
             #include "visitor/dsl/Flags_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags.hpp")
-            #include "ebmcodegen/default_codegen_visitor/visitor/Flags.hpp"
+            #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags.hpp")
+            #include "src/ebmcodegen/default_codegen_visitor/visitorFlags.hpp"
             #endif
             #if __has_include("visitor/Flags_after.hpp")
             #include "visitor/Flags_after.hpp"
             #elif __has_include("visitor/dsl/Flags_after_dsl.hpp")
             #include "visitor/dsl/Flags_after_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp")
-            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp"
+            #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_after.hpp")
+            #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_after.hpp"
             #endif
             #undef DEFINE_FLAG
             #undef WEB_FILTERED
@@ -200,22 +200,22 @@ namespace ebm2p4 {
             #include "visitor/Flags_bind_before.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_before_dsl.hpp")
             #include "visitor/dsl/Flags_bind_before_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_bind_before.hpp")
-            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_bind_before.hpp"
+            #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_bind_before.hpp")
+            #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_bind_before.hpp"
             #endif
             #if __has_include("visitor/Flags_bind.hpp")
             #include "visitor/Flags_bind.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_dsl.hpp")
             #include "visitor/dsl/Flags_bind_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_bind.hpp")
-            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_bind.hpp"
+            #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_bind.hpp")
+            #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_bind.hpp"
             #endif
             #if __has_include("visitor/Flags_bind_after.hpp")
             #include "visitor/Flags_bind_after.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_after_dsl.hpp")
             #include "visitor/dsl/Flags_bind_after_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_bind_after.hpp")
-            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_bind_after.hpp"
+            #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorFlags_bind_after.hpp")
+            #include "src/ebmcodegen/default_codegen_visitor/visitorFlags_bind_after.hpp"
             #endif
         }
     };
@@ -224,22 +224,22 @@ namespace ebm2p4 {
     #include "visitor/Output_before.hpp"
     #elif __has_include("visitor/dsl/Output_before_dsl.hpp")
     #include "visitor/dsl/Output_before_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Output_before.hpp")
-    #include "ebmcodegen/default_codegen_visitor/visitor/Output_before.hpp"
+    #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorOutput_before.hpp")
+    #include "src/ebmcodegen/default_codegen_visitor/visitorOutput_before.hpp"
     #endif
     #if __has_include("visitor/Output.hpp")
     #include "visitor/Output.hpp"
     #elif __has_include("visitor/dsl/Output_dsl.hpp")
     #include "visitor/dsl/Output_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Output.hpp")
-    #include "ebmcodegen/default_codegen_visitor/visitor/Output.hpp"
+    #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorOutput.hpp")
+    #include "src/ebmcodegen/default_codegen_visitor/visitorOutput.hpp"
     #endif
     #if __has_include("visitor/Output_after.hpp")
     #include "visitor/Output_after.hpp"
     #elif __has_include("visitor/dsl/Output_after_dsl.hpp")
     #include "visitor/dsl/Output_after_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Output_after.hpp")
-    #include "ebmcodegen/default_codegen_visitor/visitor/Output_after.hpp"
+    #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorOutput_after.hpp")
+    #include "src/ebmcodegen/default_codegen_visitor/visitorOutput_after.hpp"
     #endif
     };
     template <typename Tag>
@@ -922,7 +922,7 @@ namespace ebm2p4 {
     }
     struct BaseVisitor {
         BaseVisitor(MergedVisitor* __legacy_compat_ptr,ebmgen::EBMProxy module_,Flags& flags,Output& output,futils::binary::writer& wm) :__legacy_compat_ptr(__legacy_compat_ptr),module_(module_, ebmgen::lazy_init),flags(flags),output(output),wm(wm){}
-        static constexpr const char* program_name = "ebm2p4";
+        static constexpr const char* program_name = "ebm2all";
         MergedVisitor* const __legacy_compat_ptr;
         ebmgen::MappingTable module_;
         Flags& flags;
@@ -932,22 +932,22 @@ namespace ebm2p4 {
         #include "visitor/Visitor_before.hpp"
         #elif __has_include("visitor/dsl/Visitor_before_dsl.hpp")
         #include "visitor/dsl/Visitor_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Visitor_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Visitor_before.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorVisitor_before.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorVisitor_before.hpp"
         #endif
         #if __has_include("visitor/Visitor.hpp")
         #include "visitor/Visitor.hpp"
         #elif __has_include("visitor/dsl/Visitor_dsl.hpp")
         #include "visitor/dsl/Visitor_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Visitor.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Visitor.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorVisitor.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorVisitor.hpp"
         #endif
         #if __has_include("visitor/Visitor_after.hpp")
         #include "visitor/Visitor_after.hpp"
         #elif __has_include("visitor/dsl/Visitor_after_dsl.hpp")
         #include "visitor/dsl/Visitor_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Visitor_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/visitor/Visitor_after.hpp"
+        #elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorVisitor_after.hpp")
+        #include "src/ebmcodegen/default_codegen_visitor/visitorVisitor_after.hpp"
         #endif
     };
     template<typename V>
@@ -966,7 +966,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_entry&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_ENTRY(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;
     struct Context_entry_before : ebmcodegen::util::ContextBase<Context_entry_before> {
         BaseVisitor& visitor;
@@ -978,7 +978,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_entry_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_ENTRY_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;
     struct Context_entry_after : ebmcodegen::util::ContextBase<Context_entry_after> {
         BaseVisitor& visitor;
@@ -991,7 +991,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_entry_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_ENTRY_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_pre_visitor : ebmcodegen::util::ContextBase<Context_pre_visitor> {
         BaseVisitor& visitor;
@@ -1003,7 +1003,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_pre_visitor&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_PRE_VISITOR(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_PRE_VISITOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;
     struct Context_pre_visitor_before : ebmcodegen::util::ContextBase<Context_pre_visitor_before> {
         BaseVisitor& visitor;
@@ -1016,7 +1016,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_pre_visitor_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_PRE_VISITOR_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_PRE_VISITOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;
     struct Context_pre_visitor_after : ebmcodegen::util::ContextBase<Context_pre_visitor_after> {
         BaseVisitor& visitor;
@@ -1030,7 +1030,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_pre_visitor_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_post_entry : ebmcodegen::util::ContextBase<Context_post_entry> {
         BaseVisitor& visitor;
@@ -1042,7 +1042,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_post_entry&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_POST_ENTRY(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_POST_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;
     struct Context_post_entry_before : ebmcodegen::util::ContextBase<Context_post_entry_before> {
         BaseVisitor& visitor;
@@ -1055,7 +1055,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_post_entry_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;
     struct Context_post_entry_after : ebmcodegen::util::ContextBase<Context_post_entry_after> {
         BaseVisitor& visitor;
@@ -1069,7 +1069,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_post_entry_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BLOCK : ebmcodegen::util::ContextBase<Context_Statement_BLOCK> {
         BaseVisitor& visitor;
@@ -1083,7 +1083,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_BLOCK&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BLOCK(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
     struct Context_Statement_BLOCK_before : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_before> {
         BaseVisitor& visitor;
@@ -1098,7 +1098,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_BLOCK_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_BLOCK_after : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_after> {
         BaseVisitor& visitor;
@@ -1114,7 +1114,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_BLOCK_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSIGNMENT : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT> {
         BaseVisitor& visitor;
@@ -1130,7 +1130,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ASSIGNMENT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ASSIGNMENT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ASSIGNMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
     struct Context_Statement_ASSIGNMENT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_before> {
         BaseVisitor& visitor;
@@ -1147,7 +1147,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ASSIGNMENT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ASSIGNMENT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_after> {
         BaseVisitor& visitor;
@@ -1165,7 +1165,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ASSIGNMENT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_YIELD : ebmcodegen::util::ContextBase<Context_Statement_YIELD> {
         BaseVisitor& visitor;
@@ -1181,7 +1181,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_YIELD&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_YIELD(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_YIELD(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
     struct Context_Statement_YIELD_before : ebmcodegen::util::ContextBase<Context_Statement_YIELD_before> {
         BaseVisitor& visitor;
@@ -1198,7 +1198,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_YIELD_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_YIELD_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_YIELD_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_YIELD_after : ebmcodegen::util::ContextBase<Context_Statement_YIELD_after> {
         BaseVisitor& visitor;
@@ -1216,7 +1216,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_YIELD_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_APPEND : ebmcodegen::util::ContextBase<Context_Statement_APPEND> {
         BaseVisitor& visitor;
@@ -1231,7 +1231,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_APPEND&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_APPEND(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_APPEND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;
     struct Context_Statement_APPEND_before : ebmcodegen::util::ContextBase<Context_Statement_APPEND_before> {
         BaseVisitor& visitor;
@@ -1247,7 +1247,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_APPEND_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_APPEND_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_APPEND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_APPEND_after : ebmcodegen::util::ContextBase<Context_Statement_APPEND_after> {
         BaseVisitor& visitor;
@@ -1264,7 +1264,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_APPEND_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_RETURN : ebmcodegen::util::ContextBase<Context_Statement_RETURN> {
         BaseVisitor& visitor;
@@ -1278,7 +1278,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_RETURN&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
     struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before> {
         BaseVisitor& visitor;
@@ -1293,7 +1293,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after> {
         BaseVisitor& visitor;
@@ -1309,7 +1309,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_RETURN : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN> {
         BaseVisitor& visitor;
@@ -1323,7 +1323,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ERROR_RETURN&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
     struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before> {
         BaseVisitor& visitor;
@@ -1338,7 +1338,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ERROR_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after> {
         BaseVisitor& visitor;
@@ -1354,7 +1354,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ERROR_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSERT : ebmcodegen::util::ContextBase<Context_Statement_ASSERT> {
         BaseVisitor& visitor;
@@ -1368,7 +1368,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ASSERT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ASSERT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ASSERT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;
     struct Context_Statement_ASSERT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_before> {
         BaseVisitor& visitor;
@@ -1383,7 +1383,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ASSERT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ASSERT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_after> {
         BaseVisitor& visitor;
@@ -1399,7 +1399,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ASSERT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_READ_DATA : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA> {
         BaseVisitor& visitor;
@@ -1413,7 +1413,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_READ_DATA&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_READ_DATA(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;
     struct Context_Statement_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_before> {
         BaseVisitor& visitor;
@@ -1428,7 +1428,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_READ_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_after> {
         BaseVisitor& visitor;
@@ -1444,7 +1444,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_READ_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA> {
         BaseVisitor& visitor;
@@ -1458,7 +1458,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_WRITE_DATA&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_WRITE_DATA(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;
     struct Context_Statement_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_before> {
         BaseVisitor& visitor;
@@ -1473,7 +1473,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_WRITE_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_after> {
         BaseVisitor& visitor;
@@ -1489,7 +1489,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_WRITE_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IF_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT> {
         BaseVisitor& visitor;
@@ -1503,7 +1503,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_IF_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_IF_STATEMENT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_IF_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;
     struct Context_Statement_IF_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_before> {
         BaseVisitor& visitor;
@@ -1518,7 +1518,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_IF_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_IF_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_after> {
         BaseVisitor& visitor;
@@ -1534,7 +1534,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_IF_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_LOOP_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT> {
         BaseVisitor& visitor;
@@ -1548,7 +1548,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_LOOP_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;
     struct Context_Statement_LOOP_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_before> {
         BaseVisitor& visitor;
@@ -1563,7 +1563,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_LOOP_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_LOOP_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_after> {
         BaseVisitor& visitor;
@@ -1579,7 +1579,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_LOOP_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_MATCH_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT> {
         BaseVisitor& visitor;
@@ -1593,7 +1593,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_MATCH_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;
     struct Context_Statement_MATCH_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_before> {
         BaseVisitor& visitor;
@@ -1608,7 +1608,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_MATCH_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_MATCH_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_after> {
         BaseVisitor& visitor;
@@ -1624,7 +1624,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_MATCH_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_MATCH_BRANCH : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH> {
         BaseVisitor& visitor;
@@ -1638,7 +1638,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_MATCH_BRANCH&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_MATCH_BRANCH(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_MATCH_BRANCH(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;
     struct Context_Statement_MATCH_BRANCH_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_before> {
         BaseVisitor& visitor;
@@ -1653,7 +1653,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_MATCH_BRANCH_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_MATCH_BRANCH_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_after> {
         BaseVisitor& visitor;
@@ -1669,7 +1669,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_MATCH_BRANCH_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BREAK : ebmcodegen::util::ContextBase<Context_Statement_BREAK> {
         BaseVisitor& visitor;
@@ -1683,7 +1683,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_BREAK&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BREAK(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BREAK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;
     struct Context_Statement_BREAK_before : ebmcodegen::util::ContextBase<Context_Statement_BREAK_before> {
         BaseVisitor& visitor;
@@ -1698,7 +1698,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_BREAK_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BREAK_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BREAK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_BREAK_after : ebmcodegen::util::ContextBase<Context_Statement_BREAK_after> {
         BaseVisitor& visitor;
@@ -1714,7 +1714,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_BREAK_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_CONTINUE : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE> {
         BaseVisitor& visitor;
@@ -1728,7 +1728,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_CONTINUE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_CONTINUE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_CONTINUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;
     struct Context_Statement_CONTINUE_before : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_before> {
         BaseVisitor& visitor;
@@ -1743,7 +1743,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_CONTINUE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_CONTINUE_after : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_after> {
         BaseVisitor& visitor;
@@ -1759,7 +1759,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_CONTINUE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_FUNCTION_DECL : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL> {
         BaseVisitor& visitor;
@@ -1773,7 +1773,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_FUNCTION_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_FUNCTION_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_FUNCTION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;
     struct Context_Statement_FUNCTION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_before> {
         BaseVisitor& visitor;
@@ -1788,7 +1788,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_FUNCTION_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_FUNCTION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_after> {
         BaseVisitor& visitor;
@@ -1804,7 +1804,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_FUNCTION_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_VARIABLE_DECL : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL> {
         BaseVisitor& visitor;
@@ -1818,7 +1818,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_VARIABLE_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_VARIABLE_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_VARIABLE_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;
     struct Context_Statement_VARIABLE_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_before> {
         BaseVisitor& visitor;
@@ -1833,7 +1833,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_VARIABLE_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_VARIABLE_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_after> {
         BaseVisitor& visitor;
@@ -1849,7 +1849,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_VARIABLE_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PARAMETER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL> {
         BaseVisitor& visitor;
@@ -1863,7 +1863,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PARAMETER_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PARAMETER_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PARAMETER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;
     struct Context_Statement_PARAMETER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_before> {
         BaseVisitor& visitor;
@@ -1878,7 +1878,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PARAMETER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_PARAMETER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_after> {
         BaseVisitor& visitor;
@@ -1894,7 +1894,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PARAMETER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL> {
         BaseVisitor& visitor;
@@ -1908,7 +1908,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_FIELD_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_FIELD_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;
     struct Context_Statement_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_before> {
         BaseVisitor& visitor;
@@ -1923,7 +1923,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_FIELD_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_after> {
         BaseVisitor& visitor;
@@ -1939,7 +1939,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_FIELD_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_COMPOSITE_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL> {
         BaseVisitor& visitor;
@@ -1953,7 +1953,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_COMPOSITE_FIELD_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;
     struct Context_Statement_COMPOSITE_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_before> {
         BaseVisitor& visitor;
@@ -1968,7 +1968,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_COMPOSITE_FIELD_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_COMPOSITE_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_after> {
         BaseVisitor& visitor;
@@ -1984,7 +1984,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_COMPOSITE_FIELD_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENUM_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL> {
         BaseVisitor& visitor;
@@ -1998,7 +1998,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENUM_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENUM_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENUM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;
     struct Context_Statement_ENUM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_before> {
         BaseVisitor& visitor;
@@ -2013,7 +2013,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENUM_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ENUM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_after> {
         BaseVisitor& visitor;
@@ -2029,7 +2029,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENUM_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENUM_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL> {
         BaseVisitor& visitor;
@@ -2043,7 +2043,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENUM_MEMBER_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;
     struct Context_Statement_ENUM_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_before> {
         BaseVisitor& visitor;
@@ -2058,7 +2058,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENUM_MEMBER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ENUM_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_after> {
         BaseVisitor& visitor;
@@ -2074,7 +2074,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENUM_MEMBER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_STRUCT_DECL : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL> {
         BaseVisitor& visitor;
@@ -2088,7 +2088,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_STRUCT_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_STRUCT_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_STRUCT_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;
     struct Context_Statement_STRUCT_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_before> {
         BaseVisitor& visitor;
@@ -2103,7 +2103,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_STRUCT_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_STRUCT_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_after> {
         BaseVisitor& visitor;
@@ -2119,7 +2119,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_STRUCT_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_UNION_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL> {
         BaseVisitor& visitor;
@@ -2132,7 +2132,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_UNION_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_UNION_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_UNION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Statement_UNION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_before> {
         BaseVisitor& visitor;
@@ -2146,7 +2146,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_UNION_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_UNION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_after> {
         BaseVisitor& visitor;
@@ -2161,7 +2161,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_UNION_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_UNION_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL> {
         BaseVisitor& visitor;
@@ -2174,7 +2174,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_UNION_MEMBER_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Statement_UNION_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_before> {
         BaseVisitor& visitor;
@@ -2188,7 +2188,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_UNION_MEMBER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_UNION_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_after> {
         BaseVisitor& visitor;
@@ -2203,7 +2203,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_UNION_MEMBER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROGRAM_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL> {
         BaseVisitor& visitor;
@@ -2217,7 +2217,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROGRAM_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROGRAM_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROGRAM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
     struct Context_Statement_PROGRAM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_before> {
         BaseVisitor& visitor;
@@ -2232,7 +2232,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROGRAM_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_PROGRAM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_after> {
         BaseVisitor& visitor;
@@ -2248,7 +2248,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROGRAM_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROPERTY_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL> {
         BaseVisitor& visitor;
@@ -2262,7 +2262,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROPERTY_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROPERTY_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROPERTY_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;
     struct Context_Statement_PROPERTY_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_before> {
         BaseVisitor& visitor;
@@ -2277,7 +2277,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROPERTY_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_PROPERTY_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_after> {
         BaseVisitor& visitor;
@@ -2293,7 +2293,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROPERTY_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROPERTY_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL> {
         BaseVisitor& visitor;
@@ -2307,7 +2307,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROPERTY_MEMBER_DECL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;
     struct Context_Statement_PROPERTY_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_before> {
         BaseVisitor& visitor;
@@ -2322,7 +2322,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROPERTY_MEMBER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_PROPERTY_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_after> {
         BaseVisitor& visitor;
@@ -2338,7 +2338,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_PROPERTY_MEMBER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_METADATA : ebmcodegen::util::ContextBase<Context_Statement_METADATA> {
         BaseVisitor& visitor;
@@ -2352,7 +2352,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_METADATA&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_METADATA(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_METADATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;
     struct Context_Statement_METADATA_before : ebmcodegen::util::ContextBase<Context_Statement_METADATA_before> {
         BaseVisitor& visitor;
@@ -2367,7 +2367,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_METADATA_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_METADATA_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_METADATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_METADATA_after : ebmcodegen::util::ContextBase<Context_Statement_METADATA_after> {
         BaseVisitor& visitor;
@@ -2383,7 +2383,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_METADATA_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IMPORT_MODULE : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE> {
         BaseVisitor& visitor;
@@ -2397,7 +2397,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_IMPORT_MODULE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_IMPORT_MODULE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_IMPORT_MODULE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;
     struct Context_Statement_IMPORT_MODULE_before : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_before> {
         BaseVisitor& visitor;
@@ -2412,7 +2412,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_IMPORT_MODULE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_IMPORT_MODULE_after : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_after> {
         BaseVisitor& visitor;
@@ -2428,7 +2428,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_IMPORT_MODULE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_EXPRESSION : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION> {
         BaseVisitor& visitor;
@@ -2442,7 +2442,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_EXPRESSION&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_EXPRESSION(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;
     struct Context_Statement_EXPRESSION_before : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_before> {
         BaseVisitor& visitor;
@@ -2457,7 +2457,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_EXPRESSION_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_EXPRESSION_after : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_after> {
         BaseVisitor& visitor;
@@ -2473,7 +2473,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_EXPRESSION_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_REPORT : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT> {
         BaseVisitor& visitor;
@@ -2487,7 +2487,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ERROR_REPORT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ERROR_REPORT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ERROR_REPORT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;
     struct Context_Statement_ERROR_REPORT_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_before> {
         BaseVisitor& visitor;
@@ -2502,7 +2502,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ERROR_REPORT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ERROR_REPORT_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_after> {
         BaseVisitor& visitor;
@@ -2518,7 +2518,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ERROR_REPORT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_LOWERED_IO_STATEMENTS : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS> {
         BaseVisitor& visitor;
@@ -2532,7 +2532,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_LOWERED_IO_STATEMENTS&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;
     struct Context_Statement_LOWERED_IO_STATEMENTS_before : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_before> {
         BaseVisitor& visitor;
@@ -2547,7 +2547,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_LOWERED_IO_STATEMENTS_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_LOWERED_IO_STATEMENTS_after : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_after> {
         BaseVisitor& visitor;
@@ -2563,7 +2563,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_LOWERED_IO_STATEMENTS_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_SUB_BYTE_RANGE : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE> {
         BaseVisitor& visitor;
@@ -2577,7 +2577,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_SUB_BYTE_RANGE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;
     struct Context_Statement_SUB_BYTE_RANGE_before : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_before> {
         BaseVisitor& visitor;
@@ -2592,7 +2592,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_SUB_BYTE_RANGE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_SUB_BYTE_RANGE_after : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_after> {
         BaseVisitor& visitor;
@@ -2608,7 +2608,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_SUB_BYTE_RANGE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_INIT_CHECK : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK> {
         BaseVisitor& visitor;
@@ -2622,7 +2622,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_INIT_CHECK&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_INIT_CHECK(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_INIT_CHECK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;
     struct Context_Statement_INIT_CHECK_before : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_before> {
         BaseVisitor& visitor;
@@ -2637,7 +2637,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_INIT_CHECK_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_INIT_CHECK_after : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_after> {
         BaseVisitor& visitor;
@@ -2653,7 +2653,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_INIT_CHECK_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENDIAN_VARIABLE : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE> {
         BaseVisitor& visitor;
@@ -2667,7 +2667,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENDIAN_VARIABLE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;
     struct Context_Statement_ENDIAN_VARIABLE_before : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_before> {
         BaseVisitor& visitor;
@@ -2682,7 +2682,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENDIAN_VARIABLE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_ENDIAN_VARIABLE_after : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_after> {
         BaseVisitor& visitor;
@@ -2698,7 +2698,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_ENDIAN_VARIABLE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement : ebmcodegen::util::ContextBase<Context_Statement> {
         BaseVisitor& visitor;
@@ -2711,7 +2711,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     struct Context_Statement_before : ebmcodegen::util::ContextBase<Context_Statement_before> {
         BaseVisitor& visitor;
@@ -2725,7 +2725,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     struct Context_Statement_after : ebmcodegen::util::ContextBase<Context_Statement_after> {
         BaseVisitor& visitor;
@@ -2740,7 +2740,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Statement_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Block : ebmcodegen::util::ContextBase<Context_Block> {
         BaseVisitor& visitor;
@@ -2752,7 +2752,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Block&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_BLOCK(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     struct Context_Block_before : ebmcodegen::util::ContextBase<Context_Block_before> {
         BaseVisitor& visitor;
@@ -2765,7 +2765,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Block_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_BLOCK_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     struct Context_Block_after : ebmcodegen::util::ContextBase<Context_Block_after> {
         BaseVisitor& visitor;
@@ -2779,7 +2779,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Block_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_BLOCK_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_INT : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT> {
         BaseVisitor& visitor;
@@ -2794,7 +2794,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_INT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_INT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;
     struct Context_Expression_LITERAL_INT_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_before> {
         BaseVisitor& visitor;
@@ -2810,7 +2810,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_INT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_LITERAL_INT_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_after> {
         BaseVisitor& visitor;
@@ -2827,7 +2827,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_INT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_INT64 : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64> {
         BaseVisitor& visitor;
@@ -2842,7 +2842,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_INT64&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_INT64(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_INT64(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;
     struct Context_Expression_LITERAL_INT64_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_before> {
         BaseVisitor& visitor;
@@ -2858,7 +2858,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_INT64_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_LITERAL_INT64_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_after> {
         BaseVisitor& visitor;
@@ -2875,7 +2875,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_INT64_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_BOOL : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL> {
         BaseVisitor& visitor;
@@ -2890,7 +2890,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_BOOL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;
     struct Context_Expression_LITERAL_BOOL_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_before> {
         BaseVisitor& visitor;
@@ -2906,7 +2906,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_BOOL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_LITERAL_BOOL_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_after> {
         BaseVisitor& visitor;
@@ -2923,7 +2923,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_BOOL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_STRING : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING> {
         BaseVisitor& visitor;
@@ -2938,7 +2938,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_STRING&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_STRING(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_STRING(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;
     struct Context_Expression_LITERAL_STRING_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_before> {
         BaseVisitor& visitor;
@@ -2954,7 +2954,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_STRING_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_LITERAL_STRING_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_after> {
         BaseVisitor& visitor;
@@ -2971,7 +2971,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_STRING_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_TYPE : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE> {
         BaseVisitor& visitor;
@@ -2986,7 +2986,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_TYPE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;
     struct Context_Expression_LITERAL_TYPE_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_before> {
         BaseVisitor& visitor;
@@ -3002,7 +3002,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_TYPE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_LITERAL_TYPE_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_after> {
         BaseVisitor& visitor;
@@ -3019,7 +3019,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_TYPE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_CHAR : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR> {
         BaseVisitor& visitor;
@@ -3034,7 +3034,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_CHAR&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;
     struct Context_Expression_LITERAL_CHAR_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_before> {
         BaseVisitor& visitor;
@@ -3050,7 +3050,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_CHAR_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_LITERAL_CHAR_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_after> {
         BaseVisitor& visitor;
@@ -3067,7 +3067,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_LITERAL_CHAR_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IDENTIFIER : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER> {
         BaseVisitor& visitor;
@@ -3082,7 +3082,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IDENTIFIER&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IDENTIFIER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IDENTIFIER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;
     struct Context_Expression_IDENTIFIER_before : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_before> {
         BaseVisitor& visitor;
@@ -3098,7 +3098,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IDENTIFIER_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_IDENTIFIER_after : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_after> {
         BaseVisitor& visitor;
@@ -3115,7 +3115,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IDENTIFIER_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_BINARY_OP : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP> {
         BaseVisitor& visitor;
@@ -3132,7 +3132,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_BINARY_OP&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_BINARY_OP(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_BINARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;
     struct Context_Expression_BINARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_before> {
         BaseVisitor& visitor;
@@ -3150,7 +3150,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_BINARY_OP_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_BINARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_after> {
         BaseVisitor& visitor;
@@ -3169,7 +3169,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_BINARY_OP_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_UNARY_OP : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP> {
         BaseVisitor& visitor;
@@ -3185,7 +3185,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_UNARY_OP&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_UNARY_OP(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_UNARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;
     struct Context_Expression_UNARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_before> {
         BaseVisitor& visitor;
@@ -3202,7 +3202,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_UNARY_OP_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_UNARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_after> {
         BaseVisitor& visitor;
@@ -3220,7 +3220,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_UNARY_OP_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CALL : ebmcodegen::util::ContextBase<Context_Expression_CALL> {
         BaseVisitor& visitor;
@@ -3235,7 +3235,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CALL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CALL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CALL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;
     struct Context_Expression_CALL_before : ebmcodegen::util::ContextBase<Context_Expression_CALL_before> {
         BaseVisitor& visitor;
@@ -3251,7 +3251,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CALL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CALL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CALL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_CALL_after : ebmcodegen::util::ContextBase<Context_Expression_CALL_after> {
         BaseVisitor& visitor;
@@ -3268,7 +3268,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CALL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_INDEX_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS> {
         BaseVisitor& visitor;
@@ -3284,7 +3284,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_INDEX_ACCESS&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;
     struct Context_Expression_INDEX_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_before> {
         BaseVisitor& visitor;
@@ -3301,7 +3301,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_INDEX_ACCESS_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_INDEX_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_after> {
         BaseVisitor& visitor;
@@ -3319,7 +3319,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_INDEX_ACCESS_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_MEMBER_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS> {
         BaseVisitor& visitor;
@@ -3335,7 +3335,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_MEMBER_ACCESS&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;
     struct Context_Expression_MEMBER_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_before> {
         BaseVisitor& visitor;
@@ -3352,7 +3352,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_MEMBER_ACCESS_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_MEMBER_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_after> {
         BaseVisitor& visitor;
@@ -3370,7 +3370,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_MEMBER_ACCESS_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ENUM_MEMBER : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER> {
         BaseVisitor& visitor;
@@ -3386,7 +3386,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ENUM_MEMBER&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;
     struct Context_Expression_ENUM_MEMBER_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_before> {
         BaseVisitor& visitor;
@@ -3403,7 +3403,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ENUM_MEMBER_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_ENUM_MEMBER_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_after> {
         BaseVisitor& visitor;
@@ -3421,7 +3421,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ENUM_MEMBER_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_TYPE_CAST : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST> {
         BaseVisitor& visitor;
@@ -3438,7 +3438,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_TYPE_CAST&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;
     struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before> {
         BaseVisitor& visitor;
@@ -3456,7 +3456,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_TYPE_CAST_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after> {
         BaseVisitor& visitor;
@@ -3475,7 +3475,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_TYPE_CAST_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_RANGE : ebmcodegen::util::ContextBase<Context_Expression_RANGE> {
         BaseVisitor& visitor;
@@ -3491,7 +3491,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_RANGE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_RANGE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;
     struct Context_Expression_RANGE_before : ebmcodegen::util::ContextBase<Context_Expression_RANGE_before> {
         BaseVisitor& visitor;
@@ -3508,7 +3508,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_RANGE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_RANGE_after : ebmcodegen::util::ContextBase<Context_Expression_RANGE_after> {
         BaseVisitor& visitor;
@@ -3526,7 +3526,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_RANGE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_DEFAULT_VALUE : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE> {
         BaseVisitor& visitor;
@@ -3540,7 +3540,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_DEFAULT_VALUE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
     struct Context_Expression_DEFAULT_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_before> {
         BaseVisitor& visitor;
@@ -3555,7 +3555,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_DEFAULT_VALUE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_DEFAULT_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_after> {
         BaseVisitor& visitor;
@@ -3571,7 +3571,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_DEFAULT_VALUE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IS_LITTLE_ENDIAN : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN> {
         BaseVisitor& visitor;
@@ -3586,7 +3586,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IS_LITTLE_ENDIAN&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;
     struct Context_Expression_IS_LITTLE_ENDIAN_before : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_before> {
         BaseVisitor& visitor;
@@ -3602,7 +3602,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IS_LITTLE_ENDIAN_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_IS_LITTLE_ENDIAN_after : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_after> {
         BaseVisitor& visitor;
@@ -3619,7 +3619,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IS_LITTLE_ENDIAN_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_STREAM_OFFSET : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET> {
         BaseVisitor& visitor;
@@ -3635,7 +3635,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_GET_STREAM_OFFSET&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
     struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before> {
         BaseVisitor& visitor;
@@ -3652,7 +3652,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_GET_STREAM_OFFSET_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after> {
         BaseVisitor& visitor;
@@ -3670,7 +3670,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_GET_STREAM_OFFSET_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_REMAINING_BYTES : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES> {
         BaseVisitor& visitor;
@@ -3685,7 +3685,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_GET_REMAINING_BYTES&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;
     struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before> {
         BaseVisitor& visitor;
@@ -3701,7 +3701,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_GET_REMAINING_BYTES_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after> {
         BaseVisitor& visitor;
@@ -3718,7 +3718,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_GET_REMAINING_BYTES_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CAN_READ_STREAM : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM> {
         BaseVisitor& visitor;
@@ -3735,7 +3735,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CAN_READ_STREAM&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;
     struct Context_Expression_CAN_READ_STREAM_before : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_before> {
         BaseVisitor& visitor;
@@ -3753,7 +3753,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CAN_READ_STREAM_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_CAN_READ_STREAM_after : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_after> {
         BaseVisitor& visitor;
@@ -3772,7 +3772,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CAN_READ_STREAM_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ARRAY_SIZE : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE> {
         BaseVisitor& visitor;
@@ -3787,7 +3787,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ARRAY_SIZE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;
     struct Context_Expression_ARRAY_SIZE_before : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_before> {
         BaseVisitor& visitor;
@@ -3803,7 +3803,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ARRAY_SIZE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_ARRAY_SIZE_after : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_after> {
         BaseVisitor& visitor;
@@ -3820,7 +3820,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ARRAY_SIZE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ENUM_IS_DEFINED : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED> {
         BaseVisitor& visitor;
@@ -3836,7 +3836,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ENUM_IS_DEFINED&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_ENUM_IS_DEFINED_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_before> {
         BaseVisitor& visitor;
@@ -3853,7 +3853,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ENUM_IS_DEFINED_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_ENUM_IS_DEFINED_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_after> {
         BaseVisitor& visitor;
@@ -3871,7 +3871,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ENUM_IS_DEFINED_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IS_ERROR : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR> {
         BaseVisitor& visitor;
@@ -3886,7 +3886,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IS_ERROR&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IS_ERROR(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IS_ERROR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_IS_ERROR_before : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_before> {
         BaseVisitor& visitor;
@@ -3902,7 +3902,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IS_ERROR_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_IS_ERROR_after : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_after> {
         BaseVisitor& visitor;
@@ -3919,7 +3919,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_IS_ERROR_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_MAX_VALUE : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE> {
         BaseVisitor& visitor;
@@ -3934,7 +3934,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_MAX_VALUE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_MAX_VALUE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_MAX_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;
     struct Context_Expression_MAX_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_before> {
         BaseVisitor& visitor;
@@ -3950,7 +3950,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_MAX_VALUE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_MAX_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_after> {
         BaseVisitor& visitor;
@@ -3967,7 +3967,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_MAX_VALUE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_READ_DATA : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA> {
         BaseVisitor& visitor;
@@ -3983,7 +3983,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_READ_DATA&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_READ_DATA(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;
     struct Context_Expression_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_before> {
         BaseVisitor& visitor;
@@ -4000,7 +4000,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_READ_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_after> {
         BaseVisitor& visitor;
@@ -4018,7 +4018,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_READ_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA> {
         BaseVisitor& visitor;
@@ -4034,7 +4034,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_WRITE_DATA&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_WRITE_DATA(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_before> {
         BaseVisitor& visitor;
@@ -4051,7 +4051,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_WRITE_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_after> {
         BaseVisitor& visitor;
@@ -4069,7 +4069,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_WRITE_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CONDITIONAL_STATEMENT : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT> {
         BaseVisitor& visitor;
@@ -4085,7 +4085,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CONDITIONAL_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;
     struct Context_Expression_CONDITIONAL_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_before> {
         BaseVisitor& visitor;
@@ -4102,7 +4102,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CONDITIONAL_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_CONDITIONAL_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_after> {
         BaseVisitor& visitor;
@@ -4120,7 +4120,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CONDITIONAL_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CONDITIONAL : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL> {
         BaseVisitor& visitor;
@@ -4138,7 +4138,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CONDITIONAL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CONDITIONAL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CONDITIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;
     struct Context_Expression_CONDITIONAL_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_before> {
         BaseVisitor& visitor;
@@ -4157,7 +4157,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CONDITIONAL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_CONDITIONAL_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_after> {
         BaseVisitor& visitor;
@@ -4177,7 +4177,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_CONDITIONAL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_AVAILABLE : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE> {
         BaseVisitor& visitor;
@@ -4193,7 +4193,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_AVAILABLE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AVAILABLE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AVAILABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_AVAILABLE_before : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_before> {
         BaseVisitor& visitor;
@@ -4210,7 +4210,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_AVAILABLE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_AVAILABLE_after : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_after> {
         BaseVisitor& visitor;
@@ -4228,7 +4228,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_AVAILABLE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SIZEOF : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF> {
         BaseVisitor& visitor;
@@ -4244,7 +4244,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SIZEOF&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SIZEOF(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SIZEOF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_SIZEOF_before : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_before> {
         BaseVisitor& visitor;
@@ -4261,7 +4261,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SIZEOF_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_SIZEOF_after : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_after> {
         BaseVisitor& visitor;
@@ -4279,7 +4279,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SIZEOF_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SUB_RANGE_INIT : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT> {
         BaseVisitor& visitor;
@@ -4294,7 +4294,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SUB_RANGE_INIT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;
     struct Context_Expression_SUB_RANGE_INIT_before : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_before> {
         BaseVisitor& visitor;
@@ -4310,7 +4310,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SUB_RANGE_INIT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_SUB_RANGE_INIT_after : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_after> {
         BaseVisitor& visitor;
@@ -4327,7 +4327,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SUB_RANGE_INIT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_OR_COND : ebmcodegen::util::ContextBase<Context_Expression_OR_COND> {
         BaseVisitor& visitor;
@@ -4342,7 +4342,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_OR_COND&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_OR_COND(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_OR_COND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;
     struct Context_Expression_OR_COND_before : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_before> {
         BaseVisitor& visitor;
@@ -4358,7 +4358,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_OR_COND_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_OR_COND_after : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_after> {
         BaseVisitor& visitor;
@@ -4375,7 +4375,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_OR_COND_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ADDRESS_OF : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF> {
         BaseVisitor& visitor;
@@ -4390,7 +4390,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ADDRESS_OF&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ADDRESS_OF(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ADDRESS_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_ADDRESS_OF_before : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_before> {
         BaseVisitor& visitor;
@@ -4406,7 +4406,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ADDRESS_OF_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_ADDRESS_OF_after : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_after> {
         BaseVisitor& visitor;
@@ -4423,7 +4423,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_ADDRESS_OF_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_OPTIONAL_OF : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF> {
         BaseVisitor& visitor;
@@ -4438,7 +4438,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_OPTIONAL_OF&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_OPTIONAL_OF_before : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_before> {
         BaseVisitor& visitor;
@@ -4454,7 +4454,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_OPTIONAL_OF_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_OPTIONAL_OF_after : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_after> {
         BaseVisitor& visitor;
@@ -4471,7 +4471,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_OPTIONAL_OF_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SETTER_STATUS : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS> {
         BaseVisitor& visitor;
@@ -4486,7 +4486,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SETTER_STATUS&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SETTER_STATUS(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SETTER_STATUS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;
     struct Context_Expression_SETTER_STATUS_before : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_before> {
         BaseVisitor& visitor;
@@ -4502,7 +4502,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SETTER_STATUS_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_SETTER_STATUS_after : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_after> {
         BaseVisitor& visitor;
@@ -4519,7 +4519,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SETTER_STATUS_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SELF : ebmcodegen::util::ContextBase<Context_Expression_SELF> {
         BaseVisitor& visitor;
@@ -4533,7 +4533,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SELF&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SELF(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SELF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
     struct Context_Expression_SELF_before : ebmcodegen::util::ContextBase<Context_Expression_SELF_before> {
         BaseVisitor& visitor;
@@ -4548,7 +4548,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SELF_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SELF_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SELF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_SELF_after : ebmcodegen::util::ContextBase<Context_Expression_SELF_after> {
         BaseVisitor& visitor;
@@ -4564,7 +4564,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_SELF_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_AS_ARG : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG> {
         BaseVisitor& visitor;
@@ -4579,7 +4579,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_AS_ARG&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AS_ARG(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AS_ARG(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     struct Context_Expression_AS_ARG_before : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_before> {
         BaseVisitor& visitor;
@@ -4595,7 +4595,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_AS_ARG_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_AS_ARG_after : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_after> {
         BaseVisitor& visitor;
@@ -4612,7 +4612,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_AS_ARG_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression : ebmcodegen::util::ContextBase<Context_Expression> {
         BaseVisitor& visitor;
@@ -4625,7 +4625,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     struct Context_Expression_before : ebmcodegen::util::ContextBase<Context_Expression_before> {
         BaseVisitor& visitor;
@@ -4639,7 +4639,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_after : ebmcodegen::util::ContextBase<Context_Expression_after> {
         BaseVisitor& visitor;
@@ -4654,7 +4654,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expression_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expressions : ebmcodegen::util::ContextBase<Context_Expressions> {
         BaseVisitor& visitor;
@@ -4666,7 +4666,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expressions&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSIONS(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSIONS(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     struct Context_Expressions_before : ebmcodegen::util::ContextBase<Context_Expressions_before> {
         BaseVisitor& visitor;
@@ -4679,7 +4679,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expressions_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSIONS_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSIONS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     struct Context_Expressions_after : ebmcodegen::util::ContextBase<Context_Expressions_after> {
         BaseVisitor& visitor;
@@ -4693,7 +4693,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Expressions_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_INT : ebmcodegen::util::ContextBase<Context_Type_INT> {
         BaseVisitor& visitor;
@@ -4707,7 +4707,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_INT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_INT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     struct Context_Type_INT_before : ebmcodegen::util::ContextBase<Context_Type_INT_before> {
         BaseVisitor& visitor;
@@ -4722,7 +4722,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_INT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_INT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     struct Context_Type_INT_after : ebmcodegen::util::ContextBase<Context_Type_INT_after> {
         BaseVisitor& visitor;
@@ -4738,7 +4738,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_INT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_UINT : ebmcodegen::util::ContextBase<Context_Type_UINT> {
         BaseVisitor& visitor;
@@ -4752,7 +4752,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_UINT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_UINT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_UINT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     struct Context_Type_UINT_before : ebmcodegen::util::ContextBase<Context_Type_UINT_before> {
         BaseVisitor& visitor;
@@ -4767,7 +4767,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_UINT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_UINT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_UINT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     struct Context_Type_UINT_after : ebmcodegen::util::ContextBase<Context_Type_UINT_after> {
         BaseVisitor& visitor;
@@ -4783,7 +4783,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_UINT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_USIZE : ebmcodegen::util::ContextBase<Context_Type_USIZE> {
         BaseVisitor& visitor;
@@ -4796,7 +4796,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_USIZE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_USIZE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_USIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_USIZE_before : ebmcodegen::util::ContextBase<Context_Type_USIZE_before> {
         BaseVisitor& visitor;
@@ -4810,7 +4810,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_USIZE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_USIZE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_USIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_USIZE_after : ebmcodegen::util::ContextBase<Context_Type_USIZE_after> {
         BaseVisitor& visitor;
@@ -4825,7 +4825,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_USIZE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_FLOAT : ebmcodegen::util::ContextBase<Context_Type_FLOAT> {
         BaseVisitor& visitor;
@@ -4839,7 +4839,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_FLOAT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_FLOAT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_FLOAT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     struct Context_Type_FLOAT_before : ebmcodegen::util::ContextBase<Context_Type_FLOAT_before> {
         BaseVisitor& visitor;
@@ -4854,7 +4854,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_FLOAT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_FLOAT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_FLOAT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     struct Context_Type_FLOAT_after : ebmcodegen::util::ContextBase<Context_Type_FLOAT_after> {
         BaseVisitor& visitor;
@@ -4870,7 +4870,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_FLOAT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_STRUCT : ebmcodegen::util::ContextBase<Context_Type_STRUCT> {
         BaseVisitor& visitor;
@@ -4884,7 +4884,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_STRUCT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_STRUCT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
     struct Context_Type_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_STRUCT_before> {
         BaseVisitor& visitor;
@@ -4899,7 +4899,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_STRUCT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_STRUCT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     struct Context_Type_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_STRUCT_after> {
         BaseVisitor& visitor;
@@ -4915,7 +4915,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_STRUCT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RECURSIVE_STRUCT : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT> {
         BaseVisitor& visitor;
@@ -4929,7 +4929,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_RECURSIVE_STRUCT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
     struct Context_Type_RECURSIVE_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_before> {
         BaseVisitor& visitor;
@@ -4944,7 +4944,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_RECURSIVE_STRUCT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     struct Context_Type_RECURSIVE_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_after> {
         BaseVisitor& visitor;
@@ -4960,7 +4960,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_RECURSIVE_STRUCT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_BOOL : ebmcodegen::util::ContextBase<Context_Type_BOOL> {
         BaseVisitor& visitor;
@@ -4973,7 +4973,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_BOOL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_BOOL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_BOOL_before : ebmcodegen::util::ContextBase<Context_Type_BOOL_before> {
         BaseVisitor& visitor;
@@ -4987,7 +4987,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_BOOL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_BOOL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_BOOL_after : ebmcodegen::util::ContextBase<Context_Type_BOOL_after> {
         BaseVisitor& visitor;
@@ -5002,7 +5002,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_BOOL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VOID : ebmcodegen::util::ContextBase<Context_Type_VOID> {
         BaseVisitor& visitor;
@@ -5015,7 +5015,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VOID&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VOID(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VOID(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_VOID_before : ebmcodegen::util::ContextBase<Context_Type_VOID_before> {
         BaseVisitor& visitor;
@@ -5029,7 +5029,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VOID_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VOID_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VOID_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_VOID_after : ebmcodegen::util::ContextBase<Context_Type_VOID_after> {
         BaseVisitor& visitor;
@@ -5044,7 +5044,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VOID_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_META : ebmcodegen::util::ContextBase<Context_Type_META> {
         BaseVisitor& visitor;
@@ -5057,7 +5057,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_META&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_META(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_META(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_META_before : ebmcodegen::util::ContextBase<Context_Type_META_before> {
         BaseVisitor& visitor;
@@ -5071,7 +5071,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_META_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_META_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_META_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_META_after : ebmcodegen::util::ContextBase<Context_Type_META_after> {
         BaseVisitor& visitor;
@@ -5086,7 +5086,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_META_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENUM : ebmcodegen::util::ContextBase<Context_Type_ENUM> {
         BaseVisitor& visitor;
@@ -5101,7 +5101,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENUM&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENUM(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENUM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;
     struct Context_Type_ENUM_before : ebmcodegen::util::ContextBase<Context_Type_ENUM_before> {
         BaseVisitor& visitor;
@@ -5117,7 +5117,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENUM_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENUM_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENUM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     struct Context_Type_ENUM_after : ebmcodegen::util::ContextBase<Context_Type_ENUM_after> {
         BaseVisitor& visitor;
@@ -5134,7 +5134,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENUM_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ARRAY : ebmcodegen::util::ContextBase<Context_Type_ARRAY> {
         BaseVisitor& visitor;
@@ -5149,7 +5149,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ARRAY&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ARRAY(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ARRAY(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
     struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before> {
         BaseVisitor& visitor;
@@ -5165,7 +5165,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ARRAY_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
     struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after> {
         BaseVisitor& visitor;
@@ -5182,7 +5182,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ARRAY_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VECTOR : ebmcodegen::util::ContextBase<Context_Type_VECTOR> {
         BaseVisitor& visitor;
@@ -5196,7 +5196,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VECTOR&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VECTOR(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VECTOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;
     struct Context_Type_VECTOR_before : ebmcodegen::util::ContextBase<Context_Type_VECTOR_before> {
         BaseVisitor& visitor;
@@ -5211,7 +5211,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VECTOR_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VECTOR_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VECTOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;
     struct Context_Type_VECTOR_after : ebmcodegen::util::ContextBase<Context_Type_VECTOR_after> {
         BaseVisitor& visitor;
@@ -5227,7 +5227,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VECTOR_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VARIANT : ebmcodegen::util::ContextBase<Context_Type_VARIANT> {
         BaseVisitor& visitor;
@@ -5243,7 +5243,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VARIANT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VARIANT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VARIANT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;
     struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before> {
         BaseVisitor& visitor;
@@ -5260,7 +5260,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VARIANT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;auto& main_logic = instance_name.main_logic;
     struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after> {
         BaseVisitor& visitor;
@@ -5278,7 +5278,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_VARIANT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RANGE : ebmcodegen::util::ContextBase<Context_Type_RANGE> {
         BaseVisitor& visitor;
@@ -5292,7 +5292,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_RANGE&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_RANGE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;
     struct Context_Type_RANGE_before : ebmcodegen::util::ContextBase<Context_Type_RANGE_before> {
         BaseVisitor& visitor;
@@ -5307,7 +5307,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_RANGE_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_RANGE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;
     struct Context_Type_RANGE_after : ebmcodegen::util::ContextBase<Context_Type_RANGE_after> {
         BaseVisitor& visitor;
@@ -5323,7 +5323,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_RANGE_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENCODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN> {
         BaseVisitor& visitor;
@@ -5336,7 +5336,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENCODER_RETURN&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENCODER_RETURN(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENCODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_ENCODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_before> {
         BaseVisitor& visitor;
@@ -5350,7 +5350,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENCODER_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_ENCODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_after> {
         BaseVisitor& visitor;
@@ -5365,7 +5365,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENCODER_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_DECODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN> {
         BaseVisitor& visitor;
@@ -5378,7 +5378,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_DECODER_RETURN&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_DECODER_RETURN(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_DECODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_DECODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_before> {
         BaseVisitor& visitor;
@@ -5392,7 +5392,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_DECODER_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_DECODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_after> {
         BaseVisitor& visitor;
@@ -5407,7 +5407,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_DECODER_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENCODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT> {
         BaseVisitor& visitor;
@@ -5420,7 +5420,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENCODER_INPUT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENCODER_INPUT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENCODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_ENCODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_before> {
         BaseVisitor& visitor;
@@ -5434,7 +5434,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENCODER_INPUT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_ENCODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_after> {
         BaseVisitor& visitor;
@@ -5449,7 +5449,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_ENCODER_INPUT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_DECODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT> {
         BaseVisitor& visitor;
@@ -5462,7 +5462,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_DECODER_INPUT&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_DECODER_INPUT(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_DECODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_DECODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_before> {
         BaseVisitor& visitor;
@@ -5476,7 +5476,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_DECODER_INPUT_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_DECODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_after> {
         BaseVisitor& visitor;
@@ -5491,7 +5491,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_DECODER_INPUT_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_PROPERTY_SETTER_RETURN : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN> {
         BaseVisitor& visitor;
@@ -5504,7 +5504,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_PROPERTY_SETTER_RETURN&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     struct Context_Type_PROPERTY_SETTER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_before> {
         BaseVisitor& visitor;
@@ -5518,7 +5518,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_PROPERTY_SETTER_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     struct Context_Type_PROPERTY_SETTER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_after> {
         BaseVisitor& visitor;
@@ -5533,7 +5533,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_PROPERTY_SETTER_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_OPTIONAL : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL> {
         BaseVisitor& visitor;
@@ -5547,7 +5547,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_OPTIONAL&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_OPTIONAL(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_OPTIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;
     struct Context_Type_OPTIONAL_before : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_before> {
         BaseVisitor& visitor;
@@ -5562,7 +5562,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_OPTIONAL_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;
     struct Context_Type_OPTIONAL_after : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_after> {
         BaseVisitor& visitor;
@@ -5578,7 +5578,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_OPTIONAL_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_PTR : ebmcodegen::util::ContextBase<Context_Type_PTR> {
         BaseVisitor& visitor;
@@ -5592,7 +5592,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_PTR&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_PTR(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_PTR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;
     struct Context_Type_PTR_before : ebmcodegen::util::ContextBase<Context_Type_PTR_before> {
         BaseVisitor& visitor;
@@ -5607,7 +5607,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_PTR_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_PTR_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_PTR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;
     struct Context_Type_PTR_after : ebmcodegen::util::ContextBase<Context_Type_PTR_after> {
         BaseVisitor& visitor;
@@ -5623,7 +5623,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_PTR_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_FUNCTION : ebmcodegen::util::ContextBase<Context_Type_FUNCTION> {
         BaseVisitor& visitor;
@@ -5637,7 +5637,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_FUNCTION&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;
     struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before> {
         BaseVisitor& visitor;
@@ -5652,7 +5652,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_FUNCTION_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;
     struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after> {
         BaseVisitor& visitor;
@@ -5668,7 +5668,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_FUNCTION_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type : ebmcodegen::util::ContextBase<Context_Type> {
         BaseVisitor& visitor;
@@ -5681,7 +5681,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     struct Context_Type_before : ebmcodegen::util::ContextBase<Context_Type_before> {
         BaseVisitor& visitor;
@@ -5695,7 +5695,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     struct Context_Type_after : ebmcodegen::util::ContextBase<Context_Type_after> {
         BaseVisitor& visitor;
@@ -5710,7 +5710,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Type_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPE_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Types : ebmcodegen::util::ContextBase<Context_Types> {
         BaseVisitor& visitor;
@@ -5722,7 +5722,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Types&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPES(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPES(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     struct Context_Types_before : ebmcodegen::util::ContextBase<Context_Types_before> {
         BaseVisitor& visitor;
@@ -5735,7 +5735,7 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Types_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPES_BEFORE(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     struct Context_Types_after : ebmcodegen::util::ContextBase<Context_Types_after> {
         BaseVisitor& visitor;
@@ -5749,656 +5749,656 @@ namespace ebm2p4 {
          { v.visit(std::declval<Context_Types_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2P4_DECONSTRUCT_TYPES_AFTER(instance_name) \
+    #define EBM2ALL_DECONSTRUCT_TYPES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    #define EBM2P4_CODEGEN_VISITOR_entry ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_entry>>
-    #define EBM2P4_CODEGEN_CONTEXT_entry ebm2p4::Context_entry
-    #define EBM2P4_CODEGEN_VISITOR_entry_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_entry_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_entry_before ebm2p4::Context_entry_before
-    #define EBM2P4_CODEGEN_VISITOR_entry_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_entry_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_entry_after ebm2p4::Context_entry_after
-    #define EBM2P4_CODEGEN_VISITOR_pre_visitor ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_pre_visitor>>
-    #define EBM2P4_CODEGEN_CONTEXT_pre_visitor ebm2p4::Context_pre_visitor
-    #define EBM2P4_CODEGEN_VISITOR_pre_visitor_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_pre_visitor_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_pre_visitor_before ebm2p4::Context_pre_visitor_before
-    #define EBM2P4_CODEGEN_VISITOR_pre_visitor_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_pre_visitor_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_pre_visitor_after ebm2p4::Context_pre_visitor_after
-    #define EBM2P4_CODEGEN_VISITOR_post_entry ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_post_entry>>
-    #define EBM2P4_CODEGEN_CONTEXT_post_entry ebm2p4::Context_post_entry
-    #define EBM2P4_CODEGEN_VISITOR_post_entry_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_post_entry_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_post_entry_before ebm2p4::Context_post_entry_before
-    #define EBM2P4_CODEGEN_VISITOR_post_entry_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_post_entry_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_post_entry_after ebm2p4::Context_post_entry_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_BLOCK ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_BLOCK>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_BLOCK ebm2p4::Context_Statement_BLOCK
-    #define EBM2P4_CODEGEN_VISITOR_Statement_BLOCK_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_BLOCK_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_BLOCK_before ebm2p4::Context_Statement_BLOCK_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_BLOCK_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_BLOCK_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_BLOCK_after ebm2p4::Context_Statement_BLOCK_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ASSIGNMENT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ASSIGNMENT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ASSIGNMENT ebm2p4::Context_Statement_ASSIGNMENT
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ASSIGNMENT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ASSIGNMENT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ASSIGNMENT_before ebm2p4::Context_Statement_ASSIGNMENT_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ASSIGNMENT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ASSIGNMENT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ASSIGNMENT_after ebm2p4::Context_Statement_ASSIGNMENT_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_YIELD ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_YIELD>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_YIELD ebm2p4::Context_Statement_YIELD
-    #define EBM2P4_CODEGEN_VISITOR_Statement_YIELD_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_YIELD_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_YIELD_before ebm2p4::Context_Statement_YIELD_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_YIELD_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_YIELD_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_YIELD_after ebm2p4::Context_Statement_YIELD_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_APPEND ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_APPEND>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_APPEND ebm2p4::Context_Statement_APPEND
-    #define EBM2P4_CODEGEN_VISITOR_Statement_APPEND_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_APPEND_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_APPEND_before ebm2p4::Context_Statement_APPEND_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_APPEND_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_APPEND_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_APPEND_after ebm2p4::Context_Statement_APPEND_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_RETURN ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_RETURN>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_RETURN ebm2p4::Context_Statement_RETURN
-    #define EBM2P4_CODEGEN_VISITOR_Statement_RETURN_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_RETURN_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_RETURN_before ebm2p4::Context_Statement_RETURN_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_RETURN_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_RETURN_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_RETURN_after ebm2p4::Context_Statement_RETURN_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ERROR_RETURN ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ERROR_RETURN>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ERROR_RETURN ebm2p4::Context_Statement_ERROR_RETURN
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ERROR_RETURN_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ERROR_RETURN_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ERROR_RETURN_before ebm2p4::Context_Statement_ERROR_RETURN_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ERROR_RETURN_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ERROR_RETURN_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ERROR_RETURN_after ebm2p4::Context_Statement_ERROR_RETURN_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ASSERT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ASSERT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ASSERT ebm2p4::Context_Statement_ASSERT
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ASSERT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ASSERT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ASSERT_before ebm2p4::Context_Statement_ASSERT_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ASSERT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ASSERT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ASSERT_after ebm2p4::Context_Statement_ASSERT_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_READ_DATA ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_READ_DATA>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_READ_DATA ebm2p4::Context_Statement_READ_DATA
-    #define EBM2P4_CODEGEN_VISITOR_Statement_READ_DATA_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_READ_DATA_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_READ_DATA_before ebm2p4::Context_Statement_READ_DATA_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_READ_DATA_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_READ_DATA_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_READ_DATA_after ebm2p4::Context_Statement_READ_DATA_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_WRITE_DATA ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_WRITE_DATA>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_WRITE_DATA ebm2p4::Context_Statement_WRITE_DATA
-    #define EBM2P4_CODEGEN_VISITOR_Statement_WRITE_DATA_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_WRITE_DATA_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2p4::Context_Statement_WRITE_DATA_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_WRITE_DATA_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_WRITE_DATA_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2p4::Context_Statement_WRITE_DATA_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_IF_STATEMENT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_IF_STATEMENT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_IF_STATEMENT ebm2p4::Context_Statement_IF_STATEMENT
-    #define EBM2P4_CODEGEN_VISITOR_Statement_IF_STATEMENT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_IF_STATEMENT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_IF_STATEMENT_before ebm2p4::Context_Statement_IF_STATEMENT_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_IF_STATEMENT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_IF_STATEMENT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_IF_STATEMENT_after ebm2p4::Context_Statement_IF_STATEMENT_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_LOOP_STATEMENT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_LOOP_STATEMENT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT ebm2p4::Context_Statement_LOOP_STATEMENT
-    #define EBM2P4_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_LOOP_STATEMENT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_before ebm2p4::Context_Statement_LOOP_STATEMENT_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_LOOP_STATEMENT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_after ebm2p4::Context_Statement_LOOP_STATEMENT_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_MATCH_STATEMENT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_MATCH_STATEMENT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT ebm2p4::Context_Statement_MATCH_STATEMENT
-    #define EBM2P4_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_MATCH_STATEMENT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_before ebm2p4::Context_Statement_MATCH_STATEMENT_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_MATCH_STATEMENT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_after ebm2p4::Context_Statement_MATCH_STATEMENT_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_MATCH_BRANCH ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_MATCH_BRANCH>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_MATCH_BRANCH ebm2p4::Context_Statement_MATCH_BRANCH
-    #define EBM2P4_CODEGEN_VISITOR_Statement_MATCH_BRANCH_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_MATCH_BRANCH_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_before ebm2p4::Context_Statement_MATCH_BRANCH_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_MATCH_BRANCH_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_MATCH_BRANCH_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_after ebm2p4::Context_Statement_MATCH_BRANCH_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_BREAK ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_BREAK>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_BREAK ebm2p4::Context_Statement_BREAK
-    #define EBM2P4_CODEGEN_VISITOR_Statement_BREAK_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_BREAK_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_BREAK_before ebm2p4::Context_Statement_BREAK_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_BREAK_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_BREAK_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_BREAK_after ebm2p4::Context_Statement_BREAK_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_CONTINUE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_CONTINUE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_CONTINUE ebm2p4::Context_Statement_CONTINUE
-    #define EBM2P4_CODEGEN_VISITOR_Statement_CONTINUE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_CONTINUE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_CONTINUE_before ebm2p4::Context_Statement_CONTINUE_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_CONTINUE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_CONTINUE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_CONTINUE_after ebm2p4::Context_Statement_CONTINUE_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_FUNCTION_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_FUNCTION_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_FUNCTION_DECL ebm2p4::Context_Statement_FUNCTION_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_FUNCTION_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_FUNCTION_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_before ebm2p4::Context_Statement_FUNCTION_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_FUNCTION_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_FUNCTION_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_after ebm2p4::Context_Statement_FUNCTION_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_VARIABLE_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_VARIABLE_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_VARIABLE_DECL ebm2p4::Context_Statement_VARIABLE_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_VARIABLE_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_VARIABLE_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_before ebm2p4::Context_Statement_VARIABLE_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_VARIABLE_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_VARIABLE_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_after ebm2p4::Context_Statement_VARIABLE_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PARAMETER_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PARAMETER_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PARAMETER_DECL ebm2p4::Context_Statement_PARAMETER_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PARAMETER_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PARAMETER_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_before ebm2p4::Context_Statement_PARAMETER_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PARAMETER_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PARAMETER_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_after ebm2p4::Context_Statement_PARAMETER_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_FIELD_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_FIELD_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_FIELD_DECL ebm2p4::Context_Statement_FIELD_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_FIELD_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_FIELD_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_FIELD_DECL_before ebm2p4::Context_Statement_FIELD_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_FIELD_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_FIELD_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_FIELD_DECL_after ebm2p4::Context_Statement_FIELD_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_COMPOSITE_FIELD_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL ebm2p4::Context_Statement_COMPOSITE_FIELD_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_before ebm2p4::Context_Statement_COMPOSITE_FIELD_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_after ebm2p4::Context_Statement_COMPOSITE_FIELD_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENUM_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENUM_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENUM_DECL ebm2p4::Context_Statement_ENUM_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENUM_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENUM_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENUM_DECL_before ebm2p4::Context_Statement_ENUM_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENUM_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENUM_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENUM_DECL_after ebm2p4::Context_Statement_ENUM_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENUM_MEMBER_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL ebm2p4::Context_Statement_ENUM_MEMBER_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENUM_MEMBER_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_before ebm2p4::Context_Statement_ENUM_MEMBER_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENUM_MEMBER_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_after ebm2p4::Context_Statement_ENUM_MEMBER_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_STRUCT_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_STRUCT_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_STRUCT_DECL ebm2p4::Context_Statement_STRUCT_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_STRUCT_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_STRUCT_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_STRUCT_DECL_before ebm2p4::Context_Statement_STRUCT_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_STRUCT_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_STRUCT_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_STRUCT_DECL_after ebm2p4::Context_Statement_STRUCT_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_UNION_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_UNION_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_UNION_DECL ebm2p4::Context_Statement_UNION_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_UNION_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_UNION_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_UNION_DECL_before ebm2p4::Context_Statement_UNION_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_UNION_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_UNION_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_UNION_DECL_after ebm2p4::Context_Statement_UNION_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_UNION_MEMBER_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL ebm2p4::Context_Statement_UNION_MEMBER_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_UNION_MEMBER_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_before ebm2p4::Context_Statement_UNION_MEMBER_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_UNION_MEMBER_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_after ebm2p4::Context_Statement_UNION_MEMBER_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROGRAM_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROGRAM_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROGRAM_DECL ebm2p4::Context_Statement_PROGRAM_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROGRAM_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROGRAM_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_before ebm2p4::Context_Statement_PROGRAM_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROGRAM_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROGRAM_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_after ebm2p4::Context_Statement_PROGRAM_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROPERTY_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROPERTY_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROPERTY_DECL ebm2p4::Context_Statement_PROPERTY_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROPERTY_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROPERTY_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_before ebm2p4::Context_Statement_PROPERTY_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROPERTY_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROPERTY_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_after ebm2p4::Context_Statement_PROPERTY_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROPERTY_MEMBER_DECL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL ebm2p4::Context_Statement_PROPERTY_MEMBER_DECL
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_before ebm2p4::Context_Statement_PROPERTY_MEMBER_DECL_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_after ebm2p4::Context_Statement_PROPERTY_MEMBER_DECL_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_METADATA ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_METADATA>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_METADATA ebm2p4::Context_Statement_METADATA
-    #define EBM2P4_CODEGEN_VISITOR_Statement_METADATA_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_METADATA_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_METADATA_before ebm2p4::Context_Statement_METADATA_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_METADATA_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_METADATA_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_METADATA_after ebm2p4::Context_Statement_METADATA_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_IMPORT_MODULE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_IMPORT_MODULE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_IMPORT_MODULE ebm2p4::Context_Statement_IMPORT_MODULE
-    #define EBM2P4_CODEGEN_VISITOR_Statement_IMPORT_MODULE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_IMPORT_MODULE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_before ebm2p4::Context_Statement_IMPORT_MODULE_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_IMPORT_MODULE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_IMPORT_MODULE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_after ebm2p4::Context_Statement_IMPORT_MODULE_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_EXPRESSION ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_EXPRESSION>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_EXPRESSION ebm2p4::Context_Statement_EXPRESSION
-    #define EBM2P4_CODEGEN_VISITOR_Statement_EXPRESSION_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_EXPRESSION_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_EXPRESSION_before ebm2p4::Context_Statement_EXPRESSION_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_EXPRESSION_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_EXPRESSION_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_EXPRESSION_after ebm2p4::Context_Statement_EXPRESSION_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ERROR_REPORT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ERROR_REPORT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ERROR_REPORT ebm2p4::Context_Statement_ERROR_REPORT
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ERROR_REPORT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ERROR_REPORT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ERROR_REPORT_before ebm2p4::Context_Statement_ERROR_REPORT_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ERROR_REPORT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ERROR_REPORT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ERROR_REPORT_after ebm2p4::Context_Statement_ERROR_REPORT_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_LOWERED_IO_STATEMENTS>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS ebm2p4::Context_Statement_LOWERED_IO_STATEMENTS
-    #define EBM2P4_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_before ebm2p4::Context_Statement_LOWERED_IO_STATEMENTS_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_after ebm2p4::Context_Statement_LOWERED_IO_STATEMENTS_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_SUB_BYTE_RANGE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE ebm2p4::Context_Statement_SUB_BYTE_RANGE
-    #define EBM2P4_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_SUB_BYTE_RANGE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_before ebm2p4::Context_Statement_SUB_BYTE_RANGE_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_SUB_BYTE_RANGE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_after ebm2p4::Context_Statement_SUB_BYTE_RANGE_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_INIT_CHECK ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_INIT_CHECK>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_INIT_CHECK ebm2p4::Context_Statement_INIT_CHECK
-    #define EBM2P4_CODEGEN_VISITOR_Statement_INIT_CHECK_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_INIT_CHECK_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_INIT_CHECK_before ebm2p4::Context_Statement_INIT_CHECK_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_INIT_CHECK_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_INIT_CHECK_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_INIT_CHECK_after ebm2p4::Context_Statement_INIT_CHECK_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENDIAN_VARIABLE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE ebm2p4::Context_Statement_ENDIAN_VARIABLE
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENDIAN_VARIABLE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2p4::Context_Statement_ENDIAN_VARIABLE_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2p4::Context_Statement_ENDIAN_VARIABLE_after
-    #define EBM2P4_CODEGEN_VISITOR_Statement ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement ebm2p4::Context_Statement
-    #define EBM2P4_CODEGEN_VISITOR_Statement_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_before ebm2p4::Context_Statement_before
-    #define EBM2P4_CODEGEN_VISITOR_Statement_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Statement_after ebm2p4::Context_Statement_after
-    #define EBM2P4_CODEGEN_VISITOR_Block ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Block>>
-    #define EBM2P4_CODEGEN_CONTEXT_Block ebm2p4::Context_Block
-    #define EBM2P4_CODEGEN_VISITOR_Block_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Block_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Block_before ebm2p4::Context_Block_before
-    #define EBM2P4_CODEGEN_VISITOR_Block_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Block_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Block_after ebm2p4::Context_Block_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_INT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_INT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_INT ebm2p4::Context_Expression_LITERAL_INT
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_INT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_INT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_INT_before ebm2p4::Context_Expression_LITERAL_INT_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_INT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_INT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_INT_after ebm2p4::Context_Expression_LITERAL_INT_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_INT64 ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_INT64>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_INT64 ebm2p4::Context_Expression_LITERAL_INT64
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_INT64_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_INT64_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_INT64_before ebm2p4::Context_Expression_LITERAL_INT64_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_INT64_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_INT64_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_INT64_after ebm2p4::Context_Expression_LITERAL_INT64_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_BOOL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_BOOL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_BOOL ebm2p4::Context_Expression_LITERAL_BOOL
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_BOOL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_BOOL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_before ebm2p4::Context_Expression_LITERAL_BOOL_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_BOOL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_BOOL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_after ebm2p4::Context_Expression_LITERAL_BOOL_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_STRING ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_STRING>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_STRING ebm2p4::Context_Expression_LITERAL_STRING
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_STRING_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_STRING_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_STRING_before ebm2p4::Context_Expression_LITERAL_STRING_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_STRING_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_STRING_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_STRING_after ebm2p4::Context_Expression_LITERAL_STRING_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_TYPE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_TYPE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_TYPE ebm2p4::Context_Expression_LITERAL_TYPE
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_TYPE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_TYPE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_before ebm2p4::Context_Expression_LITERAL_TYPE_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_TYPE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_TYPE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_after ebm2p4::Context_Expression_LITERAL_TYPE_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_CHAR ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_CHAR>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_CHAR ebm2p4::Context_Expression_LITERAL_CHAR
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_CHAR_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_CHAR_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_before ebm2p4::Context_Expression_LITERAL_CHAR_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_LITERAL_CHAR_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_LITERAL_CHAR_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_after ebm2p4::Context_Expression_LITERAL_CHAR_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IDENTIFIER ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IDENTIFIER>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IDENTIFIER ebm2p4::Context_Expression_IDENTIFIER
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IDENTIFIER_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IDENTIFIER_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IDENTIFIER_before ebm2p4::Context_Expression_IDENTIFIER_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IDENTIFIER_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IDENTIFIER_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IDENTIFIER_after ebm2p4::Context_Expression_IDENTIFIER_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_BINARY_OP ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_BINARY_OP>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_BINARY_OP ebm2p4::Context_Expression_BINARY_OP
-    #define EBM2P4_CODEGEN_VISITOR_Expression_BINARY_OP_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_BINARY_OP_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_BINARY_OP_before ebm2p4::Context_Expression_BINARY_OP_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_BINARY_OP_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_BINARY_OP_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_BINARY_OP_after ebm2p4::Context_Expression_BINARY_OP_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_UNARY_OP ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_UNARY_OP>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_UNARY_OP ebm2p4::Context_Expression_UNARY_OP
-    #define EBM2P4_CODEGEN_VISITOR_Expression_UNARY_OP_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_UNARY_OP_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_UNARY_OP_before ebm2p4::Context_Expression_UNARY_OP_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_UNARY_OP_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_UNARY_OP_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_UNARY_OP_after ebm2p4::Context_Expression_UNARY_OP_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CALL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CALL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CALL ebm2p4::Context_Expression_CALL
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CALL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CALL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CALL_before ebm2p4::Context_Expression_CALL_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CALL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CALL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CALL_after ebm2p4::Context_Expression_CALL_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_INDEX_ACCESS ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_INDEX_ACCESS>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_INDEX_ACCESS ebm2p4::Context_Expression_INDEX_ACCESS
-    #define EBM2P4_CODEGEN_VISITOR_Expression_INDEX_ACCESS_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_INDEX_ACCESS_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_before ebm2p4::Context_Expression_INDEX_ACCESS_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_INDEX_ACCESS_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_INDEX_ACCESS_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_after ebm2p4::Context_Expression_INDEX_ACCESS_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_MEMBER_ACCESS ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_MEMBER_ACCESS>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS ebm2p4::Context_Expression_MEMBER_ACCESS
-    #define EBM2P4_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_MEMBER_ACCESS_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_before ebm2p4::Context_Expression_MEMBER_ACCESS_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_MEMBER_ACCESS_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_after ebm2p4::Context_Expression_MEMBER_ACCESS_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ENUM_MEMBER ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ENUM_MEMBER>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ENUM_MEMBER ebm2p4::Context_Expression_ENUM_MEMBER
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ENUM_MEMBER_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ENUM_MEMBER_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_before ebm2p4::Context_Expression_ENUM_MEMBER_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ENUM_MEMBER_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ENUM_MEMBER_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_after ebm2p4::Context_Expression_ENUM_MEMBER_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_TYPE_CAST ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_TYPE_CAST>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_TYPE_CAST ebm2p4::Context_Expression_TYPE_CAST
-    #define EBM2P4_CODEGEN_VISITOR_Expression_TYPE_CAST_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_TYPE_CAST_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_TYPE_CAST_before ebm2p4::Context_Expression_TYPE_CAST_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_TYPE_CAST_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_TYPE_CAST_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_TYPE_CAST_after ebm2p4::Context_Expression_TYPE_CAST_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_RANGE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_RANGE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_RANGE ebm2p4::Context_Expression_RANGE
-    #define EBM2P4_CODEGEN_VISITOR_Expression_RANGE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_RANGE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_RANGE_before ebm2p4::Context_Expression_RANGE_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_RANGE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_RANGE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_RANGE_after ebm2p4::Context_Expression_RANGE_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_DEFAULT_VALUE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_DEFAULT_VALUE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE ebm2p4::Context_Expression_DEFAULT_VALUE
-    #define EBM2P4_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_DEFAULT_VALUE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_before ebm2p4::Context_Expression_DEFAULT_VALUE_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_DEFAULT_VALUE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_after ebm2p4::Context_Expression_DEFAULT_VALUE_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IS_LITTLE_ENDIAN>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN ebm2p4::Context_Expression_IS_LITTLE_ENDIAN
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_before ebm2p4::Context_Expression_IS_LITTLE_ENDIAN_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_after ebm2p4::Context_Expression_IS_LITTLE_ENDIAN_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_GET_STREAM_OFFSET>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET ebm2p4::Context_Expression_GET_STREAM_OFFSET
-    #define EBM2P4_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_GET_STREAM_OFFSET_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_before ebm2p4::Context_Expression_GET_STREAM_OFFSET_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_GET_STREAM_OFFSET_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_after ebm2p4::Context_Expression_GET_STREAM_OFFSET_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_GET_REMAINING_BYTES>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES ebm2p4::Context_Expression_GET_REMAINING_BYTES
-    #define EBM2P4_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_GET_REMAINING_BYTES_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_before ebm2p4::Context_Expression_GET_REMAINING_BYTES_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_GET_REMAINING_BYTES_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_after ebm2p4::Context_Expression_GET_REMAINING_BYTES_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CAN_READ_STREAM ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CAN_READ_STREAM>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM ebm2p4::Context_Expression_CAN_READ_STREAM
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CAN_READ_STREAM_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_before ebm2p4::Context_Expression_CAN_READ_STREAM_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CAN_READ_STREAM_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_after ebm2p4::Context_Expression_CAN_READ_STREAM_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ARRAY_SIZE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ARRAY_SIZE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ARRAY_SIZE ebm2p4::Context_Expression_ARRAY_SIZE
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ARRAY_SIZE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ARRAY_SIZE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_before ebm2p4::Context_Expression_ARRAY_SIZE_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ARRAY_SIZE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ARRAY_SIZE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_after ebm2p4::Context_Expression_ARRAY_SIZE_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ENUM_IS_DEFINED>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED ebm2p4::Context_Expression_ENUM_IS_DEFINED
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ENUM_IS_DEFINED_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_before ebm2p4::Context_Expression_ENUM_IS_DEFINED_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ENUM_IS_DEFINED_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_after ebm2p4::Context_Expression_ENUM_IS_DEFINED_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IS_ERROR ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IS_ERROR>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IS_ERROR ebm2p4::Context_Expression_IS_ERROR
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IS_ERROR_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IS_ERROR_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IS_ERROR_before ebm2p4::Context_Expression_IS_ERROR_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_IS_ERROR_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_IS_ERROR_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_IS_ERROR_after ebm2p4::Context_Expression_IS_ERROR_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_MAX_VALUE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_MAX_VALUE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_MAX_VALUE ebm2p4::Context_Expression_MAX_VALUE
-    #define EBM2P4_CODEGEN_VISITOR_Expression_MAX_VALUE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_MAX_VALUE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_MAX_VALUE_before ebm2p4::Context_Expression_MAX_VALUE_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_MAX_VALUE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_MAX_VALUE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_MAX_VALUE_after ebm2p4::Context_Expression_MAX_VALUE_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_READ_DATA ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_READ_DATA>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_READ_DATA ebm2p4::Context_Expression_READ_DATA
-    #define EBM2P4_CODEGEN_VISITOR_Expression_READ_DATA_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_READ_DATA_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_READ_DATA_before ebm2p4::Context_Expression_READ_DATA_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_READ_DATA_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_READ_DATA_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_READ_DATA_after ebm2p4::Context_Expression_READ_DATA_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_WRITE_DATA ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_WRITE_DATA>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_WRITE_DATA ebm2p4::Context_Expression_WRITE_DATA
-    #define EBM2P4_CODEGEN_VISITOR_Expression_WRITE_DATA_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_WRITE_DATA_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_WRITE_DATA_before ebm2p4::Context_Expression_WRITE_DATA_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_WRITE_DATA_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_WRITE_DATA_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_WRITE_DATA_after ebm2p4::Context_Expression_WRITE_DATA_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CONDITIONAL_STATEMENT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT ebm2p4::Context_Expression_CONDITIONAL_STATEMENT
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_before ebm2p4::Context_Expression_CONDITIONAL_STATEMENT_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_after ebm2p4::Context_Expression_CONDITIONAL_STATEMENT_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CONDITIONAL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CONDITIONAL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CONDITIONAL ebm2p4::Context_Expression_CONDITIONAL
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CONDITIONAL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CONDITIONAL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CONDITIONAL_before ebm2p4::Context_Expression_CONDITIONAL_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_CONDITIONAL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_CONDITIONAL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_CONDITIONAL_after ebm2p4::Context_Expression_CONDITIONAL_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_AVAILABLE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_AVAILABLE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_AVAILABLE ebm2p4::Context_Expression_AVAILABLE
-    #define EBM2P4_CODEGEN_VISITOR_Expression_AVAILABLE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_AVAILABLE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_AVAILABLE_before ebm2p4::Context_Expression_AVAILABLE_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_AVAILABLE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_AVAILABLE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_AVAILABLE_after ebm2p4::Context_Expression_AVAILABLE_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SIZEOF ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SIZEOF>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SIZEOF ebm2p4::Context_Expression_SIZEOF
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SIZEOF_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SIZEOF_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SIZEOF_before ebm2p4::Context_Expression_SIZEOF_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SIZEOF_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SIZEOF_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SIZEOF_after ebm2p4::Context_Expression_SIZEOF_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SUB_RANGE_INIT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT ebm2p4::Context_Expression_SUB_RANGE_INIT
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SUB_RANGE_INIT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_before ebm2p4::Context_Expression_SUB_RANGE_INIT_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SUB_RANGE_INIT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_after ebm2p4::Context_Expression_SUB_RANGE_INIT_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_OR_COND ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_OR_COND>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_OR_COND ebm2p4::Context_Expression_OR_COND
-    #define EBM2P4_CODEGEN_VISITOR_Expression_OR_COND_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_OR_COND_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_OR_COND_before ebm2p4::Context_Expression_OR_COND_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_OR_COND_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_OR_COND_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_OR_COND_after ebm2p4::Context_Expression_OR_COND_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ADDRESS_OF ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ADDRESS_OF>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ADDRESS_OF ebm2p4::Context_Expression_ADDRESS_OF
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ADDRESS_OF_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ADDRESS_OF_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ADDRESS_OF_before ebm2p4::Context_Expression_ADDRESS_OF_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_ADDRESS_OF_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_ADDRESS_OF_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_ADDRESS_OF_after ebm2p4::Context_Expression_ADDRESS_OF_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_OPTIONAL_OF ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_OPTIONAL_OF>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_OPTIONAL_OF ebm2p4::Context_Expression_OPTIONAL_OF
-    #define EBM2P4_CODEGEN_VISITOR_Expression_OPTIONAL_OF_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_OPTIONAL_OF_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_before ebm2p4::Context_Expression_OPTIONAL_OF_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_OPTIONAL_OF_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_OPTIONAL_OF_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_after ebm2p4::Context_Expression_OPTIONAL_OF_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SETTER_STATUS ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SETTER_STATUS>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SETTER_STATUS ebm2p4::Context_Expression_SETTER_STATUS
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SETTER_STATUS_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SETTER_STATUS_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SETTER_STATUS_before ebm2p4::Context_Expression_SETTER_STATUS_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SETTER_STATUS_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SETTER_STATUS_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SETTER_STATUS_after ebm2p4::Context_Expression_SETTER_STATUS_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SELF ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SELF>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SELF ebm2p4::Context_Expression_SELF
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SELF_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SELF_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SELF_before ebm2p4::Context_Expression_SELF_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_SELF_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_SELF_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_SELF_after ebm2p4::Context_Expression_SELF_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression_AS_ARG ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_AS_ARG>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_AS_ARG ebm2p4::Context_Expression_AS_ARG
-    #define EBM2P4_CODEGEN_VISITOR_Expression_AS_ARG_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_AS_ARG_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2p4::Context_Expression_AS_ARG_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_AS_ARG_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_AS_ARG_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2p4::Context_Expression_AS_ARG_after
-    #define EBM2P4_CODEGEN_VISITOR_Expression ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression ebm2p4::Context_Expression
-    #define EBM2P4_CODEGEN_VISITOR_Expression_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_before ebm2p4::Context_Expression_before
-    #define EBM2P4_CODEGEN_VISITOR_Expression_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expression_after ebm2p4::Context_Expression_after
-    #define EBM2P4_CODEGEN_VISITOR_Expressions ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expressions>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expressions ebm2p4::Context_Expressions
-    #define EBM2P4_CODEGEN_VISITOR_Expressions_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expressions_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expressions_before ebm2p4::Context_Expressions_before
-    #define EBM2P4_CODEGEN_VISITOR_Expressions_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expressions_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Expressions_after ebm2p4::Context_Expressions_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_INT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_INT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_INT ebm2p4::Context_Type_INT
-    #define EBM2P4_CODEGEN_VISITOR_Type_INT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_INT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_INT_before ebm2p4::Context_Type_INT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_INT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_INT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_INT_after ebm2p4::Context_Type_INT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_UINT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_UINT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_UINT ebm2p4::Context_Type_UINT
-    #define EBM2P4_CODEGEN_VISITOR_Type_UINT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_UINT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_UINT_before ebm2p4::Context_Type_UINT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_UINT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_UINT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_UINT_after ebm2p4::Context_Type_UINT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_USIZE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_USIZE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_USIZE ebm2p4::Context_Type_USIZE
-    #define EBM2P4_CODEGEN_VISITOR_Type_USIZE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_USIZE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_USIZE_before ebm2p4::Context_Type_USIZE_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_USIZE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_USIZE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_USIZE_after ebm2p4::Context_Type_USIZE_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_FLOAT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_FLOAT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_FLOAT ebm2p4::Context_Type_FLOAT
-    #define EBM2P4_CODEGEN_VISITOR_Type_FLOAT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_FLOAT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_FLOAT_before ebm2p4::Context_Type_FLOAT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_FLOAT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_FLOAT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_FLOAT_after ebm2p4::Context_Type_FLOAT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_STRUCT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_STRUCT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_STRUCT ebm2p4::Context_Type_STRUCT
-    #define EBM2P4_CODEGEN_VISITOR_Type_STRUCT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_STRUCT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_STRUCT_before ebm2p4::Context_Type_STRUCT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_STRUCT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_STRUCT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_STRUCT_after ebm2p4::Context_Type_STRUCT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_RECURSIVE_STRUCT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT ebm2p4::Context_Type_RECURSIVE_STRUCT
-    #define EBM2P4_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_RECURSIVE_STRUCT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_before ebm2p4::Context_Type_RECURSIVE_STRUCT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_RECURSIVE_STRUCT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_after ebm2p4::Context_Type_RECURSIVE_STRUCT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_BOOL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_BOOL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_BOOL ebm2p4::Context_Type_BOOL
-    #define EBM2P4_CODEGEN_VISITOR_Type_BOOL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_BOOL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_BOOL_before ebm2p4::Context_Type_BOOL_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_BOOL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_BOOL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_BOOL_after ebm2p4::Context_Type_BOOL_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_VOID ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VOID>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VOID ebm2p4::Context_Type_VOID
-    #define EBM2P4_CODEGEN_VISITOR_Type_VOID_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VOID_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VOID_before ebm2p4::Context_Type_VOID_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_VOID_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VOID_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VOID_after ebm2p4::Context_Type_VOID_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_META ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_META>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_META ebm2p4::Context_Type_META
-    #define EBM2P4_CODEGEN_VISITOR_Type_META_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_META_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_META_before ebm2p4::Context_Type_META_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_META_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_META_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_META_after ebm2p4::Context_Type_META_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENUM ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENUM>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENUM ebm2p4::Context_Type_ENUM
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENUM_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENUM_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENUM_before ebm2p4::Context_Type_ENUM_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENUM_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENUM_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENUM_after ebm2p4::Context_Type_ENUM_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_ARRAY ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ARRAY>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ARRAY ebm2p4::Context_Type_ARRAY
-    #define EBM2P4_CODEGEN_VISITOR_Type_ARRAY_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ARRAY_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ARRAY_before ebm2p4::Context_Type_ARRAY_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_ARRAY_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ARRAY_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ARRAY_after ebm2p4::Context_Type_ARRAY_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_VECTOR ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VECTOR>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VECTOR ebm2p4::Context_Type_VECTOR
-    #define EBM2P4_CODEGEN_VISITOR_Type_VECTOR_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VECTOR_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VECTOR_before ebm2p4::Context_Type_VECTOR_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_VECTOR_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VECTOR_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VECTOR_after ebm2p4::Context_Type_VECTOR_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_VARIANT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VARIANT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VARIANT ebm2p4::Context_Type_VARIANT
-    #define EBM2P4_CODEGEN_VISITOR_Type_VARIANT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VARIANT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VARIANT_before ebm2p4::Context_Type_VARIANT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_VARIANT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_VARIANT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_VARIANT_after ebm2p4::Context_Type_VARIANT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_RANGE ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_RANGE>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_RANGE ebm2p4::Context_Type_RANGE
-    #define EBM2P4_CODEGEN_VISITOR_Type_RANGE_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_RANGE_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_RANGE_before ebm2p4::Context_Type_RANGE_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_RANGE_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_RANGE_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_RANGE_after ebm2p4::Context_Type_RANGE_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENCODER_RETURN ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENCODER_RETURN>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENCODER_RETURN ebm2p4::Context_Type_ENCODER_RETURN
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENCODER_RETURN_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENCODER_RETURN_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENCODER_RETURN_before ebm2p4::Context_Type_ENCODER_RETURN_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENCODER_RETURN_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENCODER_RETURN_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENCODER_RETURN_after ebm2p4::Context_Type_ENCODER_RETURN_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_DECODER_RETURN ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_DECODER_RETURN>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_DECODER_RETURN ebm2p4::Context_Type_DECODER_RETURN
-    #define EBM2P4_CODEGEN_VISITOR_Type_DECODER_RETURN_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_DECODER_RETURN_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_DECODER_RETURN_before ebm2p4::Context_Type_DECODER_RETURN_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_DECODER_RETURN_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_DECODER_RETURN_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_DECODER_RETURN_after ebm2p4::Context_Type_DECODER_RETURN_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENCODER_INPUT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENCODER_INPUT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENCODER_INPUT ebm2p4::Context_Type_ENCODER_INPUT
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENCODER_INPUT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENCODER_INPUT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENCODER_INPUT_before ebm2p4::Context_Type_ENCODER_INPUT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_ENCODER_INPUT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_ENCODER_INPUT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_ENCODER_INPUT_after ebm2p4::Context_Type_ENCODER_INPUT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_DECODER_INPUT ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_DECODER_INPUT>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_DECODER_INPUT ebm2p4::Context_Type_DECODER_INPUT
-    #define EBM2P4_CODEGEN_VISITOR_Type_DECODER_INPUT_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_DECODER_INPUT_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_DECODER_INPUT_before ebm2p4::Context_Type_DECODER_INPUT_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_DECODER_INPUT_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_DECODER_INPUT_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_DECODER_INPUT_after ebm2p4::Context_Type_DECODER_INPUT_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_PROPERTY_SETTER_RETURN>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN ebm2p4::Context_Type_PROPERTY_SETTER_RETURN
-    #define EBM2P4_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_before ebm2p4::Context_Type_PROPERTY_SETTER_RETURN_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_after ebm2p4::Context_Type_PROPERTY_SETTER_RETURN_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_OPTIONAL ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_OPTIONAL>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_OPTIONAL ebm2p4::Context_Type_OPTIONAL
-    #define EBM2P4_CODEGEN_VISITOR_Type_OPTIONAL_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_OPTIONAL_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_OPTIONAL_before ebm2p4::Context_Type_OPTIONAL_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_OPTIONAL_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_OPTIONAL_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_OPTIONAL_after ebm2p4::Context_Type_OPTIONAL_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_PTR ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_PTR>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_PTR ebm2p4::Context_Type_PTR
-    #define EBM2P4_CODEGEN_VISITOR_Type_PTR_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_PTR_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_PTR_before ebm2p4::Context_Type_PTR_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_PTR_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_PTR_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_PTR_after ebm2p4::Context_Type_PTR_after
-    #define EBM2P4_CODEGEN_VISITOR_Type_FUNCTION ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_FUNCTION>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_FUNCTION ebm2p4::Context_Type_FUNCTION
-    #define EBM2P4_CODEGEN_VISITOR_Type_FUNCTION_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_FUNCTION_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2p4::Context_Type_FUNCTION_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_FUNCTION_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_FUNCTION_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2p4::Context_Type_FUNCTION_after
-    #define EBM2P4_CODEGEN_VISITOR_Type ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type ebm2p4::Context_Type
-    #define EBM2P4_CODEGEN_VISITOR_Type_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_before ebm2p4::Context_Type_before
-    #define EBM2P4_CODEGEN_VISITOR_Type_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Type_after ebm2p4::Context_Type_after
-    #define EBM2P4_CODEGEN_VISITOR_Types ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Types>>
-    #define EBM2P4_CODEGEN_CONTEXT_Types ebm2p4::Context_Types
-    #define EBM2P4_CODEGEN_VISITOR_Types_before ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Types_before>>
-    #define EBM2P4_CODEGEN_CONTEXT_Types_before ebm2p4::Context_Types_before
-    #define EBM2P4_CODEGEN_VISITOR_Types_after ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Types_after>>
-    #define EBM2P4_CODEGEN_CONTEXT_Types_after ebm2p4::Context_Types_after
-    #define CODEGEN_NAMESPACE ebm2p4
-    #define CODEGEN_VISITOR(name) EBM2P4_CODEGEN_VISITOR_##name
-    #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2P4_CODEGEN_CONTEXT_PARAMETERS_##name
-    #define CODEGEN_CONTEXT(name) EBM2P4_CODEGEN_CONTEXT_##name
-}  // namespace ebm2p4
+    #define EBM2ALL_CODEGEN_VISITOR_entry ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_entry>>
+    #define EBM2ALL_CODEGEN_CONTEXT_entry ebm2all::Context_entry
+    #define EBM2ALL_CODEGEN_VISITOR_entry_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_entry_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_entry_before ebm2all::Context_entry_before
+    #define EBM2ALL_CODEGEN_VISITOR_entry_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_entry_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_entry_after ebm2all::Context_entry_after
+    #define EBM2ALL_CODEGEN_VISITOR_pre_visitor ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_pre_visitor>>
+    #define EBM2ALL_CODEGEN_CONTEXT_pre_visitor ebm2all::Context_pre_visitor
+    #define EBM2ALL_CODEGEN_VISITOR_pre_visitor_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_pre_visitor_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_pre_visitor_before ebm2all::Context_pre_visitor_before
+    #define EBM2ALL_CODEGEN_VISITOR_pre_visitor_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_pre_visitor_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_pre_visitor_after ebm2all::Context_pre_visitor_after
+    #define EBM2ALL_CODEGEN_VISITOR_post_entry ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_post_entry>>
+    #define EBM2ALL_CODEGEN_CONTEXT_post_entry ebm2all::Context_post_entry
+    #define EBM2ALL_CODEGEN_VISITOR_post_entry_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_post_entry_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_post_entry_before ebm2all::Context_post_entry_before
+    #define EBM2ALL_CODEGEN_VISITOR_post_entry_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_post_entry_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_post_entry_after ebm2all::Context_post_entry_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_BLOCK ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_BLOCK>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_BLOCK ebm2all::Context_Statement_BLOCK
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_BLOCK_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_BLOCK_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_BLOCK_before ebm2all::Context_Statement_BLOCK_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_BLOCK_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_BLOCK_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_BLOCK_after ebm2all::Context_Statement_BLOCK_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ASSIGNMENT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ASSIGNMENT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ASSIGNMENT ebm2all::Context_Statement_ASSIGNMENT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ASSIGNMENT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ASSIGNMENT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ASSIGNMENT_before ebm2all::Context_Statement_ASSIGNMENT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ASSIGNMENT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ASSIGNMENT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ASSIGNMENT_after ebm2all::Context_Statement_ASSIGNMENT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_YIELD ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_YIELD>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_YIELD ebm2all::Context_Statement_YIELD
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_YIELD_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_YIELD_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_YIELD_before ebm2all::Context_Statement_YIELD_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_YIELD_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_YIELD_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_YIELD_after ebm2all::Context_Statement_YIELD_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_APPEND ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_APPEND>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_APPEND ebm2all::Context_Statement_APPEND
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_APPEND_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_APPEND_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_APPEND_before ebm2all::Context_Statement_APPEND_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_APPEND_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_APPEND_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_APPEND_after ebm2all::Context_Statement_APPEND_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_RETURN ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_RETURN>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_RETURN ebm2all::Context_Statement_RETURN
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_RETURN_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_RETURN_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_RETURN_before ebm2all::Context_Statement_RETURN_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_RETURN_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_RETURN_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_RETURN_after ebm2all::Context_Statement_RETURN_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ERROR_RETURN ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ERROR_RETURN>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ERROR_RETURN ebm2all::Context_Statement_ERROR_RETURN
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ERROR_RETURN_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ERROR_RETURN_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ERROR_RETURN_before ebm2all::Context_Statement_ERROR_RETURN_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ERROR_RETURN_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ERROR_RETURN_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ERROR_RETURN_after ebm2all::Context_Statement_ERROR_RETURN_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ASSERT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ASSERT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ASSERT ebm2all::Context_Statement_ASSERT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ASSERT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ASSERT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ASSERT_before ebm2all::Context_Statement_ASSERT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ASSERT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ASSERT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ASSERT_after ebm2all::Context_Statement_ASSERT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_READ_DATA ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_READ_DATA>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_READ_DATA ebm2all::Context_Statement_READ_DATA
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_READ_DATA_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_READ_DATA_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_READ_DATA_before ebm2all::Context_Statement_READ_DATA_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_READ_DATA_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_READ_DATA_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_READ_DATA_after ebm2all::Context_Statement_READ_DATA_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_WRITE_DATA ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_WRITE_DATA>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_WRITE_DATA ebm2all::Context_Statement_WRITE_DATA
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_WRITE_DATA_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_WRITE_DATA_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2all::Context_Statement_WRITE_DATA_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_WRITE_DATA_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_WRITE_DATA_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2all::Context_Statement_WRITE_DATA_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_IF_STATEMENT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_IF_STATEMENT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_IF_STATEMENT ebm2all::Context_Statement_IF_STATEMENT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_IF_STATEMENT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_IF_STATEMENT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_IF_STATEMENT_before ebm2all::Context_Statement_IF_STATEMENT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_IF_STATEMENT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_IF_STATEMENT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_IF_STATEMENT_after ebm2all::Context_Statement_IF_STATEMENT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_LOOP_STATEMENT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_LOOP_STATEMENT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT ebm2all::Context_Statement_LOOP_STATEMENT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_LOOP_STATEMENT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_before ebm2all::Context_Statement_LOOP_STATEMENT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_LOOP_STATEMENT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_after ebm2all::Context_Statement_LOOP_STATEMENT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_MATCH_STATEMENT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_MATCH_STATEMENT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT ebm2all::Context_Statement_MATCH_STATEMENT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_MATCH_STATEMENT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_before ebm2all::Context_Statement_MATCH_STATEMENT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_MATCH_STATEMENT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_after ebm2all::Context_Statement_MATCH_STATEMENT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_MATCH_BRANCH ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_MATCH_BRANCH>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_MATCH_BRANCH ebm2all::Context_Statement_MATCH_BRANCH
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_MATCH_BRANCH_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_MATCH_BRANCH_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_before ebm2all::Context_Statement_MATCH_BRANCH_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_MATCH_BRANCH_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_MATCH_BRANCH_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_after ebm2all::Context_Statement_MATCH_BRANCH_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_BREAK ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_BREAK>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_BREAK ebm2all::Context_Statement_BREAK
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_BREAK_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_BREAK_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_BREAK_before ebm2all::Context_Statement_BREAK_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_BREAK_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_BREAK_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_BREAK_after ebm2all::Context_Statement_BREAK_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_CONTINUE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_CONTINUE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_CONTINUE ebm2all::Context_Statement_CONTINUE
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_CONTINUE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_CONTINUE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_CONTINUE_before ebm2all::Context_Statement_CONTINUE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_CONTINUE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_CONTINUE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_CONTINUE_after ebm2all::Context_Statement_CONTINUE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_FUNCTION_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_FUNCTION_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_FUNCTION_DECL ebm2all::Context_Statement_FUNCTION_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_FUNCTION_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_FUNCTION_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_before ebm2all::Context_Statement_FUNCTION_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_FUNCTION_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_FUNCTION_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_after ebm2all::Context_Statement_FUNCTION_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_VARIABLE_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_VARIABLE_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_VARIABLE_DECL ebm2all::Context_Statement_VARIABLE_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_VARIABLE_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_VARIABLE_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_before ebm2all::Context_Statement_VARIABLE_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_VARIABLE_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_VARIABLE_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_after ebm2all::Context_Statement_VARIABLE_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PARAMETER_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PARAMETER_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PARAMETER_DECL ebm2all::Context_Statement_PARAMETER_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PARAMETER_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PARAMETER_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_before ebm2all::Context_Statement_PARAMETER_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PARAMETER_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PARAMETER_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_after ebm2all::Context_Statement_PARAMETER_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_FIELD_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_FIELD_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_FIELD_DECL ebm2all::Context_Statement_FIELD_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_FIELD_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_FIELD_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_FIELD_DECL_before ebm2all::Context_Statement_FIELD_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_FIELD_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_FIELD_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_FIELD_DECL_after ebm2all::Context_Statement_FIELD_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_COMPOSITE_FIELD_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL ebm2all::Context_Statement_COMPOSITE_FIELD_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_before ebm2all::Context_Statement_COMPOSITE_FIELD_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_after ebm2all::Context_Statement_COMPOSITE_FIELD_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENUM_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENUM_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENUM_DECL ebm2all::Context_Statement_ENUM_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENUM_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENUM_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENUM_DECL_before ebm2all::Context_Statement_ENUM_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENUM_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENUM_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENUM_DECL_after ebm2all::Context_Statement_ENUM_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENUM_MEMBER_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL ebm2all::Context_Statement_ENUM_MEMBER_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENUM_MEMBER_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_before ebm2all::Context_Statement_ENUM_MEMBER_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENUM_MEMBER_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_after ebm2all::Context_Statement_ENUM_MEMBER_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_STRUCT_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_STRUCT_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_STRUCT_DECL ebm2all::Context_Statement_STRUCT_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_STRUCT_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_STRUCT_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_STRUCT_DECL_before ebm2all::Context_Statement_STRUCT_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_STRUCT_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_STRUCT_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_STRUCT_DECL_after ebm2all::Context_Statement_STRUCT_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_UNION_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_UNION_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_UNION_DECL ebm2all::Context_Statement_UNION_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_UNION_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_UNION_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_UNION_DECL_before ebm2all::Context_Statement_UNION_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_UNION_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_UNION_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_UNION_DECL_after ebm2all::Context_Statement_UNION_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_UNION_MEMBER_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL ebm2all::Context_Statement_UNION_MEMBER_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_UNION_MEMBER_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_before ebm2all::Context_Statement_UNION_MEMBER_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_UNION_MEMBER_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_after ebm2all::Context_Statement_UNION_MEMBER_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROGRAM_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROGRAM_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROGRAM_DECL ebm2all::Context_Statement_PROGRAM_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROGRAM_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROGRAM_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_before ebm2all::Context_Statement_PROGRAM_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROGRAM_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROGRAM_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_after ebm2all::Context_Statement_PROGRAM_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROPERTY_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROPERTY_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROPERTY_DECL ebm2all::Context_Statement_PROPERTY_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROPERTY_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROPERTY_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_before ebm2all::Context_Statement_PROPERTY_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROPERTY_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROPERTY_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_after ebm2all::Context_Statement_PROPERTY_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROPERTY_MEMBER_DECL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL ebm2all::Context_Statement_PROPERTY_MEMBER_DECL
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_before ebm2all::Context_Statement_PROPERTY_MEMBER_DECL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_after ebm2all::Context_Statement_PROPERTY_MEMBER_DECL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_METADATA ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_METADATA>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_METADATA ebm2all::Context_Statement_METADATA
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_METADATA_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_METADATA_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_METADATA_before ebm2all::Context_Statement_METADATA_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_METADATA_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_METADATA_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_METADATA_after ebm2all::Context_Statement_METADATA_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_IMPORT_MODULE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_IMPORT_MODULE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_IMPORT_MODULE ebm2all::Context_Statement_IMPORT_MODULE
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_IMPORT_MODULE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_IMPORT_MODULE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_before ebm2all::Context_Statement_IMPORT_MODULE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_IMPORT_MODULE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_IMPORT_MODULE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_after ebm2all::Context_Statement_IMPORT_MODULE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_EXPRESSION ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_EXPRESSION>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_EXPRESSION ebm2all::Context_Statement_EXPRESSION
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_EXPRESSION_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_EXPRESSION_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_EXPRESSION_before ebm2all::Context_Statement_EXPRESSION_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_EXPRESSION_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_EXPRESSION_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_EXPRESSION_after ebm2all::Context_Statement_EXPRESSION_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ERROR_REPORT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ERROR_REPORT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ERROR_REPORT ebm2all::Context_Statement_ERROR_REPORT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ERROR_REPORT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ERROR_REPORT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ERROR_REPORT_before ebm2all::Context_Statement_ERROR_REPORT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ERROR_REPORT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ERROR_REPORT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ERROR_REPORT_after ebm2all::Context_Statement_ERROR_REPORT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_LOWERED_IO_STATEMENTS>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS ebm2all::Context_Statement_LOWERED_IO_STATEMENTS
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_before ebm2all::Context_Statement_LOWERED_IO_STATEMENTS_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_after ebm2all::Context_Statement_LOWERED_IO_STATEMENTS_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_SUB_BYTE_RANGE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE ebm2all::Context_Statement_SUB_BYTE_RANGE
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_SUB_BYTE_RANGE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_before ebm2all::Context_Statement_SUB_BYTE_RANGE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_SUB_BYTE_RANGE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_after ebm2all::Context_Statement_SUB_BYTE_RANGE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_INIT_CHECK ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_INIT_CHECK>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_INIT_CHECK ebm2all::Context_Statement_INIT_CHECK
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_INIT_CHECK_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_INIT_CHECK_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_INIT_CHECK_before ebm2all::Context_Statement_INIT_CHECK_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_INIT_CHECK_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_INIT_CHECK_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_INIT_CHECK_after ebm2all::Context_Statement_INIT_CHECK_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENDIAN_VARIABLE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE ebm2all::Context_Statement_ENDIAN_VARIABLE
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENDIAN_VARIABLE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2all::Context_Statement_ENDIAN_VARIABLE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2all::Context_Statement_ENDIAN_VARIABLE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement ebm2all::Context_Statement
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_before ebm2all::Context_Statement_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_after ebm2all::Context_Statement_after
+    #define EBM2ALL_CODEGEN_VISITOR_Block ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Block ebm2all::Context_Block
+    #define EBM2ALL_CODEGEN_VISITOR_Block_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Block_before ebm2all::Context_Block_before
+    #define EBM2ALL_CODEGEN_VISITOR_Block_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Block_after ebm2all::Context_Block_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_INT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_INT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_INT ebm2all::Context_Expression_LITERAL_INT
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_INT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_INT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_INT_before ebm2all::Context_Expression_LITERAL_INT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_INT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_INT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_INT_after ebm2all::Context_Expression_LITERAL_INT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_INT64 ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_INT64>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_INT64 ebm2all::Context_Expression_LITERAL_INT64
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_INT64_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_INT64_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_INT64_before ebm2all::Context_Expression_LITERAL_INT64_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_INT64_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_INT64_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_INT64_after ebm2all::Context_Expression_LITERAL_INT64_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_BOOL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_BOOL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_BOOL ebm2all::Context_Expression_LITERAL_BOOL
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_BOOL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_BOOL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_before ebm2all::Context_Expression_LITERAL_BOOL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_BOOL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_BOOL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_after ebm2all::Context_Expression_LITERAL_BOOL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_STRING ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_STRING>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_STRING ebm2all::Context_Expression_LITERAL_STRING
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_STRING_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_STRING_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_STRING_before ebm2all::Context_Expression_LITERAL_STRING_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_STRING_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_STRING_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_STRING_after ebm2all::Context_Expression_LITERAL_STRING_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_TYPE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_TYPE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_TYPE ebm2all::Context_Expression_LITERAL_TYPE
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_TYPE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_TYPE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_before ebm2all::Context_Expression_LITERAL_TYPE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_TYPE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_TYPE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_after ebm2all::Context_Expression_LITERAL_TYPE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_CHAR ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_CHAR>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_CHAR ebm2all::Context_Expression_LITERAL_CHAR
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_CHAR_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_CHAR_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_before ebm2all::Context_Expression_LITERAL_CHAR_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_LITERAL_CHAR_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_LITERAL_CHAR_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_after ebm2all::Context_Expression_LITERAL_CHAR_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IDENTIFIER ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IDENTIFIER>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IDENTIFIER ebm2all::Context_Expression_IDENTIFIER
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IDENTIFIER_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IDENTIFIER_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IDENTIFIER_before ebm2all::Context_Expression_IDENTIFIER_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IDENTIFIER_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IDENTIFIER_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IDENTIFIER_after ebm2all::Context_Expression_IDENTIFIER_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_BINARY_OP ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_BINARY_OP>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_BINARY_OP ebm2all::Context_Expression_BINARY_OP
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_BINARY_OP_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_BINARY_OP_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_BINARY_OP_before ebm2all::Context_Expression_BINARY_OP_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_BINARY_OP_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_BINARY_OP_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_BINARY_OP_after ebm2all::Context_Expression_BINARY_OP_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_UNARY_OP ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_UNARY_OP>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_UNARY_OP ebm2all::Context_Expression_UNARY_OP
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_UNARY_OP_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_UNARY_OP_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_UNARY_OP_before ebm2all::Context_Expression_UNARY_OP_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_UNARY_OP_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_UNARY_OP_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_UNARY_OP_after ebm2all::Context_Expression_UNARY_OP_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CALL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CALL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CALL ebm2all::Context_Expression_CALL
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CALL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CALL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CALL_before ebm2all::Context_Expression_CALL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CALL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CALL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CALL_after ebm2all::Context_Expression_CALL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_INDEX_ACCESS ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_INDEX_ACCESS>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_INDEX_ACCESS ebm2all::Context_Expression_INDEX_ACCESS
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_INDEX_ACCESS_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_INDEX_ACCESS_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_before ebm2all::Context_Expression_INDEX_ACCESS_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_INDEX_ACCESS_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_INDEX_ACCESS_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_after ebm2all::Context_Expression_INDEX_ACCESS_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_MEMBER_ACCESS ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_MEMBER_ACCESS>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS ebm2all::Context_Expression_MEMBER_ACCESS
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_MEMBER_ACCESS_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_before ebm2all::Context_Expression_MEMBER_ACCESS_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_MEMBER_ACCESS_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_after ebm2all::Context_Expression_MEMBER_ACCESS_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ENUM_MEMBER ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ENUM_MEMBER>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ENUM_MEMBER ebm2all::Context_Expression_ENUM_MEMBER
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ENUM_MEMBER_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ENUM_MEMBER_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_before ebm2all::Context_Expression_ENUM_MEMBER_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ENUM_MEMBER_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ENUM_MEMBER_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_after ebm2all::Context_Expression_ENUM_MEMBER_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_TYPE_CAST ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_TYPE_CAST>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_TYPE_CAST ebm2all::Context_Expression_TYPE_CAST
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_TYPE_CAST_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_TYPE_CAST_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_TYPE_CAST_before ebm2all::Context_Expression_TYPE_CAST_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_TYPE_CAST_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_TYPE_CAST_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_TYPE_CAST_after ebm2all::Context_Expression_TYPE_CAST_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_RANGE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_RANGE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_RANGE ebm2all::Context_Expression_RANGE
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_RANGE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_RANGE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_RANGE_before ebm2all::Context_Expression_RANGE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_RANGE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_RANGE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_RANGE_after ebm2all::Context_Expression_RANGE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_DEFAULT_VALUE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_DEFAULT_VALUE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE ebm2all::Context_Expression_DEFAULT_VALUE
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_DEFAULT_VALUE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_before ebm2all::Context_Expression_DEFAULT_VALUE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_DEFAULT_VALUE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_after ebm2all::Context_Expression_DEFAULT_VALUE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IS_LITTLE_ENDIAN>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN ebm2all::Context_Expression_IS_LITTLE_ENDIAN
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_before ebm2all::Context_Expression_IS_LITTLE_ENDIAN_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_after ebm2all::Context_Expression_IS_LITTLE_ENDIAN_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_GET_STREAM_OFFSET>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET ebm2all::Context_Expression_GET_STREAM_OFFSET
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_GET_STREAM_OFFSET_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_before ebm2all::Context_Expression_GET_STREAM_OFFSET_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_GET_STREAM_OFFSET_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_after ebm2all::Context_Expression_GET_STREAM_OFFSET_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_GET_REMAINING_BYTES>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES ebm2all::Context_Expression_GET_REMAINING_BYTES
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_GET_REMAINING_BYTES_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_before ebm2all::Context_Expression_GET_REMAINING_BYTES_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_GET_REMAINING_BYTES_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_after ebm2all::Context_Expression_GET_REMAINING_BYTES_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CAN_READ_STREAM ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CAN_READ_STREAM>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM ebm2all::Context_Expression_CAN_READ_STREAM
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CAN_READ_STREAM_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_before ebm2all::Context_Expression_CAN_READ_STREAM_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CAN_READ_STREAM_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_after ebm2all::Context_Expression_CAN_READ_STREAM_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ARRAY_SIZE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ARRAY_SIZE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ARRAY_SIZE ebm2all::Context_Expression_ARRAY_SIZE
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ARRAY_SIZE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ARRAY_SIZE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_before ebm2all::Context_Expression_ARRAY_SIZE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ARRAY_SIZE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ARRAY_SIZE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_after ebm2all::Context_Expression_ARRAY_SIZE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ENUM_IS_DEFINED>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED ebm2all::Context_Expression_ENUM_IS_DEFINED
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ENUM_IS_DEFINED_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_before ebm2all::Context_Expression_ENUM_IS_DEFINED_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ENUM_IS_DEFINED_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_after ebm2all::Context_Expression_ENUM_IS_DEFINED_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IS_ERROR ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IS_ERROR>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IS_ERROR ebm2all::Context_Expression_IS_ERROR
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IS_ERROR_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IS_ERROR_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IS_ERROR_before ebm2all::Context_Expression_IS_ERROR_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_IS_ERROR_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_IS_ERROR_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_IS_ERROR_after ebm2all::Context_Expression_IS_ERROR_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_MAX_VALUE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_MAX_VALUE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_MAX_VALUE ebm2all::Context_Expression_MAX_VALUE
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_MAX_VALUE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_MAX_VALUE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_MAX_VALUE_before ebm2all::Context_Expression_MAX_VALUE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_MAX_VALUE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_MAX_VALUE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_MAX_VALUE_after ebm2all::Context_Expression_MAX_VALUE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_READ_DATA ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_READ_DATA>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_READ_DATA ebm2all::Context_Expression_READ_DATA
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_READ_DATA_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_READ_DATA_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_READ_DATA_before ebm2all::Context_Expression_READ_DATA_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_READ_DATA_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_READ_DATA_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_READ_DATA_after ebm2all::Context_Expression_READ_DATA_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_WRITE_DATA ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_WRITE_DATA>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_WRITE_DATA ebm2all::Context_Expression_WRITE_DATA
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_WRITE_DATA_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_WRITE_DATA_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_WRITE_DATA_before ebm2all::Context_Expression_WRITE_DATA_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_WRITE_DATA_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_WRITE_DATA_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_WRITE_DATA_after ebm2all::Context_Expression_WRITE_DATA_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CONDITIONAL_STATEMENT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT ebm2all::Context_Expression_CONDITIONAL_STATEMENT
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_before ebm2all::Context_Expression_CONDITIONAL_STATEMENT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_after ebm2all::Context_Expression_CONDITIONAL_STATEMENT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CONDITIONAL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CONDITIONAL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CONDITIONAL ebm2all::Context_Expression_CONDITIONAL
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CONDITIONAL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CONDITIONAL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CONDITIONAL_before ebm2all::Context_Expression_CONDITIONAL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_CONDITIONAL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_CONDITIONAL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_CONDITIONAL_after ebm2all::Context_Expression_CONDITIONAL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_AVAILABLE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AVAILABLE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_AVAILABLE ebm2all::Context_Expression_AVAILABLE
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_AVAILABLE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AVAILABLE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_AVAILABLE_before ebm2all::Context_Expression_AVAILABLE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_AVAILABLE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AVAILABLE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_AVAILABLE_after ebm2all::Context_Expression_AVAILABLE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SIZEOF ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SIZEOF>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SIZEOF ebm2all::Context_Expression_SIZEOF
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SIZEOF_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SIZEOF_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SIZEOF_before ebm2all::Context_Expression_SIZEOF_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SIZEOF_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SIZEOF_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SIZEOF_after ebm2all::Context_Expression_SIZEOF_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SUB_RANGE_INIT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT ebm2all::Context_Expression_SUB_RANGE_INIT
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SUB_RANGE_INIT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_before ebm2all::Context_Expression_SUB_RANGE_INIT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SUB_RANGE_INIT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_after ebm2all::Context_Expression_SUB_RANGE_INIT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_OR_COND ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_OR_COND>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_OR_COND ebm2all::Context_Expression_OR_COND
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_OR_COND_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_OR_COND_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_OR_COND_before ebm2all::Context_Expression_OR_COND_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_OR_COND_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_OR_COND_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_OR_COND_after ebm2all::Context_Expression_OR_COND_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ADDRESS_OF ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ADDRESS_OF>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ADDRESS_OF ebm2all::Context_Expression_ADDRESS_OF
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ADDRESS_OF_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ADDRESS_OF_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ADDRESS_OF_before ebm2all::Context_Expression_ADDRESS_OF_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_ADDRESS_OF_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_ADDRESS_OF_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_ADDRESS_OF_after ebm2all::Context_Expression_ADDRESS_OF_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_OPTIONAL_OF ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_OPTIONAL_OF>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_OPTIONAL_OF ebm2all::Context_Expression_OPTIONAL_OF
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_OPTIONAL_OF_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_OPTIONAL_OF_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_before ebm2all::Context_Expression_OPTIONAL_OF_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_OPTIONAL_OF_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_OPTIONAL_OF_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_after ebm2all::Context_Expression_OPTIONAL_OF_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SETTER_STATUS ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SETTER_STATUS>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SETTER_STATUS ebm2all::Context_Expression_SETTER_STATUS
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SETTER_STATUS_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SETTER_STATUS_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SETTER_STATUS_before ebm2all::Context_Expression_SETTER_STATUS_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SETTER_STATUS_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SETTER_STATUS_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SETTER_STATUS_after ebm2all::Context_Expression_SETTER_STATUS_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SELF ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SELF>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SELF ebm2all::Context_Expression_SELF
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SELF_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SELF_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SELF_before ebm2all::Context_Expression_SELF_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_SELF_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_SELF_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_SELF_after ebm2all::Context_Expression_SELF_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_AS_ARG ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AS_ARG>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_AS_ARG ebm2all::Context_Expression_AS_ARG
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_AS_ARG_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AS_ARG_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2all::Context_Expression_AS_ARG_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_AS_ARG_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AS_ARG_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2all::Context_Expression_AS_ARG_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression ebm2all::Context_Expression
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_before ebm2all::Context_Expression_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_after ebm2all::Context_Expression_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expressions ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expressions ebm2all::Context_Expressions
+    #define EBM2ALL_CODEGEN_VISITOR_Expressions_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expressions_before ebm2all::Context_Expressions_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expressions_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expressions_after ebm2all::Context_Expressions_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_INT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_INT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_INT ebm2all::Context_Type_INT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_INT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_INT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_INT_before ebm2all::Context_Type_INT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_INT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_INT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_INT_after ebm2all::Context_Type_INT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_UINT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_UINT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_UINT ebm2all::Context_Type_UINT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_UINT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_UINT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_UINT_before ebm2all::Context_Type_UINT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_UINT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_UINT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_UINT_after ebm2all::Context_Type_UINT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_USIZE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_USIZE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_USIZE ebm2all::Context_Type_USIZE
+    #define EBM2ALL_CODEGEN_VISITOR_Type_USIZE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_USIZE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_USIZE_before ebm2all::Context_Type_USIZE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_USIZE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_USIZE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_USIZE_after ebm2all::Context_Type_USIZE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_FLOAT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FLOAT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_FLOAT ebm2all::Context_Type_FLOAT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_FLOAT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FLOAT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_FLOAT_before ebm2all::Context_Type_FLOAT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_FLOAT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FLOAT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_FLOAT_after ebm2all::Context_Type_FLOAT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_STRUCT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_STRUCT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_STRUCT ebm2all::Context_Type_STRUCT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_STRUCT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_STRUCT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_STRUCT_before ebm2all::Context_Type_STRUCT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_STRUCT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_STRUCT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_STRUCT_after ebm2all::Context_Type_STRUCT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_RECURSIVE_STRUCT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT ebm2all::Context_Type_RECURSIVE_STRUCT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_RECURSIVE_STRUCT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_before ebm2all::Context_Type_RECURSIVE_STRUCT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_RECURSIVE_STRUCT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_after ebm2all::Context_Type_RECURSIVE_STRUCT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_BOOL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_BOOL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_BOOL ebm2all::Context_Type_BOOL
+    #define EBM2ALL_CODEGEN_VISITOR_Type_BOOL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_BOOL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_BOOL_before ebm2all::Context_Type_BOOL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_BOOL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_BOOL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_BOOL_after ebm2all::Context_Type_BOOL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VOID ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VOID>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VOID ebm2all::Context_Type_VOID
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VOID_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VOID_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VOID_before ebm2all::Context_Type_VOID_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VOID_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VOID_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VOID_after ebm2all::Context_Type_VOID_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_META ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_META>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_META ebm2all::Context_Type_META
+    #define EBM2ALL_CODEGEN_VISITOR_Type_META_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_META_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_META_before ebm2all::Context_Type_META_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_META_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_META_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_META_after ebm2all::Context_Type_META_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENUM ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENUM>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENUM ebm2all::Context_Type_ENUM
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENUM_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENUM_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENUM_before ebm2all::Context_Type_ENUM_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENUM_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENUM_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENUM_after ebm2all::Context_Type_ENUM_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ARRAY ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ARRAY>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ARRAY ebm2all::Context_Type_ARRAY
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ARRAY_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ARRAY_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ARRAY_before ebm2all::Context_Type_ARRAY_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ARRAY_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ARRAY_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ARRAY_after ebm2all::Context_Type_ARRAY_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VECTOR ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VECTOR>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VECTOR ebm2all::Context_Type_VECTOR
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VECTOR_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VECTOR_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VECTOR_before ebm2all::Context_Type_VECTOR_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VECTOR_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VECTOR_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VECTOR_after ebm2all::Context_Type_VECTOR_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VARIANT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VARIANT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VARIANT ebm2all::Context_Type_VARIANT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VARIANT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VARIANT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VARIANT_before ebm2all::Context_Type_VARIANT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_VARIANT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_VARIANT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_VARIANT_after ebm2all::Context_Type_VARIANT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_RANGE ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_RANGE>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_RANGE ebm2all::Context_Type_RANGE
+    #define EBM2ALL_CODEGEN_VISITOR_Type_RANGE_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_RANGE_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_RANGE_before ebm2all::Context_Type_RANGE_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_RANGE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_RANGE_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_RANGE_after ebm2all::Context_Type_RANGE_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENCODER_RETURN ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENCODER_RETURN>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENCODER_RETURN ebm2all::Context_Type_ENCODER_RETURN
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENCODER_RETURN_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENCODER_RETURN_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENCODER_RETURN_before ebm2all::Context_Type_ENCODER_RETURN_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENCODER_RETURN_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENCODER_RETURN_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENCODER_RETURN_after ebm2all::Context_Type_ENCODER_RETURN_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_DECODER_RETURN ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_DECODER_RETURN>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_DECODER_RETURN ebm2all::Context_Type_DECODER_RETURN
+    #define EBM2ALL_CODEGEN_VISITOR_Type_DECODER_RETURN_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_DECODER_RETURN_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_DECODER_RETURN_before ebm2all::Context_Type_DECODER_RETURN_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_DECODER_RETURN_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_DECODER_RETURN_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_DECODER_RETURN_after ebm2all::Context_Type_DECODER_RETURN_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENCODER_INPUT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENCODER_INPUT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENCODER_INPUT ebm2all::Context_Type_ENCODER_INPUT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENCODER_INPUT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENCODER_INPUT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENCODER_INPUT_before ebm2all::Context_Type_ENCODER_INPUT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_ENCODER_INPUT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_ENCODER_INPUT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_ENCODER_INPUT_after ebm2all::Context_Type_ENCODER_INPUT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_DECODER_INPUT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_DECODER_INPUT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_DECODER_INPUT ebm2all::Context_Type_DECODER_INPUT
+    #define EBM2ALL_CODEGEN_VISITOR_Type_DECODER_INPUT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_DECODER_INPUT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_DECODER_INPUT_before ebm2all::Context_Type_DECODER_INPUT_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_DECODER_INPUT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_DECODER_INPUT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_DECODER_INPUT_after ebm2all::Context_Type_DECODER_INPUT_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_PROPERTY_SETTER_RETURN>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN ebm2all::Context_Type_PROPERTY_SETTER_RETURN
+    #define EBM2ALL_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_before ebm2all::Context_Type_PROPERTY_SETTER_RETURN_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_after ebm2all::Context_Type_PROPERTY_SETTER_RETURN_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_OPTIONAL ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_OPTIONAL>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_OPTIONAL ebm2all::Context_Type_OPTIONAL
+    #define EBM2ALL_CODEGEN_VISITOR_Type_OPTIONAL_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_OPTIONAL_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_OPTIONAL_before ebm2all::Context_Type_OPTIONAL_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_OPTIONAL_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_OPTIONAL_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_OPTIONAL_after ebm2all::Context_Type_OPTIONAL_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_PTR ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_PTR>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_PTR ebm2all::Context_Type_PTR
+    #define EBM2ALL_CODEGEN_VISITOR_Type_PTR_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_PTR_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_PTR_before ebm2all::Context_Type_PTR_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_PTR_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_PTR_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_PTR_after ebm2all::Context_Type_PTR_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_FUNCTION ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FUNCTION>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_FUNCTION ebm2all::Context_Type_FUNCTION
+    #define EBM2ALL_CODEGEN_VISITOR_Type_FUNCTION_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FUNCTION_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2all::Context_Type_FUNCTION_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_FUNCTION_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FUNCTION_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2all::Context_Type_FUNCTION_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type ebm2all::Context_Type
+    #define EBM2ALL_CODEGEN_VISITOR_Type_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_before ebm2all::Context_Type_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_after ebm2all::Context_Type_after
+    #define EBM2ALL_CODEGEN_VISITOR_Types ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Types ebm2all::Context_Types
+    #define EBM2ALL_CODEGEN_VISITOR_Types_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Types_before ebm2all::Context_Types_before
+    #define EBM2ALL_CODEGEN_VISITOR_Types_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Types_after ebm2all::Context_Types_after
+    #define CODEGEN_NAMESPACE ebm2all
+    #define CODEGEN_VISITOR(name) EBM2ALL_CODEGEN_VISITOR_##name
+    #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2ALL_CODEGEN_CONTEXT_PARAMETERS_##name
+    #define CODEGEN_CONTEXT(name) EBM2ALL_CODEGEN_CONTEXT_##name
+}  // namespace ebm2all
 #if __has_include("visitor/post_includes_before.hpp")
 #include "visitor/post_includes_before.hpp"
 #elif __has_include("visitor/dsl/post_includes_before_dsl.hpp")
 #include "visitor/dsl/post_includes_before_dsl.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/post_includes_before.hpp")
-#include "ebmcodegen/default_codegen_visitor/visitor/post_includes_before.hpp"
+#elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorpost_includes_before.hpp")
+#include "src/ebmcodegen/default_codegen_visitor/visitorpost_includes_before.hpp"
 #endif
 #if __has_include("visitor/post_includes.hpp")
 #include "visitor/post_includes.hpp"
 #elif __has_include("visitor/dsl/post_includes_dsl.hpp")
 #include "visitor/dsl/post_includes_dsl.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/post_includes.hpp")
-#include "ebmcodegen/default_codegen_visitor/visitor/post_includes.hpp"
+#elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorpost_includes.hpp")
+#include "src/ebmcodegen/default_codegen_visitor/visitorpost_includes.hpp"
 #endif
 #if __has_include("visitor/post_includes_after.hpp")
 #include "visitor/post_includes_after.hpp"
 #elif __has_include("visitor/dsl/post_includes_after_dsl.hpp")
 #include "visitor/dsl/post_includes_after_dsl.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/post_includes_after.hpp")
-#include "ebmcodegen/default_codegen_visitor/visitor/post_includes_after.hpp"
+#elif __has_include("src/ebmcodegen/default_codegen_visitor/visitorpost_includes_after.hpp")
+#include "src/ebmcodegen/default_codegen_visitor/visitorpost_includes_after.hpp"
 #endif
 #endif // EBM_CODEGEN_COMMON_INCLUDE_GUARD

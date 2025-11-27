@@ -10,6 +10,39 @@ from ebmtemplate import get_mode_dir
 from util import execute
 
 
+def do_default_dummy_header(lang_name: str, mode: str):
+    TOOL_PATH = "tool/ebmcodegen"
+    isInterpreter = mode == "interpret" or mode == "interpret-class"
+    isClassBased = mode == "codegen-class" or mode == "interpret-class"
+
+    DEFAULT_VISITOR_LOCATION = (
+        f"src/ebmcodegen/default_{'interpret' if isInterpreter else 'codegen'}_visitor/"
+    )
+    VISITOR_LOCATION = os.path.join(DEFAULT_VISITOR_LOCATION, "visitor")
+    os.makedirs(VISITOR_LOCATION, exist_ok=True)
+
+    if isClassBased:
+        CODE_GENERATOR_HEADER = execute(
+            [
+                TOOL_PATH,
+                "--mode",
+                mode + "-header",
+                "--lang",
+                lang_name,
+                "--default-visitor-impl-dir",
+                VISITOR_LOCATION,
+            ],
+            None,
+        )
+        with open(os.path.join(DEFAULT_VISITOR_LOCATION, "codegen.hpp"), "wb") as f:
+            f.write(CODE_GENERATOR_HEADER)
+        print(
+            f"Generated default dummy header for {lang_name} in {DEFAULT_VISITOR_LOCATION}/codegen.hpp"
+        )
+    else:
+        print(f"No dummy header needed for non-class-based mode for {lang_name}")
+
+
 def do_setup(lang_name: str, mode: str, file_extension: str):
     TOOL_PATH = "tool/ebmcodegen"
     isInterpreter = mode == "interpret" or mode == "interpret-class"
@@ -26,9 +59,7 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
 
     CMAKE = execute([TOOL_PATH, "--mode", "cmake", "--lang", lang_name], None)
 
-    DEFAULT_VISITOR_LOCATION = (
-        f"ebmcodegen/default_{"interpret" if isInterpreter else "codegen"}_visitor/"
-    )
+    DEFAULT_VISITOR_LOCATION = f"ebmcodegen/default_{"interpret" if isInterpreter else "codegen"}_visitor/visitor/"
 
     if isClassBased:
         CODE_GENERATOR_HEADER = execute(
@@ -232,6 +263,7 @@ if __name__ == "__main__":
             if (mode == "interpret" or mode == "interpret-class")
             else f"src/ebmcg"
         )
+        do_default_dummy_header(lang_name, mode)
         for entry in os.listdir(parent_dir):
             entry_path = os.path.join(parent_dir, entry)
             if os.path.isdir(entry_path) and entry.startswith("ebm2"):

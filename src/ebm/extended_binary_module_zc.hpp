@@ -3372,6 +3372,7 @@ namespace ebm::zc {
     };
     struct EBM_API IOData{
         StatementRef io_ref;
+        StatementRef field;
         ExpressionRef target;
         TypeRef data_type;
         IOAttribute attribute;
@@ -3390,6 +3391,7 @@ namespace ebm::zc {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
             v(v, "io_ref",(*this).io_ref);
+            v(v, "field",(*this).field);
             v(v, "target",(*this).target);
             v(v, "data_type",(*this).data_type);
             v(v, "attribute",(*this).attribute);
@@ -3399,6 +3401,7 @@ namespace ebm::zc {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
             v(v, "io_ref",(*this).io_ref);
+            v(v, "field",(*this).field);
             v(v, "target",(*this).target);
             v(v, "data_type",(*this).data_type);
             v(v, "attribute",(*this).attribute);
@@ -3413,6 +3416,7 @@ namespace ebm::zc {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "io_ref",visitor_tag<decltype(std::declval<IOData>().io_ref),false>{});
+            v(v, "field",visitor_tag<decltype(std::declval<IOData>().field),false>{});
             v(v, "target",visitor_tag<decltype(std::declval<IOData>().target),false>{});
             v(v, "data_type",visitor_tag<decltype(std::declval<IOData>().data_type),false>{});
             v(v, "attribute",visitor_tag<decltype(std::declval<IOData>().attribute),false>{});

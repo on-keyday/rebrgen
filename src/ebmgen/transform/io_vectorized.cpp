@@ -97,7 +97,15 @@ namespace ebmgen {
                         }
                     }
                     print_if_verbose("Total size: ", total_size.size()->value(), " ", to_string(total_size.unit), "\n");
-                    auto io_data = make_io_data(std::get<2>(g[0])->io_ref, {}, data_typ, {}, total_size);
+                    auto original_field = std::get<2>(g.front())->field;
+                    auto& ctx = tctx.context();
+                    MAYBE(t, ctx.repository().get_statement(original_field));
+                    if (auto field_decl = t.body.field_decl()) {
+                        if (auto comp = field_decl->composite_field()) {
+                            original_field = *comp;
+                        }
+                    }
+                    auto io_data = make_io_data(std::get<2>(g[0])->io_ref, original_field, {}, data_typ, {}, total_size);
                     ebm::Block original_io;
                     for (auto& ref : g) {
                         append(original_io, std::get<1>(ref));
@@ -105,6 +113,7 @@ namespace ebmgen {
                     std::pair<size_t, size_t> group_range = {std::get<0>(g.front()), std::get<0>(g.back())};
                     update[i].emplace_back(group_range, [=, &tctx, original_io = std::move(original_io), io_data = std::move(io_data)]() mutable -> expected<ebm::StatementRef> {
                         auto& ctx = tctx.context();
+
                         EBM_BLOCK(original_, std::move(original_io));
                         io_data.attribute.has_lowered_statement(true);
                         io_data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::VECTORIZED_IO, original_));

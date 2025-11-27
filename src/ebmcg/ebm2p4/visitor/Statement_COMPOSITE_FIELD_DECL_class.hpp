@@ -41,6 +41,8 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
         }
         w.writeln("}");
         ctx.config().decl_toplevel.push_back(w);
+        auto field_name = std::format("field_{}", get_id(ctx.item_id));
+        return CODELINE(struct_name, " ", field_name, ";");
     }
     if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::PREFIXED_UNION) {
         auto& union_ = ctx.composite_field_decl.fields.container.back();
@@ -88,6 +90,8 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
         }
         w.writeln("}");
         ctx.config().decl_toplevel.push_back(w);
+        auto field_name = std::format("field_{}", get_id(ctx.item_id));
+        return CODELINE(enum_name, " ", field_name, ";");
     }
     return {};
 }

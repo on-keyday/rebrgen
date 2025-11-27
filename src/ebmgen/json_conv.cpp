@@ -1073,6 +1073,14 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("field")) {
+            if(!futils::json::convert_from_json(*got, obj.field)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("target")) {
             if(!futils::json::convert_from_json(*got, obj.target)) {
                 return false;

@@ -694,7 +694,7 @@ namespace ebmgen {
         expected<ebm::StatementBody> encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
         // internally, this method casts base_ref to unsigned n int type if necessary
         // so no need to cast it before calling this method
-        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
+        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, ebm::StatementRef field, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
 
        private:
         expected<void> encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref);
@@ -708,7 +708,7 @@ namespace ebmgen {
     struct DecoderConverter {
         ConverterContext& ctx;
         expected<ebm::StatementBody> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
-        expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
+        expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, ebm::StatementRef field_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
 
        private:
         expected<void> decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref);

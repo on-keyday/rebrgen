@@ -18154,6 +18154,9 @@ namespace ebm {
         if (auto err = (*this).io_ref.encode(w)) {
             return err;
         }
+        if (auto err = (*this).field.encode(w)) {
+            return err;
+        }
         if (auto err = (*this).target.encode(w)) {
             return err;
         }
@@ -18178,6 +18181,9 @@ namespace ebm {
     }
     ::futils::error::Error<> IOData::decode(::futils::binary::reader& r) {
         if (auto err = (*this).io_ref.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).field.decode(r)) {
             return err;
         }
         if (auto err = (*this).target.decode(r)) {

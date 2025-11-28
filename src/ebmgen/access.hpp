@@ -83,11 +83,16 @@ namespace ebmgen {
         }
 
         static constexpr auto type_index_statement = ebmcodegen::get_type_index<ebm::Statement>();
+        static constexpr auto type_index_statement_body = ebmcodegen::get_type_index<ebm::StatementBody>();
         static constexpr auto type_index_type = ebmcodegen::get_type_index<ebm::Type>();
+        static constexpr auto type_index_type_body = ebmcodegen::get_type_index<ebm::TypeBody>();
         static constexpr auto type_index_expression = ebmcodegen::get_type_index<ebm::Expression>();
+        static constexpr auto type_index_expression_body = ebmcodegen::get_type_index<ebm::ExpressionBody>();
         static constexpr auto type_index_statement_ref = ebmcodegen::get_type_index<ebm::StatementRef>();
         static constexpr auto type_index_type_ref = ebmcodegen::get_type_index<ebm::TypeRef>();
         static constexpr auto type_index_expression_ref = ebmcodegen::get_type_index<ebm::ExpressionRef>();
+
+        static constexpr auto field_index_body = ebmcodegen::get_field_index("body");
 
         consteval Name(size_t root_index, FieldNames<N> n) {
             ebmcodegen::TypeIndex type_index{.index = root_index};
@@ -109,14 +114,26 @@ namespace ebmgen {
                 }
                 auto new_type_index = ebmcodegen::get_type_index_from_field(type_index.index, n.tags[i].index);
                 if (new_type_index.index == static_cast<size_t>(-1)) {
+                    auto do_fallback = [&](size_t stmt, size_t body) {  // fallback to body field
+                        new_type_index = ebmcodegen::get_type_index_from_field(stmt, n.tags[i].index);
+                        if (new_type_index.index == static_cast<size_t>(-1)) {
+                            new_type_index = ebmcodegen::get_type_index_from_field(body, n.tags[i].index);
+                            if (new_type_index.index != static_cast<size_t>(-1)) {
+                                ebmcodegen::TypeIndex stmt_index{.index = type_index_statement};
+                                auto copy = n.tags[i];
+                                copy.index = field_index_body;
+                                add_tag({NameTag{.field_tag = copy, .type_index = stmt_index}});  // adjust to body field
+                            }
+                        }
+                    };
                     if (type_index.index == type_index_statement_ref) {
-                        new_type_index = ebmcodegen::get_type_index_from_field(type_index_statement, n.tags[i].index);
+                        do_fallback(type_index_statement, type_index_statement_body);
                     }
                     else if (type_index.index == type_index_type_ref) {
-                        new_type_index = ebmcodegen::get_type_index_from_field(type_index_type, n.tags[i].index);
+                        do_fallback(type_index_type, type_index_type_body);
                     }
                     else if (type_index.index == type_index_expression_ref) {
-                        new_type_index = ebmcodegen::get_type_index_from_field(type_index_expression, n.tags[i].index);
+                        do_fallback(type_index_expression, type_index_expression_body);
                     }
                     if (new_type_index.index == static_cast<size_t>(-1)) {
                         [](auto... a) { throw "Invalid field name"; }(
@@ -153,7 +170,7 @@ namespace ebmgen {
     else if constexpr (std::is_same_v<T, RefType>) {                                                                                     \
         return FieldAccessor<V, offset, step + 1>::get_field(ctx, ctx.get_##getter_name(in));                                            \
     }                                                                                                                                    \
-    else if constexpr (std::is_same_v<T, RefType*>) {                                                                                    \
+    else if constexpr (std::is_same_v<T, RefType*> || std::is_same_v<T, const RefType*>) {                                               \
         if (!in) {                                                                                                                       \
             using ResultT = std::decay_t<decltype(FieldAccessor<V, offset, step + 1>::get_field(ctx, *static_cast<RefType*>(nullptr)))>; \
             return ResultT{};                                                                                                            \
@@ -243,7 +260,7 @@ namespace ebmgen {
             auto& statement = statements[0];
             auto f = access_field<"body.field_decl">(DummyContext{}, statement);
             if (f) {
-                auto kind = access_field<"field_type.body.kind">(DummyContext{}, *f);
+                auto kind = access_field<"field_type.kind">(DummyContext{}, *f);
             }
             auto x = access_field<"statements.0">(DummyContext{}, &mod);
 

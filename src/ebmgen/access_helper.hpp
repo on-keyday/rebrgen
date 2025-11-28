@@ -2607,23 +2607,29 @@ namespace ebmcodegen {
             else if constexpr (FieldIndex == 178) {
                 return in.has_functions();
             }
+            else if constexpr (FieldIndex == 179) {
+                return in.has_properties();
+            }
             else if constexpr (FieldIndex == 15) {
                 return in.reserved();
             }
-            else if constexpr (FieldIndex == 179) {
+            else if constexpr (FieldIndex == 180) {
                 return in.related_variant();
             }
             else if constexpr (FieldIndex == 97) {
                 return in.size();
             }
-            else if constexpr (FieldIndex == 180) {
+            else if constexpr (FieldIndex == 181) {
                 return in.decode_fn();
             }
-            else if constexpr (FieldIndex == 181) {
+            else if constexpr (FieldIndex == 182) {
                 return in.encode_fn();
             }
-            else if constexpr (FieldIndex == 182) {
+            else if constexpr (FieldIndex == 183) {
                 return in.methods();
+            }
+            else if constexpr (FieldIndex == 184) {
+                return in.properties();
             }
         }
         else if constexpr (std::is_same_v<T,ebm::StructDecl*> || std::is_same_v<T,const ebm::StructDecl*>) {
@@ -2670,13 +2676,19 @@ namespace ebmcodegen {
                 }
                 return std::optional<decltype(in->has_functions())>(in->has_functions());
             }
+            else if constexpr (FieldIndex == 179) {
+                if (!in) {
+                    return std::optional<decltype(in->has_properties())>{};
+                }
+                return std::optional<decltype(in->has_properties())>(in->has_properties());
+            }
             else if constexpr (FieldIndex == 15) {
                 if (!in) {
                     return std::optional<decltype(in->reserved())>{};
                 }
                 return std::optional<decltype(in->reserved())>(in->reserved());
             }
-            else if constexpr (FieldIndex == 179) {
+            else if constexpr (FieldIndex == 180) {
                 if (!in) {
                     return decltype(in->related_variant())();
                 }
@@ -2688,23 +2700,29 @@ namespace ebmcodegen {
                 }
                 return in->size();
             }
-            else if constexpr (FieldIndex == 180) {
+            else if constexpr (FieldIndex == 181) {
                 if (!in) {
                     return decltype(in->decode_fn())();
                 }
                 return in->decode_fn();
             }
-            else if constexpr (FieldIndex == 181) {
+            else if constexpr (FieldIndex == 182) {
                 if (!in) {
                     return decltype(in->encode_fn())();
                 }
                 return in->encode_fn();
             }
-            else if constexpr (FieldIndex == 182) {
+            else if constexpr (FieldIndex == 183) {
                 if (!in) {
                     return decltype(in->methods())();
                 }
                 return in->methods();
+            }
+            else if constexpr (FieldIndex == 184) {
+                if (!in) {
+                    return decltype(in->properties())();
+                }
+                return in->properties();
             }
         }
         else if constexpr (std::is_same_v<T, ebm::SubByteRange>) {
@@ -2713,7 +2731,7 @@ namespace ebmcodegen {
                 auto& ref = in.stream_type;
                 return ref;
             }
-            else if constexpr (FieldIndex == 183) {
+            else if constexpr (FieldIndex == 185) {
                 auto& ref = in.range_type;
                 return ref;
             }
@@ -2730,7 +2748,7 @@ namespace ebmcodegen {
                 auto& ref = in.io_ref;
                 return ref;
             }
-            else if constexpr (FieldIndex == 184) {
+            else if constexpr (FieldIndex == 186) {
                 auto& ref = in.parent_io_ref;
                 return ref;
             }
@@ -2747,7 +2765,7 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->stream_type);
             }
-            else if constexpr (FieldIndex == 183) {
+            else if constexpr (FieldIndex == 185) {
                 if (!in) {
                     return decltype(std::addressof(in->range_type))();
                 }
@@ -2777,7 +2795,7 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->io_ref);
             }
-            else if constexpr (FieldIndex == 184) {
+            else if constexpr (FieldIndex == 186) {
                 if (!in) {
                     return decltype(std::addressof(in->parent_io_ref))();
                 }
@@ -2825,19 +2843,19 @@ namespace ebmcodegen {
             else if constexpr (FieldIndex == 18) {
                 return in.base_type();
             }
-            else if constexpr (FieldIndex == 185) {
+            else if constexpr (FieldIndex == 187) {
                 return in.common_type();
             }
-            else if constexpr (FieldIndex == 186) {
+            else if constexpr (FieldIndex == 188) {
                 return in.element_type();
             }
-            else if constexpr (FieldIndex == 187) {
+            else if constexpr (FieldIndex == 189) {
                 return in.func_desc();
             }
             else if constexpr (FieldIndex == 24) {
                 return in.id();
             }
-            else if constexpr (FieldIndex == 188) {
+            else if constexpr (FieldIndex == 190) {
                 return in.inner_type();
             }
             else if constexpr (FieldIndex == 172) {
@@ -2846,10 +2864,10 @@ namespace ebmcodegen {
             else if constexpr (FieldIndex == 19) {
                 return in.members();
             }
-            else if constexpr (FieldIndex == 189) {
+            else if constexpr (FieldIndex == 191) {
                 return in.pointee_type();
             }
-            else if constexpr (FieldIndex == 190) {
+            else if constexpr (FieldIndex == 192) {
                 return in.related_field();
             }
             else if constexpr (FieldIndex == 97) {
@@ -2870,19 +2888,19 @@ namespace ebmcodegen {
                 }
                 return in->base_type();
             }
-            else if constexpr (FieldIndex == 185) {
+            else if constexpr (FieldIndex == 187) {
                 if (!in) {
                     return decltype(in->common_type())();
                 }
                 return in->common_type();
             }
-            else if constexpr (FieldIndex == 186) {
+            else if constexpr (FieldIndex == 188) {
                 if (!in) {
                     return decltype(in->element_type())();
                 }
                 return in->element_type();
             }
-            else if constexpr (FieldIndex == 187) {
+            else if constexpr (FieldIndex == 189) {
                 if (!in) {
                     return decltype(in->func_desc())();
                 }
@@ -2894,7 +2912,7 @@ namespace ebmcodegen {
                 }
                 return in->id();
             }
-            else if constexpr (FieldIndex == 188) {
+            else if constexpr (FieldIndex == 190) {
                 if (!in) {
                     return decltype(in->inner_type())();
                 }
@@ -2912,13 +2930,13 @@ namespace ebmcodegen {
                 }
                 return in->members();
             }
-            else if constexpr (FieldIndex == 189) {
+            else if constexpr (FieldIndex == 191) {
                 if (!in) {
                     return decltype(in->pointee_type())();
                 }
                 return in->pointee_type();
             }
-            else if constexpr (FieldIndex == 190) {
+            else if constexpr (FieldIndex == 192) {
                 if (!in) {
                     return decltype(in->related_field())();
                 }
@@ -2963,18 +2981,18 @@ namespace ebmcodegen {
                 auto& ref = in.name;
                 return ref;
             }
-            else if constexpr (FieldIndex == 191) {
+            else if constexpr (FieldIndex == 193) {
                 auto& ref = in.var_type;
                 return ref;
             }
-            else if constexpr (FieldIndex == 192) {
+            else if constexpr (FieldIndex == 194) {
                 auto& ref = in.initial_value;
                 return ref;
             }
-            else if constexpr (FieldIndex == 193) {
+            else if constexpr (FieldIndex == 195) {
                 return in.decl_kind();
             }
-            else if constexpr (FieldIndex == 194) {
+            else if constexpr (FieldIndex == 196) {
                 return in.is_reference();
             }
             else if constexpr (FieldIndex == 15) {
@@ -2989,25 +3007,25 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->name);
             }
-            else if constexpr (FieldIndex == 191) {
+            else if constexpr (FieldIndex == 193) {
                 if (!in) {
                     return decltype(std::addressof(in->var_type))();
                 }
                 return std::addressof(in->var_type);
             }
-            else if constexpr (FieldIndex == 192) {
+            else if constexpr (FieldIndex == 194) {
                 if (!in) {
                     return decltype(std::addressof(in->initial_value))();
                 }
                 return std::addressof(in->initial_value);
             }
-            else if constexpr (FieldIndex == 193) {
+            else if constexpr (FieldIndex == 195) {
                 if (!in) {
                     return std::optional<decltype(in->decl_kind())>{};
                 }
                 return std::optional<decltype(in->decl_kind())>(in->decl_kind());
             }
-            else if constexpr (FieldIndex == 194) {
+            else if constexpr (FieldIndex == 196) {
                 if (!in) {
                     return std::optional<decltype(in->is_reference())>{};
                 }
@@ -3038,6 +3056,7 @@ namespace ebmcodegen {
             return 1;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3053,6 +3072,7 @@ namespace ebmcodegen {
             return 3;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3068,6 +3088,7 @@ namespace ebmcodegen {
             return 5;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3086,6 +3107,7 @@ namespace ebmcodegen {
             return 8;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3098,6 +3120,7 @@ namespace ebmcodegen {
             return 9;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3119,6 +3142,7 @@ namespace ebmcodegen {
             return 13;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3137,6 +3161,7 @@ namespace ebmcodegen {
             return 16;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3155,6 +3180,7 @@ namespace ebmcodegen {
             return 19;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3176,6 +3202,7 @@ namespace ebmcodegen {
             return 22;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3191,6 +3218,7 @@ namespace ebmcodegen {
             return 5;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3206,6 +3234,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3338,6 +3367,7 @@ namespace ebmcodegen {
             return 62;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3353,6 +3383,7 @@ namespace ebmcodegen {
             return 3;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3407,6 +3438,7 @@ namespace ebmcodegen {
             return 77;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3443,6 +3475,7 @@ namespace ebmcodegen {
             return 84;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3464,6 +3497,7 @@ namespace ebmcodegen {
             return 15;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3491,6 +3525,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3518,6 +3553,7 @@ namespace ebmcodegen {
             return 92;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3548,6 +3584,7 @@ namespace ebmcodegen {
             return 1;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3563,6 +3600,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3581,6 +3619,7 @@ namespace ebmcodegen {
             return 99;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3599,6 +3638,7 @@ namespace ebmcodegen {
             return 101;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3617,6 +3657,7 @@ namespace ebmcodegen {
             return 104;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3662,6 +3703,7 @@ namespace ebmcodegen {
             return 21;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3680,6 +3722,7 @@ namespace ebmcodegen {
             return 116;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3707,6 +3750,7 @@ namespace ebmcodegen {
             return 36;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3719,6 +3763,7 @@ namespace ebmcodegen {
             return 121;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3755,6 +3800,7 @@ namespace ebmcodegen {
             return 127;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3767,6 +3813,7 @@ namespace ebmcodegen {
             return 24;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3782,6 +3829,7 @@ namespace ebmcodegen {
             return 43;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3797,6 +3845,7 @@ namespace ebmcodegen {
             return 3;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3809,6 +3858,7 @@ namespace ebmcodegen {
             return 24;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3824,6 +3874,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3848,6 +3899,7 @@ namespace ebmcodegen {
             return 131;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3863,6 +3915,7 @@ namespace ebmcodegen {
             return 132;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3881,6 +3934,7 @@ namespace ebmcodegen {
             return 97;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3902,6 +3956,7 @@ namespace ebmcodegen {
             return 15;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3938,6 +3993,7 @@ namespace ebmcodegen {
             return 139;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3953,6 +4009,7 @@ namespace ebmcodegen {
             return 93;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3971,6 +4028,7 @@ namespace ebmcodegen {
             return 142;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3983,6 +4041,7 @@ namespace ebmcodegen {
             return 39;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -3998,6 +4057,7 @@ namespace ebmcodegen {
             return 15;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4016,6 +4076,7 @@ namespace ebmcodegen {
             return 97;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4031,6 +4092,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4136,6 +4198,7 @@ namespace ebmcodegen {
             return 171;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4151,6 +4214,7 @@ namespace ebmcodegen {
             return 173;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4166,6 +4230,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4195,25 +4260,32 @@ namespace ebmcodegen {
         if (field_name == "has_functions") {
             return 178;
         }
+        if (field_name == "has_properties") {
+            return 179;
+        }
         if (field_name == "reserved") {
             return 15;
         }
         if (field_name == "related_variant") {
-            return 179;
+            return 180;
         }
         if (field_name == "size") {
             return 97;
         }
         if (field_name == "decode_fn") {
-            return 180;
-        }
-        if (field_name == "encode_fn") {
             return 181;
         }
-        if (field_name == "methods") {
+        if (field_name == "encode_fn") {
             return 182;
         }
+        if (field_name == "methods") {
+            return 183;
+        }
+        if (field_name == "properties") {
+            return 184;
+        }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4226,7 +4298,7 @@ namespace ebmcodegen {
             return 54;
         }
         if (field_name == "range_type") {
-            return 183;
+            return 185;
         }
         if (field_name == "expression") {
             return 152;
@@ -4241,12 +4313,13 @@ namespace ebmcodegen {
             return 42;
         }
         if (field_name == "parent_io_ref") {
-            return 184;
+            return 186;
         }
         if (field_name == "io_statement") {
             return 43;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4262,6 +4335,7 @@ namespace ebmcodegen {
             return 25;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4277,19 +4351,19 @@ namespace ebmcodegen {
             return 18;
         }
         if (field_name == "common_type") {
-            return 185;
+            return 187;
         }
         if (field_name == "element_type") {
-            return 186;
+            return 188;
         }
         if (field_name == "func_desc") {
-            return 187;
+            return 189;
         }
         if (field_name == "id") {
             return 24;
         }
         if (field_name == "inner_type") {
-            return 188;
+            return 190;
         }
         if (field_name == "length") {
             return 172;
@@ -4298,15 +4372,16 @@ namespace ebmcodegen {
             return 19;
         }
         if (field_name == "pointee_type") {
-            return 189;
+            return 191;
         }
         if (field_name == "related_field") {
-            return 190;
+            return 192;
         }
         if (field_name == "size") {
             return 97;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4322,6 +4397,7 @@ namespace ebmcodegen {
             return 3;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4334,21 +4410,22 @@ namespace ebmcodegen {
             return 17;
         }
         if (field_name == "var_type") {
-            return 191;
-        }
-        if (field_name == "initial_value") {
-            return 192;
-        }
-        if (field_name == "decl_kind") {
             return 193;
         }
-        if (field_name == "is_reference") {
+        if (field_name == "initial_value") {
             return 194;
+        }
+        if (field_name == "decl_kind") {
+            return 195;
+        }
+        if (field_name == "is_reference") {
+            return 196;
         }
         if (field_name == "reserved") {
             return 15;
         }
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4358,6 +4435,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<53>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4367,6 +4445,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<54>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4376,6 +4455,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<55>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4385,6 +4465,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<56>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4394,6 +4475,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<57>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4403,6 +4485,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<58>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4412,6 +4495,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<59>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4421,6 +4505,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<60>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4430,6 +4515,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<61>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4439,6 +4525,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<62>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4448,6 +4535,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<63>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4457,6 +4545,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<64>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4466,6 +4555,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<65>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4475,6 +4565,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<66>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4484,6 +4575,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<67>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4493,6 +4585,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<68>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4502,6 +4595,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<69>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4511,6 +4605,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<70>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4520,6 +4615,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<71>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4529,6 +4625,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<72>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4538,6 +4635,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<73>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4547,6 +4645,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<74>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4556,6 +4655,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<75>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4565,6 +4665,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<76>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4574,6 +4675,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<77>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4583,6 +4685,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<78>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4592,6 +4695,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<79>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4601,6 +4705,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<80>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4610,6 +4715,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<81>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<>
@@ -4619,6 +4725,7 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<82>(std::string_view field_name) {
         throw "No such field";
+        return static_cast<size_t>(-1); // to avoid compile error
     }
     
     template<TypeIndex index>
@@ -6196,7 +6303,7 @@ namespace ebmcodegen {
             return 120;
         }
         if (name == "common_type") {
-            return 185;
+            return 187;
         }
         if (name == "composite_field") {
             return 82;
@@ -6238,10 +6345,10 @@ namespace ebmcodegen {
             return 77;
         }
         if (name == "decl_kind") {
-            return 193;
+            return 195;
         }
         if (name == "decode_fn") {
-            return 180;
+            return 181;
         }
         if (name == "derived_from") {
             return 139;
@@ -6253,7 +6360,7 @@ namespace ebmcodegen {
             return 92;
         }
         if (name == "element_type") {
-            return 186;
+            return 188;
         }
         if (name == "else_") {
             return 35;
@@ -6262,7 +6369,7 @@ namespace ebmcodegen {
             return 99;
         }
         if (name == "encode_fn") {
-            return 181;
+            return 182;
         }
         if (name == "end") {
             return 36;
@@ -6325,7 +6432,7 @@ namespace ebmcodegen {
             return 154;
         }
         if (name == "func_desc") {
-            return 187;
+            return 189;
         }
         if (name == "getter_function") {
             return 138;
@@ -6338,6 +6445,9 @@ namespace ebmcodegen {
         }
         if (name == "has_lowered_statement") {
             return 91;
+        }
+        if (name == "has_properties") {
+            return 179;
         }
         if (name == "has_related_variant") {
             return 176;
@@ -6382,13 +6492,13 @@ namespace ebmcodegen {
             return 102;
         }
         if (name == "initial_value") {
-            return 192;
+            return 194;
         }
         if (name == "inner_composite") {
             return 81;
         }
         if (name == "inner_type") {
-            return 188;
+            return 190;
         }
         if (name == "int64_value") {
             return 40;
@@ -6418,7 +6528,7 @@ namespace ebmcodegen {
             return 174;
         }
         if (name == "is_reference") {
-            return 194;
+            return 196;
         }
         if (name == "is_state_variable") {
             return 80;
@@ -6499,7 +6609,7 @@ namespace ebmcodegen {
             return 162;
         }
         if (name == "methods") {
-            return 182;
+            return 183;
         }
         if (name == "msg_id") {
             return 110;
@@ -6538,7 +6648,7 @@ namespace ebmcodegen {
             return 88;
         }
         if (name == "parent_io_ref") {
-            return 184;
+            return 186;
         }
         if (name == "parent_struct") {
             return 79;
@@ -6547,13 +6657,16 @@ namespace ebmcodegen {
             return 100;
         }
         if (name == "pointee_type") {
-            return 189;
+            return 191;
         }
         if (name == "previous_assignment") {
             return 164;
         }
         if (name == "program") {
             return 101;
+        }
+        if (name == "properties") {
+            return 184;
         }
         if (name == "property_decl") {
             return 165;
@@ -6565,7 +6678,7 @@ namespace ebmcodegen {
             return 135;
         }
         if (name == "range_type") {
-            return 183;
+            return 185;
         }
         if (name == "read_data") {
             return 167;
@@ -6577,13 +6690,13 @@ namespace ebmcodegen {
             return 111;
         }
         if (name == "related_field") {
-            return 190;
+            return 192;
         }
         if (name == "related_statement") {
             return 121;
         }
         if (name == "related_variant") {
-            return 179;
+            return 180;
         }
         if (name == "reserved") {
             return 15;
@@ -6700,7 +6813,7 @@ namespace ebmcodegen {
             return 170;
         }
         if (name == "var_type") {
-            return 191;
+            return 193;
         }
         if (name == "version") {
             return 63;
@@ -6737,7 +6850,7 @@ namespace ebmcodegen {
         case 33: return "char_value";
         case 123: return "collection";
         case 120: return "column";
-        case 185: return "common_type";
+        case 187: return "common_type";
         case 82: return "composite_field";
         case 147: return "composite_field_decl";
         case 83: return "composite_getter";
@@ -6751,15 +6864,15 @@ namespace ebmcodegen {
         case 173: return "data";
         case 95: return "data_type";
         case 77: return "debug_info";
-        case 193: return "decl_kind";
-        case 180: return "decode_fn";
+        case 195: return "decl_kind";
+        case 181: return "decode_fn";
         case 139: return "derived_from";
         case 16: return "dynamic_expr";
         case 92: return "dynamic_ref";
-        case 186: return "element_type";
+        case 188: return "element_type";
         case 35: return "else_";
         case 99: return "else_block";
-        case 181: return "encode_fn";
+        case 182: return "encode_fn";
         case 36: return "end";
         case 14: return "endian";
         case 37: return "endian_expr";
@@ -6780,11 +6893,12 @@ namespace ebmcodegen {
         case 141: return "from";
         case 38: return "from_type";
         case 154: return "func_decl";
-        case 187: return "func_desc";
+        case 189: return "func_desc";
         case 138: return "getter_function";
         case 177: return "has_encode_decode";
         case 178: return "has_functions";
         case 91: return "has_lowered_statement";
+        case 179: return "has_properties";
         case 176: return "has_related_variant";
         case 140: return "hint";
         case 24: return "id";
@@ -6799,9 +6913,9 @@ namespace ebmcodegen {
         case 125: return "init";
         case 157: return "init_check";
         case 102: return "init_check_type";
-        case 192: return "initial_value";
+        case 194: return "initial_value";
         case 81: return "inner_composite";
-        case 188: return "inner_type";
+        case 190: return "inner_type";
         case 40: return "int64_value";
         case 41: return "int_value";
         case 42: return "io_ref";
@@ -6811,7 +6925,7 @@ namespace ebmcodegen {
         case 133: return "is_immediate";
         case 90: return "is_peek";
         case 174: return "is_recursive";
-        case 194: return "is_reference";
+        case 196: return "is_reference";
         case 80: return "is_state_variable";
         case 126: return "item_var";
         case 8: return "kind";
@@ -6838,7 +6952,7 @@ namespace ebmcodegen {
         case 136: return "merge_mode";
         case 23: return "message";
         case 162: return "metadata";
-        case 182: return "methods";
+        case 183: return "methods";
         case 110: return "msg_id";
         case 17: return "name";
         case 127: return "next_lowered_loop";
@@ -6851,22 +6965,23 @@ namespace ebmcodegen {
         case 134: return "param_type";
         case 86: return "params";
         case 88: return "parent_format";
-        case 184: return "parent_io_ref";
+        case 186: return "parent_io_ref";
         case 79: return "parent_struct";
         case 100: return "path";
-        case 189: return "pointee_type";
+        case 191: return "pointee_type";
         case 164: return "previous_assignment";
         case 101: return "program";
+        case 184: return "properties";
         case 165: return "property_decl";
         case 166: return "property_member_decl";
         case 135: return "property_type";
-        case 183: return "range_type";
+        case 185: return "range_type";
         case 167: return "read_data";
         case 143: return "ref";
         case 111: return "reg";
-        case 190: return "related_field";
+        case 192: return "related_field";
         case 121: return "related_statement";
-        case 179: return "related_variant";
+        case 180: return "related_variant";
         case 15: return "reserved";
         case 85: return "return_type";
         case 50: return "right";
@@ -6905,7 +7020,7 @@ namespace ebmcodegen {
         case 21: return "value";
         case 132: return "values";
         case 170: return "var_decl";
-        case 191: return "var_type";
+        case 193: return "var_type";
         case 63: return "version";
         case 171: return "write_data";
         default: return "";
@@ -8212,6 +8327,9 @@ namespace ebmcodegen {
             if (field_index == get_field_index<47>("has_functions")) {
                 return {.index = 60, .is_array = false, .is_ptr = false};
             }
+            if (field_index == get_field_index<47>("has_properties")) {
+                return {.index = 60, .is_array = false, .is_ptr = false};
+            }
             if (field_index == get_field_index<47>("reserved")) {
                 return {.index = 61, .is_array = false, .is_ptr = false};
             }
@@ -8228,6 +8346,9 @@ namespace ebmcodegen {
                 return {.index = 53, .is_array = false, .is_ptr = true};
             }
             if (field_index == get_field_index<47>("methods")) {
+                return {.index = 1, .is_array = false, .is_ptr = true};
+            }
+            if (field_index == get_field_index<47>("properties")) {
                 return {.index = 1, .is_array = false, .is_ptr = true};
             }
             return {.index = static_cast<size_t>(-1), .is_array = false, .is_ptr = false};

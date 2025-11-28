@@ -45,10 +45,10 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
         return CODELINE(struct_name, " ", field_name, ";");
     }
     if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::PREFIXED_UNION) {
-        auto& union_ = ctx.composite_field_decl.fields.container.back();
+        auto& union_field = ctx.composite_field_decl.fields.container.back();
         CodeWriter common;
         for (auto& field : ctx.composite_field_decl.fields.container) {
-            if (&field != &union_) {
+            if (&field != &union_field) {
                 auto res = ctx.visit(field);
                 if (!res) {
                     return res;
@@ -56,18 +56,12 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
                 common.write(res->to_writer());
             }
         }
-        MAYBE(union_field_stmt, ctx.get(union_));
-        MAYBE(union_field_decl, union_field_stmt.body.field_decl());
-        MAYBE(union_type_stmt, ctx.get(union_field_decl.field_type));
-        MAYBE(members, union_type_stmt.body.members());
+        MAYBE(members, ctx.get_field<"field_decl.field_type.members">(union_field));
         CodeWriter union_writer;
         std::vector<std::string> variant_names;
         for (auto& member : members.container) {
-            MAYBE(member_typ, ctx.get(member));
-            MAYBE(member_field_decl, member_typ.body.id());
-            MAYBE(member_stmt, ctx.get(member_field_decl));
-            MAYBE(field_member_decl, member_stmt.body.struct_decl());
-            MAYBE(fields, ctx.visit(field_member_decl.fields));
+            MAYBE(struct_decl, ctx.get_field<"body.id.struct_decl">(member));
+            MAYBE(fields, ctx.visit(struct_decl.fields));
             auto var_name = std::format("Struct{}", get_id(member));
             union_writer.writeln("header ", var_name, " {");
             {

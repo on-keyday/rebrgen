@@ -337,7 +337,8 @@ format StructDecl:
     has_related_variant :u1 # 0: no, 1: yes (if this struct is related to a variant type)
     has_encode_decode :u1 # 0: no, 1: yes (if encoder/decoder functions are generated)
     has_functions :u1 # 0: no, 1: yes (if there are methods defined for this struct)
-    reserved :u3 # Reserved for future use
+    has_properties :u1 # 0: no, 1: yes (if there are properties defined for this struct)
+    reserved :u2 # Reserved for future use
     if has_related_variant == 1:
         related_variant :TypeRef # Reference to related variant type (maybe null)
     if is_fixed_size == 1:
@@ -347,6 +348,8 @@ format StructDecl:
         decode_fn :StatementRef
     if has_functions == 1:
         methods :Block # List of method FunctionDecl
+    if has_properties == 1:
+        properties :Block # List of PropertyDecl
 
 format PropertyMemberDecl:
     condition :ExpressionRef
@@ -841,7 +844,7 @@ format ExtendedBinaryModule:
 
 
 
-# for stack based Interpreter
+# for stack based Interpreter (below is not a part of ExtendedBinaryModule itself, just temporary located here now)
 
 enum OpCode:
     :u8

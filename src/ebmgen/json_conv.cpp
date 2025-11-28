@@ -2390,6 +2390,16 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("has_properties")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.has_properties(std::move(tmp));
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("reserved")) {
             std::uint8_t tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2444,6 +2454,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.methods(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("properties")) {
+            Block tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.properties(std::move(tmp))) {
                 return false;
             }
         }

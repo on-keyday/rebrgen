@@ -7,6 +7,7 @@
 #include <string_view>
 #include <type_traits>
 #include "core/sequencer.h"
+#include "ebmgen/access.hpp"
 #include "helper/template_instance.h"
 #include "output.hpp"
 #include "ebmgen/mapping.hpp"
@@ -691,6 +692,16 @@ namespace ebmcodegen::util {
             requires has_item_id_typed<D, ebm::ExpressionRef>
         {
             return get_kind(derived().item_id) == kind;
+        }
+
+        template <ebmgen::FieldNames<> V>
+        decltype(auto) get_field() const {
+            return ebmgen::access_field<V>(module(), derived().item_id);
+        }
+
+        template <ebmgen::FieldNames<> V>
+        decltype(auto) get_field(auto&& root) const {
+            return ebmgen::access_field<V>(module(), root);
         }
     };
 }  // namespace ebmcodegen::util

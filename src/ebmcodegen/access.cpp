@@ -34,6 +34,7 @@ namespace ebmcodegen {
                 w.writeln("}");
             }
             w.writeln("throw \"No such field\";");
+            w.writeln("return static_cast<size_t>(-1); // to avoid compile error");
         }
         w.writeln("}");
     }

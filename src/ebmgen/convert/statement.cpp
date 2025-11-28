@@ -540,11 +540,17 @@ namespace ebmgen {
             struct_decl.related_variant(related_variant);
         }
         ebm::Block methods_block;
+        ebm::Block properties_block;
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
             for (auto& element : node->fields) {
                 if (ast::as<ast::Field>(element)) {
                     EBMA_CONVERT_STATEMENT(stmt_ref, element);
+                    MAYBE(stmt, ctx.repository().get_statement(stmt_ref));
+                    if (stmt.body.kind == ebm::StatementKind::PROPERTY_DECL) {
+                        append(properties_block, stmt_ref);
+                        continue;
+                    }
                     append(struct_decl.fields, stmt_ref);
                 }
                 else if (ast::as<ast::Function>(element)) {
@@ -566,6 +572,10 @@ namespace ebmgen {
         if (!methods_block.container.empty()) {
             struct_decl.has_functions(true);
             struct_decl.methods(std::move(methods_block));
+        }
+        if (!properties_block.container.empty()) {
+            struct_decl.has_properties(true);
+            struct_decl.properties(std::move(properties_block));
         }
         return struct_decl;
     }

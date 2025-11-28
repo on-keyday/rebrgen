@@ -3055,7 +3055,9 @@ namespace ebmcodegen {
         if (field_name == "lowered_statement") {
             return 1;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3071,7 +3073,9 @@ namespace ebmcodegen {
         if (field_name == "container") {
             return 3;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3087,7 +3091,9 @@ namespace ebmcodegen {
         if (field_name == "arguments") {
             return 5;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3106,7 +3112,9 @@ namespace ebmcodegen {
         if (field_name == "kind") {
             return 8;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3119,7 +3127,9 @@ namespace ebmcodegen {
         if (field_name == "cond") {
             return 9;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3141,7 +3151,9 @@ namespace ebmcodegen {
         if (field_name == "locs") {
             return 13;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3160,7 +3172,9 @@ namespace ebmcodegen {
         if (field_name == "dynamic_expr") {
             return 16;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3179,7 +3193,9 @@ namespace ebmcodegen {
         if (field_name == "members") {
             return 19;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3201,7 +3217,9 @@ namespace ebmcodegen {
         if (field_name == "string_repr") {
             return 22;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3217,7 +3235,9 @@ namespace ebmcodegen {
         if (field_name == "arguments") {
             return 5;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3233,7 +3253,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3366,7 +3388,9 @@ namespace ebmcodegen {
         if (field_name == "uop") {
             return 62;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3382,7 +3406,9 @@ namespace ebmcodegen {
         if (field_name == "container") {
             return 3;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3437,7 +3463,9 @@ namespace ebmcodegen {
         if (field_name == "debug_info") {
             return 77;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3474,7 +3502,9 @@ namespace ebmcodegen {
         if (field_name == "composite_setter") {
             return 84;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3496,7 +3526,9 @@ namespace ebmcodegen {
         if (field_name == "reserved") {
             return 15;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3524,7 +3556,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3552,7 +3586,9 @@ namespace ebmcodegen {
         if (field_name == "dynamic_ref") {
             return 92;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3583,7 +3619,9 @@ namespace ebmcodegen {
         if (field_name == "lowered_statement") {
             return 1;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3599,7 +3637,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3618,7 +3658,9 @@ namespace ebmcodegen {
         if (field_name == "else_block") {
             return 99;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3637,7 +3679,9 @@ namespace ebmcodegen {
         if (field_name == "program") {
             return 101;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3656,7 +3700,9 @@ namespace ebmcodegen {
         if (field_name == "expect_value") {
             return 104;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3702,7 +3748,9 @@ namespace ebmcodegen {
         if (field_name == "value") {
             return 21;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3721,7 +3769,9 @@ namespace ebmcodegen {
         if (field_name == "offset") {
             return 116;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3749,7 +3799,9 @@ namespace ebmcodegen {
         if (field_name == "end") {
             return 36;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3762,7 +3814,9 @@ namespace ebmcodegen {
         if (field_name == "related_statement") {
             return 121;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3799,7 +3853,9 @@ namespace ebmcodegen {
         if (field_name == "next_lowered_loop") {
             return 127;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3812,7 +3868,9 @@ namespace ebmcodegen {
         if (field_name == "id") {
             return 24;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3828,7 +3886,9 @@ namespace ebmcodegen {
         if (field_name == "io_statement") {
             return 43;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3844,7 +3904,9 @@ namespace ebmcodegen {
         if (field_name == "container") {
             return 3;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3857,7 +3919,9 @@ namespace ebmcodegen {
         if (field_name == "id") {
             return 24;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3873,7 +3937,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3898,7 +3964,9 @@ namespace ebmcodegen {
         if (field_name == "lowered_if_statement") {
             return 131;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3914,7 +3982,9 @@ namespace ebmcodegen {
         if (field_name == "values") {
             return 132;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3933,7 +4003,9 @@ namespace ebmcodegen {
         if (field_name == "size") {
             return 97;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3955,7 +4027,9 @@ namespace ebmcodegen {
         if (field_name == "reserved") {
             return 15;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -3992,7 +4066,9 @@ namespace ebmcodegen {
         if (field_name == "derived_from") {
             return 139;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4008,7 +4084,9 @@ namespace ebmcodegen {
         if (field_name == "field") {
             return 93;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4027,7 +4105,9 @@ namespace ebmcodegen {
         if (field_name == "to") {
             return 142;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4040,7 +4120,9 @@ namespace ebmcodegen {
         if (field_name == "index") {
             return 39;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4056,7 +4138,9 @@ namespace ebmcodegen {
         if (field_name == "reserved") {
             return 15;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4075,7 +4159,9 @@ namespace ebmcodegen {
         if (field_name == "size") {
             return 97;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4091,7 +4177,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4197,7 +4285,9 @@ namespace ebmcodegen {
         if (field_name == "write_data") {
             return 171;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4213,7 +4303,9 @@ namespace ebmcodegen {
         if (field_name == "data") {
             return 173;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4229,7 +4321,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4284,7 +4378,9 @@ namespace ebmcodegen {
         if (field_name == "properties") {
             return 184;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4318,7 +4414,9 @@ namespace ebmcodegen {
         if (field_name == "io_statement") {
             return 43;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4334,7 +4432,9 @@ namespace ebmcodegen {
         if (field_name == "body") {
             return 25;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4380,7 +4480,9 @@ namespace ebmcodegen {
         if (field_name == "size") {
             return 97;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4396,7 +4498,9 @@ namespace ebmcodegen {
         if (field_name == "container") {
             return 3;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4424,7 +4528,9 @@ namespace ebmcodegen {
         if (field_name == "reserved") {
             return 15;
         }
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4434,7 +4540,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<53>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4444,7 +4552,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<54>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4454,7 +4564,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<55>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4464,7 +4576,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<56>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4474,7 +4588,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<57>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4484,7 +4600,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<58>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4494,7 +4612,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<59>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4504,7 +4624,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<60>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4514,7 +4636,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<61>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4524,7 +4648,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<62>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4534,7 +4660,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<63>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4544,7 +4672,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<64>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4554,7 +4684,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<65>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4564,7 +4696,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<66>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4574,7 +4708,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<67>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4584,7 +4720,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<68>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4594,7 +4732,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<69>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4604,7 +4744,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<70>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4614,7 +4756,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<71>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4624,7 +4768,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<72>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4634,7 +4780,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<73>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4644,7 +4792,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<74>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4654,7 +4804,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<75>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4664,7 +4816,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<76>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4674,7 +4828,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<77>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4684,7 +4840,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<78>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4694,7 +4852,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<79>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4704,7 +4864,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<80>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4714,7 +4876,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<81>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     
@@ -4724,7 +4888,9 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<82>(std::string_view field_name) {
-        throw "No such field";
+        if (std::is_constant_evaluated()) {
+            throw "No such field";
+        }
         return static_cast<size_t>(-1); // to avoid compile error
     }
     

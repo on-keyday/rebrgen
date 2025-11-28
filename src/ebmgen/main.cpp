@@ -35,6 +35,7 @@
 #include <unordered_set>
 #include <testutil/timer.h>
 #include <number/hex/bin2hex.h>
+#include "access.hpp"
 
 enum class DebugOutputFormat {
     Text,

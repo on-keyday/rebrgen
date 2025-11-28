@@ -57,6 +57,13 @@ if rewrite_if_needed(
 ):
     something_changed = True
 
+accessor = sp.check_output(["tool/ebmcodegen", "--mode", "accessor"], stderr=sys.stderr)
+if rewrite_if_needed(
+    "src/ebmgen/access_helper.hpp",
+    accessor.decode("utf-8"),
+):
+    something_changed = True
+
 if something_changed:
     # rerun script/build.py to build the tools again
     sp.check_call(["python", "script/build.py"], stdout=sys.stdout, stderr=sys.stderr)

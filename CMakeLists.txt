@@ -141,6 +141,7 @@ add_library(ebmcodegen_lib STATIC
     "src/ebmcodegen/json_loader.cpp"
     "src/ebmcodegen/dsl/dsl.cpp"
     "src/ebmcodegen/class_based.cpp"
+    "src/ebmcodegen/access.cpp"
 )
 
 add_executable(ebmcodegen

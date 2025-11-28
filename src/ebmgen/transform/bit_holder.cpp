@@ -12,7 +12,7 @@
 namespace ebmgen {
 
     struct SizeofResult {
-        size_t size = 0;
+        std::uint64_t size = 0;
         bool fixed = false;
     };
 

@@ -33,7 +33,12 @@ namespace ebmcodegen {
                 }
                 w.writeln("}");
             }
-            w.writeln("throw \"No such field\";");
+            w.writeln("if (std::is_constant_evaluated()) {");
+            {
+                auto if_scope = w.indent_scope();
+                w.writeln("throw \"No such field\";");
+            }
+            w.writeln("}");
             w.writeln("return static_cast<size_t>(-1); // to avoid compile error");
         }
         w.writeln("}");

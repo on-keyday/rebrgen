@@ -38,13 +38,21 @@ def run_single_template(tool_path, template_target):
         sys.exit(1)
 
 
-def run_save_template(tool_path, template_target, lang):
-    """Generate a template and save it to the specified language's visitor directory."""
-    if lang == "default_codegen":
-        lang_dir = None
-        visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+def get_mode_dir(gmode: str) -> str:
+    if gmode == "interpret":
+        return "ebmip"
     else:
-        lang_dir = f"src/ebmcg/ebm2{lang}"
+        return "ebmcg"
+
+
+def run_save_template(tool_path, template_target, gmode, lang):
+    """Generate a template and save it to the specified language's visitor directory."""
+    isInterpreter = gmode == "interpret"
+    if lang == "default":
+        lang_dir = None
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor/visitor"
+    else:
+        lang_dir = f"src/{get_mode_dir(gmode)}/ebm2{lang}"
         if not os.path.isdir(lang_dir):
             print(f"Error: Directory '{lang_dir}' does not exist.", file=sys.stderr)
             sys.exit(1)
@@ -84,7 +92,7 @@ def run_save_template(tool_path, template_target, lang):
 DEFINE_VISITOR({class_name}) {{
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    return {"pass" if is_observer else "\"\""};
+    return {"pass" if is_observer else "{}" if isInterpreter else "\"\""};
 }}
 """
         # Add markers to the template content
@@ -98,6 +106,16 @@ DEFINE_VISITOR({class_name}) {{
             if os.path.exists(main_file):
                 os.utime(main_file, None)
                 print(f"Touched '{main_file}' to update its timestamp.")
+        else:
+            # list ebmcg or ebmip directory and touch all main.cpp files
+            parent_dir = f"src/{get_mode_dir(gmode)}"
+            for entry in os.listdir(parent_dir):
+                entry_path = os.path.join(parent_dir, entry)
+                if os.path.isdir(entry_path) and entry.startswith("ebm2"):
+                    main_file = os.path.join(entry_path, "main.cpp")
+                    if os.path.exists(main_file):
+                        os.utime(main_file, None)
+                        print(f"Touched '{main_file}' to update its timestamp.")
     except subprocess.CalledProcessError as e:
         print(
             f"Error: ebmcodegen failed for target '{template_target}' with exit code {e.returncode}",
@@ -141,15 +159,15 @@ def list_templates(
     return hpp_files, non_template_files
 
 
-def run_update_hooks(tool_path, lang):
+def run_update_hooks(tool_path, lang, gmode):
     """Update all existing hook files in a language directory."""
     if lang == "all":
         try:
             with open("build_config.json") as f:
                 build_config = json.load(f)
-            target_languages = build_config.get("TARGET_LANGUAGE", []) + [
-                "default_codegen"
-            ]
+            target_languages = build_config.get(
+                str(gmode).upper() + "_TARGET_LANGUAGE", []
+            ) + [f"default"]
             if not target_languages:
                 print(
                     "Error: No target languages defined in build_config.json.",
@@ -159,18 +177,18 @@ def run_update_hooks(tool_path, lang):
             for lang in target_languages:
                 if lang == "all":
                     continue  # avoid infinity recursion
-                run_update_hooks(tool_path, lang)
+                run_update_hooks(tool_path, lang, gmode)
             return
         except Exception as e:
             print(f"Error: Failed to read build_config.json: {e}", file=sys.stderr)
             sys.exit(1)
 
-    if lang == "default_codegen":
-        visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+    if lang == "default":
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor/visitor"
         dsl_dir = None
     else:
-        visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
-        dsl_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "dsl")
+        visitor_dir = os.path.join("src", get_mode_dir(gmode), f"ebm2{lang}", "visitor")
+        dsl_dir = os.path.join("src", get_mode_dir(gmode), f"ebm2{lang}", "dsl")
     if not os.path.isdir(visitor_dir):
         print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
         sys.exit(1)
@@ -306,12 +324,12 @@ def get_available_templates() -> list[str]:
         return []
 
 
-def list_defined_templates(lang: str):
+def list_defined_templates(lang: str, gmode: str):
     """List all defined templates for a given language."""
-    if lang == "default_codegen":
-        visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+    if lang == "default":
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor/visitor"
     else:
-        visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
+        visitor_dir = os.path.join("src", get_mode_dir(gmode), f"ebm2{lang}", "visitor")
     if not os.path.isdir(visitor_dir):
         print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
         return
@@ -434,7 +452,7 @@ def interactive_generate_single():
         )
         if would_save == "y":
             lang = input(
-                "Enter the language directory to save to (e.g., 'cpp', 'python', or 'default_codegen'): "
+                "Enter the language directory to save to (e.g., 'cpp', 'python', or 'default'): "
             ).strip()
             if lang:
                 run_save_template(tool_path, selected_variant, lang)
@@ -467,7 +485,7 @@ def interactive():
             interactive_generate_single()
         elif command == "2":
             lang = input(
-                "Enter the language directory to update (e.g., 'cpp', 'python', or 'default_codegen'): "
+                "Enter the language directory to update (e.g., 'cpp', 'python', or 'default'): "
             ).strip()
             if lang:
                 tool_path = get_tool_path()
@@ -479,7 +497,7 @@ def interactive():
                 run_test_mode(tool_path)
         elif command == "4":
             lang = input(
-                "Enter the language directory to list (e.g., 'cpp', 'python', or 'default_codegen'): "
+                "Enter the language directory to list (e.g., 'cpp', 'python', or 'default'): "
             ).strip()
             if lang:
                 list_defined_templates(lang)
@@ -490,7 +508,27 @@ def interactive():
             print("Invalid choice. Please enter a number from 1 to 5.")
 
 
-def main():
+def use_class_default(target: str) -> str:
+    replace_target = [
+        "Statement",
+        "Expression",
+        "Type",
+        "entry",
+        "post_entry",
+        "pre_visitor",
+    ]
+    isClassTarget = any([target.startswith(r) for r in replace_target])
+    if isClassTarget and not target.endswith("_class") and not target.endswith("_old"):
+        target += "_class"
+    return target.removesuffix("_old")
+
+
+def main(mode: str):
+    if mode != "codegen" and mode != "interpret":
+        print(
+            f"Error: Unsupported MODE '{mode}'. Only 'codegen' and 'interpret' are supported."
+        )
+        sys.exit(1)
     # Ensure the script is run from the project root
     if not os.path.exists("tool"):
         print(
@@ -553,19 +591,21 @@ def main():
             )
             sys.exit(1)
         lang_arg = sys.argv[2]
-        run_update_hooks(tool_path, lang_arg)
+        run_update_hooks(tool_path, lang_arg, mode)
     elif target_arg == "list":
         if len(sys.argv) < 3:
             print("Error: 'list' command requires a [lang] argument.", file=sys.stderr)
             sys.exit(1)
         lang_arg = sys.argv[2]
-        list_defined_templates(lang_arg)
+        list_defined_templates(lang_arg, mode)
     elif len(sys.argv) == 3:
         lang_arg = sys.argv[2]
-        run_save_template(tool_path, target_arg, lang_arg)
+        target_arg = use_class_default(target_arg)
+        run_save_template(tool_path, target_arg, mode, lang_arg)
     else:
+        target_arg = use_class_default(target_arg)
         run_single_template(tool_path, target_arg)
 
 
 if __name__ == "__main__":
-    main()
+    main("codegen")

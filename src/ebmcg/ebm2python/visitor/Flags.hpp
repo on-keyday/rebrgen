@@ -6,11 +6,12 @@
   Available variables:
     These are macros. Do not use other than these
     flag name format: long-name[,short-name,...] (e.g: "flag-name,f")
-    DEFINE_FLAG(type,name,flag_name,flag_func,flag_func_args...)
+    DEFINE_FLAG(type,name,default,flag_name,flag_func,flag_func_args...)
     WEB_FILTERED(filtered_flag_names...)
-    DEFINE_BOOL_FLAG(name,flag_name,help)
-    DEFINE_STRING_FLAG(name,flag_name,help,arg_description)
-    BEGIN_MAP_FLAG(name,MappedType,flag_name,help)
+    DEFINE_BOOL_FLAG(name,default,flag_name,help)
+    DEFINE_STRING_FLAG(name,default,flag_name,help,arg_description)
+    DEFINE_INT_FLAG(name,type,default,flag_name,help,arg_description)
+    BEGIN_MAP_FLAG(name,MappedType,default,flag_name,help)
       MAP_FLAG_ITEM(key,value) // repeat this line for each item
     END_MAP_FLAG()
     WEB_UI_NAME(ui_name)

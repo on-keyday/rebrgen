@@ -151,9 +151,30 @@
       "name": "Debug ebm2python",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/ebm2python",
+      "program": "${workspaceRoot}/tool/ebm2p4",
       "args": ["-i", "${workspaceRoot}/save/ebm_schema.ebm"],
       "stopAtEntry": true,
+      "cwd": "${workspaceRoot}",
+      "environment": [],
+      "console": "integratedTerminal"
+      //"preLaunchTask": "build",
+      //"symbolSearchPath": "lib\\"
+    },
+    {
+      "name": "Debug ebm2rmw",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/tool/ebm2rmw",
+      "args": [
+        "-i",
+        "${workspaceRoot}/save/ebm_schema.ebm",
+        "--entry-point",
+        "ExtendedBinaryModule",
+        "--debug-unimplemented",
+        "--binary-file",
+        "${workspaceRoot}/save/ebm_schema.ebm"
+      ],
+      "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
       "console": "integratedTerminal"

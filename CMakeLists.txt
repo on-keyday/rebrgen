@@ -103,6 +103,8 @@ add_library(ebm_mapping STATIC
     "src/ebmgen/mapping.cpp"
     "src/ebmgen/debug_printer.cpp"
     "src/ebmgen/json_printer.cpp"
+    "src/ebmgen/interactive/debugger.cpp"
+    "src/ebmcodegen/structs.cpp" # for debug info
 )
 
 add_library(ebmgen_lib STATIC
@@ -126,8 +128,6 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/transform/bit_holder.cpp"
     "src/ebmgen/transform/derive_property.cpp"
     "src/ebmgen/transform/flatten_io_expression.cpp"
-    "src/ebmgen/interactive/debugger.cpp"
-    "src/ebmcodegen/structs.cpp" # for debug info
 )
 
 target_link_libraries(ebm_mapping ebm futils)
@@ -141,6 +141,7 @@ add_library(ebmcodegen_lib STATIC
     "src/ebmcodegen/json_loader.cpp"
     "src/ebmcodegen/dsl/dsl.cpp"
     "src/ebmcodegen/class_based.cpp"
+    "src/ebmcodegen/access.cpp"
 )
 
 add_executable(ebmcodegen
@@ -153,7 +154,7 @@ target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
 #add_subdirectory("src/ebmgen/test")
 add_subdirectory("src/ebmcg")
-
+add_subdirectory("src/ebmip")
 
 target_link_libraries(ebmgen futils ebm)
 

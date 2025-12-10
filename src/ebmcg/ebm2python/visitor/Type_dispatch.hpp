@@ -14,18 +14,21 @@
         base_type: *TypeRef
         common_type: *TypeRef
         element_type: *TypeRef
+        func_desc: *FuncTypeDesc
+          return_type: TypeRef
+          params: Types
+            len: Varint
+            container: std::vector<TypeRef>
+          annotation: FuncTypeAnnotation
+          reserved: std::uint8_t
         id: *StatementRef
         inner_type: *TypeRef
         length: *Varint
         members: *Types
           len: Varint
           container: std::vector<TypeRef>
-        params: *Types
-          len: Varint
-          container: std::vector<TypeRef>
         pointee_type: *TypeRef
         related_field: *StatementRef
-        return_type: *TypeRef
         size: *Varint
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
@@ -81,7 +84,7 @@ switch (type.body.kind) {
         return "BinaryIO";              // Map encoder/decoder input to bytes
     case ebm::TypeKind::FUNCTION: {
         // For functions, return a Callable type hint
-        MAYBE(return_type_str, type_to_python_str(*type.body.return_type()));
+        MAYBE(return_type_str, type_to_python_str(type.body.func_desc()->return_type));
         std::string params_str = "";  // Reverted: params_str is empty here
         return "Callable[[" + params_str + "], " + return_type_str + "]";
     }

@@ -30,6 +30,7 @@ namespace ebmcodegen {
     struct EnumMember {
         std::string_view name;
         size_t value = 0;
+        std::string_view alt_name;
     };
 
     struct Enum {

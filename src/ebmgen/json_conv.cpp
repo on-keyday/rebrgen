@@ -90,6 +90,14 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("kind")) {
+            if(!futils::json::convert_from_json(*got, obj.kind)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
         return true;
     }
     
@@ -893,6 +901,50 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(FuncTypeDesc& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("return_type")) {
+            if(!futils::json::convert_from_json(*got, obj.return_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("params")) {
+            if(!futils::json::convert_from_json(*got, obj.params)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("annotation")) {
+            FuncTypeAnnotation tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.annotation(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(FunctionDecl& obj, const futils::json::JSON& j) {
         if (auto got = j.at("name")) {
             if(!futils::json::convert_from_json(*got, obj.name)) {
@@ -1015,6 +1067,14 @@ namespace ebm {
     bool from_json(IOData& obj, const futils::json::JSON& j) {
         if (auto got = j.at("io_ref")) {
             if(!futils::json::convert_from_json(*got, obj.io_ref)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("field")) {
+            if(!futils::json::convert_from_json(*got, obj.field)) {
                 return false;
             }
         }
@@ -1169,6 +1229,151 @@ namespace ebm {
         }
         if (auto got = j.at("expect_value")) {
             if(!futils::json::convert_from_json(*got, obj.expect_value)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
+    bool from_json(Instruction& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("op")) {
+            if(!futils::json::convert_from_json(*got, obj.op)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("arg_num")) {
+            Varint tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.arg_num(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("cast_type")) {
+            CastType tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.cast_type(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("imm")) {
+            OptionalImmediateSize tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.imm(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("member_id")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.member_id(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("msg_id")) {
+            StringRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.msg_id(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("reg")) {
+            RegisterIndex tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reg(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("set_endian")) {
+            SetEndian tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.set_endian(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("str_id")) {
+            StringRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.str_id(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("struct_id")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.struct_id(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("target")) {
+            JumpOffset tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.target(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("value")) {
+            Varint tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.value(std::move(tmp))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    bool from_json(JumpOffset& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("backward")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.backward(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("offset")) {
+            if(!futils::json::convert_from_json(*got, obj.offset)) {
                 return false;
             }
         }
@@ -1477,6 +1682,41 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(OptionalImmediateSize& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("is_immediate")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.is_immediate(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("size")) {
+            Varint tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.size(std::move(tmp))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     bool from_json(ParameterDecl& obj, const futils::json::JSON& j) {
         if (auto got = j.at("name")) {
             if(!futils::json::convert_from_json(*got, obj.name)) {
@@ -1635,6 +1875,46 @@ namespace ebm {
         }
         if (auto got = j.at("to")) {
             if(!futils::json::convert_from_json(*got, obj.to)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
+    bool from_json(RegisterIndex& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("index")) {
+            if(!futils::json::convert_from_json(*got, obj.index)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
+    bool from_json(SetEndian& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("endian")) {
+            Endian tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.endian(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
                 return false;
             }
         }
@@ -2110,6 +2390,16 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("has_properties")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.has_properties(std::move(tmp));
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("reserved")) {
             std::uint8_t tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2164,6 +2454,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.methods(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("properties")) {
+            Block tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.properties(std::move(tmp))) {
                 return false;
             }
         }
@@ -2297,6 +2596,15 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("func_desc")) {
+            FuncTypeDesc tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.func_desc(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("id")) {
             StatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2333,15 +2641,6 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("params")) {
-            Types tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.params(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("pointee_type")) {
             TypeRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2357,15 +2656,6 @@ namespace ebm {
                 return false;
             }
             if(!obj.related_field(std::move(tmp))) {
-                return false;
-            }
-        }
-        if (auto got = j.at("return_type")) {
-            TypeRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.return_type(std::move(tmp))) {
                 return false;
             }
         }
@@ -2677,6 +2967,26 @@ namespace ebm {
         return false;
     }
     
+    bool from_json(CompositeFieldKind& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "BULK") {
+                obj = CompositeFieldKind::BULK;
+                return true;
+            }
+            if (s == "PREFIXED_UNION") {
+                obj = CompositeFieldKind::PREFIXED_UNION;
+                return true;
+            }
+            if (s == "SANDWICHED_UNION") {
+                obj = CompositeFieldKind::SANDWICHED_UNION;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
     bool from_json(Endian& obj, const futils::json::JSON& j) {
         if (auto got = j.get_holder().as_str()) {
             auto& s = *got;
@@ -2861,6 +3171,26 @@ namespace ebm {
         return false;
     }
     
+    bool from_json(FuncTypeAnnotation& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "NORMAL") {
+                obj = FuncTypeAnnotation::NORMAL;
+                return true;
+            }
+            if (s == "METHOD") {
+                obj = FuncTypeAnnotation::METHOD;
+                return true;
+            }
+            if (s == "FUNC_PTR") {
+                obj = FuncTypeAnnotation::FUNC_PTR;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
     bool from_json(FunctionKind& obj, const futils::json::JSON& j) {
         if (auto got = j.get_holder().as_str()) {
             auto& s = *got;
@@ -2908,12 +3238,12 @@ namespace ebm {
     bool from_json(InitCheckType& obj, const futils::json::JSON& j) {
         if (auto got = j.get_holder().as_str()) {
             auto& s = *got;
-            if (s == "encode") {
-                obj = InitCheckType::encode;
+            if (s == "union_init_encode") {
+                obj = InitCheckType::union_init_encode;
                 return true;
             }
-            if (s == "decode") {
-                obj = InitCheckType::decode;
+            if (s == "union_init_decode") {
+                obj = InitCheckType::union_init_decode;
                 return true;
             }
             if (s == "union_get") {
@@ -2922,6 +3252,14 @@ namespace ebm {
             }
             if (s == "union_set") {
                 obj = InitCheckType::union_set;
+                return true;
+            }
+            if (s == "field_init_encode") {
+                obj = InitCheckType::field_init_encode;
+                return true;
+            }
+            if (s == "field_init_decode") {
+                obj = InitCheckType::field_init_decode;
                 return true;
             }
             return false;
@@ -3010,6 +3348,326 @@ namespace ebm {
             }
             if (s == "STRICT_TYPE") {
                 obj = MergeMode::STRICT_TYPE;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
+    bool from_json(OpCode& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "NOP") {
+                obj = OpCode::NOP;
+                return true;
+            }
+            if (s == "HALT") {
+                obj = OpCode::HALT;
+                return true;
+            }
+            if (s == "JUMP") {
+                obj = OpCode::JUMP;
+                return true;
+            }
+            if (s == "JUMP_IF_TRUE") {
+                obj = OpCode::JUMP_IF_TRUE;
+                return true;
+            }
+            if (s == "JUMP_IF_FALSE") {
+                obj = OpCode::JUMP_IF_FALSE;
+                return true;
+            }
+            if (s == "CALL") {
+                obj = OpCode::CALL;
+                return true;
+            }
+            if (s == "RET") {
+                obj = OpCode::RET;
+                return true;
+            }
+            if (s == "ERROR") {
+                obj = OpCode::ERROR;
+                return true;
+            }
+            if (s == "ASSERT") {
+                obj = OpCode::ASSERT;
+                return true;
+            }
+            if (s == "IS_ERROR") {
+                obj = OpCode::IS_ERROR;
+                return true;
+            }
+            if (s == "POP") {
+                obj = OpCode::POP;
+                return true;
+            }
+            if (s == "DUP") {
+                obj = OpCode::DUP;
+                return true;
+            }
+            if (s == "SWAP") {
+                obj = OpCode::SWAP;
+                return true;
+            }
+            if (s == "PUSH_NULL") {
+                obj = OpCode::PUSH_NULL;
+                return true;
+            }
+            if (s == "PUSH_IMM_INT") {
+                obj = OpCode::PUSH_IMM_INT;
+                return true;
+            }
+            if (s == "PUSH_IMM_STR") {
+                obj = OpCode::PUSH_IMM_STR;
+                return true;
+            }
+            if (s == "LOAD_LOCAL") {
+                obj = OpCode::LOAD_LOCAL;
+                return true;
+            }
+            if (s == "STORE_LOCAL") {
+                obj = OpCode::STORE_LOCAL;
+                return true;
+            }
+            if (s == "LOAD_PARAM") {
+                obj = OpCode::LOAD_PARAM;
+                return true;
+            }
+            if (s == "LOAD_SELF") {
+                obj = OpCode::LOAD_SELF;
+                return true;
+            }
+            if (s == "STORE_REF") {
+                obj = OpCode::STORE_REF;
+                return true;
+            }
+            if (s == "PUSH_SUCCESS") {
+                obj = OpCode::PUSH_SUCCESS;
+                return true;
+            }
+            if (s == "ADD") {
+                obj = OpCode::ADD;
+                return true;
+            }
+            if (s == "SUB") {
+                obj = OpCode::SUB;
+                return true;
+            }
+            if (s == "MUL") {
+                obj = OpCode::MUL;
+                return true;
+            }
+            if (s == "DIV") {
+                obj = OpCode::DIV;
+                return true;
+            }
+            if (s == "MOD") {
+                obj = OpCode::MOD;
+                return true;
+            }
+            if (s == "NEG") {
+                obj = OpCode::NEG;
+                return true;
+            }
+            if (s == "BIT_AND") {
+                obj = OpCode::BIT_AND;
+                return true;
+            }
+            if (s == "BIT_OR") {
+                obj = OpCode::BIT_OR;
+                return true;
+            }
+            if (s == "BIT_XOR") {
+                obj = OpCode::BIT_XOR;
+                return true;
+            }
+            if (s == "BIT_NOT") {
+                obj = OpCode::BIT_NOT;
+                return true;
+            }
+            if (s == "LSHIFT") {
+                obj = OpCode::LSHIFT;
+                return true;
+            }
+            if (s == "RSHIFT") {
+                obj = OpCode::RSHIFT;
+                return true;
+            }
+            if (s == "LOGICAL_AND") {
+                obj = OpCode::LOGICAL_AND;
+                return true;
+            }
+            if (s == "LOGICAL_OR") {
+                obj = OpCode::LOGICAL_OR;
+                return true;
+            }
+            if (s == "LOGICAL_NOT") {
+                obj = OpCode::LOGICAL_NOT;
+                return true;
+            }
+            if (s == "EQ") {
+                obj = OpCode::EQ;
+                return true;
+            }
+            if (s == "NEQ") {
+                obj = OpCode::NEQ;
+                return true;
+            }
+            if (s == "LT") {
+                obj = OpCode::LT;
+                return true;
+            }
+            if (s == "LE") {
+                obj = OpCode::LE;
+                return true;
+            }
+            if (s == "GT") {
+                obj = OpCode::GT;
+                return true;
+            }
+            if (s == "GE") {
+                obj = OpCode::GE;
+                return true;
+            }
+            if (s == "CAST") {
+                obj = OpCode::CAST;
+                return true;
+            }
+            if (s == "READ_U8") {
+                obj = OpCode::READ_U8;
+                return true;
+            }
+            if (s == "READ_U16") {
+                obj = OpCode::READ_U16;
+                return true;
+            }
+            if (s == "READ_U32") {
+                obj = OpCode::READ_U32;
+                return true;
+            }
+            if (s == "READ_U64") {
+                obj = OpCode::READ_U64;
+                return true;
+            }
+            if (s == "READ_I8") {
+                obj = OpCode::READ_I8;
+                return true;
+            }
+            if (s == "READ_I16") {
+                obj = OpCode::READ_I16;
+                return true;
+            }
+            if (s == "READ_I32") {
+                obj = OpCode::READ_I32;
+                return true;
+            }
+            if (s == "READ_I64") {
+                obj = OpCode::READ_I64;
+                return true;
+            }
+            if (s == "READ_F32") {
+                obj = OpCode::READ_F32;
+                return true;
+            }
+            if (s == "READ_F64") {
+                obj = OpCode::READ_F64;
+                return true;
+            }
+            if (s == "READ_BITS_U") {
+                obj = OpCode::READ_BITS_U;
+                return true;
+            }
+            if (s == "READ_BITS_I") {
+                obj = OpCode::READ_BITS_I;
+                return true;
+            }
+            if (s == "READ_BYTES") {
+                obj = OpCode::READ_BYTES;
+                return true;
+            }
+            if (s == "PEEK_U8") {
+                obj = OpCode::PEEK_U8;
+                return true;
+            }
+            if (s == "SEEK_REL") {
+                obj = OpCode::SEEK_REL;
+                return true;
+            }
+            if (s == "SEEK_ABS") {
+                obj = OpCode::SEEK_ABS;
+                return true;
+            }
+            if (s == "AVAILABLE") {
+                obj = OpCode::AVAILABLE;
+                return true;
+            }
+            if (s == "GET_OFFSET") {
+                obj = OpCode::GET_OFFSET;
+                return true;
+            }
+            if (s == "SET_ENDIAN") {
+                obj = OpCode::SET_ENDIAN;
+                return true;
+            }
+            if (s == "WRITE_U8") {
+                obj = OpCode::WRITE_U8;
+                return true;
+            }
+            if (s == "WRITE_U16") {
+                obj = OpCode::WRITE_U16;
+                return true;
+            }
+            if (s == "WRITE_U32") {
+                obj = OpCode::WRITE_U32;
+                return true;
+            }
+            if (s == "WRITE_U64") {
+                obj = OpCode::WRITE_U64;
+                return true;
+            }
+            if (s == "WRITE_BYTES") {
+                obj = OpCode::WRITE_BYTES;
+                return true;
+            }
+            if (s == "WRITE_BITS") {
+                obj = OpCode::WRITE_BITS;
+                return true;
+            }
+            if (s == "NEW_STRUCT") {
+                obj = OpCode::NEW_STRUCT;
+                return true;
+            }
+            if (s == "LOAD_MEMBER") {
+                obj = OpCode::LOAD_MEMBER;
+                return true;
+            }
+            if (s == "NEW_ARRAY") {
+                obj = OpCode::NEW_ARRAY;
+                return true;
+            }
+            if (s == "ARRAY_SET") {
+                obj = OpCode::ARRAY_SET;
+                return true;
+            }
+            if (s == "ARRAY_GET") {
+                obj = OpCode::ARRAY_GET;
+                return true;
+            }
+            if (s == "ARRAY_LEN") {
+                obj = OpCode::ARRAY_LEN;
+                return true;
+            }
+            if (s == "NEW_BYTES") {
+                obj = OpCode::NEW_BYTES;
+                return true;
+            }
+            if (s == "VECTOR_PUSH") {
+                obj = OpCode::VECTOR_PUSH;
+                return true;
+            }
+            if (s == "MAX_OPCODE") {
+                obj = OpCode::MAX_OPCODE;
                 return true;
             }
             return false;

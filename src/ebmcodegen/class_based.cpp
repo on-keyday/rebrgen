@@ -312,9 +312,32 @@ namespace ebmcodegen {
         return context_classes;
     }
 
+    struct UserConfigIncludes {
+        std::string_view visitor = prefixes[prefix_visitor];
+        std::string_view post_includes = prefixes[prefix_post_includes];
+        std::string_view includes = prefixes[prefix_includes];
+        std::string_view flags = prefixes[prefix_flags];
+        std::string flags_bind = std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_bind]);
+        std::string flags_struct = std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_struct]);
+        std::string_view output = prefixes[prefix_output];
+        std::string_view result = prefixes[prefix_result];
+
+        void foreach (auto&& cb) {
+            cb(visitor);
+            cb(post_includes);
+            cb(includes);
+            cb(flags);
+            cb(flags_bind);
+            cb(flags_struct);
+            cb(output);
+            cb(result);
+        }
+    };
+
     struct IncludeInfo {
         const IncludeLocations& includes;
         const std::vector<HookType>& hooks;
+        UserConfigIncludes user_include;
     };
 
     void user_config_include_per_base(CodeWriter& w, std::string_view base_name, const IncludeInfo& includes_info) {
@@ -671,14 +694,16 @@ namespace ebmcodegen {
         src.writeln(result_type, " visit_unimplemented(MergedVisitor& visitor,std::string_view kind,std::uint64_t item_id) {");
         {
             auto scope = src.indent_scope();
+            src.writeln("if (visitor.flags.debug_unimplemented) {");
+            auto if_scope = src.indent_scope();
+
             if (is_codegen) {
-                src.writeln("if (visitor.flags.debug_unimplemented) {");
-                {
-                    auto if_scope = src.indent_scope();
-                    src.writeln("return std::format(\"{{{{Unimplemented {} {}}}}}\", kind, item_id);");
-                }
-                src.writeln("}");
+                src.writeln("return std::format(\"{{{{Unimplemented {} {}}}}}\", kind, item_id);");
             }
+            else {
+                src.writeln("return unexpect_error(\"Unimplemented {} {}\", kind, item_id);");
+            }
+            src.writeln("}");
             src.writeln("return ", result_type, "{}; // Unimplemented");
         }
         src.writeln("}");
@@ -784,6 +809,9 @@ namespace ebmcodegen {
                 if (!field.derived) {
                     continue;
                 }
+                if (field.constructor_type.empty()) {
+                    continue;
+                }
                 if (!first) {
                     w.write(", ");
                 }
@@ -865,7 +893,7 @@ namespace ebmcodegen {
                 }
                 w.writeln(";");
             }
-            user_config_include(w, prefixes[prefix_visitor], includes_info);
+            user_config_include(w, includes_info.user_include.visitor, includes_info);
         }
         w.writeln("};");
 
@@ -957,6 +985,7 @@ namespace ebmcodegen {
 
             w.writeln("#define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)");
             w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
+            w.writeln("#define DEFINE_INT_FLAG(name,type,default_,flag_name,desc,arg_desc) DEFINE_FLAG(type,name,default_,flag_name,VarInt,desc,arg_desc)");
             w.write("#define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)");
             if (on_define) {
                 w.write(ensure_c_ident, "MappedType name = default_;");
@@ -978,11 +1007,12 @@ namespace ebmcodegen {
             }
             w.writeln();
 
-            user_config_include(w, prefixes[prefix_flags], includes_info);
+            user_config_include(w, includes_info.user_include.flags, includes_info);
             w.writeln("#undef DEFINE_FLAG");
             w.writeln("#undef WEB_FILTERED");
             w.writeln("#undef DEFINE_BOOL_FLAG");
             w.writeln("#undef DEFINE_STRING_FLAG");
+            w.writeln("#undef DEFINE_INT_FLAG");
             w.writeln("#undef BEGIN_MAP_FLAG");
             w.writeln("#undef MAP_FLAG_ITEM");
             w.writeln("#undef END_MAP_FLAG");
@@ -996,7 +1026,7 @@ namespace ebmcodegen {
         {
             auto flag_scope = w.indent_scope();
             with_flag_bind(true);
-            user_config_include(w, std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_struct]), includes_info);
+            user_config_include(w, includes_info.user_include.flags_struct, includes_info);
             w.writeln("void bind(futils::cmdline::option::Context& ctx) {");
             auto nested_scope = w.indent_scope();
             w.writeln("lang_name = \"", flags.lang, "\";");
@@ -1006,7 +1036,7 @@ namespace ebmcodegen {
             w.writeln("file_extensions = {\".", flags.lang, "\"};");
             w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
             with_flag_bind(false);
-            user_config_include(w, std::format("{}{}", prefixes[prefix_flags], suffixes[suffix_bind]), includes_info);
+            user_config_include(w, includes_info.user_include.flags_bind, includes_info);
             nested_scope.execute();
             w.writeln("}");
         }
@@ -1015,7 +1045,7 @@ namespace ebmcodegen {
 
     void generate_Output(CodeWriter& w, const IncludeInfo& includes_info) {
         w.writeln("struct Output : ebmcodegen::Output {");
-        user_config_include(w, prefixes[prefix_output], includes_info);
+        user_config_include(w, includes_info.user_include.output, includes_info);
         w.writeln("};");
     }
 
@@ -1039,7 +1069,7 @@ namespace ebmcodegen {
             w.indent_writeln("return value;");
             w.writeln("}");
         }
-        user_config_include(w, prefixes[prefix_result], includes_info);
+        user_config_include(w, includes_info.user_include.result, includes_info);
         result_scope.execute();
         w.writeln("};");
     }
@@ -1206,6 +1236,14 @@ namespace ebmcodegen {
         else {
             w.writeln("#endif // ", macro_CODEGEN_COMMON_INCLUDE_GUARD);
         }
+    }
+
+    void generate_user_include_before(CodeWriter& w, const IncludeInfo& includes_locations) {
+        user_config_include(w, includes_locations.user_include.includes, includes_locations);
+    }
+
+    void generate_user_include_after(CodeWriter& w, const IncludeInfo& includes_locations) {
+        user_config_include(w, includes_locations.user_include.post_includes, includes_locations);
     }
 
     void generate_dummy_macro_for_class(CodeWriter& w, std::string_view ns_name, const HookType& hook, const ContextClass& cls) {
@@ -1430,15 +1468,16 @@ namespace ebmcodegen {
         w.writeln("}");
     }
 
-    void generate_user_interface(CodeWriter& w, std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
-        w.writeln("template<typename VisitorImpl>");
-        w.writeln("struct InitialContext {");
+    void generate_initial_context(CodeWriter& w) {
+        w.writeln("struct InitialContext : ebmcodegen::util::ContextBase<InitialContext> {");
         {
             auto scope = w.indent_scope();
-            w.writeln("VisitorImpl& visitor;");
+            w.writeln("BaseVisitor& visitor;");
         }
         w.writeln("};");
+    }
 
+    void generate_user_interface(CodeWriter& w, std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
         w.writeln("// for backward compatibility");
         w.writeln();
 
@@ -1458,7 +1497,7 @@ namespace ebmcodegen {
             w.writeln("auto entry_function = [&]() -> ", fq_result_type, " {");
             {
                 auto entry_scope = w.indent_scope();
-                w.writeln(ns_name, "::InitialContext initial_ctx{visitor};");
+                w.writeln(ns_name, "::InitialContext initial_ctx{.visitor = visitor};");
                 w.writeln("auto pre_visit_result = ", ns_name, "::dispatch_pre_visitor(initial_ctx,ebm);");
                 handle_hijack_logic(w, "pre_visit_result");
                 w.writeln("if(!visitor.module_.valid()) {");
@@ -1484,16 +1523,14 @@ namespace ebmcodegen {
     }
 
     auto generate_hooks() {
+        // Inlined hooks are for backward compatibility
         std::vector<HookType> hooks = {
             {.name = "UserHook"},
-            {.name = "UserDSLHook"},
-            {.name = "DefaultCodegenVisitorHook"},
-
-            // for backward compatibility
             {.name = "UserInlinedHook", .is_config_include_target = true},
+            {.name = "UserDSLHook"},
             {.name = "UserInlinedDSLHook", .is_config_include_target = true},
+            {.name = "DefaultCodegenVisitorHook"},
             {.name = "DefaultCodegenVisitorInlinedHook", .is_config_include_target = true},
-
             {.name = "GeneratorDefaultHook"},  // this is hidden
         };
         return hooks;
@@ -1506,7 +1543,10 @@ namespace ebmcodegen {
         auto hooks = generate_hooks();
         auto ns_name = locations.ns_name;
         auto is_codegen = locations.is_codegen;
+        IncludeInfo includes_info{.includes = locations, .hooks = hooks};
+
         generate_common_include_guard(hdr, true);
+        generate_user_include_before(hdr, includes_info);
         generate_namespace(hdr, ns_name, true);
         generate_undef_dummy_macros(src);
         generate_forward_declaration_source(src, ns_name, result_type, is_codegen);
@@ -1515,8 +1555,6 @@ namespace ebmcodegen {
         auto ns_scope_hdr = hdr.indent_scope();
         auto ns_scope_src = src.indent_scope();
         generate_forward_declaration_header(hdr);
-
-        IncludeInfo includes_info{.includes = locations, .hooks = hooks};
 
         generate_namespace_injection(hdr);
         generate_Result(hdr, is_codegen, includes_info);
@@ -1536,6 +1574,7 @@ namespace ebmcodegen {
         }
         generate_user_interface(hdr, context_classes, result_type);
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);
+        generate_initial_context(hdr);
 
         generate_visitor_customization_point(hdr);
         for (auto& cls_group : context_classes) {
@@ -1558,6 +1597,7 @@ namespace ebmcodegen {
         ns_scope_src.execute();
         generate_namespace(hdr, ns_name, false);
         generate_namespace(src, ns_name, false);
+        generate_user_include_after(hdr, includes_info);
         generate_common_include_guard(hdr, false);
         generate_entry_point(src, ns_name);
     }
@@ -1632,6 +1672,13 @@ namespace ebmcodegen {
                 }
             }
         }
+        UserConfigIncludes incs;
+        incs.foreach ([&](auto&& v) {
+            names.push_back(std::string(v));
+            // before/after
+            names.push_back(std::format("{}{}", v, suffixes[suffix_before]));
+            names.push_back(std::format("{}{}", v, suffixes[suffix_after]));
+        });
         return names;
     }
 

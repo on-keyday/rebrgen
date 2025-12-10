@@ -9,13 +9,14 @@ namespace ebmgen {
     expected<ebm::TypeBody> TypeConverter::convert_function_type(const std::shared_ptr<ast::FunctionType>& n) {
         ebm::TypeBody body;
         body.kind = ebm::TypeKind::FUNCTION;
+        ebm::FuncTypeDesc func_desc;
         if (n->return_type) {
             EBMA_CONVERT_TYPE(return_type, n->return_type);
-            body.return_type(return_type);
+            func_desc.return_type = return_type;
         }
         else {
             EBMU_VOID_TYPE(void_type);
-            body.return_type(void_type);
+            func_desc.return_type = void_type;
         }
 
         ebm::Types params;
@@ -23,7 +24,9 @@ namespace ebmgen {
             EBMA_CONVERT_TYPE(param_type, param);
             append(params, param_type);
         }
-        body.params(std::move(params));
+        func_desc.params = std::move(params);
+        func_desc.annotation(ebm::FuncTypeAnnotation::FUNC_PTR);
+        body.func_desc(std::move(func_desc));
         return body;
     }
 

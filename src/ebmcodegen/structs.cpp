@@ -4,15 +4,13 @@
 #include "../ebmgen/common.hpp"
 #include "ebm/extended_binary_module.hpp"
 namespace ebmcodegen {
-    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map(bool include_refs) {
+    template <typename Root>
+    void retrieve(std::map<std::string_view, Struct>& struct_map, std::map<std::string_view, Enum>& enum_map, bool include_refs) {
         std::vector<Struct> structs;
         structs.push_back({
-            ebm::ExtendedBinaryModule::visitor_name,
+            Root::visitor_name,
         });
-        std::map<std::string_view, Struct> struct_map;
-        std::map<std::string_view, Enum> enum_map;
-
-        ebm::ExtendedBinaryModule::visit_static([&](auto&& visitor, const char* name, auto tag, TypeAttribute dispatch = NONE) -> void {
+        Root::visit_static([&](auto&& visitor, const char* name, auto tag, TypeAttribute dispatch = NONE) -> void {
             using T = typename decltype(tag)::type;
             constexpr bool is_rvalue = decltype(tag)::is_rvalue;
             if (is_rvalue) {
@@ -54,10 +52,36 @@ namespace ebmcodegen {
                 if (!enum_map.contains(enum_name)) {
                     auto& added = enum_map[enum_name];
                     added.name = enum_name;
-                    for (size_t i = 0; to_string(T(i))[0] != 0; i++) {
-                        added.members.push_back({
-                            .name = to_string(T(i), true),
-                            .value = i,
+
+                    auto do_collect = [&](auto&& cond) {
+                        for (size_t i = 0; cond(i); i++) {
+                            auto name = to_string(T(i), true);
+                            if (name[0] == 0) {
+                                continue;
+                            }
+                            auto alt_name = to_string(T(i), false);
+                            if (std::string_view(alt_name) != name) {
+                                added.members.push_back({
+                                    .name = name,
+                                    .value = i,
+                                    .alt_name = alt_name,
+                                });
+                                continue;
+                            }
+                            added.members.push_back({
+                                .name = to_string(T(i), true),
+                                .value = i,
+                            });
+                        }
+                    };
+                    if constexpr (std::is_same_v<T, ebm::OpCode>) {  // edge case
+                        do_collect([&](size_t i) {
+                            return i <= static_cast<size_t>(ebm::OpCode::MAX_OPCODE);
+                        });
+                    }
+                    else {
+                        do_collect([&](size_t i) {
+                            return to_string(T(i))[0] != 0;
                         });
                     }
                 }
@@ -124,7 +148,16 @@ namespace ebmcodegen {
                 static_assert(std::is_same_v<T, void>, "Unsupported type");
             }
         });
-        struct_map["ExtendedBinaryModule"] = std::move(structs[0]);
+        struct_map[Root::visitor_name] = std::move(structs[0]);
+    }
+
+    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map(bool include_refs) {
+        std::map<std::string_view, Struct> struct_map;
+        std::map<std::string_view, Enum> enum_map;
+
+        retrieve<ebm::ExtendedBinaryModule>(struct_map, enum_map, include_refs);
+        retrieve<ebm::Instruction>(struct_map, enum_map, include_refs);
+
         return {struct_map, enum_map};
     }
 }  // namespace ebmcodegen

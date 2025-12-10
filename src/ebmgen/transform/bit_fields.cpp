@@ -121,7 +121,7 @@ namespace ebmgen {
         // for read_offset < new_size:
         //    tmp_buffer[read_offset] = read u8
         //    read_offset++
-        auto read_incremental = [&](ebm::ExpressionRef added_bit) -> expected<ebm::StatementRef> {
+        auto read_incremental = [&](ebm::StatementRef field, ebm::ExpressionRef added_bit) -> expected<ebm::StatementRef> {
             EBMU_INT_LITERAL(seven, 7);
             EBMU_INT_LITERAL(eight, 8);
             EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
@@ -130,8 +130,8 @@ namespace ebmgen {
             ebm::Block block;
             {
                 EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset);
-                auto data = make_io_data(io_ref, indexed, u8_t, {}, get_size(8));
-                MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, 1, {}, indexed, u8_t));
+                auto data = make_io_data(io_ref, field, indexed, u8_t, {}, get_size(8));
+                MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, field, 1, {}, indexed, u8_t));
                 data.attribute.has_lowered_statement(true);
                 data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, lowered));
                 EBM_READ_DATA(read_to_temporary, std::move(data));
@@ -143,11 +143,11 @@ namespace ebmgen {
             EBM_WHILE_LOOP(loop, condition, read);
             return loop;
         };
-        auto flush_buffer = [&](ebm::ExpressionRef new_size_bit) -> expected<ebm::StatementRef> {
+        auto flush_buffer = [&](ebm::StatementRef field, ebm::ExpressionRef new_size_bit) -> expected<ebm::StatementRef> {
             EBMU_INT_LITERAL(eight, 8);
             EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, new_size_bit, eight);
             MAYBE(cur_offset, make_dynamic_size(div, ebm::SizeUnit::BYTE_DYNAMIC));
-            auto write_buffer = make_io_data(io_ref, tmp_buffer, max_buffer_t, {}, cur_offset);
+            auto write_buffer = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, cur_offset);
             EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
             return flush_buffer;
         };
@@ -182,7 +182,7 @@ namespace ebmgen {
                         }
                     }
                     if (!write) {
-                        MAYBE(io_cond, read_incremental(new_size_bit));
+                        MAYBE(io_cond, read_incremental(io_copy.field, new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
@@ -218,7 +218,7 @@ namespace ebmgen {
                         }
                         append(block, *assign);
                         if (i == r.route.size() - 1) {
-                            MAYBE(flush, flush_buffer(new_size_bit));
+                            MAYBE(flush, flush_buffer(io_copy.field, new_size_bit));
                             append(block, flush);
                         }
                     }
@@ -251,7 +251,7 @@ namespace ebmgen {
         // for read_offset < new_size:
         //    tmp_buffer[read_offset] = read u8
         //    read_offset++
-        auto read_incremental = [&](size_t& read_offset, size_t added_bit) -> expected<ebm::StatementRef> {
+        auto read_incremental = [&](ebm::StatementRef field, size_t& read_offset, size_t added_bit) -> expected<ebm::StatementRef> {
             // EBMU_INT_LITERAL(seven, 7);
             // EBMU_INT_LITERAL(eight, 8);
             // EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
@@ -265,8 +265,8 @@ namespace ebmgen {
             while (read_offset < new_size) {
                 EBMU_INT_LITERAL(read_offset_expr, read_offset);
                 EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset_expr);
-                auto data = make_io_data(io_ref, indexed, u8_t, {}, get_size(8));
-                MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, 1, {}, indexed, u8_t));
+                auto data = make_io_data(io_ref, field, indexed, u8_t, {}, get_size(8));
+                MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, field, 1, {}, indexed, u8_t));
                 data.attribute.has_lowered_statement(true);
                 data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, lowered));
                 EBM_READ_DATA(read_to_temporary, std::move(data));
@@ -276,11 +276,11 @@ namespace ebmgen {
             EBM_BLOCK(read, std::move(block));
             return read;
         };
-        auto flush_buffer = [&](size_t new_size_bit) -> expected<ebm::StatementRef> {
+        auto flush_buffer = [&](ebm::StatementRef field, size_t new_size_bit) -> expected<ebm::StatementRef> {
             // EBMU_INT_LITERAL(eight, 8);
             // EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, new_size_bit, eight);
             MAYBE(cur_offset, make_fixed_size(new_size_bit / 8, ebm::SizeUnit::BYTE_FIXED));
-            auto write_buffer = make_io_data(io_ref, tmp_buffer, max_buffer_t, {}, cur_offset);
+            auto write_buffer = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, cur_offset);
             EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
             return flush_buffer;
         };
@@ -321,7 +321,7 @@ namespace ebmgen {
                         //}
                     }
                     if (!write) {
-                        MAYBE(io_cond, read_incremental(read_offset, new_size_bit));
+                        MAYBE(io_cond, read_incremental(io_copy.field, read_offset, new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
@@ -359,7 +359,7 @@ namespace ebmgen {
                         }
                         append(block, *assign);
                         if (i == r.route.size() - 1) {
-                            MAYBE(flush, flush_buffer(new_size_bit));
+                            MAYBE(flush, flush_buffer(io_copy.field, new_size_bit));
                             append(block, flush);
                         }
                     }

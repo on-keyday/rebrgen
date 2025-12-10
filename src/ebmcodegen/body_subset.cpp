@@ -122,14 +122,13 @@ namespace ebmcodegen {
             body.base_type({});
             body.common_type({});
             body.element_type({});
+            body.func_desc({});
             body.id({});
             body.inner_type({});
             body.length({});
             body.members({});
-            body.params({});
             body.pointee_type({});
             body.related_field({});
-            body.return_type({});
             body.size({});
             std::set<std::string_view> subset;
             std::vector<std::string_view> ordered;

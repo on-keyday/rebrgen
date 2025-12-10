@@ -435,7 +435,7 @@ namespace ebmgen {
         if (is_nil(alt_type)) {
             return std::nullopt;
         }
-        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::encode : ebm::InitCheckType::decode);
+        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::union_init_encode : ebm::InitCheckType::union_init_decode);
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {
@@ -540,11 +540,17 @@ namespace ebmgen {
             struct_decl.related_variant(related_variant);
         }
         ebm::Block methods_block;
+        ebm::Block properties_block;
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
             for (auto& element : node->fields) {
                 if (ast::as<ast::Field>(element)) {
                     EBMA_CONVERT_STATEMENT(stmt_ref, element);
+                    MAYBE(stmt, ctx.repository().get_statement(stmt_ref));
+                    if (stmt.body.kind == ebm::StatementKind::PROPERTY_DECL) {
+                        append(properties_block, stmt_ref);
+                        continue;
+                    }
                     append(struct_decl.fields, stmt_ref);
                 }
                 else if (ast::as<ast::Function>(element)) {
@@ -566,6 +572,10 @@ namespace ebmgen {
         if (!methods_block.container.empty()) {
             struct_decl.has_functions(true);
             struct_decl.methods(std::move(methods_block));
+        }
+        if (!properties_block.container.empty()) {
+            struct_decl.has_properties(true);
+            struct_decl.properties(std::move(properties_block));
         }
         return struct_decl;
     }
@@ -594,16 +604,20 @@ namespace ebmgen {
             ebm::TypeBody b;
             b.kind = typ == GenerateType::Encode ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
             EBMA_ADD_TYPE(fn_return, std::move(b));
+            ebm::FuncTypeDesc fn_type;
+            b.kind = ebm::TypeKind::FUNCTION;
+            b.func_desc(ebm::FuncTypeDesc{});
             if (fn) {
                 MAYBE(fn_type_body, ctx.get_type_converter().convert_function_type(fn->func_type));
-                fn_type_body.return_type(fn_return);
+                fn_type_body.func_desc()->return_type = fn_return;
                 b = std::move(fn_type_body);
             }
             else {
                 b.kind = ebm::TypeKind::FUNCTION;
-                b.return_type(fn_return);
+                b.func_desc()->return_type = fn_return;
             }
-            auto& param = *b.params();
+            b.func_desc()->annotation(ebm::FuncTypeAnnotation::METHOD);
+            auto& param = b.func_desc()->params;
             param.len = varint(param.len.value() + 1).value();
             param.container.insert(param.container.begin(), typ == GenerateType::Encode ? encoder_input : decoder_input);
             EBMA_ADD_TYPE(fn_typ, std::move(b));

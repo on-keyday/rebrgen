@@ -15,6 +15,27 @@
 // This is a measure to prevent any impact on compilation even if a user mistakenly changes something like #include "lang/codegen.hpp" to #include "other_lang/codegen.hpp".
 #ifndef EBM_CODEGEN_COMMON_INCLUDE_GUARD
 #define EBM_CODEGEN_COMMON_INCLUDE_GUARD 1
+#if __has_include("visitor/includes_before.hpp")
+#include "visitor/includes_before.hpp"
+#elif __has_include("visitor/dsl/includes_before_dsl.hpp")
+#include "visitor/dsl/includes_before_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes_before.hpp")
+#include "ebmcodegen/default_codegen_visitor/visitor/includes_before.hpp"
+#endif
+#if __has_include("visitor/includes.hpp")
+#include "visitor/includes.hpp"
+#elif __has_include("visitor/dsl/includes_dsl.hpp")
+#include "visitor/dsl/includes_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes.hpp")
+#include "ebmcodegen/default_codegen_visitor/visitor/includes.hpp"
+#endif
+#if __has_include("visitor/includes_after.hpp")
+#include "visitor/includes_after.hpp"
+#elif __has_include("visitor/dsl/includes_after_dsl.hpp")
+#include "visitor/dsl/includes_after_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes_after.hpp")
+#include "ebmcodegen/default_codegen_visitor/visitor/includes_after.hpp"
+#endif
 namespace ebm2rust {
     struct MergedVisitor;
     using namespace ebmgen;
@@ -40,22 +61,22 @@ namespace ebm2rust {
         #include "visitor/Result_before.hpp"
         #elif __has_include("visitor/dsl/Result_before_dsl.hpp")
         #include "visitor/dsl/Result_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Result_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Result_before.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Result_before.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Result_before.hpp"
         #endif
         #if __has_include("visitor/Result.hpp")
         #include "visitor/Result.hpp"
         #elif __has_include("visitor/dsl/Result_dsl.hpp")
         #include "visitor/dsl/Result_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Result.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Result.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Result.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Result.hpp"
         #endif
         #if __has_include("visitor/Result_after.hpp")
         #include "visitor/Result_after.hpp"
         #elif __has_include("visitor/dsl/Result_after_dsl.hpp")
         #include "visitor/dsl/Result_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Result_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Result_after.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Result_after.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Result_after.hpp"
         #endif
     };
     struct Flags : ebmcodegen::Flags {
@@ -68,6 +89,7 @@ namespace ebm2rust {
         #define FILE_EXTENSIONS(...) 
         #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
         #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
+        #define DEFINE_INT_FLAG(name,type,default_,flag_name,desc,arg_desc) DEFINE_FLAG(type,name,default_,flag_name,VarInt,desc,arg_desc)
         #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)static_assert(ebmcodegen::util::internal::is_c_ident(#name),"name must be a valid C identifier");MappedType name = default_;
         #define MAP_FLAG_ITEM(key,value) 
         #define END_MAP_FLAG() 
@@ -75,27 +97,28 @@ namespace ebm2rust {
         #include "visitor/Flags_before.hpp"
         #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
         #include "visitor/dsl/Flags_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_before.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp"
         #endif
         #if __has_include("visitor/Flags.hpp")
         #include "visitor/Flags.hpp"
         #elif __has_include("visitor/dsl/Flags_dsl.hpp")
         #include "visitor/dsl/Flags_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Flags.hpp"
         #endif
         #if __has_include("visitor/Flags_after.hpp")
         #include "visitor/Flags_after.hpp"
         #elif __has_include("visitor/dsl/Flags_after_dsl.hpp")
         #include "visitor/dsl/Flags_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_after.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp"
         #endif
         #undef DEFINE_FLAG
         #undef WEB_FILTERED
         #undef DEFINE_BOOL_FLAG
         #undef DEFINE_STRING_FLAG
+        #undef DEFINE_INT_FLAG
         #undef BEGIN_MAP_FLAG
         #undef MAP_FLAG_ITEM
         #undef END_MAP_FLAG
@@ -107,22 +130,22 @@ namespace ebm2rust {
         #include "visitor/Flags_struct_before.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_before_dsl.hpp")
         #include "visitor/dsl/Flags_struct_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_struct_before.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_struct_before.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct_before.hpp"
         #endif
         #if __has_include("visitor/Flags_struct.hpp")
         #include "visitor/Flags_struct.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_dsl.hpp")
         #include "visitor/dsl/Flags_struct_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_struct.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_struct.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct.hpp"
         #endif
         #if __has_include("visitor/Flags_struct_after.hpp")
         #include "visitor/Flags_struct_after.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_after_dsl.hpp")
         #include "visitor/dsl/Flags_struct_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_struct_after.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_struct_after.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct_after.hpp"
         #endif
         void bind(futils::cmdline::option::Context& ctx) {
             lang_name = "rust";
@@ -140,6 +163,7 @@ namespace ebm2rust {
             #define FILE_EXTENSIONS(...) file_extensions = std::vector<std::string_view>{__VA_ARGS__}
             #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
             #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
+            #define DEFINE_INT_FLAG(name,type,default_,flag_name,desc,arg_desc) DEFINE_FLAG(type,name,default_,flag_name,VarInt,desc,arg_desc)
             #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc){ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = "{"; 
             #define MAP_FLAG_ITEM(key,value) map__[key] = value;if (!arg_desc__.empty() && arg_desc__.back() != '{') { arg_desc__ += ","; }arg_desc__ += key;
             #define END_MAP_FLAG() ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + "}",std::move(map__)); }
@@ -147,27 +171,28 @@ namespace ebm2rust {
             #include "visitor/Flags_before.hpp"
             #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
             #include "visitor/dsl/Flags_before_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_before.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_before.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp")
+            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_before.hpp"
             #endif
             #if __has_include("visitor/Flags.hpp")
             #include "visitor/Flags.hpp"
             #elif __has_include("visitor/dsl/Flags_dsl.hpp")
             #include "visitor/dsl/Flags_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags.hpp")
+            #include "ebmcodegen/default_codegen_visitor/visitor/Flags.hpp"
             #endif
             #if __has_include("visitor/Flags_after.hpp")
             #include "visitor/Flags_after.hpp"
             #elif __has_include("visitor/dsl/Flags_after_dsl.hpp")
             #include "visitor/dsl/Flags_after_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_after.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_after.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp")
+            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_after.hpp"
             #endif
             #undef DEFINE_FLAG
             #undef WEB_FILTERED
             #undef DEFINE_BOOL_FLAG
             #undef DEFINE_STRING_FLAG
+            #undef DEFINE_INT_FLAG
             #undef BEGIN_MAP_FLAG
             #undef MAP_FLAG_ITEM
             #undef END_MAP_FLAG
@@ -179,22 +204,22 @@ namespace ebm2rust {
             #include "visitor/Flags_bind_before.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_before_dsl.hpp")
             #include "visitor/dsl/Flags_bind_before_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind_before.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_bind_before.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_bind_before.hpp")
+            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_bind_before.hpp"
             #endif
             #if __has_include("visitor/Flags_bind.hpp")
             #include "visitor/Flags_bind.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_dsl.hpp")
             #include "visitor/dsl/Flags_bind_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_bind.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_bind.hpp")
+            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_bind.hpp"
             #endif
             #if __has_include("visitor/Flags_bind_after.hpp")
             #include "visitor/Flags_bind_after.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_after_dsl.hpp")
             #include "visitor/dsl/Flags_bind_after_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind_after.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_bind_after.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Flags_bind_after.hpp")
+            #include "ebmcodegen/default_codegen_visitor/visitor/Flags_bind_after.hpp"
             #endif
         }
     };
@@ -203,34 +228,34 @@ namespace ebm2rust {
     #include "visitor/Output_before.hpp"
     #elif __has_include("visitor/dsl/Output_before_dsl.hpp")
     #include "visitor/dsl/Output_before_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/Output_before.hpp")
-    #include "ebmcodegen/default_codegen_visitor/Output_before.hpp"
+    #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Output_before.hpp")
+    #include "ebmcodegen/default_codegen_visitor/visitor/Output_before.hpp"
     #endif
     #if __has_include("visitor/Output.hpp")
     #include "visitor/Output.hpp"
     #elif __has_include("visitor/dsl/Output_dsl.hpp")
     #include "visitor/dsl/Output_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/Output.hpp")
-    #include "ebmcodegen/default_codegen_visitor/Output.hpp"
+    #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Output.hpp")
+    #include "ebmcodegen/default_codegen_visitor/visitor/Output.hpp"
     #endif
     #if __has_include("visitor/Output_after.hpp")
     #include "visitor/Output_after.hpp"
     #elif __has_include("visitor/dsl/Output_after_dsl.hpp")
     #include "visitor/dsl/Output_after_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/Output_after.hpp")
-    #include "ebmcodegen/default_codegen_visitor/Output_after.hpp"
+    #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Output_after.hpp")
+    #include "ebmcodegen/default_codegen_visitor/visitor/Output_after.hpp"
     #endif
     };
     template <typename Tag>
     struct UserHook {}; // Hook tag
     template <typename Tag>
-    struct UserDSLHook {}; // Hook tag
-    template <typename Tag>
-    struct DefaultCodegenVisitorHook {}; // Hook tag
-    template <typename Tag>
     struct UserInlinedHook {}; // Hook tag
     template <typename Tag>
+    struct UserDSLHook {}; // Hook tag
+    template <typename Tag>
     struct UserInlinedDSLHook {}; // Hook tag
+    template <typename Tag>
+    struct DefaultCodegenVisitorHook {}; // Hook tag
     template <typename Tag>
     struct DefaultCodegenVisitorInlinedHook {}; // Hook tag
     template<typename T>
@@ -804,10 +829,6 @@ namespace ebm2rust {
         }
         return w;
     }
-    template<typename VisitorImpl>
-    struct InitialContext {
-        VisitorImpl& visitor;
-    };
     // for backward compatibility
     
     // generic visitor for Statement
@@ -915,26 +936,29 @@ namespace ebm2rust {
         #include "visitor/Visitor_before.hpp"
         #elif __has_include("visitor/dsl/Visitor_before_dsl.hpp")
         #include "visitor/dsl/Visitor_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Visitor_before.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Visitor_before.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Visitor_before.hpp"
         #endif
         #if __has_include("visitor/Visitor.hpp")
         #include "visitor/Visitor.hpp"
         #elif __has_include("visitor/dsl/Visitor_dsl.hpp")
         #include "visitor/dsl/Visitor_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Visitor.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Visitor.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Visitor.hpp"
         #endif
         #if __has_include("visitor/Visitor_after.hpp")
         #include "visitor/Visitor_after.hpp"
         #elif __has_include("visitor/dsl/Visitor_after_dsl.hpp")
         #include "visitor/dsl/Visitor_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Visitor_after.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/Visitor_after.hpp")
+        #include "ebmcodegen/default_codegen_visitor/visitor/Visitor_after.hpp"
         #endif
     };
     template<typename V>
     concept BaseVisitorLike = std::derived_from<V,BaseVisitor>;
+    struct InitialContext : ebmcodegen::util::ContextBase<InitialContext> {
+        BaseVisitor& visitor;
+    };
     template<typename Tag>
     struct Visitor; // Customization point struct
     struct Context_entry : ebmcodegen::util::ContextBase<Context_entry> {
@@ -5609,8 +5633,7 @@ namespace ebm2rust {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::Types& params;
-        const ebm::TypeRef& return_type;
+        const ebm::FuncTypeDesc& func_desc;
     };
     struct VisitorTag_Type_FUNCTION {};
     template<typename VisitorImpl>
@@ -5619,13 +5642,12 @@ namespace ebm2rust {
     };
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& params = instance_name.params;auto& return_type = instance_name.return_type;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;
     struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::Types& params;
-        const ebm::TypeRef& return_type;
+        const ebm::FuncTypeDesc& func_desc;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_FUNCTION_before {};
@@ -5635,13 +5657,12 @@ namespace ebm2rust {
     };
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& params = instance_name.params;auto& return_type = instance_name.return_type;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;
     struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::Types& params;
-        const ebm::TypeRef& return_type;
+        const ebm::FuncTypeDesc& func_desc;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -5652,7 +5673,7 @@ namespace ebm2rust {
     };
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& params = instance_name.params;auto& return_type = instance_name.return_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type : ebmcodegen::util::ContextBase<Context_Type> {
         BaseVisitor& visitor;
         const ebm::Type& in;
@@ -6363,4 +6384,25 @@ namespace ebm2rust {
     #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2RUST_CODEGEN_CONTEXT_PARAMETERS_##name
     #define CODEGEN_CONTEXT(name) EBM2RUST_CODEGEN_CONTEXT_##name
 }  // namespace ebm2rust
+#if __has_include("visitor/post_includes_before.hpp")
+#include "visitor/post_includes_before.hpp"
+#elif __has_include("visitor/dsl/post_includes_before_dsl.hpp")
+#include "visitor/dsl/post_includes_before_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/post_includes_before.hpp")
+#include "ebmcodegen/default_codegen_visitor/visitor/post_includes_before.hpp"
+#endif
+#if __has_include("visitor/post_includes.hpp")
+#include "visitor/post_includes.hpp"
+#elif __has_include("visitor/dsl/post_includes_dsl.hpp")
+#include "visitor/dsl/post_includes_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/post_includes.hpp")
+#include "ebmcodegen/default_codegen_visitor/visitor/post_includes.hpp"
+#endif
+#if __has_include("visitor/post_includes_after.hpp")
+#include "visitor/post_includes_after.hpp"
+#elif __has_include("visitor/dsl/post_includes_after_dsl.hpp")
+#include "visitor/dsl/post_includes_after_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/visitor/post_includes_after.hpp")
+#include "ebmcodegen/default_codegen_visitor/visitor/post_includes_after.hpp"
+#endif
 #endif // EBM_CODEGEN_COMMON_INCLUDE_GUARD

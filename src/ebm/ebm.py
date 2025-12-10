@@ -33,6 +33,8 @@ BGN_FILE = "src/ebm/extended_binary_module.bgn"
 EBM_JSON_FILE = "save/ebm.json"
 HPP_FILE = "src/ebm/extended_binary_module.hpp"
 CPP_FILE = "src/ebm/extended_binary_module.cpp"
+HPP_ZC_FILE = "src/ebm/extended_binary_module_zc.hpp"
+CPP_ZC_FILE = "src/ebm/extended_binary_module_zc.cpp"
 
 
 def run_command(command, output_file):
@@ -86,6 +88,14 @@ def run_command(command, output_file):
     return True
 
 
+zc_overrides = [
+    "--bytes-override",
+    "::futils::view::rvec",
+    "--namespace-override",
+    "ebm::zc",
+]
+
+
 def main():
     """Main function to execute the code generation steps."""
     print("Starting EBM C++ file generation...")
@@ -111,6 +121,9 @@ def main():
     ]
     if not run_command(cmd2, HPP_FILE):
         return
+    cmd2_zc = cmd2 + zc_overrides
+    if not run_command(cmd2_zc, HPP_ZC_FILE):
+        return
 
     # Step 3: Generate C++ source file from JSON
     # & $TOOL_PATH\json2cpp2 -f save/ebm.json --mode source_file --enum-stringer --use-error --dll-export | Out-File src/ebm/extended_binary_module.cpp -Encoding utf8
@@ -126,10 +139,15 @@ def main():
     ]
     if not run_command(cmd3, CPP_FILE):
         return
+    cmd3_zc = cmd3 + zc_overrides
+    if not run_command(cmd3_zc, CPP_ZC_FILE):
+        return
 
     print("\nSuccessfully generated C++ files:")
     print(f"  - {HPP_FILE}")
     print(f"  - {CPP_FILE}")
+    print(f"  - {HPP_ZC_FILE}")
+    print(f"  - {CPP_ZC_FILE}")
 
 
 if __name__ == "__main__":

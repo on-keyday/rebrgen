@@ -29,6 +29,10 @@ namespace ebmgen {
                 timer("bit io write");
             }
         }
+        MAYBE_VOID(merge_bit_field, merge_bit_field(ctx));
+        if (timer) {
+            timer("merge bit field");
+        }
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         if (timer) {
             timer("vectorized io read");
@@ -40,10 +44,6 @@ namespace ebmgen {
         MAYBE_VOID(prop_setter_getter, derive_property_setter_getter(ctx));
         if (timer) {
             timer("derive property setter/getter");
-        }
-        MAYBE_VOID(merge_bit_field, merge_bit_field(ctx));
-        if (timer) {
-            timer("merge bit field");
         }
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx, timer));

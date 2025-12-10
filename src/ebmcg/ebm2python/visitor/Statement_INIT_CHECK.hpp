@@ -4,7 +4,7 @@
 /*
   Name: Statement_INIT_CHECK
   Available variables:
-    *this: Visitor
+    visitor: Visitor
     module_: MappingTable
     item_id: StatementRef
     generator_default_logic: std::function<expected<Result>()>
@@ -18,12 +18,15 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-
+if (init_check.init_check_type == ebm::InitCheckType::field_init_encode ||
+    init_check.init_check_type == ebm::InitCheckType::field_init_decode) {
+    return Result{};
+}
 MAYBE(init_check_field, visit_Expression(*this, init_check.target_field));
 MAYBE(expect_expr, module_.get_expression(init_check.expect_value));
 MAYBE(init_check_type, visit_Type(*this, expect_expr.body.type));
 CodeWriter w;
-if (init_check.init_check_type == ebm::InitCheckType::encode) {
+if (init_check.init_check_type == ebm::InitCheckType::union_init_encode) {
     w.writeln("assert isinstance(", init_check_field.to_writer(), ", ", init_check_type.to_writer(), ")");
 }
 else {

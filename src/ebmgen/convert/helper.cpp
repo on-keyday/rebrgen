@@ -250,9 +250,10 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size) {
+    ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::StatementRef field, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size) {
         return ebm::IOData{
             .io_ref = io_ref,
+            .field = field,
             .target = target,
             .data_type = data_type,
             .attribute = attr,
@@ -413,6 +414,13 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::SELF;
         body.type = type;
+        return body;
+    }
+
+    ebm::StatementBody make_init_check_statement(ebm::InitCheck&& init_check) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementKind::INIT_CHECK;
+        body.init_check(std::move(init_check));
         return body;
     }
 

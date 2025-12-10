@@ -350,7 +350,7 @@ namespace ebmgen {
 #define EBM_OR_COND(ref_name, type, conds) \
     EBM_AST_EXPRESSION(ref_name, make_or_cond, type, conds)
 
-    ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
+    ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::StatementRef field, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
     ebm::StatementBody make_return(ebm::ExpressionRef ret);
 
@@ -381,20 +381,24 @@ namespace ebmgen {
 #define EBM_SELF(ref_name, typ) \
     EBM_AST_EXPRESSION(ref_name, make_self, typ)
 
+    ebm::StatementBody make_init_check_statement(ebm::InitCheck&& init_check);
+#define EBM_INIT_CHECK_STATEMENT(ref_name, init_check__) \
+    EBM_AST_STATEMENT(ref_name, make_init_check_statement, init_check__)
+
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
     ebm::Size get_size(size_t bit_size);
 
     ebm::Condition make_condition(ebm::ExpressionRef cond);
 
-#define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref)                              \
-    EBMU_U8_N_ARRAY(u8_n_array, n);                                                 \
-    EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                                     \
-    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);                 \
-    EBMU_UINT_TYPE(value_type, n * 8);                                              \
-    EBMU_INT_LITERAL(zero, 0);                                                      \
-    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));                  \
-    IO_MACRO(io_stmt, (make_io_data(io_ref, buffer, u8_n_array, endian, io_size))); \
+#define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref, field_ref)                              \
+    EBMU_U8_N_ARRAY(u8_n_array, n);                                                            \
+    EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                                                \
+    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);                            \
+    EBMU_UINT_TYPE(value_type, n * 8);                                                         \
+    EBMU_INT_LITERAL(zero, 0);                                                                 \
+    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));                             \
+    IO_MACRO(io_stmt, (make_io_data(io_ref, field_ref, buffer, u8_n_array, endian, io_size))); \
     EBMU_U8(u8_t);
 
 }  // namespace ebmgen

@@ -7,6 +7,7 @@
 #include <string_view>
 #include <type_traits>
 #include "core/sequencer.h"
+#include "ebmgen/access.hpp"
 #include "helper/template_instance.h"
 #include "output.hpp"
 #include "ebmgen/mapping.hpp"
@@ -54,6 +55,10 @@ namespace ebmcodegen::util {
             }
         }
         return std::move(brace);
+    }
+
+    inline std::string tidy_condition_brace(const std::string& brace) {
+        return tidy_condition_brace(std::string(brace));
     }
 
     ebmgen::expected<std::string> get_size_str(auto&& ctx, const ebm::Size& s) {
@@ -312,7 +317,7 @@ namespace ebmcodegen::util {
         return false;
     }
 
-    ebmgen::expected<void> handle_fields(auto&& ctx, auto&& fields, bool recurse_composite, auto&& callback) {
+    ebmgen::expected<void> handle_fields(auto&& ctx, const ebm::Block& fields, bool recurse_composite, auto&& callback) {
         auto& visitor = get_visitor(ctx);
         ebmgen::expected<void> result = {};
         for (auto& field_ref : fields.container) {
@@ -527,6 +532,16 @@ namespace ebmcodegen::util {
         { d.item_id };
     };
 
+    template <class D, class T>
+    concept has_item_id_typed = requires(D d) {
+        { d.item_id } -> std::convertible_to<T>;
+    };
+
+    template <class D>
+    concept has_type = requires(D d) {
+        { d.type } -> std::convertible_to<ebm::TypeRef>;
+    };
+
     template <class D>
     struct ContextBase {
        private:
@@ -545,20 +560,61 @@ namespace ebmcodegen::util {
             return derived().visitor.module_.get_associated_identifier(derived().item_id);
         }
 
-        decltype(auto) module() const {
+        decltype(auto) identifier(ebm::StatementRef stmt) const {
+            return derived().visitor.module_.get_associated_identifier(stmt);
+        }
+
+        decltype(auto) identifier(ebm::ExpressionRef expr) const {
+            return derived().visitor.module_.get_associated_identifier(expr);
+        }
+
+        decltype(auto) identifier(ebm::TypeRef type) const {
+            return derived().visitor.module_.get_associated_identifier(type);
+        }
+
+        auto& module() const {
             return derived().visitor.module_;
+        }
+
+        // alias for visitor
+        auto& config() const {
+            return derived().visitor;
+        }
+
+        decltype(auto) get_entry_point() const {
+            return derived().visitor.module_.get_entry_point();
+        }
+
+        auto& flags() const {
+            return derived().visitor.flags;
+        }
+
+        auto& output() {
+            return derived().visitor.output;
         }
 
         decltype(auto) visit(ebm::TypeRef type_ref) const {
             return visit_Type(derived(), type_ref);
         }
 
+        decltype(auto) visit(const ebm::Type& type) const {
+            return visit_Type(derived(), type);
+        }
+
         decltype(auto) visit(ebm::ExpressionRef expr_ref) const {
             return visit_Expression(derived(), expr_ref);
         }
 
+        decltype(auto) visit(const ebm::Expression& expr) const {
+            return visit_Expression(derived(), expr);
+        }
+
         decltype(auto) visit(ebm::StatementRef stmt_ref) const {
             return visit_Statement(derived(), stmt_ref);
+        }
+
+        decltype(auto) visit(const ebm::Statement& stmt) const {
+            return visit_Statement(derived(), stmt);
         }
 
         decltype(auto) visit(const ebm::Block& block) const {
@@ -577,6 +633,75 @@ namespace ebmcodegen::util {
             requires has_item_id<D>
         {
             return visit(derived().item_id);
+        }
+
+        decltype(auto) get(ebm::TypeRef type_ref) const {
+            return derived().module().get_type(type_ref);
+        }
+
+        decltype(auto) get(ebm::StatementRef stmt_ref) const {
+            return derived().module().get_statement(stmt_ref);
+        }
+
+        decltype(auto) get(ebm::ExpressionRef expr_ref) const {
+            return derived().module().get_expression(expr_ref);
+        }
+
+        decltype(auto) get_kind(ebm::TypeRef type_ref) const {
+            return derived().module().get_type_kind(type_ref);
+        }
+
+        decltype(auto) get_kind(ebm::StatementRef stmt_ref) const {
+            return derived().module().get_statement_kind(stmt_ref);
+        }
+
+        decltype(auto) get_kind(ebm::ExpressionRef expr_ref) const {
+            return derived().module().get_expression_kind(expr_ref);
+        }
+
+        bool is(ebm::TypeKind kind, ebm::TypeRef ref) const {
+            return get_kind(ref) == kind;
+        }
+
+        bool is(ebm::StatementKind kind, ebm::StatementRef ref) const {
+            return get_kind(ref) == kind;
+        }
+
+        bool is(ebm::ExpressionKind kind, ebm::ExpressionRef ref) const {
+            return get_kind(ref) == kind;
+        }
+
+        bool is(ebm::TypeKind kind) const
+            requires has_type<D> || has_item_id_typed<D, ebm::TypeRef>
+        {
+            if constexpr (has_type<D>) {
+                return get_kind(derived().type) == kind;
+            }
+            else {
+                return get_kind(derived().item_id) == kind;
+            }
+        }
+
+        bool is(ebm::StatementKind kind) const
+            requires has_item_id_typed<D, ebm::StatementRef>
+        {
+            return get_kind(derived().item_id) == kind;
+        }
+
+        bool is(ebm::ExpressionKind kind) const
+            requires has_item_id_typed<D, ebm::ExpressionRef>
+        {
+            return get_kind(derived().item_id) == kind;
+        }
+
+        template <ebmgen::FieldNames<> V>
+        decltype(auto) get_field() const {
+            return ebmgen::access_field<V>(module(), derived().item_id);
+        }
+
+        template <ebmgen::FieldNames<> V>
+        decltype(auto) get_field(auto&& root) const {
+            return ebmgen::access_field<V>(module(), root);
         }
     };
 }  // namespace ebmcodegen::util

@@ -88,7 +88,7 @@ def run_save_template(tool_path, template_target, gmode, lang):
                 x in class_name for x in ("_after", "_before", "pre_", "post_")
             )
             DEFAULT_IMPL = f"""
-#include "../codegen.hpp"
+#include {"\"../codegen.hpp\"" if not isDSL else "\"../../codegen.hpp\""}
 DEFINE_VISITOR({class_name}) {{
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/

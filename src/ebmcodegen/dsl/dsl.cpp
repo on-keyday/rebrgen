@@ -1,6 +1,7 @@
 /*license*/
 #include "dsl.h"
 #include "code/code_writer.h"
+#include "ebmcodegen/stub/structs.hpp"
 #include "escape/escape.h"
 #include "helper/defer_ex.h"
 #include "strutil/strutil.h"
@@ -11,6 +12,7 @@ namespace ebmcodegen::dsl {
 
     ebmgen::expected<std::string> generate_dsl_output(std::string_view file_name, std::string_view source) {
         DSLContext<syntax::OutputKind> ctx;
+        bool is_class_based = file_name.contains("_class");
         auto seq = futils::make_ref_seq(source);
         auto res = syntax::dsl(seq, ctx, 0);
         if (res != futils::comb2::Status::match) {
@@ -85,7 +87,7 @@ namespace ebmcodegen::dsl {
         bool prev_was_literal = false;
         size_t line = 1;
         auto make_dsl_line_comment = [&](size_t line) {
-            return std::format("/* DSL line {} */", line);
+            return std::format("/* at {}:{} */", file_name, line);
         };
         auto trim = [](std::string_view str) {
             size_t start = 0;
@@ -263,7 +265,12 @@ namespace ebmcodegen::dsl {
                     if (node.kind == syntax::OutputKind::CppIdentifierGetter) {
                         handle_with_cached([&](auto&& tmp, bool is_write) {
                             if (!is_write) {
-                                w.writeln("auto ", tmp, " = get_associated_identifier(", node.content, "); ", make_dsl_line_comment(line));
+                                if (is_class_based) {
+                                    w.writeln("auto ", tmp, " = ctx.get(", node.content, "); ", make_dsl_line_comment(line));
+                                }
+                                else {
+                                    w.writeln("auto ", tmp, " = get_associated_identifier(*this,", node.content, "); ", make_dsl_line_comment(line));
+                                }
                             }
                             else {
                                 w.writeln("w.write(", tmp, "); ", make_dsl_line_comment(line));
@@ -273,7 +280,12 @@ namespace ebmcodegen::dsl {
                     else {
                         handle_with_cached([&](auto&& tmp, bool is_write) {
                             if (!is_write) {
-                                w.writeln("MAYBE(", tmp, ", visit_Object(*this,", node.content, ")); ", make_dsl_line_comment(line));
+                                if (is_class_based) {
+                                    w.writeln("MAYBE(", tmp, ", ctx.visit(", node.content, ")); ", make_dsl_line_comment(line));
+                                }
+                                else {
+                                    w.writeln("MAYBE(", tmp, ", visit_Object(*this,", node.content, ")); ", make_dsl_line_comment(line));
+                                }
                             }
                             else {
                                 w.writeln("w.write(", tmp, ".to_writer()); ", make_dsl_line_comment(line));

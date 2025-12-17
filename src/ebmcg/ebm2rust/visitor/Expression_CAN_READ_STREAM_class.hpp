@@ -22,6 +22,11 @@
 
 /*here to write the hook*/
 // {}.fill_buf(){}.map(|b| !b.is_empty()){}
-auto io_ = module_.get_associated_identifier(io_ref);
-MAYBE(num_bytes_, get_size_str(*this, num_bytes));
-return CODE(io_, ".fill_buf().map(|b| b.len() >= ", num_bytes_, ")");
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_CAN_READ_STREAM) {
+    auto io_ = ctx.identifier(ctx.io_ref);
+    MAYBE(num_bytes_, get_size_str(ctx, ctx.num_bytes));
+    auto& flags = ctx.config().function_markers[get_id(ctx.config().current_function)];
+    add_flag(flags, ebm2rust::FunctionFlags::HasFillBuf);
+    return CODE("(", io_, ".fill_buf()?.len() >= ", num_bytes_, ")");
+}

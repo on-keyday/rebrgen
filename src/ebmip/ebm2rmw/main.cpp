@@ -71751,6 +71751,10 @@ namespace ebm2rmw {
             return visitor.visit(ctx);
         }
     };
+    template<class R, typename Context,typename Callback>
+    R get_visitor_impl(Context&& ctx,Callback&& cb) {
+        return cb(ctx.visitor.__legacy_compat_ptr->impl);
+    }
     expected<Result> visit_unimplemented(MergedVisitor& visitor,std::string_view kind,std::uint64_t item_id) {
         if (visitor.flags.debug_unimplemented) {
             return unexpect_error("Unimplemented {} {}", kind, item_id);

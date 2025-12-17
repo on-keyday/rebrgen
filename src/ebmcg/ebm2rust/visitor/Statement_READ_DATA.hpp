@@ -12,6 +12,7 @@
     kind: StatementKind
     read_data: IOData
       io_ref: StatementRef
+      field: StatementRef
       target: ExpressionRef
       data_type: TypeRef
       attribute: IOAttribute

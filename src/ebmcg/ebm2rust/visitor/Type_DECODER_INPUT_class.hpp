@@ -14,4 +14,11 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-return Result("&mut impl std::io::Read");
+#include "../codegen.hpp"
+DEFINE_VISITOR(Type_DECODER_INPUT) {
+    auto flags = ctx.config().function_markers[get_id(ctx.config().current_function)];
+    if (has_flag(flags, ebm2rust::FunctionFlags::HasFillBuf)) {
+        return Result("&mut impl std::io::BufRead");
+    }
+    return Result("&mut impl std::io::Read");
+}

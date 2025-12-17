@@ -1,0 +1,15 @@
+
+namespace ebm2rust {
+    enum class FunctionFlags : std::uint64_t {
+        HasFillBuf = 1 << 0,
+    };
+
+    constexpr bool add_flag(FunctionFlags& flags, FunctionFlags flag) {
+        flags = static_cast<FunctionFlags>(static_cast<std::uint64_t>(flags) | static_cast<std::uint64_t>(flag));
+        return true;
+    }
+
+    constexpr bool has_flag(FunctionFlags flags, FunctionFlags flag) {
+        return (static_cast<std::uint64_t>(flags) & static_cast<std::uint64_t>(flag)) != 0;
+    }
+}  // namespace ebm2rust

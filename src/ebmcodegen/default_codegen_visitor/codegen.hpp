@@ -924,6 +924,8 @@ namespace ebm2all {
     expected<Result> visit_Object(Context&& ctx,const ebm::Types& in)  {
         return visit_Types(ctx,in);
     }
+    template<class R = void, typename Context,typename Callback>
+    R get_visitor_impl(Context&& ctx,Callback&& cb);
     struct BaseVisitor {
         BaseVisitor(MergedVisitor* __legacy_compat_ptr,ebmgen::EBMProxy module_,Flags& flags,Output& output,futils::binary::writer& wm) :__legacy_compat_ptr(__legacy_compat_ptr),module_(module_, ebmgen::lazy_init),flags(flags),output(output),wm(wm){}
         static constexpr const char* program_name = "ebm2all";

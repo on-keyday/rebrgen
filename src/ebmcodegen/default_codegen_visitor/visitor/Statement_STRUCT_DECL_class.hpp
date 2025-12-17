@@ -23,6 +23,7 @@
         has_related_variant: bool
         has_encode_decode: bool
         has_functions: bool
+        has_properties: bool
         reserved: std::uint8_t
         related_variant: *TypeRef
         size: *Size
@@ -32,6 +33,9 @@
         decode_fn: *StatementRef
         encode_fn: *StatementRef
         methods: *Block
+          len: Varint
+          container: std::vector<StatementRef>
+        properties: *Block
           len: Varint
           container: std::vector<StatementRef>
 */

@@ -27,7 +27,7 @@ for dir_name in dirs:
             print(f"Skipping non-DSL file: {dsl_file}")
             continue
         template_name = dsl_file.removesuffix(".dsl")
-        if not template_name.endswith("_dsl"):
+        if not "_dsl" in template_name:
             print(f"Skipping DSL file without '_dsl' suffix: {dsl_file}")
             continue
         output_file = template_name + ".hpp"

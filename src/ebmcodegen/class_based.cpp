@@ -1477,6 +1477,21 @@ namespace ebmcodegen {
         w.writeln("};");
     }
 
+    void generate_impl_getter_header(CodeWriter& w) {
+        w.writeln("template<class R = void, typename Context,typename Callback>");
+        w.writeln("R get_visitor_impl(Context&& ctx,Callback&& cb);");
+    }
+
+    void generate_impl_getter_source(CodeWriter& w) {
+        w.writeln("template<class R, typename Context,typename Callback>");
+        w.writeln("R get_visitor_impl(Context&& ctx,Callback&& cb) {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("return cb(ctx.visitor.__legacy_compat_ptr->impl);");
+        }
+        w.writeln("}");
+    }
+
     void generate_user_interface(CodeWriter& w, std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
         w.writeln("// for backward compatibility");
         w.writeln();
@@ -1573,6 +1588,7 @@ namespace ebmcodegen {
             generate_generic_dispatch_default(hdr, cls_group.main(), result_type);
         }
         generate_user_interface(hdr, context_classes, result_type);
+        generate_impl_getter_header(hdr);
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);
         generate_initial_context(hdr);
 
@@ -1588,6 +1604,7 @@ namespace ebmcodegen {
         }
 
         generate_merged_visitor(src, hooks, context_classes, result_type, utility_classes);
+        generate_impl_getter_source(src);
 
         generate_unimplemented_stub_def(src, result_type, is_codegen);
 

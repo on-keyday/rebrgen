@@ -9,3 +9,6 @@
 
 /*here to write the hook*/
 std::vector<CodeWriter> custom_types;
+std::map<std::uint64_t, FunctionFlags> function_markers;
+ebm::StatementRef current_function;
+std::set<std::string> use_statements;

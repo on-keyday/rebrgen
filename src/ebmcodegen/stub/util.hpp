@@ -490,13 +490,13 @@ namespace ebmcodegen::util {
     }  // namespace internal
 
 // for class based
-#define DEFINE_VISITOR(dummy_name)                                                            \
-    static_assert(std::string_view(__FILE__).contains(#dummy_name "_class.hpp"));             \
-    template <>                                                                               \
-    struct CODEGEN_VISITOR(dummy_name) {                                                      \
-        ebmgen::expected<CODEGEN_NAMESPACE::Result> visit(CODEGEN_CONTEXT(dummy_name) & ctx); \
-    };                                                                                        \
-                                                                                              \
+#define DEFINE_VISITOR(dummy_name)                                                                                                                     \
+    static_assert(std::string_view(__FILE__).contains(#dummy_name "_class.hpp") || std::string_view(__FILE__).contains(#dummy_name "_dsl_class.hpp")); \
+    template <>                                                                                                                                        \
+    struct CODEGEN_VISITOR(dummy_name) {                                                                                                               \
+        ebmgen::expected<CODEGEN_NAMESPACE::Result> visit(CODEGEN_CONTEXT(dummy_name) & ctx);                                                          \
+    };                                                                                                                                                 \
+                                                                                                                                                       \
     inline ebmgen::expected<CODEGEN_NAMESPACE::Result> CODEGEN_VISITOR(dummy_name)::visit(CODEGEN_CONTEXT(dummy_name) & ctx)
 
     // This is for signaling continue normal processing without error
@@ -702,6 +702,11 @@ namespace ebmcodegen::util {
         template <ebmgen::FieldNames<> V>
         decltype(auto) get_field(auto&& root) const {
             return ebmgen::access_field<V>(module(), root);
+        }
+
+        template <class R = void, class F>
+        R get_impl(F&& f) const {
+            return get_visitor_impl<R>(derived(), f);
         }
     };
 }  // namespace ebmcodegen::util

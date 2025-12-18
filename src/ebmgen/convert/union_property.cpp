@@ -306,8 +306,10 @@ namespace ebmgen {
         }
         ebm::TypeBody body;
         body.kind = ebm::TypeKind::VARIANT;
-        body.members(std::move(types));
-        body.common_type(common_type);
+        ebm::VariantDesc desc;
+        desc.common_type = common_type;
+        desc.members = std::move(types);
+        body.variant_desc(std::move(desc));
         EBMA_ADD_TYPE(c_type, std::move(body));
         return c_type;
     }

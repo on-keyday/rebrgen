@@ -5239,9 +5239,7 @@ namespace ebm2rust {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::TypeRef& common_type;
-        const ebm::Types& members;
-        const ebm::StatementRef& related_field;
+        const ebm::VariantDesc& variant_desc;
     };
     struct VisitorTag_Type_VARIANT {};
     template<typename VisitorImpl>
@@ -5250,14 +5248,12 @@ namespace ebm2rust {
     };
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VARIANT(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;
     struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::TypeRef& common_type;
-        const ebm::Types& members;
-        const ebm::StatementRef& related_field;
+        const ebm::VariantDesc& variant_desc;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_VARIANT_before {};
@@ -5267,14 +5263,12 @@ namespace ebm2rust {
     };
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;
     struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::TypeRef& common_type;
-        const ebm::Types& members;
-        const ebm::StatementRef& related_field;
+        const ebm::VariantDesc& variant_desc;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -5285,7 +5279,7 @@ namespace ebm2rust {
     };
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RANGE : ebmcodegen::util::ContextBase<Context_Type_RANGE> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;

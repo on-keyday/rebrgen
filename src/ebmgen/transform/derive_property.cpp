@@ -16,6 +16,8 @@ namespace ebmgen {
                 ebm::FunctionDecl getter, setter;
                 getter.kind = ebm::FunctionKind::PROPERTY_GETTER;
                 setter.kind = ebm::FunctionKind::PROPERTY_SETTER;
+                setter.property(s.id);
+                getter.property(s.id);
                 getter.name = prop->name;
                 setter.name = prop->name;
                 getter.parent_format = prop->parent_format;

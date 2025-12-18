@@ -81,6 +81,13 @@ DEFINE_VISITOR(Statement_STRUCT_DECL) {
         }
     }
 
+    if (auto property_block = ctx.struct_decl.properties()) {
+        for (auto& property_ref : property_block->container) {
+            MAYBE(res, ctx.visit(property_ref));
+            w.write(res.to_writer());
+        }
+    }
+
     // Visit encode_fn if it exists
     if (auto enc_fn = ctx.struct_decl.encode_fn()) {  // Corrected: Check value() of Varint id
         MAYBE(res, ctx.visit(*enc_fn));
@@ -96,13 +103,6 @@ DEFINE_VISITOR(Statement_STRUCT_DECL) {
     if (auto method_block = ctx.struct_decl.methods()) {
         for (auto& method_ref : method_block->container) {
             MAYBE(res, ctx.visit(method_ref));
-            w.write(res.to_writer());
-        }
-    }
-
-    if (auto property_block = ctx.struct_decl.properties()) {
-        for (auto& property_ref : property_block->container) {
-            MAYBE(res, ctx.visit(property_ref));
             w.write(res.to_writer());
         }
     }

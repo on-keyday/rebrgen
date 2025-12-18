@@ -137,6 +137,7 @@ format ContinuationFrame:
     
 format Http2Frame:
     header :FrameHeader
+    header_state.header = header # set the header in the state
     body :FrameBody
 
 

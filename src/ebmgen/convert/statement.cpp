@@ -413,8 +413,8 @@ namespace ebmgen {
             return std::nullopt;
         }
         MAYBE(related_variant, ctx.repository().get_type(*related_variant_ref));
-        MAYBE(related_field, related_variant.body.related_field());
-        MAYBE(self_ref, ctx.state().get_self_ref_for_id(related_field));
+        MAYBE(desc, related_variant.body.variant_desc());
+        MAYBE(self_ref, ctx.state().get_self_ref_for_id(desc.related_field));
         ebm::InitCheck check;
         check.init_check_type = typ;
         check.target_field = self_ref;
@@ -953,12 +953,35 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        auto set_self_ref = [&](ebm::ExpressionRef self_ref, ebm::TypeRef type_ref) -> expected<void> {
+            if (auto self = ctx.state().get_self_ref()) {
+                EBM_IDENTIFIER(ident_expr, id, type_ref);
+                ebm::ExpressionBody self_body;
+                self_body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
+                self_body.type = type_ref;
+                self_body.base(*self);
+                self_body.member(ident_expr);
+                EBMA_ADD_EXPR(self_expr, self_ref, std::move(self_body));
+                ctx.state().set_self_ref_for_id(id, self_expr);
+            }
+            else {
+                ebm::ExpressionBody ident;
+                ident.kind = ebm::ExpressionKind::IDENTIFIER;
+                ident.type = type_ref;
+                ident.id(id);
+                EBMA_ADD_EXPR(self_expr, self_ref, std::move(ident));
+                ctx.state().set_self_ref_for_id(id, self_expr);
+            }
+            return {};
+        };
         if (auto union_type = ast::as<ast::UnionType>(node->field_type)) {
             if (ctx.state().get_current_generate_type() != GenerateType::Normal) {
                 return unexpect_error("Property declaration is only allowed in normal generate type");
             }
             MAYBE(body_, convert_property_decl(node));
             body = std::move(body_);
+            MAYBE(self_ref, ctx.repository().new_expression_id());
+            MAYBE_VOID(ok, set_self_ref(self_ref, body_.property_decl()->property_type));
         }
         else if (!node->is_state_variable && ctx.state().get_current_generate_type() != GenerateType::Normal) {
             MAYBE(body_, convert_field_serialize(ctx, node, id));
@@ -983,24 +1006,7 @@ namespace ebmgen {
             }
             body.field_decl(std::move(field_decl));
             temporary.execute();
-            if (auto self = ctx.state().get_self_ref()) {
-                EBM_IDENTIFIER(ident_expr, id, type_ref);
-                ebm::ExpressionBody self_body;
-                self_body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
-                self_body.type = type_ref;
-                self_body.base(*self);
-                self_body.member(ident_expr);
-                EBMA_ADD_EXPR(self_expr, self_ref, std::move(self_body));
-                ctx.state().set_self_ref_for_id(id, self_expr);
-            }
-            else {
-                ebm::ExpressionBody ident;
-                ident.kind = ebm::ExpressionKind::IDENTIFIER;
-                ident.type = type_ref;
-                ident.id(id);
-                EBMA_ADD_EXPR(self_expr, self_ref, std::move(ident));
-                ctx.state().set_self_ref_for_id(id, self_expr);
-            }
+            MAYBE_VOID(ok, set_self_ref(self_ref, type_ref));
         }
         return {};
     }

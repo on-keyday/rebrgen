@@ -152,8 +152,8 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebm2python",
-      "args": ["-i", "${workspaceRoot}/save/ebm_schema.ebm"],
-      "stopAtEntry": true,
+      "args": ["-i", "${workspaceRoot}/save/out.ebm"],
+      "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
       "console": "integratedTerminal"
@@ -196,14 +196,14 @@
       ]
     },
     {
-      "type": "cppvsdbg",
+      "type": "debugpy",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-9e090ebc7d\\r-2738fa3835\\t-448e8106f9",
-      "name": "Debug ebm2rust unictest (ExtendedBinaryModule)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-9e090ebc7d\\r-2738fa3835\\t-448e8106f9\\cargo_proj\\target\\debug\\test_runner.exe",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f5995f4c24\\r-bdcaa432f6\\t-626c3a7cae",
+      "name": "Debug ebm2python unictest (HTTP2FrameTest)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f5995f4c24\\r-bdcaa432f6\\t-626c3a7cae\\test_script.py",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-9e090ebc7d/r-2738fa3835/t-448e8106f9/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-9e090ebc7d/r-2738fa3835/t-448e8106f9/output.bin"
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f5995f4c24/r-bdcaa432f6/t-626c3a7cae/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f5995f4c24/r-bdcaa432f6/t-626c3a7cae/output.bin"
       ]
     }
   ]

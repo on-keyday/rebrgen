@@ -36,6 +36,8 @@ namespace ebmgen {
         return name;
     }
 
+    constexpr auto instance_index = static_cast<size_t>(-2);
+
     template <size_t N = 10>
     struct FieldNames {
         FieldOnlyTag tags[N]{};
@@ -58,10 +60,15 @@ namespace ebmgen {
                 auto name = ebmcodegen::get_field_index(field_name);
                 FieldOnlyTag tag{};
                 if (name == static_cast<size_t>(-1)) {
-                    if (!futils::number::parse_integer(field_name, tag.index)) {
-                        throw "Invalid field name or array index";
+                    if (field_name == "instance") {
+                        tag.index = instance_index;
                     }
-                    tag.is_array_index = true;
+                    else {
+                        if (!futils::number::parse_integer(field_name, tag.index)) {
+                            throw "Invalid field name or array index";
+                        }
+                        tag.is_array_index = true;
+                    }
                 }
                 else {
                     tag.index = name;
@@ -123,6 +130,9 @@ namespace ebmgen {
                                 auto copy = n.tags[i];
                                 copy.index = field_index_body;
                                 add_tag({NameTag{.field_tag = copy, .type_index = stmt_index}});  // adjust to body field
+                            }
+                            else if (n.tags[i].index == instance_index) {
+                                new_type_index = type_index;  // stay at the same type
                             }
                         }
                     };
@@ -203,7 +213,12 @@ namespace ebmgen {
                     }
                 }
                 else {
-                    return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, ebmcodegen::get_field<field_index>(in));
+                    if constexpr (V.tags[offset].field_tag.index == instance_index) {
+                        return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, in);
+                    }
+                    else {
+                        return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, ebmcodegen::get_field<field_index>(in));
+                    }
                 }
             }
             else {
@@ -226,7 +241,18 @@ namespace ebmgen {
                     }
                 }
                 else {
-                    return ebmcodegen::get_field<field_index>(in);
+                    if constexpr (V.tags[offset].field_tag.index == instance_index) {
+                        if constexpr (std::is_pointer_v<std::decay_t<decltype(in)>>) {
+                            return (std::decay_t<decltype(in)>)(in);
+                        }
+                        else {
+                            auto& ref = in;
+                            return ref;
+                        }
+                    }
+                    else {
+                        return ebmcodegen::get_field<field_index>(in);
+                    }
                 }
             }
         }
@@ -265,6 +291,8 @@ namespace ebmgen {
             auto x = access_field<"statements.0">(DummyContext{}, &mod);
 
             auto is_optional = access_field<"is_state_variable">(DummyContext{}, &*f);
+
+            auto instance = access_field<"id.instance">(DummyContext{}, statement);
         }
 
     }  // namespace test

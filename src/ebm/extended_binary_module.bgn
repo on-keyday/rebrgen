@@ -397,6 +397,8 @@ format FunctionDecl:
     params: Block
     parent_format :StatementRef # Reference to parent format (maybe null) (e.g., struct, union)
     kind :FunctionKind # Kind of the function
+    if kind == FunctionKind.PROPERTY_GETTER || kind == FunctionKind.PROPERTY_SETTER:
+        property :StatementRef # Reference to the associated PropertyDecl
     body :StatementRef
 
 format EnumDecl:
@@ -752,6 +754,11 @@ format FuncTypeDesc:
     annotation :FuncTypeAnnotation # Function type annotation
     reserved :u6 # Reserved for future use
 
+format VariantDesc:
+    common_type :TypeRef # Optional common type for all union members
+    members :Types # List of variant member types
+    related_field :StatementRef # Reference to the field that holds this variant (maybe null)
+
 format TypeBody:
     kind :TypeKind
     match kind:
@@ -772,9 +779,7 @@ format TypeBody:
             id :StatementRef # Reference to enum name
             base_type :TypeRef # Optional base type (e.g., u8, u16)
         TypeKind.VARIANT:
-            common_type :TypeRef # Optional Common type for all union members
-            members :Types # List of variant members (types)
-            related_field :StatementRef # Reference to the field that holds this variant (maybe null)
+            variant_desc :VariantDesc # Variant type description
         TypeKind.OPTIONAL:
             inner_type :TypeRef # Optional inner type
         TypeKind.PTR:

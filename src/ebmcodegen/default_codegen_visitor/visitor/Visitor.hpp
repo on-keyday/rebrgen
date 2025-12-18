@@ -46,3 +46,4 @@ std::string function_return_type_separator = "->";
 bool use_base_type_of_enum = false;
 
 std::vector<CodeWriter> decl_toplevel;
+bool on_assign = false;  // useful for expression generation

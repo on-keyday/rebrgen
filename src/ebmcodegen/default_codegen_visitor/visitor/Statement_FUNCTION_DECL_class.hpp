@@ -21,6 +21,7 @@
           container: std::vector<StatementRef>
         parent_format: StatementRef
         kind: FunctionKind
+        property: *StatementRef
         body: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

@@ -6,6 +6,7 @@
   Available variables:
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
+std::map<std::uint64_t, std::string> multi_arg_property;
 
 // Helper function to convert EBM type and attributes to Python struct format string
 expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const ebm::IOAttribute& attribute, const ebm::Size& size) {

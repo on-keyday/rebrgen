@@ -333,6 +333,9 @@ namespace ebmgen {
                         self = *base;
                     }
                 }
+                else {
+                    ;
+                }
             }
             EBMA_ADD_EXPR(ident_ref, std::move(body));
             body.kind = ebm::ExpressionKind::MEMBER_ACCESS;

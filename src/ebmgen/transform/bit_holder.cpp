@@ -24,9 +24,9 @@ namespace ebmgen {
         else if (auto base_type = field_type.body.base_type(); base_type && !is_nil(*base_type)) {
             return sizeof_type(tctx, *base_type);
         }
-        else if (auto members = field_type.body.members(); members) {  // for VARIANT
+        else if (auto desc = field_type.body.variant_desc(); desc) {  // for VARIANT
             std::uint64_t size = 0;
-            for (const auto& member : members->container) {
+            for (const auto& member : desc->members.container) {
                 MAYBE(member_size, sizeof_type(tctx, member));
                 if (member_size) {
                     size = std::max(size, member_size->size);

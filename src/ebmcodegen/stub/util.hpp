@@ -218,8 +218,8 @@ namespace ebmcodegen::util {
         if (const ebm::StructDecl* decl = statement.body.struct_decl()) {
             if (auto related_varint = decl->related_variant()) {
                 MAYBE(type, visitor.module_.get_type(*related_varint));
-                MAYBE(upper_field, type.body.related_field());
-                MAYBE(upper_layers, get_identifier_layer(visitor, upper_field, state));
+                MAYBE(desc, type.body.variant_desc());
+                MAYBE(upper_layers, get_identifier_layer(visitor, desc.related_field, state));
                 layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
                 if (state == LayerState::as_expr) {
                     return layers;
@@ -253,8 +253,9 @@ namespace ebmcodegen::util {
         MAYBE(type, module_.get_type(variant));
         std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>> result;
         if (type.body.kind == ebm::TypeKind::VARIANT) {
-            if (!ebmgen::is_nil(*type.body.related_field())) {
-                auto& members = *type.body.members();
+            auto varint_desc = type.body.variant_desc();
+            if (!ebmgen::is_nil(varint_desc->related_field)) {
+                auto& members = varint_desc->members;
                 for (auto& mem : members.container) {
                     MAYBE(member_type, module_.get_type(mem));
                     MAYBE(stmt_id, member_type.body.id());
@@ -362,9 +363,9 @@ namespace ebmcodegen::util {
         if (type.body.kind != ebm::TypeKind::VARIANT) {
             return ebmgen::unexpect_error("not a variant type");
         }
-        MAYBE(members, type.body.members());
-        for (size_t i = 0; i < members.container.size(); ++i) {
-            if (ebmgen::get_id(members.container[i]) == ebmgen::get_id(candidate_type)) {
+        MAYBE(desc, type.body.variant_desc());
+        for (size_t i = 0; i < desc.members.container.size(); ++i) {
+            if (ebmgen::get_id(desc.members.container[i]) == ebmgen::get_id(candidate_type)) {
                 return i;
             }
         }
@@ -382,8 +383,8 @@ namespace ebmcodegen::util {
         if (type.body.kind != ebm::TypeKind::VARIANT) {
             return ebmgen::unexpect_error("not a variant type");
         }
-        MAYBE(members, type.body.members());
-        for (auto& member_type_ref : members.container) {
+        MAYBE(desc, type.body.variant_desc());
+        for (auto& member_type_ref : desc.members.container) {
             MAYBE(member_type, module_.get_type(member_type_ref));
             MAYBE(member_stmt_id, member_type.body.id());
             if (ebmgen::get_id(member_stmt_id) == ebmgen::get_id(field_decl.parent_struct)) {
@@ -498,6 +499,13 @@ namespace ebmcodegen::util {
     };                                                                                                                                                 \
                                                                                                                                                        \
     inline ebmgen::expected<CODEGEN_NAMESPACE::Result> CODEGEN_VISITOR(dummy_name)::visit(CODEGEN_CONTEXT(dummy_name) & ctx)
+
+#define DEFINE_VISITOR_CLASS(dummy_name)                                                                                                               \
+    static_assert(std::string_view(__FILE__).contains(#dummy_name "_class.hpp") || std::string_view(__FILE__).contains(#dummy_name "_dsl_class.hpp")); \
+    template <>                                                                                                                                        \
+    struct CODEGEN_VISITOR(dummy_name)
+
+#define DEFINE_VISITOR_FUNCTION(dummy_name) ebmgen::expected<CODEGEN_NAMESPACE::Result> visit(CODEGEN_CONTEXT(dummy_name) & ctx)
 
     // This is for signaling continue normal processing without error
     constexpr auto pass = futils::helper::either::unexpected{ebmgen::Error(futils::error::Category::lib, 0xba55ba55)};

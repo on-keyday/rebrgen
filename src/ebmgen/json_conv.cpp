@@ -986,6 +986,15 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("property")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.property(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("body")) {
             if(!futils::json::convert_from_json(*got, obj.body)) {
                 return false;
@@ -2578,15 +2587,6 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("common_type")) {
-            TypeRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.common_type(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("element_type")) {
             TypeRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2632,15 +2632,6 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("members")) {
-            Types tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.members(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("pointee_type")) {
             TypeRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2650,21 +2641,21 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("related_field")) {
-            StatementRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.related_field(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("size")) {
             Varint tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
             if(!obj.size(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("variant_desc")) {
+            VariantDesc tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.variant_desc(std::move(tmp))) {
                 return false;
             }
         }
@@ -2753,6 +2744,34 @@ namespace ebm {
                 return false;
             }
             if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
+    bool from_json(VariantDesc& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("common_type")) {
+            if(!futils::json::convert_from_json(*got, obj.common_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("members")) {
+            if(!futils::json::convert_from_json(*got, obj.members)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("related_field")) {
+            if(!futils::json::convert_from_json(*got, obj.related_field)) {
                 return false;
             }
         }

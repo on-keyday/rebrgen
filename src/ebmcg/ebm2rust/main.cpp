@@ -56499,26 +56499,16 @@ namespace ebm2rust {
     template<typename Context>
     expected<Result> dispatch_Type_VARIANT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
-        if (!in.body.common_type()) {
-            return unexpect_error("Unexpected null pointer for TypeBody::common_type");
+        if (!in.body.variant_desc()) {
+            return unexpect_error("Unexpected null pointer for TypeBody::variant_desc");
         }
-        auto& common_type = *in.body.common_type();
-        if (!in.body.members()) {
-            return unexpect_error("Unexpected null pointer for TypeBody::members");
-        }
-        auto& members = *in.body.members();
-        if (!in.body.related_field()) {
-            return unexpect_error("Unexpected null pointer for TypeBody::related_field");
-        }
-        auto& related_field = *in.body.related_field();
+        auto& variant_desc = *in.body.variant_desc();
         auto main_logic = [&]() -> expected<Result>{
             Context_Type_VARIANT new_ctx{
                 .visitor = get_visitor_from_context(ctx),
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
-                .common_type = common_type,
-                .members = members,
-                .related_field = related_field,
+                .variant_desc = variant_desc,
             };
             return get_visitor_from_context(ctx).visit(new_ctx);
         };
@@ -56526,9 +56516,7 @@ namespace ebm2rust {
             .visitor = get_visitor_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
-            .common_type = common_type,
-            .members = members,
-            .related_field = related_field,
+            .variant_desc = variant_desc,
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context(ctx).visit(before_ctx);
@@ -56545,9 +56533,7 @@ namespace ebm2rust {
             .visitor = get_visitor_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
-            .common_type = common_type,
-            .members = members,
-            .related_field = related_field,
+            .variant_desc = variant_desc,
             .main_logic = main_logic,
             .result = main_result,
         };

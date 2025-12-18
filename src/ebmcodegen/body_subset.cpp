@@ -120,16 +120,14 @@ namespace ebmcodegen {
             ebm::TypeBody body;
             body.kind = ebm::TypeKind(i);
             body.base_type({});
-            body.common_type({});
             body.element_type({});
             body.func_desc({});
             body.id({});
             body.inner_type({});
             body.length({});
-            body.members({});
             body.pointee_type({});
-            body.related_field({});
             body.size({});
+            body.variant_desc({});
             std::set<std::string_view> subset;
             std::vector<std::string_view> ordered;
             body.visit([&](auto&& visitor,const char* name,auto&& value) {

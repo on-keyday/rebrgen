@@ -42,7 +42,8 @@ namespace ebmgen {
             MAYBE(varint_id, ctx.repository().new_type_id());
             body.kind = ebm::TypeKind::VARIANT;
             EBMA_CONVERT_STATEMENT(related_field, field);
-            body.related_field(related_field);
+            ebm::VariantDesc desc;
+            desc.related_field = related_field;
             ebm::Types members;
             for (auto& struct_member : n->structs) {
                 MAYBE(member_type_ref, ctx.get_statement_converter().convert_struct_decl(struct_member, varint_id));
@@ -53,7 +54,8 @@ namespace ebmgen {
                 append(members, member_type_ref2);
                 ctx.state().cache_type(struct_member, member_type_ref2);
             }
-            body.members(std::move(members));
+            desc.members = std::move(members);
+            body.variant_desc(std::move(desc));
             EBMA_ADD_TYPE(type_ref, varint_id, std::move(body));
             return type_ref;
         }

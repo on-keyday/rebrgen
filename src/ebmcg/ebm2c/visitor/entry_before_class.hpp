@@ -26,8 +26,12 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().variable_type_separator = " ";
     ctx.config().field_name_prior_to_type = false;
     ctx.config().variable_name_prior_to_type = false;
+    ctx.config().array_type_wrapper = [&](Result elem_type, size_t size) -> expected<Result> {
+        // placeholder $ will be replaced by declared variable name
+        return CODE(elem_type.to_writer(), "$[", std::to_string(size), "]");
+    };
     ctx.config().vector_type_wrapper = [&](Result elem_type) -> expected<Result> {
-        return CODE(elem_type.to_writer(), "*");  // In C, vector is represented as a pointer
+        return CODE("VECTOR_OF(", elem_type.to_writer(), ")");
     };
     ctx.config().param_type_wrapper = [&](Result typ, bool is_state_variable) -> expected<Result> {
         if (is_state_variable) {
@@ -37,6 +41,17 @@ DEFINE_VISITOR(entry_before) {
     };
     ctx.config().forward_type_in_function_decl = true;
     ctx.config().function_define_keyword = "";
-    /*here to write the hook*/
+    ctx.config().self_value = "(*self)";
+    ctx.config().default_value_option.vector_init = "{}";
+    ctx.config().default_value_option.bytes_init = "{}";
+    ctx.config().func_style_cast = false;
+    ctx.config().usize_type_name = "size_t";
+    ctx.config().endof_statement = ";";
+    ctx.config().encoder_return_type = "int";
+    ctx.config().decoder_return_type = "int";
+    ctx.config().encoder_input_type = "EncoderInput*";
+    ctx.config().decoder_input_type = "DecoderInput*";
+    ctx.config().default_value_option.decoder_return_init = "0";
+    ctx.config().default_value_option.encoder_return_init = "0";
     return pass;
 }

@@ -8,6 +8,8 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+#pragma once
+#include <format>
 #include <optional>
 #include "ebm/extended_binary_module.hpp"
 namespace ebm2c {
@@ -27,4 +29,20 @@ namespace ebm2c {
         std::vector<Struct> variants;
     };
 
+    struct VectorType {
+        ebm::TypeRef elem_type;
+    };
+
+    inline std::string map_decl(std::string&& type_str, std::string&& variable) {
+        auto first_dollar = type_str.find('$');
+        if (first_dollar == std::string::npos) {
+            return std::format("{} {}", type_str, variable);
+        }
+        // split at first dollar
+        auto base = type_str.substr(0, first_dollar);
+        auto rest = type_str.substr(first_dollar);
+        // remove other dollars
+        std::erase(rest, '$');
+        return std::format("{} {}{}", base, variable, rest);
+    }
 }  // namespace ebm2c

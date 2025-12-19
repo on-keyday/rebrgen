@@ -2994,18 +2994,7 @@ namespace ebm {
     bool from_json(CompositeFieldKind& obj, const futils::json::JSON& j) {
         if (auto got = j.get_holder().as_str()) {
             auto& s = *got;
-            if (s == "BULK") {
-                obj = CompositeFieldKind::BULK;
-                return true;
-            }
-            if (s == "PREFIXED_UNION") {
-                obj = CompositeFieldKind::PREFIXED_UNION;
-                return true;
-            }
-            if (s == "SANDWICHED_UNION") {
-                obj = CompositeFieldKind::SANDWICHED_UNION;
-                return true;
-            }
+
             return false;
         }
         return false;

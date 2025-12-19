@@ -41,19 +41,44 @@ namespace ebmgen {
     expected<ebm::ExpressionRef> get_max_value_expr(ConverterContext& ctx, ebm::TypeRef type) {
         MAYBE(size_and_signed, get_integral_size_and_sign(ctx, type));
         auto [size, is_signed] = size_and_signed;
-        EBMU_UINT_TYPE(value_type, size);
-        EBM_DEFAULT_VALUE(zero, value_type);
-        EBM_UNARY_OP(max_unsigned, ebm::UnaryOp::bit_not, value_type, zero);
-        auto result = max_unsigned;
-        if (is_signed) {
-            EBMU_INT_LITERAL(one, 1);
-            EBM_BINARY_OP(max_signed, ebm::BinaryOp::right_shift, value_type, max_unsigned, one);
-            result = max_signed;
+        if (size < 64) {
+            std::uint64_t max_value = 0;
+            if (is_signed) {
+                max_value = (static_cast<std::uint64_t>(1) << (size - 1)) - 1;
+            }
+            else {
+                max_value = (static_cast<std::uint64_t>(1) << size) - 1;
+            }
+            EBMU_INT_LITERAL(max_value_lowered, max_value);
+            EBM_MAX_VALUE(max_value_expr, type, max_value_lowered);
+            return max_value_expr;
         }
-        EBM_CAST(max_value_lowered, type, value_type, result);
-
-        EBM_MAX_VALUE(max_value_expr, type, max_value_lowered);
-        return max_value_expr;
+        else if (size == 64) {
+            if (is_signed) {
+                EBMU_INT_LITERAL(max_value_lowered, 0x7FFFFFFFFFFFFFFF);
+                EBM_MAX_VALUE(max_value_expr, type, max_value_lowered);
+                return max_value_expr;
+            }
+            else {
+                EBMU_INT_LITERAL(max_value_lowered, 0xFFFFFFFFFFFFFFFF);
+                EBM_MAX_VALUE(max_value_expr, type, max_value_lowered);
+                return max_value_expr;
+            }
+        }
+        else {
+            EBMU_UINT_TYPE(value_type, size);
+            EBM_DEFAULT_VALUE(zero, value_type);
+            EBM_UNARY_OP(max_unsigned, ebm::UnaryOp::bit_not, value_type, zero);
+            auto result = max_unsigned;
+            if (is_signed) {
+                EBMU_INT_LITERAL(one, 1);
+                EBM_BINARY_OP(max_signed, ebm::BinaryOp::right_shift, value_type, max_unsigned, one);
+                result = max_signed;
+            }
+            EBM_CAST(max_value_lowered, type, value_type, result);
+            EBM_MAX_VALUE(max_value_expr, type, max_value_lowered);
+            return max_value_expr;
+        }
     }
 
     expected<ebm::StatementBody> StatementConverter::convert_loop_body(const std::shared_ptr<ast::Loop>& node) {

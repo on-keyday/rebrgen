@@ -360,9 +360,12 @@ format PropertyMemberDecl:
 
 enum CompositeFieldKind:
     :u8
-    BULK   
-    PREFIXED_UNION
-    SANDWICHED_UNION
+    BULK_PRIMITIVE
+    BULK_COMPOSITE   
+    PREFIXED_UNION_PRIMITIVE
+    PREFIXED_UNION_COMPOSITE
+    SANDWICHED_UNION_PRIMITIVE
+    SANDWICHED_UNION_COMPOSITE
 
 format CompositeFieldDecl:
     fields :Block # List of FieldDecl or CompositeFieldDecl

@@ -27,7 +27,7 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto len = ctx.composite_field_decl.fields.container.size();
-    if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::BULK) {
+    if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::BULK_PRIMITIVE) {
         auto bulk = ctx.visit(ctx.composite_field_decl.fields);
         if (!bulk) {
             return bulk;
@@ -44,7 +44,7 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
         auto field_name = std::format("field_{}", get_id(ctx.item_id));
         return CODELINE(struct_name, " ", field_name, ";");
     }
-    if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::PREFIXED_UNION) {
+    if (ctx.composite_field_decl.kind == ebm::CompositeFieldKind::PREFIXED_UNION_PRIMITIVE) {
         auto& union_field = ctx.composite_field_decl.fields.container.back();
         CodeWriter common;
         for (auto& field : ctx.composite_field_decl.fields.container) {

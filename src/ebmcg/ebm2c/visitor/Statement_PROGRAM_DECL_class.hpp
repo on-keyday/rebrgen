@@ -25,13 +25,19 @@
 #include "ebmcg/ebm2c/codegen.hpp"
 #include "ebmcodegen/stub/dependency.hpp"
 #include "ebmgen/common.hpp"
+#include "includes.hpp"
 DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     using Context = CODEGEN_CONTEXT(Statement_PROGRAM_DECL);
-    DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
-        using namespace CODEGEN_NAMESPACE;
+    struct C_Context {
         std::vector<ebm2c::Struct> structs;
         std::unordered_map<std::uint64_t, ebm2c::Union> unions;
-        MAYBE_VOID(ok, collect_structs(ctx, structs, unions));
+        std::vector<ebm2c::VectorType> vector_types;
+    };
+
+    DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
+        using namespace CODEGEN_NAMESPACE;
+        C_Context c_ctx;
+        MAYBE_VOID(ok, collect_structs(ctx, c_ctx));
 
         auto get_field_type = [&](ebm::StatementRef field_ref) -> expected<std::pair<Result, ebm::TypeRef>> {
             if (auto field = ctx.get_field<"field_decl.field_type">(field_ref)) {
@@ -50,6 +56,99 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         };
         CodeWriter w;
         w.writeln("#include <stdint.h>");
+        w.writeln("");
+        w.writeln("// Forward declarations");
+        for (auto& s : c_ctx.structs) {
+            auto ident = ctx.identifier(s.id);
+            w.writeln("typedef struct ", ident, " ", ident, ";");
+        }
+
+        w.writeln("typedef struct EncoderInput {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("uint8_t* data;");
+            w.writeln("uint8_t* data_end;");
+            w.writeln("size_t offset;");
+        }
+        w.writeln("} EncoderInput;");
+        w.writeln("");
+
+        if (c_ctx.vector_types.size() > 0) {
+            w.writeln("// Vector type definitions");
+            w.writeln("#define VECTOR_OF(type) type##_vector");
+            w.writeln("typedef struct {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("void* data;");
+                w.writeln("size_t size;");
+                w.writeln("size_t capacity;");
+            }
+            w.writeln("} VECTOR_OF(void);");
+        }
+        w.writeln("typedef struct DecoderInput {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("const uint8_t* data;");
+            w.writeln("const uint8_t* data_end;");
+            w.writeln("size_t offset;");
+            if (c_ctx.vector_types.size() > 0) {
+                w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size);");
+            }
+        }
+        w.writeln("} DecoderInput;");
+        w.writeln("");
+        if (c_ctx.vector_types.size() > 0) {
+            for (auto& v : c_ctx.vector_types) {
+                MAYBE(elem_type, ctx.visit(v.elem_type));
+                w.writeln("typedef struct {");
+                {
+                    auto scope = w.indent_scope();
+                    w.writeln(elem_type.to_writer(), "* data;");
+                    w.writeln(ctx.config().usize_type_name, " size;");
+                    w.writeln(ctx.config().usize_type_name, " capacity;");
+                }
+                w.writeln("} VECTOR_OF(", elem_type.to_writer(), ");");
+                w.writeln("");
+            }
+            w.writeln("#ifndef VECTOR_APPEND");
+            w.writeln("#define VECTOR_APPEND(vector, value) do { \\");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("if (!input->append) {\\");
+                w.indent_writeln("return -1; \\");
+                w.writeln("} \\");
+                w.writeln("int res = input->append(input, &(vector), (VECTOR_OF(void)*) &(value), sizeof((value))); \\");
+                w.writeln("if (res != 0) { \\");
+                w.indent_writeln("return res; \\");
+                w.writeln("} \\");
+            }
+            w.writeln("} while(0)");
+            w.writeln("#endif");
+            w.writeln("");
+        }
+        auto write_composite_fn = [&](ebm::StatementRef composite) -> expected<void> {
+            auto comp = ctx.get_field<"composite_field_decl">(composite);
+            if (!comp) {
+                return {};
+            }
+            for (auto& f : comp->fields.container) {
+                auto decl = ctx.get_field<"field_decl">(f);
+                if (!decl) {
+                    continue;
+                }
+                auto getter = decl->composite_getter();
+                auto setter = decl->composite_setter();
+                if (getter) {
+                    MAYBE(func, ctx.visit(getter->id));
+                    w.writeln(func.to_writer());
+                }
+                if (setter) {
+                    MAYBE(func, ctx.visit(setter->id));
+                    w.writeln(func.to_writer());
+                }
+            }
+            return {};
+        };
         auto write_union = [&](Union& u) -> expected<void> {
             auto ident = std::format("Union{}", get_id(u.id));
             w.writeln("union ", ident, " {");
@@ -62,6 +161,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                     auto field_ident = ctx.identifier(f.id);
                     MAYBE(typ, get_field_type(f.id));
                     w.writeln(typ.first.to_writer(), " ", field_ident, ";");
+                    write_composite_fn(f.id);
                 }
                 var_scope.execute();
                 w.writeln("}", var_ident, ";");
@@ -71,24 +171,25 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("");
             return {};
         };
-        for (auto& s : structs) {
+        for (auto& s : c_ctx.structs) {
             auto ident = ctx.identifier(s.id);
             w.writeln("struct ", ident, " {");
             auto scope = w.indent_scope();
             for (auto& f : s.fields) {
                 auto field_ident = ctx.identifier(f.id);
                 MAYBE(typ, get_field_type(f.id));
-                if (auto found = unions.find(ebmgen::get_id(typ.second)); found != unions.end()) {
+                if (auto found = c_ctx.unions.find(ebmgen::get_id(typ.second)); found != c_ctx.unions.end()) {
                     MAYBE_VOID(ok, write_union(found->second));
                 }
                 w.writeln(typ.first.to_writer(), " ", field_ident, ";");
+                write_composite_fn(f.id);
             }
             scope.execute();
             w.writeln("};");
             w.writeln("");
         }
         // write encoding/decoding functions if any
-        for (auto& s : structs) {
+        for (auto& s : c_ctx.structs) {
             if (s.encode_function) {
                 MAYBE(func, ctx.visit(*s.encode_function));
                 w.writeln(func.to_writer());
@@ -101,7 +202,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         return w;
     };
 
-    ebmgen::expected<void> collect_structs(Context & ctx, std::vector<ebm2c::Struct> & structs, std::unordered_map<std::uint64_t, ebm2c::Union> & unions) {
+    ebmgen::expected<void> collect_structs(Context & ctx, C_Context & c_ctx) {
         auto handle_struct_decl = [&](std::vector<ebm2c::Struct>& structs, ebm::StatementRef stmt_ref) {
             auto struct_ = ctx.get_field<"struct_decl">(stmt_ref);
             if (!struct_) {
@@ -110,6 +211,13 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             Struct s;
             s.id = stmt_ref;
             for (auto& decl_ref : struct_->fields.container) {
+                auto composite = ctx.get_field<"composite_field_decl">(decl_ref);
+                if (composite && composite->kind != ebm::CompositeFieldKind::BULK_PRIMITIVE) {
+                    for (auto& inner_field : composite->fields.container) {
+                        s.fields.push_back(Field{.id = inner_field});
+                    }
+                    continue;
+                }
                 s.fields.push_back(Field{.id = decl_ref});
             }
             if (auto encode_func = struct_->encode_fn()) {
@@ -122,9 +230,15 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         };
         MAYBE(sorted, sorted_struct(ctx));
         for (auto stmt_ref : sorted) {
-            handle_struct_decl(structs, stmt_ref);
+            handle_struct_decl(c_ctx.structs, stmt_ref);
         }
         for (auto& s : ctx.module().module().types) {
+            if (s.body.kind == ebm::TypeKind::VECTOR) {
+                MAYBE(elem_type, s.body.element_type());
+                ebm2c::VectorType v{.elem_type = elem_type};
+                c_ctx.vector_types.push_back(v);
+                continue;
+            }
             auto variant_desc = s.body.variant_desc();
             if (!variant_desc) {
                 continue;
@@ -137,7 +251,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 }
                 handle_struct_decl(u.variants, *struct_key);
             }
-            unions[ebmgen::get_id(s.id)] = u;
+            c_ctx.unions[ebmgen::get_id(s.id)] = u;
         }
         return {};
     }

@@ -581,15 +581,21 @@ namespace ebm {
         return "VariableDeclKind";
     }
     enum class CompositeFieldKind : std::uint8_t {
-        BULK = 0,
-        PREFIXED_UNION = 1,
-        SANDWICHED_UNION = 2,
+        BULK_PRIMITIVE = 0,
+        BULK_COMPOSITE = 1,
+        PREFIXED_UNION_PRIMITIVE = 2,
+        PREFIXED_UNION_COMPOSITE = 3,
+        SANDWICHED_UNION_PRIMITIVE = 4,
+        SANDWICHED_UNION_COMPOSITE = 5,
     };
     constexpr const char* to_string(CompositeFieldKind e, bool origin_form = false) {
         switch(e) {
-            case CompositeFieldKind::BULK: return origin_form ? "BULK":"BULK" ;
-            case CompositeFieldKind::PREFIXED_UNION: return origin_form ? "PREFIXED_UNION":"PREFIXED_UNION" ;
-            case CompositeFieldKind::SANDWICHED_UNION: return origin_form ? "SANDWICHED_UNION":"SANDWICHED_UNION" ;
+            case CompositeFieldKind::BULK_PRIMITIVE: return origin_form ? "BULK_PRIMITIVE":"BULK_PRIMITIVE" ;
+            case CompositeFieldKind::BULK_COMPOSITE: return origin_form ? "BULK_COMPOSITE":"BULK_COMPOSITE" ;
+            case CompositeFieldKind::PREFIXED_UNION_PRIMITIVE: return origin_form ? "PREFIXED_UNION_PRIMITIVE":"PREFIXED_UNION_PRIMITIVE" ;
+            case CompositeFieldKind::PREFIXED_UNION_COMPOSITE: return origin_form ? "PREFIXED_UNION_COMPOSITE":"PREFIXED_UNION_COMPOSITE" ;
+            case CompositeFieldKind::SANDWICHED_UNION_PRIMITIVE: return origin_form ? "SANDWICHED_UNION_PRIMITIVE":"SANDWICHED_UNION_PRIMITIVE" ;
+            case CompositeFieldKind::SANDWICHED_UNION_COMPOSITE: return origin_form ? "SANDWICHED_UNION_COMPOSITE":"SANDWICHED_UNION_COMPOSITE" ;
         }
         return "";
     }
@@ -598,14 +604,23 @@ namespace ebm {
         if (str.empty()) {
             return std::nullopt;
         }
-        if (str == "BULK") {
-            return CompositeFieldKind::BULK;
+        if (str == "BULK_PRIMITIVE") {
+            return CompositeFieldKind::BULK_PRIMITIVE;
         }
-        if (str == "PREFIXED_UNION") {
-            return CompositeFieldKind::PREFIXED_UNION;
+        if (str == "BULK_COMPOSITE") {
+            return CompositeFieldKind::BULK_COMPOSITE;
         }
-        if (str == "SANDWICHED_UNION") {
-            return CompositeFieldKind::SANDWICHED_UNION;
+        if (str == "PREFIXED_UNION_PRIMITIVE") {
+            return CompositeFieldKind::PREFIXED_UNION_PRIMITIVE;
+        }
+        if (str == "PREFIXED_UNION_COMPOSITE") {
+            return CompositeFieldKind::PREFIXED_UNION_COMPOSITE;
+        }
+        if (str == "SANDWICHED_UNION_PRIMITIVE") {
+            return CompositeFieldKind::SANDWICHED_UNION_PRIMITIVE;
+        }
+        if (str == "SANDWICHED_UNION_COMPOSITE") {
+            return CompositeFieldKind::SANDWICHED_UNION_COMPOSITE;
         }
         return std::nullopt;
     }

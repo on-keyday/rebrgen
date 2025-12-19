@@ -54,6 +54,7 @@ std::function<expected<Result>(Result elem_type, size_t len)> array_type_wrapper
 std::function<expected<Result>(Result elem_type)> vector_type_wrapper;
 std::function<expected<Result>(Result typ, bool is_state_variable)> param_type_wrapper;
 std::string variant_prefix = "Variant";
+bool func_style_cast = true;
 
 std::vector<CodeWriter> decl_toplevel;
 bool on_assign = false;  // useful for expression generation

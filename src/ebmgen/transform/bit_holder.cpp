@@ -14,38 +14,41 @@ namespace ebmgen {
     struct SizeofResult {
         std::uint64_t size = 0;
         bool fixed = false;
+        bool primitive = false;
     };
 
     expected<std::optional<SizeofResult>> sizeof_type(TransformContext& tctx, ebm::TypeRef type) {
         MAYBE(field_type, tctx.type_repository().get(type));
         if (auto size = field_type.body.size()) {
-            return SizeofResult{size->value(), true};
+            return SizeofResult{size->value(), true, true};
         }
         else if (auto base_type = field_type.body.base_type(); base_type && !is_nil(*base_type)) {
             return sizeof_type(tctx, *base_type);
         }
         else if (auto desc = field_type.body.variant_desc(); desc) {  // for VARIANT
             std::uint64_t size = 0;
+            bool primitive = false;
             for (const auto& member : desc->members.container) {
                 MAYBE(member_size, sizeof_type(tctx, member));
                 if (member_size) {
                     size = std::max(size, member_size->size);
+                    primitive = primitive || member_size->primitive;
                 }
                 else {
                     return std::nullopt;
                 }
             }
-            return SizeofResult{size, false};
+            return SizeofResult{size, false, primitive};
         }
         else if (auto id = field_type.body.id()) {
             MAYBE(stmt, tctx.statement_repository().get(*id));
             if (auto decl = stmt.body.struct_decl()) {
                 if (auto size = decl->size()) {
                     if (size->unit == ebm::SizeUnit::BIT_FIXED) {
-                        return SizeofResult{size->size()->value(), true};
+                        return SizeofResult{size->size()->value(), true, false};
                     }
                     else if (size->unit == ebm::SizeUnit::BYTE_FIXED) {
-                        return SizeofResult{size->size()->value() * 8, true};
+                        return SizeofResult{size->size()->value() * 8, true, false};
                     }
                 }
             }
@@ -79,22 +82,11 @@ namespace ebmgen {
         EBMU_INT_LITERAL(size_expr, current_size);
         EBMU_INT_LITERAL(total_size_expr, total_size);
         EBM_DEFINE_PARAMETER(input_param, {}, original_field_type, false);
-
+        append(setter_decl.params, input_param_def);
         MAYBE(setter_return_type, get_single_type(ebm::TypeKind::PROPERTY_SETTER_RETURN, ctx));
         setter_decl.return_type = setter_return_type;
         getter_decl.return_type = original_field_type;
 
-        // getter
-        //
-        BitManipulator manip(ctx, {}, {});
-        auto res = manip.extractBitsFromExpression(
-            composite_expr,
-            offset, total_size, 0, current_size,
-            ebm::Endian::big, composite_type, false, false);
-        if (!res) {
-            return unexpect_error(std::move(res.error()));
-        }
-        auto getter_expr = res->first;
         MAYBE(original_field_type_decl, tctx.type_repository().get(original_field_type));
         auto src_type = original_field_type;
         if (original_field_type_decl.body.kind == ebm::TypeKind::VARIANT ||
@@ -102,28 +94,37 @@ namespace ebmgen {
             EBMU_UINT_TYPE(temp_type, current_size);
             src_type = temp_type;
         }
-        MAYBE(expr_max, get_max_value_expr(ctx, src_type));
-        auto bit_mask =
-            manip.appendToExpression(
-                std::nullopt, expr_max, offset,
-                total_size, current_size,
-                ebm::Endian::big, composite_type, src_type);
-        if (!bit_mask) {
-            return unexpect_error(std::move(bit_mask.error()));
-        }
-        auto set_value =
-            manip.appendToExpression(
-                std::nullopt, input_param, offset,
-                total_size, current_size,
-                ebm::Endian::big, composite_type, src_type);
-        if (!set_value) {
-            return unexpect_error(std::move(set_value.error()));
-        }
-        EBM_UNARY_OP(clear_set_position, ebm::UnaryOp::bit_not, composite_type, *bit_mask);
-        EBM_BINARY_OP(cleared_composite, ebm::BinaryOp::bit_and, composite_type, composite_expr, clear_set_position);
-        EBM_BINARY_OP(updated_composite, ebm::BinaryOp::bit_or, composite_type, cleared_composite, *set_value);
+        MAYBE(mask, get_max_value_expr(ctx, src_type));
+
+        // getter
+        // from 0x301f, 1 bit at offset 3 is 1 (big endian model)
+        // shift_right = total_size - (offset + current_size)
+        // mask = ((1 << current_size) - 1) == src_type max value
+        // value = (composite_expr >> shift_right) & mask
+        EBMU_INT_LITERAL(shift_right, total_size - (offset + current_size));
+        EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, composite_type, composite_expr, shift_right);
+        EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, composite_type, shifted, mask);
+        EBM_CAST(getter_expr, original_field_type, composite_type, masked);
         EBM_RETURN(getter_return, getter_expr);
         getter_decl.body = getter_return;
+
+        // setter
+        // to 0x301f, set 1 bit at offset 3 to 0 (then 0x201f)
+        // shift_left = total_size - (offset + current_size)
+        // clear_mask = ((1 << current_size) - 1)
+        // clear_set_mask = ~(clear_mask << shift_left)
+        // cleared_composite = composite_expr & bit_mask
+        // set_value = (input_param & clear_mask) << shift_left
+        // updated_composite = cleared_composite | set_value
+
+        auto shift_left = shift_right;  // same value
+        EBM_BINARY_OP(clear_mask, ebm::BinaryOp::left_shift, composite_type, mask, shift_left);
+        EBM_UNARY_OP(clear_set_mask, ebm::UnaryOp::bit_not, composite_type, clear_mask);
+        EBM_BINARY_OP(cleared_composite, ebm::BinaryOp::bit_and, composite_type, composite_expr, clear_set_mask);
+        EBM_CAST(input_casted, composite_type, original_field_type, input_param);
+        EBM_BINARY_OP(input_masked, ebm::BinaryOp::bit_and, composite_type, input_casted, mask);
+        EBM_BINARY_OP(set_value, ebm::BinaryOp::left_shift, composite_type, input_masked, shift_left);
+        EBM_BINARY_OP(updated_composite, ebm::BinaryOp::bit_or, composite_type, cleared_composite, set_value);
 
         EBM_ASSIGNMENT(assigned, composite_expr, updated_composite);
         ebm::Block setter_block;
@@ -144,28 +145,33 @@ namespace ebmgen {
         return std::pair{getter_stmt, setter_stmt};
     }
 
-    ebm::CompositeFieldKind determine_composite_field_kind(std::vector<bool>& fixed_map) {
-        ebm::CompositeFieldKind kind = ebm::CompositeFieldKind::BULK;
+    ebm::CompositeFieldKind determine_composite_field_kind(std::vector<SizeofResult>& fixed_map) {
+        ebm::CompositeFieldKind kind = ebm::CompositeFieldKind::BULK_PRIMITIVE;
+        bool is_composite = false;
         size_t i = 0;
         for (; i < fixed_map.size(); i++) {
-            if (!fixed_map[i]) {
-                kind = ebm::CompositeFieldKind::PREFIXED_UNION;
+            if (!fixed_map[i].fixed) {
+                kind = is_composite ? ebm::CompositeFieldKind::PREFIXED_UNION_COMPOSITE : ebm::CompositeFieldKind::PREFIXED_UNION_PRIMITIVE;
                 i++;
                 break;
+            }
+            if (!fixed_map[i].primitive) {
+                kind = ebm::CompositeFieldKind::BULK_COMPOSITE;
+                is_composite = true;
             }
         }
         if (i == fixed_map.size()) {
             return kind;
         }
-        return ebm::CompositeFieldKind::SANDWICHED_UNION;
+        return is_composite ? ebm::CompositeFieldKind::SANDWICHED_UNION_COMPOSITE : ebm::CompositeFieldKind::SANDWICHED_UNION_PRIMITIVE;
     }
 
     expected<void> merge_bit_field(TransformContext& tctx) {
         auto& ctx = tctx.context();
         auto& all_statements = tctx.statement_repository().get_all();
         size_t current_size = all_statements.size();
-        for (size_t i = 0; i < current_size; i++) {
-            if (auto struct_decl = all_statements[i].body.struct_decl()) {
+        for (size_t j = 0; j < current_size; j++) {
+            if (auto struct_decl = all_statements[j].body.struct_decl()) {
                 auto fields = struct_decl->fields.container;  // copy to avoid relocation
                 std::vector<std::pair<size_t, std::optional<SizeofResult>>> sized_fields;
                 std::vector<size_t> not_added_index;
@@ -240,10 +246,10 @@ namespace ebmgen {
                     }
                     else {
                         ebm::CompositeFieldDecl comp_decl;
-                        std::vector<bool> fixed_map;
+                        std::vector<SizeofResult> fixed_map;
                         for (auto& idx : indexes) {
                             append(comp_decl.fields, fields[idx.first]);
-                            fixed_map.push_back(idx.second.fixed);
+                            fixed_map.push_back(idx.second);
                         }
                         comp_decl.kind = determine_composite_field_kind(fixed_map);
                         EBMU_UINT_TYPE(composite_type, *size);
@@ -264,7 +270,7 @@ namespace ebmgen {
                                                           composite_type,
                                                           fields[idx.first],
                                                           field_decl.name,
-                                                          all_statements[i].id,
+                                                          all_statements[j].id,
                                                           *size,
                                                           idx.second.size,
                                                           offset /* offset */));
@@ -285,7 +291,7 @@ namespace ebmgen {
                 for (auto& not_added : not_added_index) {
                     append(block, fields[not_added]);
                 }
-                all_statements[i].body.struct_decl()->fields = std::move(block);
+                all_statements[j].body.struct_decl()->fields = std::move(block);
             }
         }
         return {};

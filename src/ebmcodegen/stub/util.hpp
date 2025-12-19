@@ -655,6 +655,14 @@ namespace ebmcodegen::util {
             return derived().module().get_expression(expr_ref);
         }
 
+        decltype(auto) get(ebm::StringRef string_ref) const {
+            return derived().module().get_string_literal(string_ref);
+        }
+
+        decltype(auto) get(ebm::IdentifierRef ident_ref) const {
+            return derived().module().get_identifier(ident_ref);
+        }
+
         decltype(auto) get_kind(ebm::TypeRef type_ref) const {
             return derived().module().get_type_kind(type_ref);
         }

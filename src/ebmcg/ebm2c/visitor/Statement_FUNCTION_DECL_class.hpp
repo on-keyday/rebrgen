@@ -27,12 +27,19 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "../codegen.hpp"
 DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto name = ctx.identifier();
     MAYBE(ret_type, ctx.visit(ctx.func_decl.return_type));
     CodeWriter params;
+    std::string func_prefix;
+    if (!is_nil(ctx.func_decl.parent_format)) {
+        auto ident = ctx.identifier(ctx.func_decl.parent_format);
+        func_prefix = ident + "_";
+        params.write(ident, "* self");
+    }
     for (const auto& param_ref : ctx.func_decl.params.container) {
         MAYBE(param, ctx.visit(param_ref));
         if (!params.empty()) {
@@ -41,12 +48,7 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         params.write(param.to_writer());
     }
     CodeWriter w;
-    if (ctx.config().forward_type_in_function_decl) {
-        w.writeln(ret_type.to_writer(), " ", name, "(", params, ") ", ctx.config().begin_block);
-    }
-    else {
-        w.writeln(ctx.config().function_define_keyword, " ", name, "(", params, ") ", ctx.config().function_return_type_separator, " ", ret_type.to_writer(), " ", ctx.config().begin_block);
-    }
+    w.writeln(ret_type.to_writer(), " ", func_prefix, name, "(", params, ") ", ctx.config().begin_block);
     {
         auto scope = w.indent_scope();
         MAYBE(body, ctx.visit(ctx.func_decl.body));

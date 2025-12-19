@@ -16,10 +16,18 @@
     source_expr: ExpressionRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-CodeWriter w;
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_TYPE_CAST) {
+    using namespace CODEGEN_NAMESPACE;
+    CodeWriter w;
 
-MAYBE(source_expr_str, visit_Expression(*this, source_expr));
-MAYBE(target_type_str, visit_Type(*this, type));
-w.write(target_type_str.to_writer(), "(", source_expr_str.to_writer(), ")");
-
-return w;
+    MAYBE(source_expr_str, ctx.visit(ctx.source_expr));
+    MAYBE(target_type_str, ctx.visit(ctx.type));
+    if (ctx.config().func_style_cast) {
+        w.write(target_type_str.to_writer(), "(", source_expr_str.to_writer(), ")");
+    }
+    else {
+        w.write("(", target_type_str.to_writer(), ")", source_expr_str.to_writer());
+    }
+    return w;
+}

@@ -8,6 +8,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+#include <optional>
 #include "ebm/extended_binary_module.hpp"
 namespace ebm2c {
     struct Field {
@@ -17,10 +18,12 @@ namespace ebm2c {
     struct Struct {
         ebm::StatementRef id;
         std::vector<Field> fields;
+        std::optional<ebm::StatementRef> encode_function;
+        std::optional<ebm::StatementRef> decode_function;
     };
 
     struct Union {
-        ebm::StatementRef id;
+        ebm::TypeRef id;
         std::vector<Struct> variants;
     };
 

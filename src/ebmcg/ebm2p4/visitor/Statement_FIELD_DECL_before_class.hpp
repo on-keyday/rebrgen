@@ -41,7 +41,7 @@ DEFINE_VISITOR(Statement_FIELD_DECL_before) {
         w.writeln("header_union ", enum_name, " {");
         {
             auto scope = w.indent_scope();
-            MAYBE(members, ctx.get_field<"members">(ctx.field_decl.field_type));
+            MAYBE(members, ctx.get_field<"variant_desc.members">(ctx.field_decl.field_type));
             for (auto& member_type_ref : members.container) {
                 MAYBE(type, ctx.visit(member_type_ref));
                 auto tmp_field_name = std::format("union{}", get_id(member_type_ref));

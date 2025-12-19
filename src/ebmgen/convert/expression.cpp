@@ -3,6 +3,7 @@
 #include "core/ast/node/ast_enum.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/literal.h"
+#include "core/ast/node/statement.h"
 #include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
@@ -310,18 +311,46 @@ namespace ebmgen {
         if (auto m = ast::as<ast::Member>(base_locked); m && m->belong.lock()) {
             has_parent = true;
         }
-        {
+        if (auto f = ast::as<ast::Field>(base_locked); f && f->is_state_variable) {
+            is_state_variable = true;
+            auto current_func = ctx.state().get_format_encode_decode(ctx.state().get_current_node());
+            if (!current_func) {
+                return unexpect_error("State variable {} can be used only inside encode/decode function", node->ident);
+            }
+            for (auto& param : current_func->state_variables) {
+                if (param.ast_field == base_locked) {
+                    if (ctx.state().get_current_generate_type() == GenerateType::Encode) {
+                        id = param.enc_var_def;
+                    }
+                    else if (ctx.state().get_current_generate_type() == GenerateType::Decode) {
+                        id = param.dec_var_def;
+                    }
+                    else if (ctx.state().get_current_generate_type() == GenerateType::PropertyGetter) {
+                        id = param.prop_get_var_def;
+                    }
+                    else if (ctx.state().get_current_generate_type() == GenerateType::PropertySetter) {
+                        id = param.prop_set_var_def;
+                    }
+                    else {
+                        return unexpect_error("Invalid generate type for state variable {}", node->ident);
+                    }
+                    body.id(id);
+                    return {};
+                }
+            }
+            return unexpect_error("State variable {} not found in current encode/decode function", node->ident);
+        }
+        if (ast::as<ast::Binary>(base_locked)) {
+            // preserve generate type
+            EBMA_CONVERT_STATEMENT(id_ref, base_locked);
+            body.id(id_ref);
+            id = id_ref;
+        }
+        else {  // switch to normal generate type
             const auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(id_ref, base_locked);
             body.id(id_ref);
             id = id_ref;
-            if (auto got = ctx.repository().get_statement(id_ref)) {
-                kind = got->body.kind;
-                auto state_var = got->body.field_decl();
-                if (state_var) {
-                    is_state_variable = state_var->is_state_variable();
-                }
-            }
         }
         if (auto self = ctx.state().get_self_ref(); self && has_parent && !is_state_variable) {
             if (!ctx.state().is_on_available_check()) {
@@ -332,9 +361,6 @@ namespace ebmgen {
                     if (base) {
                         self = *base;
                     }
-                }
-                else {
-                    ;
                 }
             }
             EBMA_ADD_EXPR(ident_ref, std::move(body));

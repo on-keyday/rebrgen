@@ -56,7 +56,7 @@ DEFINE_VISITOR(Statement_COMPOSITE_FIELD_DECL) {
                 common.write(res->to_writer());
             }
         }
-        MAYBE(members, ctx.get_field<"field_decl.field_type.members">(union_field));
+        MAYBE(members, ctx.get_field<"field_decl.field_type.variant_desc.members">(union_field));
         CodeWriter union_writer;
         std::vector<std::string> variant_names;
         for (auto& member : members.container) {

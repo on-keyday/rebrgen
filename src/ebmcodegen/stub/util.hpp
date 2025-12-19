@@ -717,4 +717,62 @@ namespace ebmcodegen::util {
             return get_visitor_impl<R>(derived(), f);
         }
     };
+
+    // 0: most outer last index: most inner
+    ebmgen::expected<std::vector<const ebm::Type*>> get_type_tree(auto&& ctx, ebm::TypeRef type_ref) {
+        ebmgen::MappingTable& m = get_visitor(ctx).module_;
+        MAYBE(type, m.get_type(type_ref));
+        std::vector<const ebm::Type*> result;
+        result.push_back(&type);
+        const ebm::Type* current_type = &type;
+        while (true) {
+            switch (current_type->body.kind) {
+                case ebm::TypeKind::PTR: {
+                    MAYBE(pointee_type_ref, current_type->body.pointee_type());
+                    MAYBE(pointee_type, m.get_type(pointee_type_ref));
+                    result.push_back(&pointee_type);
+                    current_type = &pointee_type;
+                    break;
+                }
+                case ebm::TypeKind::OPTIONAL: {
+                    MAYBE(inner_type_ref, current_type->body.inner_type());
+                    MAYBE(inner_type, m.get_type(inner_type_ref));
+                    result.push_back(&inner_type);
+                    current_type = &inner_type;
+                    break;
+                }
+                case ebm::TypeKind::ARRAY:
+                case ebm::TypeKind::VECTOR: {
+                    MAYBE(element_type_ref, current_type->body.element_type());
+                    MAYBE(element_type, m.get_type(element_type_ref));
+                    result.push_back(&element_type);
+                    current_type = &element_type;
+                    break;
+                }
+                case ebm::TypeKind::RANGE: {
+                    MAYBE(value_type_ref, current_type->body.base_type());
+                    MAYBE(value_type, m.get_type(value_type_ref));
+                    result.push_back(&value_type);
+                    current_type = &value_type;
+                    break;
+                }
+                case ebm::TypeKind::ENUM: {
+                    auto base_type_ref = *current_type->body.base_type();
+                    if (ebmgen::is_nil(base_type_ref)) {
+                        return result;
+                    }
+                    else {
+                        MAYBE(base_type, m.get_type(base_type_ref));
+                        result.push_back(&base_type);
+                        current_type = &base_type;
+                        break;
+                    }
+                }
+                default: {
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
 }  // namespace ebmcodegen::util

@@ -26,12 +26,16 @@ namespace ebm {
         Normal = 0,
         Encode = 1,
         Decode = 2,
+        PropertyGetter = 3,
+        PropertySetter = 4,
     };
     constexpr const char* to_string(GenerateType e, bool origin_form = false) {
         switch(e) {
             case GenerateType::Normal: return origin_form ? "Normal":"Normal" ;
             case GenerateType::Encode: return origin_form ? "Encode":"Encode" ;
             case GenerateType::Decode: return origin_form ? "Decode":"Decode" ;
+            case GenerateType::PropertyGetter: return origin_form ? "PropertyGetter":"PropertyGetter" ;
+            case GenerateType::PropertySetter: return origin_form ? "PropertySetter":"PropertySetter" ;
         }
         return "";
     }
@@ -48,6 +52,12 @@ namespace ebm {
         }
         if (str == "Decode") {
             return GenerateType::Decode;
+        }
+        if (str == "PropertyGetter") {
+            return GenerateType::PropertyGetter;
+        }
+        if (str == "PropertySetter") {
+            return GenerateType::PropertySetter;
         }
         return std::nullopt;
     }
@@ -3134,19 +3144,22 @@ namespace ebm {
         }
     };
     struct EBM_API PropertyMemberDecl{
-        ExpressionRef condition;
+        ExpressionRef setter_condition;
+        ExpressionRef getter_condition;
         StatementRef field;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "PropertyMemberDecl";
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
-            v(v, "condition",(*this).condition);
+            v(v, "setter_condition",(*this).setter_condition);
+            v(v, "getter_condition",(*this).getter_condition);
             v(v, "field",(*this).field);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
-            v(v, "condition",(*this).condition);
+            v(v, "setter_condition",(*this).setter_condition);
+            v(v, "getter_condition",(*this).getter_condition);
             v(v, "field",(*this).field);
         }
         template<typename T,bool rvalue = false>
@@ -3156,7 +3169,8 @@ namespace ebm {
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "condition",visitor_tag<decltype(std::declval<PropertyMemberDecl>().condition),false>{});
+            v(v, "setter_condition",visitor_tag<decltype(std::declval<PropertyMemberDecl>().setter_condition),false>{});
+            v(v, "getter_condition",visitor_tag<decltype(std::declval<PropertyMemberDecl>().getter_condition),false>{});
             v(v, "field",visitor_tag<decltype(std::declval<PropertyMemberDecl>().field),false>{});
         }
     };
@@ -3937,7 +3951,8 @@ namespace ebm {
         StatementRef parent_format;
         TypeRef property_type;
         MergeMode merge_mode{};
-        ExpressionRef cond;
+        ExpressionRef setter_condition;
+        ExpressionRef getter_condition;
         Block members;
         LoweredStatementRef setter_function;
         LoweredStatementRef getter_function;
@@ -3958,7 +3973,8 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
-            v(v, "cond",(*this).cond);
+            v(v, "setter_condition",(*this).setter_condition);
+            v(v, "getter_condition",(*this).getter_condition);
             v(v, "members",(*this).members);
             v(v, "setter_function",(*this).setter_function);
             v(v, "getter_function",(*this).getter_function);
@@ -3970,7 +3986,8 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
-            v(v, "cond",(*this).cond);
+            v(v, "setter_condition",(*this).setter_condition);
+            v(v, "getter_condition",(*this).getter_condition);
             v(v, "members",(*this).members);
             v(v, "setter_function",(*this).setter_function);
             v(v, "getter_function",(*this).getter_function);
@@ -3987,7 +4004,8 @@ namespace ebm {
             v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format),false>{});
             v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type),false>{});
             v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode),false>{});
-            v(v, "cond",visitor_tag<decltype(std::declval<PropertyDecl>().cond),false>{});
+            v(v, "setter_condition",visitor_tag<decltype(std::declval<PropertyDecl>().setter_condition),false>{});
+            v(v, "getter_condition",visitor_tag<decltype(std::declval<PropertyDecl>().getter_condition),false>{});
             v(v, "members",visitor_tag<decltype(std::declval<PropertyDecl>().members),false>{});
             v(v, "setter_function",visitor_tag<decltype(std::declval<PropertyDecl>().setter_function),false>{});
             v(v, "getter_function",visitor_tag<decltype(std::declval<PropertyDecl>().getter_function),false>{});

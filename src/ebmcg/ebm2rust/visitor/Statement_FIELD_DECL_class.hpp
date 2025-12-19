@@ -45,7 +45,7 @@ DEFINE_VISITOR(Statement_FIELD_DECL) {
         int i = 0;
         w.writeln("#[default]");
         w.writeln("None,");
-        MAYBE(members, ctx.module().get_type(ctx.field_decl.field_type).body.variant_desc());
+        MAYBE(members, ctx.get_field<"variant_desc">(ctx.field_decl.field_type));
         for (auto& member_type_ref : members.members.container) {
             MAYBE(type, ctx.visit(member_type_ref));
             w.writeln("V", std::format("{}", i), "(", type.to_writer(), "),");

@@ -34,6 +34,7 @@ bool surrounded_array_size = false; /*true: len(x) false: x.len()*/
 std::string append_function = "append";
 std::string infinity_loop_keyword = "";
 bool field_name_prior_to_type = false;
+bool variable_name_prior_to_type = true;
 std::string usize_type_name = "usize";
 bool byte_aligned_int = true;
 std::string uint_prefix = "u";
@@ -41,9 +42,18 @@ std::string uint_suffix = "";
 std::string int_prefix = "i";
 std::string int_suffix = "";
 std::string function_define_keyword = "fn";
+std::string encoder_return_type = "EncoderReturn";
+std::string decoder_return_type = "DecoderReturn";
+std::string encoder_input_type = "EncoderInput";
+std::string decoder_input_type = "DecoderInput";
+std::string property_setter_return_type = "void";
 bool forward_type_in_function_decl = false;
 std::string function_return_type_separator = "->";
 bool use_base_type_of_enum = false;
+std::function<expected<Result>(Result elem_type, size_t len)> array_type_wrapper;
+std::function<expected<Result>(Result elem_type)> vector_type_wrapper;
+std::function<expected<Result>(Result typ, bool is_state_variable)> param_type_wrapper;
+std::string variant_prefix = "Variant";
 
 std::vector<CodeWriter> decl_toplevel;
 bool on_assign = false;  // useful for expression generation

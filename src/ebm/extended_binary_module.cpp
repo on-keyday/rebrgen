@@ -17752,7 +17752,10 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> PropertyMemberDecl::encode(::futils::binary::writer& w) const {
-        if (auto err = (*this).condition.encode(w)) {
+        if (auto err = (*this).setter_condition.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).getter_condition.encode(w)) {
             return err;
         }
         if (auto err = (*this).field.encode(w)) {
@@ -17761,7 +17764,10 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> PropertyMemberDecl::decode(::futils::binary::reader& r) {
-        if (auto err = (*this).condition.decode(r)) {
+        if (auto err = (*this).setter_condition.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).getter_condition.decode(r)) {
             return err;
         }
         if (auto err = (*this).field.decode(r)) {
@@ -18527,7 +18533,10 @@ namespace ebm {
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_238_) ,true)) {
             return ::futils::error::Error<>("encode: PropertyDecl::merge_mode: write std::uint8_t failed",::futils::error::Category::lib);
         }
-        if (auto err = (*this).cond.encode(w)) {
+        if (auto err = (*this).setter_condition.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).getter_condition.encode(w)) {
             return err;
         }
         if (auto err = (*this).members.encode(w)) {
@@ -18564,7 +18573,10 @@ namespace ebm {
             return ::futils::error::Error<>("decode: PropertyDecl::merge_mode: read int failed",::futils::error::Category::lib);
         }
         (*this).merge_mode = static_cast<MergeMode>(tmp_239_);
-        if (auto err = (*this).cond.decode(r)) {
+        if (auto err = (*this).setter_condition.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).getter_condition.decode(r)) {
             return err;
         }
         if (auto err = (*this).members.decode(r)) {

@@ -91,7 +91,7 @@ switch (type.body.kind) {
     case ebm::TypeKind::VARIANT: {
         // For variants, return Union of member types
         std::string members_str = "";
-        for (auto& member_type_ref : type.body.members()->container) {
+        for (auto& member_type_ref : type.body.variant_desc()->members.container) {
             MAYBE(member_str, type_to_python_str(member_type_ref));
             if (!members_str.empty()) {
                 members_str += ", ";

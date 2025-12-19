@@ -19,9 +19,13 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-if (!is_nil(common_type)) {
-    return visit_Type(*this, common_type);
-}
-auto enum_name = "Variant" + std::format("{}", get_id(item_id));
+#include "../codegen.hpp"
 
-return Result(enum_name);
+DEFINE_VISITOR(Type_VARIANT) {
+    if (!is_nil(ctx.variant_desc.common_type)) {
+        return ctx.visit(ctx.variant_desc.common_type);
+    }
+    auto enum_name = "Variant" + std::format("{}", get_id(ctx.item_id));
+
+    return Result(enum_name);
+}

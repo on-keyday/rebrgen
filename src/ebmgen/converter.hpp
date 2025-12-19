@@ -185,7 +185,19 @@ namespace ebmgen {
     };
     bool is_alignment_vector(const std::shared_ptr<ast::Field>& t);
 
-    using StateVariables = std::vector<std::pair<ebm::ExpressionRef, ebm::StatementRef>>;
+    struct StateVariable {
+        ebm::StatementRef enc_var_def;
+        ebm::ExpressionRef enc_var_expr;
+        ebm::StatementRef dec_var_def;
+        ebm::ExpressionRef dec_var_expr;
+        ebm::StatementRef prop_get_var_def;
+        ebm::ExpressionRef prop_get_var_expr;
+        ebm::StatementRef prop_set_var_def;
+        ebm::ExpressionRef prop_set_var_expr;
+        std::shared_ptr<ast::Field> ast_field;
+    };
+
+    using StateVariables = std::vector<StateVariable>;
 
     struct FormatEncodeDecode {
         ebm::ExpressionRef encode;

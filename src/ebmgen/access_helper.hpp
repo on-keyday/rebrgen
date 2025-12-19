@@ -2084,8 +2084,12 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T, ebm::PropertyMemberDecl>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 0) {
-                auto& ref = in.condition;
+            else if constexpr (FieldIndex == 141) {
+                auto& ref = in.setter_condition;
+                return ref;
+            }
+            else if constexpr (FieldIndex == 142) {
+                auto& ref = in.getter_condition;
                 return ref;
             }
             else if constexpr (FieldIndex == 94) {
@@ -2095,11 +2099,17 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T,ebm::PropertyMemberDecl*> || std::is_same_v<T,const ebm::PropertyMemberDecl*>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 0) {
+            else if constexpr (FieldIndex == 141) {
                 if (!in) {
-                    return decltype(std::addressof(in->condition))();
+                    return decltype(std::addressof(in->setter_condition))();
                 }
-                return std::addressof(in->condition);
+                return std::addressof(in->setter_condition);
+            }
+            else if constexpr (FieldIndex == 142) {
+                if (!in) {
+                    return decltype(std::addressof(in->getter_condition))();
+                }
+                return std::addressof(in->getter_condition);
             }
             else if constexpr (FieldIndex == 94) {
                 if (!in) {
@@ -2110,34 +2120,34 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T, ebm::RefAlias>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 141) {
+            else if constexpr (FieldIndex == 143) {
                 auto& ref = in.hint;
                 return ref;
             }
-            else if constexpr (FieldIndex == 142) {
+            else if constexpr (FieldIndex == 144) {
                 auto& ref = in.from;
                 return ref;
             }
-            else if constexpr (FieldIndex == 143) {
+            else if constexpr (FieldIndex == 145) {
                 auto& ref = in.to;
                 return ref;
             }
         }
         else if constexpr (std::is_same_v<T,ebm::RefAlias*> || std::is_same_v<T,const ebm::RefAlias*>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 141) {
+            else if constexpr (FieldIndex == 143) {
                 if (!in) {
                     return decltype(std::addressof(in->hint))();
                 }
                 return std::addressof(in->hint);
             }
-            else if constexpr (FieldIndex == 142) {
+            else if constexpr (FieldIndex == 144) {
                 if (!in) {
                     return decltype(std::addressof(in->from))();
                 }
                 return std::addressof(in->from);
             }
-            else if constexpr (FieldIndex == 143) {
+            else if constexpr (FieldIndex == 145) {
                 if (!in) {
                     return decltype(std::addressof(in->to))();
                 }
@@ -2190,7 +2200,7 @@ namespace ebmcodegen {
                 auto& ref = in.unit;
                 return ref;
             }
-            else if constexpr (FieldIndex == 144) {
+            else if constexpr (FieldIndex == 146) {
                 return in.ref();
             }
             else if constexpr (FieldIndex == 98) {
@@ -2205,7 +2215,7 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->unit);
             }
-            else if constexpr (FieldIndex == 144) {
+            else if constexpr (FieldIndex == 146) {
                 if (!in) {
                     return decltype(in->ref())();
                 }
@@ -2250,85 +2260,85 @@ namespace ebmcodegen {
                 auto& ref = in.kind;
                 return ref;
             }
-            else if constexpr (FieldIndex == 145) {
+            else if constexpr (FieldIndex == 147) {
                 return in.assert_desc();
             }
-            else if constexpr (FieldIndex == 146) {
+            else if constexpr (FieldIndex == 148) {
                 return in.block();
             }
-            else if constexpr (FieldIndex == 147) {
+            else if constexpr (FieldIndex == 149) {
                 return in.break_();
             }
-            else if constexpr (FieldIndex == 148) {
+            else if constexpr (FieldIndex == 150) {
                 return in.composite_field_decl();
             }
-            else if constexpr (FieldIndex == 149) {
+            else if constexpr (FieldIndex == 151) {
                 return in.continue_();
             }
-            else if constexpr (FieldIndex == 150) {
+            else if constexpr (FieldIndex == 152) {
                 return in.endian_variable();
             }
             else if constexpr (FieldIndex == 20) {
                 return in.enum_decl();
             }
-            else if constexpr (FieldIndex == 151) {
+            else if constexpr (FieldIndex == 153) {
                 return in.enum_member_decl();
             }
-            else if constexpr (FieldIndex == 152) {
+            else if constexpr (FieldIndex == 154) {
                 return in.error_report();
             }
-            else if constexpr (FieldIndex == 153) {
+            else if constexpr (FieldIndex == 155) {
                 return in.expression();
             }
-            else if constexpr (FieldIndex == 154) {
+            else if constexpr (FieldIndex == 156) {
                 return in.field_decl();
             }
-            else if constexpr (FieldIndex == 155) {
+            else if constexpr (FieldIndex == 157) {
                 return in.func_decl();
             }
-            else if constexpr (FieldIndex == 156) {
+            else if constexpr (FieldIndex == 158) {
                 return in.if_statement();
             }
-            else if constexpr (FieldIndex == 157) {
+            else if constexpr (FieldIndex == 159) {
                 return in.import_decl();
             }
-            else if constexpr (FieldIndex == 158) {
+            else if constexpr (FieldIndex == 160) {
                 return in.init_check();
             }
-            else if constexpr (FieldIndex == 159) {
+            else if constexpr (FieldIndex == 161) {
                 return in.loop();
             }
-            else if constexpr (FieldIndex == 160) {
+            else if constexpr (FieldIndex == 162) {
                 return in.lowered_io_statements();
             }
-            else if constexpr (FieldIndex == 161) {
+            else if constexpr (FieldIndex == 163) {
                 return in.match_branch();
             }
-            else if constexpr (FieldIndex == 162) {
+            else if constexpr (FieldIndex == 164) {
                 return in.match_statement();
             }
-            else if constexpr (FieldIndex == 163) {
+            else if constexpr (FieldIndex == 165) {
                 return in.metadata();
             }
-            else if constexpr (FieldIndex == 164) {
+            else if constexpr (FieldIndex == 166) {
                 return in.param_decl();
             }
-            else if constexpr (FieldIndex == 165) {
+            else if constexpr (FieldIndex == 167) {
                 return in.previous_assignment();
             }
-            else if constexpr (FieldIndex == 166) {
+            else if constexpr (FieldIndex == 168) {
                 return in.property_decl();
             }
-            else if constexpr (FieldIndex == 167) {
+            else if constexpr (FieldIndex == 169) {
                 return in.property_member_decl();
             }
-            else if constexpr (FieldIndex == 168) {
+            else if constexpr (FieldIndex == 170) {
                 return in.read_data();
             }
-            else if constexpr (FieldIndex == 169) {
+            else if constexpr (FieldIndex == 171) {
                 return in.struct_decl();
             }
-            else if constexpr (FieldIndex == 170) {
+            else if constexpr (FieldIndex == 172) {
                 return in.sub_byte_range();
             }
             else if constexpr (FieldIndex == 95) {
@@ -2337,10 +2347,10 @@ namespace ebmcodegen {
             else if constexpr (FieldIndex == 21) {
                 return in.value();
             }
-            else if constexpr (FieldIndex == 171) {
+            else if constexpr (FieldIndex == 173) {
                 return in.var_decl();
             }
-            else if constexpr (FieldIndex == 172) {
+            else if constexpr (FieldIndex == 174) {
                 return in.write_data();
             }
         }
@@ -2352,37 +2362,37 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->kind);
             }
-            else if constexpr (FieldIndex == 145) {
+            else if constexpr (FieldIndex == 147) {
                 if (!in) {
                     return decltype(in->assert_desc())();
                 }
                 return in->assert_desc();
             }
-            else if constexpr (FieldIndex == 146) {
+            else if constexpr (FieldIndex == 148) {
                 if (!in) {
                     return decltype(in->block())();
                 }
                 return in->block();
             }
-            else if constexpr (FieldIndex == 147) {
+            else if constexpr (FieldIndex == 149) {
                 if (!in) {
                     return decltype(in->break_())();
                 }
                 return in->break_();
             }
-            else if constexpr (FieldIndex == 148) {
+            else if constexpr (FieldIndex == 150) {
                 if (!in) {
                     return decltype(in->composite_field_decl())();
                 }
                 return in->composite_field_decl();
             }
-            else if constexpr (FieldIndex == 149) {
+            else if constexpr (FieldIndex == 151) {
                 if (!in) {
                     return decltype(in->continue_())();
                 }
                 return in->continue_();
             }
-            else if constexpr (FieldIndex == 150) {
+            else if constexpr (FieldIndex == 152) {
                 if (!in) {
                     return decltype(in->endian_variable())();
                 }
@@ -2394,121 +2404,121 @@ namespace ebmcodegen {
                 }
                 return in->enum_decl();
             }
-            else if constexpr (FieldIndex == 151) {
+            else if constexpr (FieldIndex == 153) {
                 if (!in) {
                     return decltype(in->enum_member_decl())();
                 }
                 return in->enum_member_decl();
             }
-            else if constexpr (FieldIndex == 152) {
+            else if constexpr (FieldIndex == 154) {
                 if (!in) {
                     return decltype(in->error_report())();
                 }
                 return in->error_report();
             }
-            else if constexpr (FieldIndex == 153) {
+            else if constexpr (FieldIndex == 155) {
                 if (!in) {
                     return decltype(in->expression())();
                 }
                 return in->expression();
             }
-            else if constexpr (FieldIndex == 154) {
+            else if constexpr (FieldIndex == 156) {
                 if (!in) {
                     return decltype(in->field_decl())();
                 }
                 return in->field_decl();
             }
-            else if constexpr (FieldIndex == 155) {
+            else if constexpr (FieldIndex == 157) {
                 if (!in) {
                     return decltype(in->func_decl())();
                 }
                 return in->func_decl();
             }
-            else if constexpr (FieldIndex == 156) {
+            else if constexpr (FieldIndex == 158) {
                 if (!in) {
                     return decltype(in->if_statement())();
                 }
                 return in->if_statement();
             }
-            else if constexpr (FieldIndex == 157) {
+            else if constexpr (FieldIndex == 159) {
                 if (!in) {
                     return decltype(in->import_decl())();
                 }
                 return in->import_decl();
             }
-            else if constexpr (FieldIndex == 158) {
+            else if constexpr (FieldIndex == 160) {
                 if (!in) {
                     return decltype(in->init_check())();
                 }
                 return in->init_check();
             }
-            else if constexpr (FieldIndex == 159) {
+            else if constexpr (FieldIndex == 161) {
                 if (!in) {
                     return decltype(in->loop())();
                 }
                 return in->loop();
             }
-            else if constexpr (FieldIndex == 160) {
+            else if constexpr (FieldIndex == 162) {
                 if (!in) {
                     return decltype(in->lowered_io_statements())();
                 }
                 return in->lowered_io_statements();
             }
-            else if constexpr (FieldIndex == 161) {
+            else if constexpr (FieldIndex == 163) {
                 if (!in) {
                     return decltype(in->match_branch())();
                 }
                 return in->match_branch();
             }
-            else if constexpr (FieldIndex == 162) {
+            else if constexpr (FieldIndex == 164) {
                 if (!in) {
                     return decltype(in->match_statement())();
                 }
                 return in->match_statement();
             }
-            else if constexpr (FieldIndex == 163) {
+            else if constexpr (FieldIndex == 165) {
                 if (!in) {
                     return decltype(in->metadata())();
                 }
                 return in->metadata();
             }
-            else if constexpr (FieldIndex == 164) {
+            else if constexpr (FieldIndex == 166) {
                 if (!in) {
                     return decltype(in->param_decl())();
                 }
                 return in->param_decl();
             }
-            else if constexpr (FieldIndex == 165) {
+            else if constexpr (FieldIndex == 167) {
                 if (!in) {
                     return decltype(in->previous_assignment())();
                 }
                 return in->previous_assignment();
             }
-            else if constexpr (FieldIndex == 166) {
+            else if constexpr (FieldIndex == 168) {
                 if (!in) {
                     return decltype(in->property_decl())();
                 }
                 return in->property_decl();
             }
-            else if constexpr (FieldIndex == 167) {
+            else if constexpr (FieldIndex == 169) {
                 if (!in) {
                     return decltype(in->property_member_decl())();
                 }
                 return in->property_member_decl();
             }
-            else if constexpr (FieldIndex == 168) {
+            else if constexpr (FieldIndex == 170) {
                 if (!in) {
                     return decltype(in->read_data())();
                 }
                 return in->read_data();
             }
-            else if constexpr (FieldIndex == 169) {
+            else if constexpr (FieldIndex == 171) {
                 if (!in) {
                     return decltype(in->struct_decl())();
                 }
                 return in->struct_decl();
             }
-            else if constexpr (FieldIndex == 170) {
+            else if constexpr (FieldIndex == 172) {
                 if (!in) {
                     return decltype(in->sub_byte_range())();
                 }
@@ -2526,13 +2536,13 @@ namespace ebmcodegen {
                 }
                 return in->value();
             }
-            else if constexpr (FieldIndex == 171) {
+            else if constexpr (FieldIndex == 173) {
                 if (!in) {
                     return decltype(in->var_decl())();
                 }
                 return in->var_decl();
             }
-            else if constexpr (FieldIndex == 172) {
+            else if constexpr (FieldIndex == 174) {
                 if (!in) {
                     return decltype(in->write_data())();
                 }
@@ -2541,24 +2551,24 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T, ebm::String>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 173) {
+            else if constexpr (FieldIndex == 175) {
                 auto& ref = in.length;
                 return ref;
             }
-            else if constexpr (FieldIndex == 174) {
+            else if constexpr (FieldIndex == 176) {
                 auto& ref = in.data;
                 return ref;
             }
         }
         else if constexpr (std::is_same_v<T,ebm::String*> || std::is_same_v<T,const ebm::String*>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 173) {
+            else if constexpr (FieldIndex == 175) {
                 if (!in) {
                     return decltype(std::addressof(in->length))();
                 }
                 return std::addressof(in->length);
             }
-            else if constexpr (FieldIndex == 174) {
+            else if constexpr (FieldIndex == 176) {
                 if (!in) {
                     return decltype(std::addressof(in->data))();
                 }
@@ -2601,43 +2611,43 @@ namespace ebmcodegen {
                 auto& ref = in.fields;
                 return ref;
             }
-            else if constexpr (FieldIndex == 175) {
+            else if constexpr (FieldIndex == 177) {
                 return in.is_recursive();
             }
-            else if constexpr (FieldIndex == 176) {
+            else if constexpr (FieldIndex == 178) {
                 return in.is_fixed_size();
             }
-            else if constexpr (FieldIndex == 177) {
+            else if constexpr (FieldIndex == 179) {
                 return in.has_related_variant();
             }
-            else if constexpr (FieldIndex == 178) {
+            else if constexpr (FieldIndex == 180) {
                 return in.has_encode_decode();
             }
-            else if constexpr (FieldIndex == 179) {
+            else if constexpr (FieldIndex == 181) {
                 return in.has_functions();
             }
-            else if constexpr (FieldIndex == 180) {
+            else if constexpr (FieldIndex == 182) {
                 return in.has_properties();
             }
             else if constexpr (FieldIndex == 15) {
                 return in.reserved();
             }
-            else if constexpr (FieldIndex == 181) {
+            else if constexpr (FieldIndex == 183) {
                 return in.related_variant();
             }
             else if constexpr (FieldIndex == 98) {
                 return in.size();
             }
-            else if constexpr (FieldIndex == 182) {
+            else if constexpr (FieldIndex == 184) {
                 return in.decode_fn();
             }
-            else if constexpr (FieldIndex == 183) {
+            else if constexpr (FieldIndex == 185) {
                 return in.encode_fn();
             }
-            else if constexpr (FieldIndex == 184) {
+            else if constexpr (FieldIndex == 186) {
                 return in.methods();
             }
-            else if constexpr (FieldIndex == 185) {
+            else if constexpr (FieldIndex == 187) {
                 return in.properties();
             }
         }
@@ -2655,37 +2665,37 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->fields);
             }
-            else if constexpr (FieldIndex == 175) {
+            else if constexpr (FieldIndex == 177) {
                 if (!in) {
                     return std::optional<decltype(in->is_recursive())>{};
                 }
                 return std::optional<decltype(in->is_recursive())>(in->is_recursive());
             }
-            else if constexpr (FieldIndex == 176) {
+            else if constexpr (FieldIndex == 178) {
                 if (!in) {
                     return std::optional<decltype(in->is_fixed_size())>{};
                 }
                 return std::optional<decltype(in->is_fixed_size())>(in->is_fixed_size());
             }
-            else if constexpr (FieldIndex == 177) {
+            else if constexpr (FieldIndex == 179) {
                 if (!in) {
                     return std::optional<decltype(in->has_related_variant())>{};
                 }
                 return std::optional<decltype(in->has_related_variant())>(in->has_related_variant());
             }
-            else if constexpr (FieldIndex == 178) {
+            else if constexpr (FieldIndex == 180) {
                 if (!in) {
                     return std::optional<decltype(in->has_encode_decode())>{};
                 }
                 return std::optional<decltype(in->has_encode_decode())>(in->has_encode_decode());
             }
-            else if constexpr (FieldIndex == 179) {
+            else if constexpr (FieldIndex == 181) {
                 if (!in) {
                     return std::optional<decltype(in->has_functions())>{};
                 }
                 return std::optional<decltype(in->has_functions())>(in->has_functions());
             }
-            else if constexpr (FieldIndex == 180) {
+            else if constexpr (FieldIndex == 182) {
                 if (!in) {
                     return std::optional<decltype(in->has_properties())>{};
                 }
@@ -2697,7 +2707,7 @@ namespace ebmcodegen {
                 }
                 return std::optional<decltype(in->reserved())>(in->reserved());
             }
-            else if constexpr (FieldIndex == 181) {
+            else if constexpr (FieldIndex == 183) {
                 if (!in) {
                     return decltype(in->related_variant())();
                 }
@@ -2709,25 +2719,25 @@ namespace ebmcodegen {
                 }
                 return in->size();
             }
-            else if constexpr (FieldIndex == 182) {
+            else if constexpr (FieldIndex == 184) {
                 if (!in) {
                     return decltype(in->decode_fn())();
                 }
                 return in->decode_fn();
             }
-            else if constexpr (FieldIndex == 183) {
+            else if constexpr (FieldIndex == 185) {
                 if (!in) {
                     return decltype(in->encode_fn())();
                 }
                 return in->encode_fn();
             }
-            else if constexpr (FieldIndex == 184) {
+            else if constexpr (FieldIndex == 186) {
                 if (!in) {
                     return decltype(in->methods())();
                 }
                 return in->methods();
             }
-            else if constexpr (FieldIndex == 185) {
+            else if constexpr (FieldIndex == 187) {
                 if (!in) {
                     return decltype(in->properties())();
                 }
@@ -2740,14 +2750,14 @@ namespace ebmcodegen {
                 auto& ref = in.stream_type;
                 return ref;
             }
-            else if constexpr (FieldIndex == 186) {
+            else if constexpr (FieldIndex == 188) {
                 auto& ref = in.range_type;
                 return ref;
             }
-            else if constexpr (FieldIndex == 153) {
+            else if constexpr (FieldIndex == 155) {
                 return in.expression();
             }
-            else if constexpr (FieldIndex == 173) {
+            else if constexpr (FieldIndex == 175) {
                 return in.length();
             }
             else if constexpr (FieldIndex == 117) {
@@ -2757,7 +2767,7 @@ namespace ebmcodegen {
                 auto& ref = in.io_ref;
                 return ref;
             }
-            else if constexpr (FieldIndex == 187) {
+            else if constexpr (FieldIndex == 189) {
                 auto& ref = in.parent_io_ref;
                 return ref;
             }
@@ -2774,19 +2784,19 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->stream_type);
             }
-            else if constexpr (FieldIndex == 186) {
+            else if constexpr (FieldIndex == 188) {
                 if (!in) {
                     return decltype(std::addressof(in->range_type))();
                 }
                 return std::addressof(in->range_type);
             }
-            else if constexpr (FieldIndex == 153) {
+            else if constexpr (FieldIndex == 155) {
                 if (!in) {
                     return decltype(in->expression())();
                 }
                 return in->expression();
             }
-            else if constexpr (FieldIndex == 173) {
+            else if constexpr (FieldIndex == 175) {
                 if (!in) {
                     return decltype(in->length())();
                 }
@@ -2804,7 +2814,7 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->io_ref);
             }
-            else if constexpr (FieldIndex == 187) {
+            else if constexpr (FieldIndex == 189) {
                 if (!in) {
                     return decltype(std::addressof(in->parent_io_ref))();
                 }
@@ -2852,28 +2862,28 @@ namespace ebmcodegen {
             else if constexpr (FieldIndex == 18) {
                 return in.base_type();
             }
-            else if constexpr (FieldIndex == 188) {
+            else if constexpr (FieldIndex == 190) {
                 return in.element_type();
             }
-            else if constexpr (FieldIndex == 189) {
+            else if constexpr (FieldIndex == 191) {
                 return in.func_desc();
             }
             else if constexpr (FieldIndex == 24) {
                 return in.id();
             }
-            else if constexpr (FieldIndex == 190) {
+            else if constexpr (FieldIndex == 192) {
                 return in.inner_type();
             }
-            else if constexpr (FieldIndex == 173) {
+            else if constexpr (FieldIndex == 175) {
                 return in.length();
             }
-            else if constexpr (FieldIndex == 191) {
+            else if constexpr (FieldIndex == 193) {
                 return in.pointee_type();
             }
             else if constexpr (FieldIndex == 98) {
                 return in.size();
             }
-            else if constexpr (FieldIndex == 192) {
+            else if constexpr (FieldIndex == 194) {
                 return in.variant_desc();
             }
         }
@@ -2891,13 +2901,13 @@ namespace ebmcodegen {
                 }
                 return in->base_type();
             }
-            else if constexpr (FieldIndex == 188) {
+            else if constexpr (FieldIndex == 190) {
                 if (!in) {
                     return decltype(in->element_type())();
                 }
                 return in->element_type();
             }
-            else if constexpr (FieldIndex == 189) {
+            else if constexpr (FieldIndex == 191) {
                 if (!in) {
                     return decltype(in->func_desc())();
                 }
@@ -2909,19 +2919,19 @@ namespace ebmcodegen {
                 }
                 return in->id();
             }
-            else if constexpr (FieldIndex == 190) {
+            else if constexpr (FieldIndex == 192) {
                 if (!in) {
                     return decltype(in->inner_type())();
                 }
                 return in->inner_type();
             }
-            else if constexpr (FieldIndex == 173) {
+            else if constexpr (FieldIndex == 175) {
                 if (!in) {
                     return decltype(in->length())();
                 }
                 return in->length();
             }
-            else if constexpr (FieldIndex == 191) {
+            else if constexpr (FieldIndex == 193) {
                 if (!in) {
                     return decltype(in->pointee_type())();
                 }
@@ -2933,7 +2943,7 @@ namespace ebmcodegen {
                 }
                 return in->size();
             }
-            else if constexpr (FieldIndex == 192) {
+            else if constexpr (FieldIndex == 194) {
                 if (!in) {
                     return decltype(in->variant_desc())();
                 }
@@ -2972,18 +2982,18 @@ namespace ebmcodegen {
                 auto& ref = in.name;
                 return ref;
             }
-            else if constexpr (FieldIndex == 193) {
+            else if constexpr (FieldIndex == 195) {
                 auto& ref = in.var_type;
                 return ref;
             }
-            else if constexpr (FieldIndex == 194) {
+            else if constexpr (FieldIndex == 196) {
                 auto& ref = in.initial_value;
                 return ref;
             }
-            else if constexpr (FieldIndex == 195) {
+            else if constexpr (FieldIndex == 197) {
                 return in.decl_kind();
             }
-            else if constexpr (FieldIndex == 196) {
+            else if constexpr (FieldIndex == 198) {
                 return in.is_reference();
             }
             else if constexpr (FieldIndex == 15) {
@@ -2998,25 +3008,25 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->name);
             }
-            else if constexpr (FieldIndex == 193) {
+            else if constexpr (FieldIndex == 195) {
                 if (!in) {
                     return decltype(std::addressof(in->var_type))();
                 }
                 return std::addressof(in->var_type);
             }
-            else if constexpr (FieldIndex == 194) {
+            else if constexpr (FieldIndex == 196) {
                 if (!in) {
                     return decltype(std::addressof(in->initial_value))();
                 }
                 return std::addressof(in->initial_value);
             }
-            else if constexpr (FieldIndex == 195) {
+            else if constexpr (FieldIndex == 197) {
                 if (!in) {
                     return std::optional<decltype(in->decl_kind())>{};
                 }
                 return std::optional<decltype(in->decl_kind())>(in->decl_kind());
             }
-            else if constexpr (FieldIndex == 196) {
+            else if constexpr (FieldIndex == 198) {
                 if (!in) {
                     return std::optional<decltype(in->is_reference())>{};
                 }
@@ -3031,7 +3041,7 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T, ebm::VariantDesc>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 197) {
+            else if constexpr (FieldIndex == 199) {
                 auto& ref = in.common_type;
                 return ref;
             }
@@ -3039,14 +3049,14 @@ namespace ebmcodegen {
                 auto& ref = in.members;
                 return ref;
             }
-            else if constexpr (FieldIndex == 198) {
+            else if constexpr (FieldIndex == 200) {
                 auto& ref = in.related_field;
                 return ref;
             }
         }
         else if constexpr (std::is_same_v<T,ebm::VariantDesc*> || std::is_same_v<T,const ebm::VariantDesc*>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 197) {
+            else if constexpr (FieldIndex == 199) {
                 if (!in) {
                     return decltype(std::addressof(in->common_type))();
                 }
@@ -3058,7 +3068,7 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->members);
             }
-            else if constexpr (FieldIndex == 198) {
+            else if constexpr (FieldIndex == 200) {
                 if (!in) {
                     return decltype(std::addressof(in->related_field))();
                 }
@@ -4108,8 +4118,11 @@ namespace ebmcodegen {
     }
     template<>
     constexpr size_t get_field_index<38>(std::string_view field_name) {
-        if (field_name == "condition") {
-            return 0;
+        if (field_name == "setter_condition") {
+            return 141;
+        }
+        if (field_name == "getter_condition") {
+            return 142;
         }
         if (field_name == "field") {
             return 94;
@@ -4127,13 +4140,13 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<39>(std::string_view field_name) {
         if (field_name == "hint") {
-            return 141;
+            return 143;
         }
         if (field_name == "from") {
-            return 142;
+            return 144;
         }
         if (field_name == "to") {
-            return 143;
+            return 145;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -4184,7 +4197,7 @@ namespace ebmcodegen {
             return 61;
         }
         if (field_name == "ref") {
-            return 144;
+            return 146;
         }
         if (field_name == "size") {
             return 98;
@@ -4223,85 +4236,85 @@ namespace ebmcodegen {
             return 8;
         }
         if (field_name == "assert_desc") {
-            return 145;
-        }
-        if (field_name == "block") {
-            return 146;
-        }
-        if (field_name == "break_") {
             return 147;
         }
-        if (field_name == "composite_field_decl") {
+        if (field_name == "block") {
             return 148;
         }
-        if (field_name == "continue_") {
+        if (field_name == "break_") {
             return 149;
         }
-        if (field_name == "endian_variable") {
+        if (field_name == "composite_field_decl") {
             return 150;
+        }
+        if (field_name == "continue_") {
+            return 151;
+        }
+        if (field_name == "endian_variable") {
+            return 152;
         }
         if (field_name == "enum_decl") {
             return 20;
         }
         if (field_name == "enum_member_decl") {
-            return 151;
-        }
-        if (field_name == "error_report") {
-            return 152;
-        }
-        if (field_name == "expression") {
             return 153;
         }
-        if (field_name == "field_decl") {
+        if (field_name == "error_report") {
             return 154;
         }
-        if (field_name == "func_decl") {
+        if (field_name == "expression") {
             return 155;
         }
-        if (field_name == "if_statement") {
+        if (field_name == "field_decl") {
             return 156;
         }
-        if (field_name == "import_decl") {
+        if (field_name == "func_decl") {
             return 157;
         }
-        if (field_name == "init_check") {
+        if (field_name == "if_statement") {
             return 158;
         }
-        if (field_name == "loop") {
+        if (field_name == "import_decl") {
             return 159;
         }
-        if (field_name == "lowered_io_statements") {
+        if (field_name == "init_check") {
             return 160;
         }
-        if (field_name == "match_branch") {
+        if (field_name == "loop") {
             return 161;
         }
-        if (field_name == "match_statement") {
+        if (field_name == "lowered_io_statements") {
             return 162;
         }
-        if (field_name == "metadata") {
+        if (field_name == "match_branch") {
             return 163;
         }
-        if (field_name == "param_decl") {
+        if (field_name == "match_statement") {
             return 164;
         }
-        if (field_name == "previous_assignment") {
+        if (field_name == "metadata") {
             return 165;
         }
-        if (field_name == "property_decl") {
+        if (field_name == "param_decl") {
             return 166;
         }
-        if (field_name == "property_member_decl") {
+        if (field_name == "previous_assignment") {
             return 167;
         }
-        if (field_name == "read_data") {
+        if (field_name == "property_decl") {
             return 168;
         }
-        if (field_name == "struct_decl") {
+        if (field_name == "property_member_decl") {
             return 169;
         }
-        if (field_name == "sub_byte_range") {
+        if (field_name == "read_data") {
             return 170;
+        }
+        if (field_name == "struct_decl") {
+            return 171;
+        }
+        if (field_name == "sub_byte_range") {
+            return 172;
         }
         if (field_name == "target") {
             return 95;
@@ -4310,10 +4323,10 @@ namespace ebmcodegen {
             return 21;
         }
         if (field_name == "var_decl") {
-            return 171;
+            return 173;
         }
         if (field_name == "write_data") {
-            return 172;
+            return 174;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -4328,10 +4341,10 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<45>(std::string_view field_name) {
         if (field_name == "length") {
-            return 173;
+            return 175;
         }
         if (field_name == "data") {
-            return 174;
+            return 176;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -4370,43 +4383,43 @@ namespace ebmcodegen {
             return 6;
         }
         if (field_name == "is_recursive") {
-            return 175;
-        }
-        if (field_name == "is_fixed_size") {
-            return 176;
-        }
-        if (field_name == "has_related_variant") {
             return 177;
         }
-        if (field_name == "has_encode_decode") {
+        if (field_name == "is_fixed_size") {
             return 178;
         }
-        if (field_name == "has_functions") {
+        if (field_name == "has_related_variant") {
             return 179;
         }
-        if (field_name == "has_properties") {
+        if (field_name == "has_encode_decode") {
             return 180;
+        }
+        if (field_name == "has_functions") {
+            return 181;
+        }
+        if (field_name == "has_properties") {
+            return 182;
         }
         if (field_name == "reserved") {
             return 15;
         }
         if (field_name == "related_variant") {
-            return 181;
+            return 183;
         }
         if (field_name == "size") {
             return 98;
         }
         if (field_name == "decode_fn") {
-            return 182;
-        }
-        if (field_name == "encode_fn") {
-            return 183;
-        }
-        if (field_name == "methods") {
             return 184;
         }
-        if (field_name == "properties") {
+        if (field_name == "encode_fn") {
             return 185;
+        }
+        if (field_name == "methods") {
+            return 186;
+        }
+        if (field_name == "properties") {
+            return 187;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -4424,13 +4437,13 @@ namespace ebmcodegen {
             return 54;
         }
         if (field_name == "range_type") {
-            return 186;
+            return 188;
         }
         if (field_name == "expression") {
-            return 153;
+            return 155;
         }
         if (field_name == "length") {
-            return 173;
+            return 175;
         }
         if (field_name == "offset") {
             return 117;
@@ -4439,7 +4452,7 @@ namespace ebmcodegen {
             return 42;
         }
         if (field_name == "parent_io_ref") {
-            return 187;
+            return 189;
         }
         if (field_name == "io_statement") {
             return 43;
@@ -4481,28 +4494,28 @@ namespace ebmcodegen {
             return 18;
         }
         if (field_name == "element_type") {
-            return 188;
+            return 190;
         }
         if (field_name == "func_desc") {
-            return 189;
+            return 191;
         }
         if (field_name == "id") {
             return 24;
         }
         if (field_name == "inner_type") {
-            return 190;
+            return 192;
         }
         if (field_name == "length") {
-            return 173;
+            return 175;
         }
         if (field_name == "pointee_type") {
-            return 191;
+            return 193;
         }
         if (field_name == "size") {
             return 98;
         }
         if (field_name == "variant_desc") {
-            return 192;
+            return 194;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -4538,16 +4551,16 @@ namespace ebmcodegen {
             return 17;
         }
         if (field_name == "var_type") {
-            return 193;
-        }
-        if (field_name == "initial_value") {
-            return 194;
-        }
-        if (field_name == "decl_kind") {
             return 195;
         }
-        if (field_name == "is_reference") {
+        if (field_name == "initial_value") {
             return 196;
+        }
+        if (field_name == "decl_kind") {
+            return 197;
+        }
+        if (field_name == "is_reference") {
+            return 198;
         }
         if (field_name == "reserved") {
             return 15;
@@ -4565,13 +4578,13 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<53>(std::string_view field_name) {
         if (field_name == "common_type") {
-            return 197;
+            return 199;
         }
         if (field_name == "members") {
             return 19;
         }
         if (field_name == "related_field") {
-            return 198;
+            return 200;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -6478,7 +6491,7 @@ namespace ebmcodegen {
             return 27;
         }
         if (name == "assert_desc") {
-            return 145;
+            return 147;
         }
         if (name == "attribute") {
             return 97;
@@ -6493,7 +6506,7 @@ namespace ebmcodegen {
             return 18;
         }
         if (name == "block") {
-            return 146;
+            return 148;
         }
         if (name == "body") {
             return 25;
@@ -6508,7 +6521,7 @@ namespace ebmcodegen {
             return 131;
         }
         if (name == "break_") {
-            return 147;
+            return 149;
         }
         if (name == "call_desc") {
             return 31;
@@ -6532,13 +6545,13 @@ namespace ebmcodegen {
             return 121;
         }
         if (name == "common_type") {
-            return 197;
+            return 199;
         }
         if (name == "composite_field") {
             return 82;
         }
         if (name == "composite_field_decl") {
-            return 148;
+            return 150;
         }
         if (name == "composite_getter") {
             return 83;
@@ -6562,10 +6575,10 @@ namespace ebmcodegen {
             return 3;
         }
         if (name == "continue_") {
-            return 149;
+            return 151;
         }
         if (name == "data") {
-            return 174;
+            return 176;
         }
         if (name == "data_type") {
             return 96;
@@ -6574,10 +6587,10 @@ namespace ebmcodegen {
             return 77;
         }
         if (name == "decl_kind") {
-            return 195;
+            return 197;
         }
         if (name == "decode_fn") {
-            return 182;
+            return 184;
         }
         if (name == "derived_from") {
             return 140;
@@ -6589,7 +6602,7 @@ namespace ebmcodegen {
             return 93;
         }
         if (name == "element_type") {
-            return 188;
+            return 190;
         }
         if (name == "else_") {
             return 35;
@@ -6598,7 +6611,7 @@ namespace ebmcodegen {
             return 100;
         }
         if (name == "encode_fn") {
-            return 183;
+            return 185;
         }
         if (name == "end") {
             return 36;
@@ -6610,22 +6623,22 @@ namespace ebmcodegen {
             return 37;
         }
         if (name == "endian_variable") {
-            return 150;
+            return 152;
         }
         if (name == "enum_decl") {
             return 20;
         }
         if (name == "enum_member_decl") {
-            return 151;
+            return 153;
         }
         if (name == "error_report") {
-            return 152;
+            return 154;
         }
         if (name == "expect_value") {
             return 105;
         }
         if (name == "expression") {
-            return 153;
+            return 155;
         }
         if (name == "expressions") {
             return 74;
@@ -6637,7 +6650,7 @@ namespace ebmcodegen {
             return 94;
         }
         if (name == "field_decl") {
-            return 154;
+            return 156;
         }
         if (name == "field_type") {
             return 78;
@@ -6652,37 +6665,40 @@ namespace ebmcodegen {
             return 11;
         }
         if (name == "from") {
-            return 142;
+            return 144;
         }
         if (name == "from_type") {
             return 38;
         }
         if (name == "func_decl") {
-            return 155;
+            return 157;
         }
         if (name == "func_desc") {
-            return 189;
+            return 191;
+        }
+        if (name == "getter_condition") {
+            return 142;
         }
         if (name == "getter_function") {
             return 139;
         }
         if (name == "has_encode_decode") {
-            return 178;
+            return 180;
         }
         if (name == "has_functions") {
-            return 179;
+            return 181;
         }
         if (name == "has_lowered_statement") {
             return 92;
         }
         if (name == "has_properties") {
-            return 180;
+            return 182;
         }
         if (name == "has_related_variant") {
-            return 177;
+            return 179;
         }
         if (name == "hint") {
-            return 141;
+            return 143;
         }
         if (name == "id") {
             return 24;
@@ -6697,13 +6713,13 @@ namespace ebmcodegen {
             return 65;
         }
         if (name == "if_statement") {
-            return 156;
+            return 158;
         }
         if (name == "imm") {
             return 109;
         }
         if (name == "import_decl") {
-            return 157;
+            return 159;
         }
         if (name == "increment") {
             return 125;
@@ -6715,19 +6731,19 @@ namespace ebmcodegen {
             return 126;
         }
         if (name == "init_check") {
-            return 158;
+            return 160;
         }
         if (name == "init_check_type") {
             return 103;
         }
         if (name == "initial_value") {
-            return 194;
+            return 196;
         }
         if (name == "inner_composite") {
             return 81;
         }
         if (name == "inner_type") {
-            return 190;
+            return 192;
         }
         if (name == "int64_value") {
             return 40;
@@ -6745,7 +6761,7 @@ namespace ebmcodegen {
             return 130;
         }
         if (name == "is_fixed_size") {
-            return 176;
+            return 178;
         }
         if (name == "is_immediate") {
             return 134;
@@ -6754,10 +6770,10 @@ namespace ebmcodegen {
             return 91;
         }
         if (name == "is_recursive") {
-            return 175;
+            return 177;
         }
         if (name == "is_reference") {
-            return 196;
+            return 198;
         }
         if (name == "is_state_variable") {
             return 80;
@@ -6781,7 +6797,7 @@ namespace ebmcodegen {
             return 12;
         }
         if (name == "length") {
-            return 173;
+            return 175;
         }
         if (name == "line") {
             return 120;
@@ -6790,7 +6806,7 @@ namespace ebmcodegen {
             return 13;
         }
         if (name == "loop") {
-            return 159;
+            return 161;
         }
         if (name == "loop_type") {
             return 123;
@@ -6802,7 +6818,7 @@ namespace ebmcodegen {
             return 132;
         }
         if (name == "lowered_io_statements") {
-            return 160;
+            return 162;
         }
         if (name == "lowered_statement") {
             return 1;
@@ -6811,10 +6827,10 @@ namespace ebmcodegen {
             return 129;
         }
         if (name == "match_branch") {
-            return 161;
+            return 163;
         }
         if (name == "match_statement") {
-            return 162;
+            return 164;
         }
         if (name == "max_id") {
             return 64;
@@ -6835,10 +6851,10 @@ namespace ebmcodegen {
             return 23;
         }
         if (name == "metadata") {
-            return 163;
+            return 165;
         }
         if (name == "methods") {
-            return 184;
+            return 186;
         }
         if (name == "msg_id") {
             return 111;
@@ -6865,7 +6881,7 @@ namespace ebmcodegen {
             return 49;
         }
         if (name == "param_decl") {
-            return 164;
+            return 166;
         }
         if (name == "param_type") {
             return 135;
@@ -6877,7 +6893,7 @@ namespace ebmcodegen {
             return 88;
         }
         if (name == "parent_io_ref") {
-            return 187;
+            return 189;
         }
         if (name == "parent_struct") {
             return 79;
@@ -6886,49 +6902,49 @@ namespace ebmcodegen {
             return 101;
         }
         if (name == "pointee_type") {
-            return 191;
+            return 193;
         }
         if (name == "previous_assignment") {
-            return 165;
+            return 167;
         }
         if (name == "program") {
             return 102;
         }
         if (name == "properties") {
-            return 185;
+            return 187;
         }
         if (name == "property") {
             return 89;
         }
         if (name == "property_decl") {
-            return 166;
+            return 168;
         }
         if (name == "property_member_decl") {
-            return 167;
+            return 169;
         }
         if (name == "property_type") {
             return 136;
         }
         if (name == "range_type") {
-            return 186;
+            return 188;
         }
         if (name == "read_data") {
-            return 168;
+            return 170;
         }
         if (name == "ref") {
-            return 144;
+            return 146;
         }
         if (name == "reg") {
             return 112;
         }
         if (name == "related_field") {
-            return 198;
+            return 200;
         }
         if (name == "related_statement") {
             return 122;
         }
         if (name == "related_variant") {
-            return 181;
+            return 183;
         }
         if (name == "reserved") {
             return 15;
@@ -6941,6 +6957,9 @@ namespace ebmcodegen {
         }
         if (name == "set_endian") {
             return 113;
+        }
+        if (name == "setter_condition") {
+            return 141;
         }
         if (name == "setter_function") {
             return 138;
@@ -6985,13 +7004,13 @@ namespace ebmcodegen {
             return 67;
         }
         if (name == "struct_decl") {
-            return 169;
+            return 171;
         }
         if (name == "struct_id") {
             return 115;
         }
         if (name == "sub_byte_range") {
-            return 170;
+            return 172;
         }
         if (name == "sub_range") {
             return 56;
@@ -7015,7 +7034,7 @@ namespace ebmcodegen {
             return 99;
         }
         if (name == "to") {
-            return 143;
+            return 145;
         }
         if (name == "type") {
             return 26;
@@ -7042,19 +7061,19 @@ namespace ebmcodegen {
             return 133;
         }
         if (name == "var_decl") {
-            return 171;
+            return 173;
         }
         if (name == "var_type") {
-            return 193;
+            return 195;
         }
         if (name == "variant_desc") {
-            return 192;
+            return 194;
         }
         if (name == "version") {
             return 63;
         }
         if (name == "write_data") {
-            return 172;
+            return 174;
         }
         return -1;
     }
@@ -7067,17 +7086,17 @@ namespace ebmcodegen {
         case 107: return "arg_num";
         case 5: return "arguments";
         case 27: return "array_expr";
-        case 145: return "assert_desc";
+        case 147: return "assert_desc";
         case 97: return "attribute";
         case 116: return "backward";
         case 28: return "base";
         case 18: return "base_type";
-        case 146: return "block";
+        case 148: return "block";
         case 25: return "body";
         case 29: return "bool_value";
         case 30: return "bop";
         case 131: return "branches";
-        case 147: return "break_";
+        case 149: return "break_";
         case 31: return "call_desc";
         case 4: return "callee";
         case 32: return "cast_kind";
@@ -7085,9 +7104,9 @@ namespace ebmcodegen {
         case 33: return "char_value";
         case 124: return "collection";
         case 121: return "column";
-        case 197: return "common_type";
+        case 199: return "common_type";
         case 82: return "composite_field";
-        case 148: return "composite_field_decl";
+        case 150: return "composite_field_decl";
         case 83: return "composite_getter";
         case 84: return "composite_setter";
         case 7: return "composite_type";
@@ -7095,72 +7114,73 @@ namespace ebmcodegen {
         case 0: return "condition";
         case 34: return "conditional_stmt";
         case 3: return "container";
-        case 149: return "continue_";
-        case 174: return "data";
+        case 151: return "continue_";
+        case 176: return "data";
         case 96: return "data_type";
         case 77: return "debug_info";
-        case 195: return "decl_kind";
-        case 182: return "decode_fn";
+        case 197: return "decl_kind";
+        case 184: return "decode_fn";
         case 140: return "derived_from";
         case 16: return "dynamic_expr";
         case 93: return "dynamic_ref";
-        case 188: return "element_type";
+        case 190: return "element_type";
         case 35: return "else_";
         case 100: return "else_block";
-        case 183: return "encode_fn";
+        case 185: return "encode_fn";
         case 36: return "end";
         case 14: return "endian";
         case 37: return "endian_expr";
-        case 150: return "endian_variable";
+        case 152: return "endian_variable";
         case 20: return "enum_decl";
-        case 151: return "enum_member_decl";
-        case 152: return "error_report";
+        case 153: return "enum_member_decl";
+        case 154: return "error_report";
         case 105: return "expect_value";
-        case 153: return "expression";
+        case 155: return "expression";
         case 74: return "expressions";
         case 73: return "expressions_len";
         case 94: return "field";
-        case 154: return "field_decl";
+        case 156: return "field_decl";
         case 78: return "field_type";
         case 6: return "fields";
         case 119: return "file_id";
         case 11: return "files";
-        case 142: return "from";
+        case 144: return "from";
         case 38: return "from_type";
-        case 155: return "func_decl";
-        case 189: return "func_desc";
+        case 157: return "func_decl";
+        case 191: return "func_desc";
+        case 142: return "getter_condition";
         case 139: return "getter_function";
-        case 178: return "has_encode_decode";
-        case 179: return "has_functions";
+        case 180: return "has_encode_decode";
+        case 181: return "has_functions";
         case 92: return "has_lowered_statement";
-        case 180: return "has_properties";
-        case 177: return "has_related_variant";
-        case 141: return "hint";
+        case 182: return "has_properties";
+        case 179: return "has_related_variant";
+        case 143: return "hint";
         case 24: return "id";
         case 118: return "ident";
         case 66: return "identifiers";
         case 65: return "identifiers_len";
-        case 156: return "if_statement";
+        case 158: return "if_statement";
         case 109: return "imm";
-        case 157: return "import_decl";
+        case 159: return "import_decl";
         case 125: return "increment";
         case 39: return "index";
         case 126: return "init";
-        case 158: return "init_check";
+        case 160: return "init_check";
         case 103: return "init_check_type";
-        case 194: return "initial_value";
+        case 196: return "initial_value";
         case 81: return "inner_composite";
-        case 190: return "inner_type";
+        case 192: return "inner_type";
         case 40: return "int64_value";
         case 41: return "int_value";
         case 42: return "io_ref";
         case 43: return "io_statement";
         case 130: return "is_exhaustive";
-        case 176: return "is_fixed_size";
+        case 178: return "is_fixed_size";
         case 134: return "is_immediate";
         case 91: return "is_peek";
-        case 175: return "is_recursive";
-        case 196: return "is_reference";
+        case 177: return "is_recursive";
+        case 198: return "is_reference";
         case 80: return "is_state_variable";
         case 127: return "item_var";
         case 8: return "kind";
@@ -7168,26 +7188,26 @@ namespace ebmcodegen {
         case 2: return "len";
         case 10: return "len_files";
         case 12: return "len_locs";
-        case 173: return "length";
+        case 175: return "length";
         case 120: return "line";
         case 13: return "locs";
-        case 159: return "loop";
+        case 161: return "loop";
         case 123: return "loop_type";
         case 45: return "lowered_expr";
         case 132: return "lowered_if_statement";
-        case 160: return "lowered_io_statements";
+        case 162: return "lowered_io_statements";
         case 1: return "lowered_statement";
         case 129: return "lowering_type";
-        case 161: return "match_branch";
-        case 162: return "match_statement";
+        case 163: return "match_branch";
+        case 164: return "match_statement";
         case 64: return "max_id";
         case 46: return "member";
         case 110: return "member_id";
         case 19: return "members";
         case 137: return "merge_mode";
         case 23: return "message";
-        case 163: return "metadata";
-        case 184: return "methods";
+        case 165: return "metadata";
+        case 186: return "methods";
         case 111: return "msg_id";
         case 17: return "name";
         case 128: return "next_lowered_loop";
@@ -7196,32 +7216,33 @@ namespace ebmcodegen {
         case 106: return "op";
         case 48: return "operand";
         case 49: return "or_cond";
-        case 164: return "param_decl";
+        case 166: return "param_decl";
         case 135: return "param_type";
         case 86: return "params";
         case 88: return "parent_format";
-        case 187: return "parent_io_ref";
+        case 189: return "parent_io_ref";
         case 79: return "parent_struct";
         case 101: return "path";
-        case 191: return "pointee_type";
-        case 165: return "previous_assignment";
+        case 193: return "pointee_type";
+        case 167: return "previous_assignment";
         case 102: return "program";
-        case 185: return "properties";
+        case 187: return "properties";
         case 89: return "property";
-        case 166: return "property_decl";
-        case 167: return "property_member_decl";
+        case 168: return "property_decl";
+        case 169: return "property_member_decl";
         case 136: return "property_type";
-        case 186: return "range_type";
-        case 168: return "read_data";
-        case 144: return "ref";
+        case 188: return "range_type";
+        case 170: return "read_data";
+        case 146: return "ref";
         case 112: return "reg";
-        case 198: return "related_field";
+        case 200: return "related_field";
         case 122: return "related_statement";
-        case 181: return "related_variant";
+        case 183: return "related_variant";
         case 15: return "reserved";
         case 85: return "return_type";
         case 50: return "right";
         case 113: return "set_endian";
+        case 141: return "setter_condition";
         case 138: return "setter_function";
         case 51: return "setter_status";
         case 90: return "sign";
@@ -7236,9 +7257,9 @@ namespace ebmcodegen {
         case 55: return "string_value";
         case 68: return "strings";
         case 67: return "strings_len";
-        case 169: return "struct_decl";
+        case 171: return "struct_decl";
         case 115: return "struct_id";
-        case 170: return "sub_byte_range";
+        case 172: return "sub_byte_range";
         case 56: return "sub_range";
         case 95: return "target";
         case 57: return "target_expr";
@@ -7246,7 +7267,7 @@ namespace ebmcodegen {
         case 58: return "target_stmt";
         case 59: return "then";
         case 99: return "then_block";
-        case 143: return "to";
+        case 145: return "to";
         case 26: return "type";
         case 60: return "type_ref";
         case 70: return "types";
@@ -7255,11 +7276,11 @@ namespace ebmcodegen {
         case 62: return "uop";
         case 21: return "value";
         case 133: return "values";
-        case 171: return "var_decl";
-        case 193: return "var_type";
-        case 192: return "variant_desc";
+        case 173: return "var_decl";
+        case 195: return "var_type";
+        case 194: return "variant_desc";
         case 63: return "version";
-        case 172: return "write_data";
+        case 174: return "write_data";
         default: return "";
         }
     }
@@ -8379,7 +8400,10 @@ namespace ebmcodegen {
             return {.index = static_cast<size_t>(-1), .is_array = false, .is_ptr = false};
         }
         case 38: {
-            if (field_index == get_field_index<38>("condition")) {
+            if (field_index == get_field_index<38>("setter_condition")) {
+                return {.index = 56, .is_array = false, .is_ptr = false};
+            }
+            if (field_index == get_field_index<38>("getter_condition")) {
                 return {.index = 56, .is_array = false, .is_ptr = false};
             }
             if (field_index == get_field_index<38>("field")) {

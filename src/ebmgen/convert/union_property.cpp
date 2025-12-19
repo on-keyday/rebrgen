@@ -10,8 +10,14 @@
 #include <vector>
 namespace ebmgen {
     struct DerivedTypeInfo {
-        ebm::ExpressionRef cond;
+        ebm::ExpressionRef getter_cond;
+        ebm::ExpressionRef setter_cond;
         std::optional<ebm::StatementRef> field;  // field or property
+    };
+
+    struct WithoutFieldConds {
+        ebm::ExpressionRef getter_cond;
+        ebm::ExpressionRef setter_cond;
     };
 
     expected<std::optional<ebm::TypeRef>> get_common_type(ConverterContext& ctx, ebm::TypeRef a, ebm::TypeRef b) {
@@ -63,14 +69,22 @@ namespace ebmgen {
         }
     }
 
-    expected<std::pair<ebm::ExpressionRef, std::vector<DerivedTypeInfo>>> convert_union_type_to_ebm(ConverterContext& ctx, ast::UnionType& union_type) {
+    expected<std::pair<WithoutFieldConds, std::vector<DerivedTypeInfo>>> convert_union_type_to_ebm(ConverterContext& ctx, ast::UnionType& union_type) {
         std::vector<DerivedTypeInfo> cases;
         for (auto& cand : union_type.candidates) {
             DerivedTypeInfo c;
             auto cond_locked = cand->cond.lock();
             if (cond_locked) {
-                EBMA_CONVERT_EXPRESSION(expr, cond_locked);
-                c.cond = expr;
+                {
+                    const auto _scope = ctx.state().set_current_generate_type(GenerateType::PropertyGetter);
+                    EBMA_CONVERT_EXPRESSION(expr, cond_locked);
+                    c.getter_cond = expr;
+                }
+                {
+                    const auto _scope = ctx.state().set_current_generate_type(GenerateType::PropertySetter);
+                    EBMA_CONVERT_EXPRESSION(expr, cond_locked);
+                    c.setter_cond = expr;
+                }
             }
             auto field = cand->field.lock();
             if (field) {
@@ -79,10 +93,18 @@ namespace ebmgen {
             }
             cases.push_back(c);
         }
-        ebm::ExpressionRef base_cond;
+        WithoutFieldConds base_cond;
         if (auto cond = union_type.cond.lock()) {
-            EBMA_CONVERT_EXPRESSION(expr, cond);
-            base_cond = expr;
+            {
+                const auto _scope = ctx.state().set_current_generate_type(GenerateType::PropertyGetter);
+                EBMA_CONVERT_EXPRESSION(expr, cond);
+                base_cond.getter_cond = expr;
+            }
+            {
+                const auto _scope = ctx.state().set_current_generate_type(GenerateType::PropertySetter);
+                EBMA_CONVERT_EXPRESSION(expr, cond);
+                base_cond.setter_cond = expr;
+            }
         }
         return std::make_pair(std::move(base_cond), std::move(cases));
     }
@@ -104,7 +126,8 @@ namespace ebmgen {
 
     constexpr auto without_field = 0;
     constexpr auto with_field = 1;
-    using PropExprVec = std::vector<std::variant<ebm::ExpressionRef, ebm::PropertyMemberDecl>>;
+
+    using PropExprVec = std::vector<std::variant<WithoutFieldConds, ebm::PropertyMemberDecl>>;
     using MergedMap = std::unordered_map<std::uint64_t, PropExprVec>;
     struct DetectedTypes {
         std::vector<ebm::TypeRef> detected_types;
@@ -139,8 +162,8 @@ namespace ebmgen {
     }
 
     expected<void> merge_fields_per_type(ConverterContext& ctx, std::vector<DerivedTypeInfo>& cases, std::unordered_map<std::uint64_t, PropExprVec>& merged) {
-        auto add_without_field = [&](PropExprVec& p, ebm::ExpressionRef cond) {
-            p.push_back(cond);
+        auto add_without_field = [&](PropExprVec& p, WithoutFieldConds conds) {
+            p.push_back(conds);
         };
         for (auto& c : cases) {
             if (c.field) {
@@ -150,7 +173,8 @@ namespace ebmgen {
                     auto id = get_id(decl->field_type);
                     added.insert(id);
                     merged[id].push_back(ebm::PropertyMemberDecl{
-                        .condition = c.cond,
+                        .setter_condition = c.setter_cond,
+                        .getter_condition = c.getter_cond,
                         .field = *c.field,
                     });
                 }
@@ -159,7 +183,8 @@ namespace ebmgen {
                     MAYBE_VOID(ok, map_field(ctx, field.id, *decl, [&](ebm::StatementRef field, ebm::PropertyDecl& decl) {
                                    added.insert(id);
                                    merged[id].push_back(ebm::PropertyMemberDecl{
-                                       .condition = c.cond,
+                                       .setter_condition = c.setter_cond,
+                                       .getter_condition = c.getter_cond,
                                        .field = field,
                                    });
                                }));
@@ -171,12 +196,20 @@ namespace ebmgen {
                     if (added.contains(not_added.first)) {
                         continue;
                     }
-                    add_without_field(not_added.second, c.cond);
+                    add_without_field(not_added.second,
+                                      WithoutFieldConds{
+                                          .getter_cond = c.getter_cond,
+                                          .setter_cond = c.setter_cond,
+                                      });
                 }
             }
             else {
                 for (auto& a : merged) {
-                    add_without_field(a.second, c.cond);
+                    add_without_field(a.second,
+                                      WithoutFieldConds{
+                                          .getter_cond = c.getter_cond,
+                                          .setter_cond = c.setter_cond,
+                                      });
                 }
             }
         }
@@ -224,20 +257,25 @@ namespace ebmgen {
         return cond;
     }
 
-    expected<void> strict_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, ebm::ExpressionRef base_cond, ebm::TypeRef type, PropExprVec& vec) {
+    expected<void> strict_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, WithoutFieldConds base_cond, ebm::TypeRef type, PropExprVec& vec) {
         derive.merge_mode = ebm::MergeMode::STRICT_TYPE;
         derive.property_type = type;
-        derive.cond = base_cond;
-        ebm::Expressions without_field_conds;
+        derive.getter_condition = base_cond.getter_cond;
+        derive.setter_condition = base_cond.setter_cond;
+        ebm::Expressions without_field_getter_conds;
+        ebm::Expressions without_field_setter_conds;
         for (auto& member : vec) {
             if (auto got = std::get_if<without_field>(&member)) {
-                append(without_field_conds, *got);
+                append(without_field_getter_conds, got->getter_cond);
+                append(without_field_setter_conds, got->setter_cond);
                 continue;
             }
-            if (without_field_conds.container.size() > 0) {
-                MAYBE(cond, derive_cond(ctx, without_field_conds));
+            if (without_field_getter_conds.container.size() > 0) {
+                MAYBE(getter_cond, derive_cond(ctx, without_field_getter_conds));
+                MAYBE(setter_cond, derive_cond(ctx, without_field_setter_conds));
                 ebm::PropertyMemberDecl m;
-                m.condition = cond;
+                m.getter_condition = getter_cond;
+                m.setter_condition = setter_cond;
                 EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
                 append(derive.members, member_ref);
             }
@@ -316,10 +354,11 @@ namespace ebmgen {
 
     expected<void> common_merge_members(ConverterContext& ctx, ebm::PropertyDecl& prop, IndexClusterElement* c, std::vector<ebm::PropertyDecl>* properties, DetectedTypes& original_merged) {
         auto total_size = original_merged.merged.begin()->second.size();
-        ebm::Expressions without_field_conds;
+        ebm::Expressions without_field_getter_conds;
+        ebm::Expressions without_field_setter_conds;
         for (size_t i = 0; i < total_size; i++) {
             std::optional<ebm::PropertyMemberDecl> decl;
-            std::optional<ebm::ExpressionRef> expr;
+            std::optional<WithoutFieldConds> expr;
             for (auto& type_ref : original_merged.detected_types) {
                 if (c && properties) {
                     bool found = false;
@@ -336,7 +375,8 @@ namespace ebmgen {
                 auto& field = original_merged.merged[get_id(type_ref)][i];
                 if (auto got = std::get_if<without_field>(&field)) {
                     if (expr) {
-                        if (get_id(*expr) != get_id(*got)) {
+                        if (get_id(expr->getter_cond) != get_id(got->getter_cond) ||
+                            get_id(expr->setter_cond) != get_id(got->setter_cond)) {
                             return unexpect_error("This is a bug: inconsistent without_field condition");
                         }
                     }
@@ -355,13 +395,16 @@ namespace ebmgen {
                 return unexpect_error("This is a bug: no field or condition found in common merge");
             }
             if (!decl) {
-                append(without_field_conds, *expr);
+                append(without_field_getter_conds, expr->getter_cond);
+                append(without_field_setter_conds, expr->setter_cond);
                 continue;
             }
-            if (without_field_conds.container.size() > 0) {
-                MAYBE(cond, derive_cond(ctx, without_field_conds));
+            if (without_field_getter_conds.container.size() > 0) {
+                MAYBE(getter_cond, derive_cond(ctx, without_field_getter_conds));
+                MAYBE(setter_cond, derive_cond(ctx, without_field_setter_conds));
                 ebm::PropertyMemberDecl m;
-                m.condition = cond;
+                m.getter_condition = getter_cond;
+                m.setter_condition = setter_cond;
                 EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
                 append(prop.members, member_ref);
             }
@@ -371,7 +414,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<std::vector<ebm::PropertyDecl>> common_merge(ConverterContext& ctx, ebm::ExpressionRef base_cond, ebm::PropertyDecl& derive, IndexCluster& cluster, std::vector<ebm::PropertyDecl>& properties, DetectedTypes& original_merged) {
+    expected<std::vector<ebm::PropertyDecl>> common_merge(ConverterContext& ctx, WithoutFieldConds base_cond, ebm::PropertyDecl& derive, IndexCluster& cluster, std::vector<ebm::PropertyDecl>& properties, DetectedTypes& original_merged) {
         std::vector<ebm::PropertyDecl> final_props;
 
         for (auto& c : cluster) {
@@ -401,7 +444,8 @@ namespace ebmgen {
             prop.name = derive.name;
             prop.property_type = *c_type;
             prop.parent_format = derive.parent_format;
-            prop.cond = base_cond;
+            prop.getter_condition = base_cond.getter_cond;
+            prop.setter_condition = base_cond.setter_cond;
             prop.merge_mode = ebm::MergeMode::COMMON_TYPE;
             MAYBE_VOID(merge_members, common_merge_members(ctx, prop, &c, &properties, original_merged));
             ebm::Block derived_from;
@@ -415,7 +459,7 @@ namespace ebmgen {
         return final_props;
     }
 
-    expected<void> uncommon_merge(ConverterContext& ctx, ebm::ExpressionRef base_cond, ebm::PropertyDecl& derive, std::vector<ebm::PropertyDecl>& final_props, DetectedTypes& original_merged) {
+    expected<void> uncommon_merge(ConverterContext& ctx, WithoutFieldConds base_cond, ebm::PropertyDecl& derive, std::vector<ebm::PropertyDecl>& final_props, DetectedTypes& original_merged) {
         auto c_type = derive_variant(ctx, final_props, {}, [&](auto& prop) {
             return prop.property_type;
         });
@@ -426,7 +470,8 @@ namespace ebmgen {
         prop.name = derive.name;
         prop.property_type = *c_type;
         prop.parent_format = derive.parent_format;
-        prop.cond = base_cond;
+        prop.getter_condition = base_cond.getter_cond;
+        prop.setter_condition = base_cond.setter_cond;
         prop.merge_mode = ebm::MergeMode::UNCOMMON_TYPE;
         MAYBE_VOID(merge_members, common_merge_members(ctx, prop, nullptr, nullptr, original_merged));
         ebm::Block derived_from;

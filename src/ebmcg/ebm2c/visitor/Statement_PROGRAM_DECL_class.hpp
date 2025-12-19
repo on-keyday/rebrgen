@@ -19,43 +19,126 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+#include <unordered_map>
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
+#include "ebmcg/ebm2c/codegen.hpp"
+#include "ebmcodegen/stub/dependency.hpp"
+#include "ebmgen/common.hpp"
 DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     using Context = CODEGEN_CONTEXT(Statement_PROGRAM_DECL);
     DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
         using namespace CODEGEN_NAMESPACE;
         std::vector<ebm2c::Struct> structs;
-        collect_structs(ctx, structs);
+        std::unordered_map<std::uint64_t, ebm2c::Union> unions;
+        MAYBE_VOID(ok, collect_structs(ctx, structs, unions));
+
+        auto get_field_type = [&](ebm::StatementRef field_ref) -> expected<std::pair<Result, ebm::TypeRef>> {
+            if (auto field = ctx.get_field<"field_decl.field_type">(field_ref)) {
+                return ctx.visit(*field).transform([&](auto&& x) {
+                    return std::make_pair(x, *field);
+                });
+            }
+            else if (auto composite = ctx.get_field<"composite_field_decl.composite_type">(field_ref)) {
+                return ctx.visit(*composite).transform([&](auto&& x) {
+                    return std::make_pair(x, *composite);
+                });
+            }
+            else {
+                return unexpect_error("failed to get field type");
+            }
+        };
         CodeWriter w;
+        w.writeln("#include <stdint.h>");
+        auto write_union = [&](Union& u) -> expected<void> {
+            auto ident = std::format("Union{}", get_id(u.id));
+            w.writeln("union ", ident, " {");
+            auto scope = w.indent_scope();
+            for (auto& v : u.variants) {
+                auto var_ident = ctx.identifier(v.id);
+                w.writeln("struct {");
+                auto var_scope = w.indent_scope();
+                for (auto& f : v.fields) {
+                    auto field_ident = ctx.identifier(f.id);
+                    MAYBE(typ, get_field_type(f.id));
+                    w.writeln(typ.first.to_writer(), " ", field_ident, ";");
+                }
+                var_scope.execute();
+                w.writeln("}", var_ident, ";");
+            }
+            scope.execute();
+            w.writeln("};");
+            w.writeln("");
+            return {};
+        };
         for (auto& s : structs) {
             auto ident = ctx.identifier(s.id);
             w.writeln("struct ", ident, " {");
+            auto scope = w.indent_scope();
             for (auto& f : s.fields) {
                 auto field_ident = ctx.identifier(f.id);
-                w.writeln("    int ", field_ident, ";");
+                MAYBE(typ, get_field_type(f.id));
+                if (auto found = unions.find(ebmgen::get_id(typ.second)); found != unions.end()) {
+                    MAYBE_VOID(ok, write_union(found->second));
+                }
+                w.writeln(typ.first.to_writer(), " ", field_ident, ";");
             }
+            scope.execute();
             w.writeln("};");
             w.writeln("");
         }
-        /*here to write the hook*/
+        // write encoding/decoding functions if any
+        for (auto& s : structs) {
+            if (s.encode_function) {
+                MAYBE(func, ctx.visit(*s.encode_function));
+                w.writeln(func.to_writer());
+            }
+            if (s.decode_function) {
+                MAYBE(func, ctx.visit(*s.decode_function));
+                w.writeln(func.to_writer());
+            }
+        }
         return w;
     };
 
-    void collect_structs(Context & ctx, std::vector<ebm2c::Struct> & structs) {
-        for (auto stmt_ref : ctx.block.container) {
+    ebmgen::expected<void> collect_structs(Context & ctx, std::vector<ebm2c::Struct> & structs, std::unordered_map<std::uint64_t, ebm2c::Union> & unions) {
+        auto handle_struct_decl = [&](std::vector<ebm2c::Struct>& structs, ebm::StatementRef stmt_ref) {
             auto struct_ = ctx.get_field<"struct_decl">(stmt_ref);
             if (!struct_) {
-                continue;
+                return;
             }
-            ebm2c::Struct s{.id = stmt_ref};
-            for (auto field_ref : struct_->fields.container) {
-                ebm2c::Field f;
-                f.id = field_ref;
-                s.fields.push_back(f);
+            Struct s;
+            s.id = stmt_ref;
+            for (auto& decl_ref : struct_->fields.container) {
+                s.fields.push_back(Field{.id = decl_ref});
+            }
+            if (auto encode_func = struct_->encode_fn()) {
+                s.encode_function = *encode_func;
+            }
+            if (auto decode_func = struct_->decode_fn()) {
+                s.decode_function = *decode_func;
             }
             structs.push_back(s);
+        };
+        MAYBE(sorted, sorted_struct(ctx));
+        for (auto stmt_ref : sorted) {
+            handle_struct_decl(structs, stmt_ref);
         }
         for (auto& s : ctx.module().module().types) {
+            auto variant_desc = s.body.variant_desc();
+            if (!variant_desc) {
+                continue;
+            }
+            Union u{.id = s.id};
+            for (auto member_type_ref : variant_desc->members.container) {
+                auto struct_key = ctx.get_field<"body.id">(member_type_ref);
+                if (!struct_key) {
+                    continue;
+                }
+                handle_struct_decl(u.variants, *struct_key);
+            }
+            unions[ebmgen::get_id(s.id)] = u;
         }
+        return {};
     }
 };

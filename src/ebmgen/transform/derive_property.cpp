@@ -38,7 +38,7 @@ namespace ebmgen {
                     getter.return_type = ret_type;
 
                     for (auto& v : copy_state_vars) {
-                        append(getter.params, v.second);
+                        append(getter.params, v.prop_get_var_def);
                     }
                 }
                 // setter return value and arguments
@@ -51,13 +51,13 @@ namespace ebmgen {
                     append(setter.params, arg_def);
 
                     for (auto& v : copy_state_vars) {
-                        append(setter.params, v.second);
+                        append(setter.params, v.prop_set_var_def);
                     }
                 }
                 // getter match
                 {
                     ebm::MatchStatement m;
-                    m.target = prop->cond;
+                    m.target = prop->getter_condition;
                     EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
                     EBM_RETURN(default_return, default_);
                     for (auto& b : prop->members.container) {
@@ -65,7 +65,7 @@ namespace ebmgen {
                         MAYBE(member_ref, stmt.body.property_member_decl());
                         auto member = member_ref;  // copy to avoid memory relocation
                         ebm::MatchBranch br;
-                        br.condition = make_condition(member.condition);
+                        br.condition = make_condition(member.getter_condition);
                         if (is_nil(member.field)) {
                             br.body = default_return;
                         }
@@ -119,7 +119,7 @@ namespace ebmgen {
                 // setter match
                 {
                     ebm::MatchStatement m;
-                    m.target = prop->cond;
+                    m.target = prop->setter_condition;
                     EBM_SETTER_STATUS(default_status, setter.return_type, ebm::SetterStatus::FAILED);
                     EBM_RETURN(default_return, default_status);
                     for (auto& b : prop->members.container) {
@@ -127,7 +127,7 @@ namespace ebmgen {
                         MAYBE(member_ref, stmt.body.property_member_decl());
                         auto member = member_ref;  // copy to avoid memory relocation
                         ebm::MatchBranch br;
-                        br.condition = make_condition(member.condition);
+                        br.condition = make_condition(member.setter_condition);
                         if (is_nil(member.field)) {
                             br.body = default_return;
                         }

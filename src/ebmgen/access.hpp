@@ -159,7 +159,7 @@ namespace ebmgen {
 
         template <class T>
         static consteval Name make(FieldNames<> n) {
-            return Name{ebmcodegen::get_type_index<T>(), n};
+            return Name{ebmcodegen::get_type_index<std::decay_t<T>>(), n};
         }
     };
 

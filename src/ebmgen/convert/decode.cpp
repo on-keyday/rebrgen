@@ -387,9 +387,9 @@ namespace ebmgen {
         append(call_desc.arguments, dec_in_arg);
         for (auto& st : par_encdec.state_variables) {
             for (auto& cur_st : cur_encdec.state_variables) {
-                if (get_id(cur_st.second) == get_id(st.second)) {
-                    MAYBE(expr, ctx.repository().get_expression(cur_st.first));
-                    EBM_AS_ARG(as_arg, expr.body.type, cur_st.first);
+                if (cur_st.ast_field == st.ast_field) {
+                    MAYBE(expr, ctx.repository().get_expression(cur_st.dec_var_expr));
+                    EBM_AS_ARG(as_arg, expr.body.type, cur_st.dec_var_expr);
                     append(call_desc.arguments, as_arg);
                     break;
                 }

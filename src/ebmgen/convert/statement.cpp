@@ -448,6 +448,11 @@ namespace ebmgen {
                 if (ast::as<ast::Function>(element)) {
                     continue;
                 }
+                if (auto field = ast::as<ast::Field>(element)) {
+                    if (field->is_state_variable) {
+                        continue;
+                    }
+                }
                 EBMA_CONVERT_STATEMENT(stmt_ref, element);
                 append(block_body, stmt_ref);
             }
@@ -629,31 +634,48 @@ namespace ebmgen {
         MAYBE(dec_type, get_type(node->decode_fn.lock(), GenerateType::Decode));
         EBM_IDENTIFIER(encode, enc_id, enc_type);
         EBM_IDENTIFIER(decode, dec_id, dec_type);
-        MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
-
         EBM_DEFINE_PARAMETER(writer, {}, encoder_input, false);
         EBM_DEFINE_PARAMETER(reader, {}, decoder_input, false);
         // TODO: strictly analyze state variable usage in ast
-        std::vector<std::pair<ebm::ExpressionRef, ebm::StatementRef>> state_vars;
+        StateVariables state_vars;
         for (auto& v : node->state_variables) {
             auto locked = v.lock();
             EBMA_CONVERT_TYPE(var_type, locked->field_type);
             EBMA_ADD_IDENTIFIER(var_name, locked->ident->ident);
-            EBM_DEFINE_PARAMETER(var, var_name, var_type, true);
-            state_vars.emplace_back(var, var_def);
+            MAYBE(enc_stmt_id, ctx.repository().new_statement_id());
+            MAYBE(dec_stmt_id, ctx.repository().new_statement_id());
+            MAYBE(prop_get_id, ctx.repository().new_statement_id());
+            MAYBE(prop_set_id, ctx.repository().new_statement_id());
+            EBM_DEFINE_STATE_VARIABLE_PARAMETER(enc_var, enc_stmt_id, var_name, var_type);
+            EBM_DEFINE_STATE_VARIABLE_PARAMETER(dec_var, dec_stmt_id, var_name, var_type);
+            EBM_DEFINE_STATE_VARIABLE_PARAMETER(prop_getter, prop_get_id, var_name, var_type);
+            EBM_DEFINE_STATE_VARIABLE_PARAMETER(prop_setter, prop_set_id, var_name, var_type);
+            state_vars.emplace_back(StateVariable{
+                .enc_var_def = enc_var_def,
+                .enc_var_expr = enc_var,
+                .dec_var_def = dec_var_def,
+                .dec_var_expr = dec_var,
+                .prop_get_var_def = prop_getter_def,
+                .prop_get_var_expr = prop_getter,
+                .prop_set_var_def = prop_setter_def,
+                .prop_set_var_expr = prop_setter,
+                .ast_field = locked,
+            });
         }
 
         ctx.state().add_format_encode_decode(node, id, encode, enc_type, writer, writer_def,
                                              decode, dec_type, reader, reader_def,
                                              state_vars);
         const auto _node = ctx.state().set_current_node(node);
+        MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
+
         auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, ebm::StatementRef coder_input, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);
             ebm::FunctionDecl derived_fn;
             if (fn) {
                 MAYBE(decl, ctx.get_statement_converter().convert_function_decl(fn, typ, coder_input));
                 for (auto& st : state_vars) {
-                    append(decl.params, st.second);
+                    append(decl.params, typ == GenerateType::Encode ? st.enc_var_def : st.dec_var_def);
                 }
                 derived_fn = std::move(decl);
             }
@@ -665,7 +687,7 @@ namespace ebmgen {
                 derived_fn.return_type = coder_return;
                 append(derived_fn.params, coder_input);
                 for (auto& st : state_vars) {
-                    append(derived_fn.params, st.second);
+                    append(derived_fn.params, typ == GenerateType::Encode ? st.enc_var_def : st.dec_var_def);
                 }
                 EBMA_CONVERT_STATEMENT(body, node->body);
                 ebm::Block fn_body_block;

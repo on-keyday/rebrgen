@@ -53,5 +53,7 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().decoder_input_type = "DecoderInput*";
     ctx.config().default_value_option.decoder_return_init = "0";
     ctx.config().default_value_option.encoder_return_init = "0";
+    ctx.config().enum_member_separator = ",";
+    ctx.config().endof_enum_definition = ";";
     return pass;
 }

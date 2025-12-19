@@ -24,6 +24,10 @@ namespace ebm2c {
         std::optional<ebm::StatementRef> decode_function;
     };
 
+    struct Enum {
+        ebm::StatementRef id;
+    };
+
     struct Union {
         ebm::TypeRef id;
         std::vector<Struct> variants;

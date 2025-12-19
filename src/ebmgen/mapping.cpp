@@ -290,4 +290,8 @@ namespace ebmgen {
         statement_identifier_direct_map_[get_id(ref)] = std::move(name);
     }
 
+    void MappingTable::remove_directly_mapped_statement_identifier(ebm::StatementRef ref) {
+        statement_identifier_direct_map_.erase(get_id(ref));
+    }
+
 }  // namespace ebmgen

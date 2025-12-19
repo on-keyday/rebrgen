@@ -32,6 +32,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         std::vector<ebm2c::Struct> structs;
         std::unordered_map<std::uint64_t, ebm2c::Union> unions;
         std::vector<ebm2c::VectorType> vector_types;
+        std::vector<ebm2c::Enum> enums;
     };
 
     DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
@@ -62,6 +63,17 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             auto ident = ctx.identifier(s.id);
             w.writeln("typedef struct ", ident, " ", ident, ";");
         }
+
+        // enums first
+        for (auto& e : c_ctx.enums) {
+            MAYBE(enum_, ctx.visit(e.id));
+            w.writeln(enum_.to_writer());
+        }
+        for (auto& e : c_ctx.enums) {
+            auto ident = ctx.identifier(e.id);
+            w.writeln("typedef enum ", ident, " ", ident, ";");
+        }
+        w.writeln("");
 
         w.writeln("typedef struct EncoderInput {");
         {
@@ -126,7 +138,8 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("#endif");
             w.writeln("");
         }
-        auto write_composite_fn = [&](ebm::StatementRef composite) -> expected<void> {
+        std::vector<ebm::StatementRef> composite_fns;
+        auto collect_composite_fn = [&](ebm::StatementRef composite) -> expected<void> {
             auto comp = ctx.get_field<"composite_field_decl">(composite);
             if (!comp) {
                 return {};
@@ -139,12 +152,10 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 auto getter = decl->composite_getter();
                 auto setter = decl->composite_setter();
                 if (getter) {
-                    MAYBE(func, ctx.visit(getter->id));
-                    w.writeln(func.to_writer());
+                    composite_fns.push_back(getter->id);
                 }
                 if (setter) {
-                    MAYBE(func, ctx.visit(setter->id));
-                    w.writeln(func.to_writer());
+                    composite_fns.push_back(setter->id);
                 }
             }
             return {};
@@ -161,7 +172,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                     auto field_ident = ctx.identifier(f.id);
                     MAYBE(typ, get_field_type(f.id));
                     w.writeln(typ.first.to_writer(), " ", field_ident, ";");
-                    write_composite_fn(f.id);
+                    MAYBE_VOID(ok, collect_composite_fn(f.id));
                 }
                 var_scope.execute();
                 w.writeln("}", var_ident, ";");
@@ -182,11 +193,15 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                     MAYBE_VOID(ok, write_union(found->second));
                 }
                 w.writeln(typ.first.to_writer(), " ", field_ident, ";");
-                write_composite_fn(f.id);
+                MAYBE_VOID(ok, collect_composite_fn(f.id));
             }
             scope.execute();
             w.writeln("};");
             w.writeln("");
+        }
+        for (auto& composite_fn_ref : composite_fns) {
+            MAYBE(func, ctx.visit(composite_fn_ref));
+            w.writeln(func.to_writer());
         }
         // write encoding/decoding functions if any
         for (auto& s : c_ctx.structs) {
@@ -231,6 +246,14 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         MAYBE(sorted, sorted_struct(ctx));
         for (auto stmt_ref : sorted) {
             handle_struct_decl(c_ctx.structs, stmt_ref);
+        }
+        for (auto& e : ctx.module().module().statements) {
+            auto enum_decl = ctx.get_field<"enum_decl">(e.id);
+            if (!enum_decl) {
+                continue;
+            }
+            ebm2c::Enum en{.id = e.id};
+            c_ctx.enums.push_back(en);
         }
         for (auto& s : ctx.module().module().types) {
             if (s.body.kind == ebm::TypeKind::VECTOR) {

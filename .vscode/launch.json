@@ -123,7 +123,7 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "C:\\workspace\\shbrgen\\rebrgen/src/ebm/extended_binary_module.bgn",
+        "C:/workspace/shbrgen/rebrgen/src/test/capnproto_test.bgn",
         "-I",
         "-g"
       ],
@@ -198,12 +198,12 @@
     {
       "type": "debugpy",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f5995f4c24\\r-bdcaa432f6\\t-626c3a7cae",
-      "name": "Debug ebm2python unictest (HTTP2FrameTest)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f5995f4c24\\r-bdcaa432f6\\t-626c3a7cae\\test_script.py",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-504cd4dac7\\r-f06d0cf526\\t-4163cf40d8",
+      "name": "Debug ebm2python unictest (ExtendedBinaryModule)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-504cd4dac7\\r-f06d0cf526\\t-4163cf40d8\\test_script.py",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f5995f4c24/r-bdcaa432f6/t-626c3a7cae/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f5995f4c24/r-bdcaa432f6/t-626c3a7cae/output.bin"
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-504cd4dac7/r-f06d0cf526/t-4163cf40d8/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-504cd4dac7/r-f06d0cf526/t-4163cf40d8/output.bin"
       ]
     }
   ]

@@ -21,6 +21,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
     using namespace CODEGEN_NAMESPACE;
     auto param = ctx.get_field<"body.id.param_decl">(ctx.base);
@@ -38,6 +39,30 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
         MAYBE(member, ctx.visit(ctx.member));
         return CODE(base.to_writer(), ".", ident, ".", member.to_writer());
     }
-    /*here to write the hook*/
+    if (auto comp_getter = ctx.get_field<"body.id.field_decl">(ctx.member)) {
+        auto comp_ref = ctx.get_field<"composite_field_decl">(comp_getter->composite_field());
+        if (comp_ref && comp_ref->kind == ebm::CompositeFieldKind::BULK_PRIMITIVE) {
+            if (auto comp = comp_getter->composite_getter()) {
+                MAYBE(getter_decl, ctx.get_field<"func_decl">(comp->id));
+                auto parent_ident = ctx.identifier(comp_getter->parent_struct);
+                MAYBE(member_ident, ctx.identifier(ctx.member));
+                auto getter_func_name = std::format(
+                    "{}_get_{}",
+                    parent_ident,
+                    member_ident);
+                MAYBE(base, ctx.visit(ctx.base));
+                std::string args;
+                // if state variable, pass as is
+                for (auto& param : getter_decl.params.container) {
+                    auto param_name = ctx.identifier(param);
+                    if (!args.empty()) {
+                        args += ", ";
+                    }
+                    args += param_name;
+                }
+                return CODE(getter_func_name, "(&", base.to_writer(), args.empty() ? "" : ", ", args, ")");
+            }
+        }
+    }
     return pass;
 }

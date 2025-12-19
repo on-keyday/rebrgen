@@ -135,6 +135,7 @@ namespace ebmgen {
         const ebm::Loc* get_debug_loc(const ebm::AnyRef& ref) const;
 
         void directly_map_statement_identifier(ebm::StatementRef ref, std::string&& name);
+        void remove_directly_mapped_statement_identifier(ebm::StatementRef ref);
         void build_maps();
 
        private:

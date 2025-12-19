@@ -2005,23 +2005,27 @@ namespace ebmcodegen {
                 auto& ref = in.merge_mode;
                 return ref;
             }
-            else if constexpr (FieldIndex == 9) {
-                auto& ref = in.cond;
+            else if constexpr (FieldIndex == 138) {
+                auto& ref = in.setter_condition;
+                return ref;
+            }
+            else if constexpr (FieldIndex == 139) {
+                auto& ref = in.getter_condition;
                 return ref;
             }
             else if constexpr (FieldIndex == 19) {
                 auto& ref = in.members;
                 return ref;
             }
-            else if constexpr (FieldIndex == 138) {
+            else if constexpr (FieldIndex == 140) {
                 auto& ref = in.setter_function;
                 return ref;
             }
-            else if constexpr (FieldIndex == 139) {
+            else if constexpr (FieldIndex == 141) {
                 auto& ref = in.getter_function;
                 return ref;
             }
-            else if constexpr (FieldIndex == 140) {
+            else if constexpr (FieldIndex == 142) {
                 return in.derived_from();
             }
         }
@@ -2051,11 +2055,17 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->merge_mode);
             }
-            else if constexpr (FieldIndex == 9) {
+            else if constexpr (FieldIndex == 138) {
                 if (!in) {
-                    return decltype(std::addressof(in->cond))();
+                    return decltype(std::addressof(in->setter_condition))();
                 }
-                return std::addressof(in->cond);
+                return std::addressof(in->setter_condition);
+            }
+            else if constexpr (FieldIndex == 139) {
+                if (!in) {
+                    return decltype(std::addressof(in->getter_condition))();
+                }
+                return std::addressof(in->getter_condition);
             }
             else if constexpr (FieldIndex == 19) {
                 if (!in) {
@@ -2063,19 +2073,19 @@ namespace ebmcodegen {
                 }
                 return std::addressof(in->members);
             }
-            else if constexpr (FieldIndex == 138) {
+            else if constexpr (FieldIndex == 140) {
                 if (!in) {
                     return decltype(std::addressof(in->setter_function))();
                 }
                 return std::addressof(in->setter_function);
             }
-            else if constexpr (FieldIndex == 139) {
+            else if constexpr (FieldIndex == 141) {
                 if (!in) {
                     return decltype(std::addressof(in->getter_function))();
                 }
                 return std::addressof(in->getter_function);
             }
-            else if constexpr (FieldIndex == 140) {
+            else if constexpr (FieldIndex == 142) {
                 if (!in) {
                     return decltype(in->derived_from())();
                 }
@@ -2084,11 +2094,11 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T, ebm::PropertyMemberDecl>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 141) {
+            else if constexpr (FieldIndex == 138) {
                 auto& ref = in.setter_condition;
                 return ref;
             }
-            else if constexpr (FieldIndex == 142) {
+            else if constexpr (FieldIndex == 139) {
                 auto& ref = in.getter_condition;
                 return ref;
             }
@@ -2099,13 +2109,13 @@ namespace ebmcodegen {
         }
         else if constexpr (std::is_same_v<T,ebm::PropertyMemberDecl*> || std::is_same_v<T,const ebm::PropertyMemberDecl*>) {
             if constexpr (false) {}
-            else if constexpr (FieldIndex == 141) {
+            else if constexpr (FieldIndex == 138) {
                 if (!in) {
                     return decltype(std::addressof(in->setter_condition))();
                 }
                 return std::addressof(in->setter_condition);
             }
-            else if constexpr (FieldIndex == 142) {
+            else if constexpr (FieldIndex == 139) {
                 if (!in) {
                     return decltype(std::addressof(in->getter_condition))();
                 }
@@ -4091,20 +4101,23 @@ namespace ebmcodegen {
         if (field_name == "merge_mode") {
             return 137;
         }
-        if (field_name == "cond") {
-            return 9;
+        if (field_name == "setter_condition") {
+            return 138;
+        }
+        if (field_name == "getter_condition") {
+            return 139;
         }
         if (field_name == "members") {
             return 19;
         }
         if (field_name == "setter_function") {
-            return 138;
+            return 140;
         }
         if (field_name == "getter_function") {
-            return 139;
+            return 141;
         }
         if (field_name == "derived_from") {
-            return 140;
+            return 142;
         }
         if (std::is_constant_evaluated()) {
             throw "No such field";
@@ -4119,10 +4132,10 @@ namespace ebmcodegen {
     template<>
     constexpr size_t get_field_index<38>(std::string_view field_name) {
         if (field_name == "setter_condition") {
-            return 141;
+            return 138;
         }
         if (field_name == "getter_condition") {
-            return 142;
+            return 139;
         }
         if (field_name == "field") {
             return 94;
@@ -6593,7 +6606,7 @@ namespace ebmcodegen {
             return 184;
         }
         if (name == "derived_from") {
-            return 140;
+            return 142;
         }
         if (name == "dynamic_expr") {
             return 16;
@@ -6677,10 +6690,10 @@ namespace ebmcodegen {
             return 191;
         }
         if (name == "getter_condition") {
-            return 142;
+            return 139;
         }
         if (name == "getter_function") {
-            return 139;
+            return 141;
         }
         if (name == "has_encode_decode") {
             return 180;
@@ -6959,10 +6972,10 @@ namespace ebmcodegen {
             return 113;
         }
         if (name == "setter_condition") {
-            return 141;
+            return 138;
         }
         if (name == "setter_function") {
-            return 138;
+            return 140;
         }
         if (name == "setter_status") {
             return 51;
@@ -7120,7 +7133,7 @@ namespace ebmcodegen {
         case 77: return "debug_info";
         case 197: return "decl_kind";
         case 184: return "decode_fn";
-        case 140: return "derived_from";
+        case 142: return "derived_from";
         case 16: return "dynamic_expr";
         case 93: return "dynamic_ref";
         case 190: return "element_type";
@@ -7148,8 +7161,8 @@ namespace ebmcodegen {
         case 38: return "from_type";
         case 157: return "func_decl";
         case 191: return "func_desc";
-        case 142: return "getter_condition";
-        case 139: return "getter_function";
+        case 139: return "getter_condition";
+        case 141: return "getter_function";
         case 180: return "has_encode_decode";
         case 181: return "has_functions";
         case 92: return "has_lowered_statement";
@@ -7242,8 +7255,8 @@ namespace ebmcodegen {
         case 85: return "return_type";
         case 50: return "right";
         case 113: return "set_endian";
-        case 141: return "setter_condition";
-        case 138: return "setter_function";
+        case 138: return "setter_condition";
+        case 140: return "setter_function";
         case 51: return "setter_status";
         case 90: return "sign";
         case 98: return "size";
@@ -8382,7 +8395,10 @@ namespace ebmcodegen {
             if (field_index == get_field_index<37>("merge_mode")) {
                 return {.index = 74, .is_array = false, .is_ptr = false};
             }
-            if (field_index == get_field_index<37>("cond")) {
+            if (field_index == get_field_index<37>("setter_condition")) {
+                return {.index = 56, .is_array = false, .is_ptr = false};
+            }
+            if (field_index == get_field_index<37>("getter_condition")) {
                 return {.index = 56, .is_array = false, .is_ptr = false};
             }
             if (field_index == get_field_index<37>("members")) {

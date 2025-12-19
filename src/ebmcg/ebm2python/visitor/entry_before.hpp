@@ -39,3 +39,5 @@ config.default_value_option.encoder_return_init = "None";
 config.default_value_option.decoder_return_init = "None";
 config.surrounded_array_size = true;
 config.array_size_get_function = "builtins.len";
+config.bool_true = "True";
+config.bool_false = "False";

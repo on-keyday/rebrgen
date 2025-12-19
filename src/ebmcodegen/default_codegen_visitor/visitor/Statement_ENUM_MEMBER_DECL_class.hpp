@@ -17,10 +17,14 @@
       string_repr: StringRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-auto name = module_.get_associated_identifier(item_id);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_ENUM_MEMBER_DECL) {
+    using namespace CODEGEN_NAMESPACE;
+    auto name = ctx.identifier();
 
-CodeWriter w;
-MAYBE(val, visit_Expression(*this, enum_member_decl.value));
+    CodeWriter w;
+    MAYBE(val, ctx.visit(ctx.enum_member_decl.value));
 
-w.writeln(name, " = ", val.to_writer());
-return w;
+    w.writeln(name, " = ", val.to_writer(), ctx.config().enum_member_separator);
+    return w;
+}

@@ -8,6 +8,10 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 bool use_brace_for_condition = true;
 bool use_elif = false;
+std::string bool_true = "true";
+std::string bool_false = "false";
+std::string setter_status_ok = "";
+std::string setter_status_failure = "";
 std::string struct_keyword = "struct";
 std::string begin_block = "{";
 std::string end_block = "}";
@@ -28,6 +32,7 @@ DefaultValueOption default_value_option;
 std::string endof_statement = "";
 std::string endof_struct_definition = "";
 std::string endof_enum_definition = "";
+std::string enum_member_separator = "";
 std::string enum_member_accessor = ".";
 std::string array_size_get_function = "len";
 bool surrounded_array_size = false; /*true: len(x) false: x.len()*/
@@ -46,7 +51,7 @@ std::string encoder_return_type = "EncoderReturn";
 std::string decoder_return_type = "DecoderReturn";
 std::string encoder_input_type = "EncoderInput";
 std::string decoder_input_type = "DecoderInput";
-std::string property_setter_return_type = "void";
+std::string property_setter_return_type = "bool";
 bool forward_type_in_function_decl = false;
 std::string function_return_type_separator = "->";
 bool use_base_type_of_enum = false;

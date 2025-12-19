@@ -15,7 +15,11 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-ebm::Expression expr;
-expr.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
-expr.body.bool_value(setter_status == ebm::SetterStatus::SUCCESS);
-return visit_Expression(*this, expr);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_SETTER_STATUS) {
+    using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().setter_status_ok.size() == 0 && ctx.config().setter_status_failure.size() == 0) {
+        return ctx.setter_status == ebm::SetterStatus::SUCCESS ? ctx.config().bool_true : ctx.config().bool_false;
+    }
+    return ctx.setter_status == ebm::SetterStatus::SUCCESS ? ctx.config().setter_status_ok : ctx.config().setter_status_failure;
+}

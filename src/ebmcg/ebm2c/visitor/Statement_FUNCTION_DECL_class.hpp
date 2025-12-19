@@ -27,7 +27,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
-#include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
@@ -35,6 +35,9 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     MAYBE(ret_type, ctx.visit(ctx.func_decl.return_type));
     CodeWriter params;
     std::string func_prefix;
+    std::string inline_prefix;
+    CodeWriter w;
+
     if (!is_nil(ctx.func_decl.parent_format)) {
         auto ident = ctx.identifier(ctx.func_decl.parent_format);
         func_prefix = ident + "_";
@@ -47,8 +50,20 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         }
         params.write(param.to_writer());
     }
-    CodeWriter w;
-    w.writeln(ret_type.to_writer(), " ", func_prefix, name, "(", params, ") ", ctx.config().begin_block);
+
+    if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_GETTER ||
+        ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER) {
+        if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER) {
+            func_prefix += "set_";
+        }
+        else {
+            func_prefix += "get_";
+        }
+    }
+
+    inline_prefix = "inline ";  // TODO: currently, generateing all functions in header
+
+    w.writeln(inline_prefix, ret_type.to_writer(), " ", func_prefix, name, "(", params, ") ", ctx.config().begin_block);
     {
         auto scope = w.indent_scope();
         MAYBE(body, ctx.visit(ctx.func_decl.body));

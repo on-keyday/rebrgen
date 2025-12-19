@@ -87,7 +87,7 @@ namespace ebmgen {
         std::optional<ebm::ExpressionRef> cond_v;
         if (node->init) {
             auto make_init_visited = [&](ebm::StatementRef ident_def) {
-                const auto _scope = ctx.state().set_current_generate_type(GenerateType::Normal);
+                // const auto _scope = ctx.state().set_current_generate_type(GenerateType::Normal);
                 ctx.state().add_visited_node(node->init, ident_def);
             };
             if (auto bop = ast::as<ast::Binary>(node->init);
@@ -667,14 +667,10 @@ namespace ebmgen {
             auto locked = v.lock();
             EBMA_CONVERT_TYPE(var_type, locked->field_type);
             EBMA_ADD_IDENTIFIER(var_name, locked->ident->ident);
-            MAYBE(enc_stmt_id, ctx.repository().new_statement_id());
-            MAYBE(dec_stmt_id, ctx.repository().new_statement_id());
-            MAYBE(prop_get_id, ctx.repository().new_statement_id());
-            MAYBE(prop_set_id, ctx.repository().new_statement_id());
-            EBM_DEFINE_STATE_VARIABLE_PARAMETER(enc_var, enc_stmt_id, var_name, var_type);
-            EBM_DEFINE_STATE_VARIABLE_PARAMETER(dec_var, dec_stmt_id, var_name, var_type);
-            EBM_DEFINE_STATE_VARIABLE_PARAMETER(prop_getter, prop_get_id, var_name, var_type);
-            EBM_DEFINE_STATE_VARIABLE_PARAMETER(prop_setter, prop_set_id, var_name, var_type);
+            EBM_DEFINE_PARAMETER(enc_var, var_name, var_type, true);
+            EBM_DEFINE_PARAMETER(dec_var, var_name, var_type, true);
+            EBM_DEFINE_PARAMETER(prop_getter, var_name, var_type, true);
+            EBM_DEFINE_PARAMETER(prop_setter, var_name, var_type, true);
             state_vars.emplace_back(StateVariable{
                 .enc_var_def = enc_var_def,
                 .enc_var_expr = enc_var,

@@ -15,4 +15,8 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 /*license*/
-return bool_value ? "true" : "false";
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_LITERAL_BOOL) {
+    using namespace CODEGEN_NAMESPACE;
+    return ctx.bool_value ? ctx.config().bool_true : ctx.config().bool_false;
+}

@@ -5146,6 +5146,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
+        const ebm::ArrayAnnotation& array_annotation;
         const ebm::TypeRef& element_type;
         const ebm::Varint& length;
     };
@@ -5156,11 +5157,12 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_TYPE_ARRAY(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
     struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
+        const ebm::ArrayAnnotation& array_annotation;
         const ebm::TypeRef& element_type;
         const ebm::Varint& length;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -5172,11 +5174,12 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
     struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
+        const ebm::ArrayAnnotation& array_annotation;
         const ebm::TypeRef& element_type;
         const ebm::Varint& length;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -5189,7 +5192,7 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VECTOR : ebmcodegen::util::ContextBase<Context_Type_VECTOR> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;

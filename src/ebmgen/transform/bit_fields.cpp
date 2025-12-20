@@ -141,6 +141,13 @@ namespace ebmgen {
             }
             EBM_BLOCK(read, std::move(block));
             EBM_WHILE_LOOP(loop, condition, read);
+            EBM_BINARY_OP(len, ebm::BinaryOp::sub, count_t, new_size, read_offset);
+            auto data = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, *make_dynamic_size(len, ebm::SizeUnit::BYTE_DYNAMIC));
+            data.attribute.has_offset(true);
+            data.offset(read_offset);
+            data.attribute.has_lowered_statement(true);
+            data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, loop));
+            EBM_READ_DATA(read_data, std::move(data));
             return loop;
         };
         auto flush_buffer = [&](ebm::StatementRef field, ebm::ExpressionRef new_size_bit) -> expected<ebm::StatementRef> {
@@ -262,6 +269,7 @@ namespace ebmgen {
                 return ebm::StatementRef{};
             }
             ebm::Block block;
+            size_t original_read_offset = read_offset;
             while (read_offset < new_size) {
                 EBMU_INT_LITERAL(read_offset_expr, read_offset);
                 EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset_expr);
@@ -274,7 +282,14 @@ namespace ebmgen {
                 read_offset++;
             }
             EBM_BLOCK(read, std::move(block));
-            return read;
+            auto data = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, get_size((new_size - original_read_offset) * 8));
+            EBMU_INT_LITERAL(offset_lit, original_read_offset);
+            data.attribute.has_offset(true);
+            data.offset(offset_lit);
+            data.attribute.has_lowered_statement(true);
+            data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, read));
+            EBM_READ_DATA(read_data, std::move(data));
+            return read_data;
         };
         auto flush_buffer = [&](ebm::StatementRef field, size_t new_size_bit) -> expected<ebm::StatementRef> {
             // EBMU_INT_LITERAL(eight, 8);

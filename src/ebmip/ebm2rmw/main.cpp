@@ -56388,6 +56388,10 @@ namespace ebm2rmw {
     template<typename Context>
     expected<Result> dispatch_Type_ARRAY(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
+        if (!in.body.array_annotation()) {
+            return unexpect_error("Unexpected null pointer for TypeBody::array_annotation");
+        }
+        auto& array_annotation = *in.body.array_annotation();
         if (!in.body.element_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::element_type");
         }
@@ -56401,6 +56405,7 @@ namespace ebm2rmw {
                 .visitor = get_visitor_from_context(ctx),
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
+                .array_annotation = array_annotation,
                 .element_type = element_type,
                 .length = length,
             };
@@ -56410,6 +56415,7 @@ namespace ebm2rmw {
             .visitor = get_visitor_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
+            .array_annotation = array_annotation,
             .element_type = element_type,
             .length = length,
             .main_logic = main_logic,
@@ -56428,6 +56434,7 @@ namespace ebm2rmw {
             .visitor = get_visitor_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
+            .array_annotation = array_annotation,
             .element_type = element_type,
             .length = length,
             .main_logic = main_logic,

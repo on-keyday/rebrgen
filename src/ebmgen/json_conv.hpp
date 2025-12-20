@@ -127,6 +127,8 @@ namespace ebm {
     
     bool from_json(AliasHint& obj, const futils::json::JSON& j);
     
+    bool from_json(ArrayAnnotation& obj, const futils::json::JSON& j);
+    
     bool from_json(BinaryOp& obj, const futils::json::JSON& j);
     
     bool from_json(CastType& obj, const futils::json::JSON& j);

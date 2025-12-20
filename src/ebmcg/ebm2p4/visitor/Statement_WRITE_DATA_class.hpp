@@ -23,7 +23,8 @@
           sign: bool
           is_peek: bool
           has_lowered_statement: bool
-          reserved: std::uint8_t
+          has_offset: bool
+          reserved: bool
           dynamic_ref: *StatementRef
         size: Size
           unit: SizeUnit
@@ -32,6 +33,7 @@
         lowered_statement: *LoweredIOStatement
           lowering_type: LoweringIOType
           io_statement: LoweredStatementRef
+        offset: *ExpressionRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

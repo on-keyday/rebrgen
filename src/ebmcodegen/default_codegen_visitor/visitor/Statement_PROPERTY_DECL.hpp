@@ -15,7 +15,8 @@
       parent_format: StatementRef
       property_type: TypeRef
       merge_mode: MergeMode
-      cond: ExpressionRef
+      setter_condition: ExpressionRef
+      getter_condition: ExpressionRef
       members: Block
         len: Varint
         container: std::vector<StatementRef>

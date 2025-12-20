@@ -12,6 +12,8 @@
 #include <format>
 #include <optional>
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/access.hpp"
+#include "ebmgen/mapping.hpp"
 namespace ebm2c {
     struct Field {
         ebm::StatementRef id;
@@ -20,6 +22,7 @@ namespace ebm2c {
     struct Struct {
         ebm::StatementRef id;
         std::vector<Field> fields;
+        std::vector<ebm::StatementRef> properties;
         std::optional<ebm::StatementRef> encode_function;
         std::optional<ebm::StatementRef> decode_function;
     };
@@ -48,5 +51,18 @@ namespace ebm2c {
         // remove other dollars
         std::erase(rest, '$');
         return std::format("{} {}{}", base, variable, rest);
+    }
+
+    const ebm::FieldDecl* get_composite_field(auto&& ctx, auto target) {
+        ebmgen::MappingTable& mapping = get_visitor(ctx).module_;
+        const ebm::FieldDecl* comp = ebmgen::access_field<"body.id.field_decl">(mapping, target);
+        if (!comp) {
+            return nullptr;
+        }
+        auto comp_type = ebmgen::access_field<"composite_field_decl">(mapping, comp->composite_field());
+        if (comp_type && comp_type->kind == ebm::CompositeFieldKind::BULK_PRIMITIVE) {
+            return comp;
+        }
+        return nullptr;
     }
 }  // namespace ebm2c

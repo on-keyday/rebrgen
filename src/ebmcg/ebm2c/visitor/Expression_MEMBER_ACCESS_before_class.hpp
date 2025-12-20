@@ -22,6 +22,7 @@
 
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "includes.hpp"
 DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
     using namespace CODEGEN_NAMESPACE;
     auto param = ctx.get_field<"body.id.param_decl">(ctx.base);
@@ -32,6 +33,25 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
         w.write(base_str.to_writer(), "->", member_ident);
         return w;
     }
+    auto prop = ctx.get_field<"body.id.property_decl">(ctx.member);
+    if (prop) {
+        MAYBE(getter_decl, ctx.get_field<"func_decl">(prop->getter_function.id));
+        MAYBE(base, ctx.visit(ctx.base));
+        MAYBE(ident, ctx.identifier(ctx.member));
+        auto parent_ident = ctx.identifier(prop->parent_format);
+        auto getter_func_name = std::format(
+            "{}_get_{}",
+            parent_ident,
+            ident);
+        std::string args;
+        // if state variable, pass as is
+        for (auto& param : getter_decl.params.container) {
+            auto param_name = ctx.identifier(param);
+            args += ", ";
+            args += param_name;
+        }
+        return CODE("(*", getter_func_name, "(&", base.to_writer(), args, "))");
+    }
     MAYBE(body, ctx.get_field<"body.id">(ctx.member));
     if (auto type_ref = get_variant_member_from_field(ctx, body)) {
         MAYBE(base, ctx.visit(ctx.base));
@@ -39,29 +59,26 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
         MAYBE(member, ctx.visit(ctx.member));
         return CODE(base.to_writer(), ".", ident, ".", member.to_writer());
     }
-    if (auto comp_getter = ctx.get_field<"body.id.field_decl">(ctx.member)) {
-        auto comp_ref = ctx.get_field<"composite_field_decl">(comp_getter->composite_field());
-        if (comp_ref && comp_ref->kind == ebm::CompositeFieldKind::BULK_PRIMITIVE) {
-            if (auto comp = comp_getter->composite_getter()) {
-                MAYBE(getter_decl, ctx.get_field<"func_decl">(comp->id));
-                auto parent_ident = ctx.identifier(comp_getter->parent_struct);
-                MAYBE(member_ident, ctx.identifier(ctx.member));
-                auto getter_func_name = std::format(
-                    "{}_get_{}",
-                    parent_ident,
-                    member_ident);
-                MAYBE(base, ctx.visit(ctx.base));
-                std::string args;
-                // if state variable, pass as is
-                for (auto& param : getter_decl.params.container) {
-                    auto param_name = ctx.identifier(param);
-                    if (!args.empty()) {
-                        args += ", ";
-                    }
-                    args += param_name;
+    if (auto comp_getter = get_composite_field(ctx, ctx.member)) {
+        if (auto comp = comp_getter->composite_getter()) {
+            MAYBE(getter_decl, ctx.get_field<"func_decl">(comp->id));
+            auto parent_ident = ctx.identifier(comp_getter->parent_struct);
+            MAYBE(member_ident, ctx.identifier(ctx.member));
+            auto getter_func_name = std::format(
+                "{}_get_{}",
+                parent_ident,
+                member_ident);
+            MAYBE(base, ctx.visit(ctx.base));
+            std::string args;
+            // if state variable, pass as is
+            for (auto& param : getter_decl.params.container) {
+                auto param_name = ctx.identifier(param);
+                if (!args.empty()) {
+                    args += ", ";
                 }
-                return CODE(getter_func_name, "(&", base.to_writer(), args.empty() ? "" : ", ", args, ")");
+                args += param_name;
             }
+            return CODE(getter_func_name, "(&", base.to_writer(), args.empty() ? "" : ", ", args, ")");
         }
     }
     return pass;

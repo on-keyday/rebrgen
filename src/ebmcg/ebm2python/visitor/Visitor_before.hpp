@@ -91,10 +91,11 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
         }
         case ebm::TypeKind::ARRAY:
         case ebm::TypeKind::VECTOR: {
+            auto element_type_ref = *type.body.element_type();
             // For arrays/vectors of bytes, use 's' format.
             // Otherwise, struct module doesn't directly support arrays of arbitrary types.
             // This will require custom loop-based reading in Python.
-            MAYBE(element_type_obj, module_.get_type(*type.body.element_type()));
+            MAYBE(element_type_obj, module_.get_type(element_type_ref));
             if ((element_type_obj.body.kind == ebm::TypeKind::UINT || element_type_obj.body.kind == ebm::TypeKind::INT) &&
                 element_type_obj.body.size() && element_type_obj.body.size()->value() == 8) {
                 // This is a byte array, use 's' format with the total size

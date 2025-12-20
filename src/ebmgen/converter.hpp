@@ -10,6 +10,7 @@
 #include "core/ast/node/expr.h"
 #include "core/ast/node/translated.h"
 #include "core/ast/node/type.h"
+#include "reloc_ptr.hpp"
 #include <wrap/cout.h>
 
 namespace ebmgen {
@@ -75,6 +76,7 @@ namespace ebmgen {
 
     template <AnyRef ID, class Instance, class Body, ebm::AliasHint hint>
     struct ReferenceRepository {
+        using RelocPtr = RelocPtr<ReferenceRepository, ID, Instance>;
         ReferenceRepository(std::vector<ebm::RefAlias>& aliases)
             : aliases(aliases) {}
 
@@ -143,6 +145,14 @@ namespace ebmgen {
                 return nullptr;  // for safety
             }
             return &instances[it->second];
+        }
+
+        expected<RelocPtr> get_reloc_ptr(const ID& id) {
+            auto instance = get(id);
+            if (!instance) {
+                return unexpect_error("{}: ID not found: {}", Instance::visitor_name, get_id(id));
+            }
+            return RelocPtr{this, id};
         }
 
         std::vector<Instance>& get_all() {

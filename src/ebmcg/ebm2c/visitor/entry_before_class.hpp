@@ -55,5 +55,12 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().default_value_option.encoder_return_init = "0";
     ctx.config().enum_member_separator = ",";
     ctx.config().endof_enum_definition = ";";
+    ctx.config().pointer_type_wrapper = [&](Result elem_type) -> expected<Result> {
+        return CODE(elem_type.to_writer(), "*");
+    };
+    ctx.config().make_pointer_wrapper = [&](Result elem_type) -> expected<Result> {
+        return CODE("(&", elem_type.to_writer(), ")");
+    };
+    ctx.config().default_value_option.pointer_init = "NULL";
     return pass;
 }

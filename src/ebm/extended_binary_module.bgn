@@ -70,7 +70,8 @@ format IOAttribute:
     sign :u1 # 0 for unsigned, 1 for signed 
     is_peek :u1 # 0 for non-peek, 1 for peek 
     has_lowered_statement :u1 # 0 for no lowered statement, 1 for has lowered statement
-    reserved :u2
+    has_offset :u1 # 0 for no offset, 1 for has offset
+    reserved :u1
     if endian == Endian.dynamic:
         dynamic_ref :StatementRef # ref to dynamic endian or null
 
@@ -560,6 +561,8 @@ format IOData:
     size :Size # Size information for read/write
     if attribute.has_lowered_statement == 1:
         lowered_statement :LoweredIOStatement # Optional lowered statements for read/write operations
+    if attribute.has_offset == 1:
+        offset :ExpressionRef # Optional offset expression for read/write operations
 
 format Condition:
     cond :ExpressionRef
@@ -766,6 +769,11 @@ format VariantDesc:
     members :Types # List of variant member types
     related_field :StatementRef # Reference to the field that holds this variant (maybe null)
 
+enum ArrayAnnotation:
+    :u8
+    none
+    temporary
+
 format TypeBody:
     kind :TypeKind
     match kind:
@@ -776,6 +784,7 @@ format TypeBody:
         TypeKind.ARRAY:
             element_type :TypeRef
             length :Varint # Fixed length of the array
+            array_annotation :ArrayAnnotation
         TypeKind.VECTOR:
             element_type :TypeRef
         TypeKind.STRUCT:

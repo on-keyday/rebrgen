@@ -241,6 +241,7 @@ namespace ebmgen {
         typ.kind = ebm::TypeKind::ARRAY;
         typ.element_type(u8typ);
         typ.length(*varint(n));
+        typ.array_annotation(ebm::ArrayAnnotation::temporary);
         EBMA_ADD_TYPE(type_ref, std::move(typ));
         return type_ref;
     }

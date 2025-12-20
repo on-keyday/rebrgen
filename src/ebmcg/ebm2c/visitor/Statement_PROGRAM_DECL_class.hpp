@@ -33,7 +33,33 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         std::unordered_map<std::uint64_t, ebm2c::Union> unions;
         std::vector<ebm2c::VectorType> vector_types;
         std::vector<ebm2c::Enum> enums;
+        bool has_can_read_stream = false;
     };
+
+    void write_vector_macros(CodeWriter & w) {
+        w.writeln("#ifndef VECTOR_APPEND");
+        w.writeln("#define VECTOR_APPEND(vector, value) do { \\");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if (!input->append) {\\");
+            w.indent_writeln("return -1; \\");
+            w.writeln("} \\");
+            w.writeln("int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),  &(value), sizeof((value))); \\");
+            w.writeln("if (res != 0) { \\");
+            w.indent_writeln("return res; \\");
+            w.writeln("} \\");
+        }
+        w.writeln("} while(0)");
+        w.writeln("#endif");
+        w.writeln("");
+    }
+
+    void write_decoder_macros(CodeWriter & w) {
+        w.writeln("#ifndef DECODER_CAN_READ");
+        w.writeln("#define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : ((io)->data_end - ((io)->data + (io)->offset)) >= (num_bytes))");
+        w.writeln("#endif");
+        w.writeln("");
+    }
 
     DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
         using namespace CODEGEN_NAMESPACE;
@@ -87,6 +113,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
 
         if (c_ctx.vector_types.size() > 0) {
             w.writeln("// Vector type definitions");
+            w.writeln("#ifndef VECTOR_OF");
             w.writeln("#define VECTOR_OF(type) type##_vector");
             w.writeln("typedef struct {");
             {
@@ -96,20 +123,6 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 w.writeln("size_t capacity;");
             }
             w.writeln("} VECTOR_OF(void);");
-        }
-        w.writeln("typedef struct DecoderInput {");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("const uint8_t* data;");
-            w.writeln("const uint8_t* data_end;");
-            w.writeln("size_t offset;");
-            if (c_ctx.vector_types.size() > 0) {
-                w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size);");
-            }
-        }
-        w.writeln("} DecoderInput;");
-        w.writeln("");
-        if (c_ctx.vector_types.size() > 0) {
             for (auto& v : c_ctx.vector_types) {
                 MAYBE(elem_type, ctx.visit(v.elem_type));
                 w.writeln("typedef struct {");
@@ -122,22 +135,28 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 w.writeln("} VECTOR_OF(", elem_type.to_writer(), ");");
                 w.writeln("");
             }
-            w.writeln("#ifndef VECTOR_APPEND");
-            w.writeln("#define VECTOR_APPEND(vector, value) do { \\");
-            {
-                auto scope = w.indent_scope();
-                w.writeln("if (!input->append) {\\");
-                w.indent_writeln("return -1; \\");
-                w.writeln("} \\");
-                w.writeln("int res = input->append(input, &(vector), (VECTOR_OF(void)*) &(value), sizeof((value))); \\");
-                w.writeln("if (res != 0) { \\");
-                w.indent_writeln("return res; \\");
-                w.writeln("} \\");
-            }
-            w.writeln("} while(0)");
             w.writeln("#endif");
             w.writeln("");
+            write_vector_macros(w);
         }
+        w.writeln("typedef struct DecoderInput {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("const uint8_t* data;");
+            w.writeln("const uint8_t* data_end;");
+            w.writeln("size_t offset;");
+            if (c_ctx.vector_types.size() > 0) {
+                w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size);");
+            }
+            if (c_ctx.has_can_read_stream) {
+                w.writeln("int (*can_read)(struct DecoderInput* self, size_t num_bytes);");
+            }
+        }
+        w.writeln("} DecoderInput;");
+        if (c_ctx.has_can_read_stream) {
+            write_decoder_macros(w);
+        }
+        w.writeln("");
         std::vector<ebm::StatementRef> composite_fns;
         auto collect_composite_fn = [&](ebm::StatementRef composite) -> expected<void> {
             auto comp = ctx.get_field<"composite_field_decl">(composite);
@@ -203,6 +222,13 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             MAYBE(func, ctx.visit(composite_fn_ref));
             w.writeln(func.to_writer());
         }
+        // for each properties
+        for (auto& s : c_ctx.structs) {
+            for (auto& prop_ref : s.properties) {
+                MAYBE(prop, ctx.visit(prop_ref));
+                w.writeln(prop.to_writer());
+            }
+        }
         // write encoding/decoding functions if any
         for (auto& s : c_ctx.structs) {
             if (s.encode_function) {
@@ -214,6 +240,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 w.writeln(func.to_writer());
             }
         }
+
         return w;
     };
 
@@ -234,6 +261,11 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                     continue;
                 }
                 s.fields.push_back(Field{.id = decl_ref});
+            }
+            if (auto props = struct_->properties()) {
+                for (auto& prop_ref : props->container) {
+                    s.properties.push_back(prop_ref);
+                }
             }
             if (auto encode_func = struct_->encode_fn()) {
                 s.encode_function = *encode_func;
@@ -275,6 +307,12 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 handle_struct_decl(u.variants, *struct_key);
             }
             c_ctx.unions[ebmgen::get_id(s.id)] = u;
+        }
+        for (auto& exprs : ctx.module().module().expressions) {
+            if (exprs.body.kind == ebm::ExpressionKind::CAN_READ_STREAM) {
+                c_ctx.has_can_read_stream = true;
+                break;
+            }
         }
         return {};
     }

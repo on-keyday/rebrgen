@@ -23,7 +23,8 @@
           sign: bool
           is_peek: bool
           has_lowered_statement: bool
-          reserved: std::uint8_t
+          has_offset: bool
+          reserved: bool
           dynamic_ref: *StatementRef
         size: Size
           unit: SizeUnit
@@ -32,14 +33,30 @@
         lowered_statement: *LoweredIOStatement
           lowering_type: LoweringIOType
           io_statement: LoweredStatementRef
+        offset: *ExpressionRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
+    if (auto cand = is_bytes_type(ctx, ctx.read_data.data_type)) {
+        MAYBE(target, ctx.visit(ctx.read_data.target));
+        MAYBE(size_str, get_size_str(ctx, ctx.read_data.size));
+        auto io_ = ctx.identifier(ctx.read_data.io_ref);
+        auto offset_val = CODE("0");
+        if (auto offset = ctx.read_data.offset()) {
+            MAYBE(offset_str, ctx.visit(*offset));
+            offset_val = offset_str.to_writer();
+        }
+        if (cand == BytesType::vector) {
+            return CODELINE("EBM_READ_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
+        }
+        return CODELINE("EBM_READ_ARRAY_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
+    }
     if (auto lw = ctx.read_data.lowered_statement()) {
         return ctx.visit(lw->io_statement.id);
     }
-    return CODELINE("// WRITE_DATA not implemented in ebm2c");
+    return CODELINE("// READ_DATA not implemented in ebm2c");
 }

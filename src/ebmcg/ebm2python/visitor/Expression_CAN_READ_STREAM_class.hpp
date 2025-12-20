@@ -31,7 +31,7 @@ DEFINE_VISITOR(Expression_CAN_READ_STREAM) {
 
     MAYBE(size_str, get_size_str(ctx, ctx.num_bytes));
 
-    bool only_one_byte = size_str == "1";
+    bool only_one_byte = size_str.to_string() == "1";
     auto tmp_id = std::format("{}", get_id(ctx.item_id));
     auto current_offset = std::format("current_offset_{}", tmp_id);
     auto end_offset = std::format("end_offset_{}", tmp_id);

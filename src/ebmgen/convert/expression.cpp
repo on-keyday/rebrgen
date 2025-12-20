@@ -438,6 +438,7 @@ namespace ebmgen {
             if (auto ident_ = ast::as<ast::IdentType>(typ_literal->type_literal)) {
                 auto base = ast::as<ast::EnumType>(ident_->base.lock());
                 if (base) {
+                    auto _scope = ctx.state().set_current_generate_type(GenerateType::Normal);
                     EBMA_CONVERT_STATEMENT(enum_decl_stmt, base->base.lock());
                     // Enum member access
                     body.kind = ebm::ExpressionKind::ENUM_MEMBER;

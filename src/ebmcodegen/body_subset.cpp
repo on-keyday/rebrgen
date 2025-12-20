@@ -119,6 +119,7 @@ namespace ebmcodegen {
         for(size_t i = 0;to_string(ebm::TypeKind(i))[0];i++) {
             ebm::TypeBody body;
             body.kind = ebm::TypeKind(i);
+            body.array_annotation({});
             body.base_type({});
             body.element_type({});
             body.func_desc({});

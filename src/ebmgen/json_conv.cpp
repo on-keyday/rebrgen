@@ -1049,14 +1049,22 @@ namespace ebm {
         else {
             return false;
         }
-        if (auto got = j.at("reserved")) {
-            std::uint8_t tmp;
+        if (auto got = j.at("has_offset")) {
+            bool tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
-            if(!obj.reserved(std::move(tmp))) {
+            obj.has_offset(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
+            obj.reserved(std::move(tmp));
         }
         else {
             return false;
@@ -1128,6 +1136,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.lowered_statement(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("offset")) {
+            ExpressionRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.offset(std::move(tmp))) {
                 return false;
             }
         }
@@ -2594,6 +2611,15 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("array_annotation")) {
+            ArrayAnnotation tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.array_annotation(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("base_type")) {
             TypeRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2831,6 +2857,22 @@ namespace ebm {
             }
             if (s == "ALIAS") {
                 obj = AliasHint::ALIAS;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
+    bool from_json(ArrayAnnotation& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "none") {
+                obj = ArrayAnnotation::none;
+                return true;
+            }
+            if (s == "temporary") {
+                obj = ArrayAnnotation::temporary;
                 return true;
             }
             return false;

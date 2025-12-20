@@ -6,6 +6,7 @@
 #include <ebmgen/common.hpp>
 #include <string_view>
 #include <type_traits>
+#include "code/loc_writer.h"
 #include "core/sequencer.h"
 #include "ebmgen/access.hpp"
 #include "helper/template_instance.h"
@@ -15,6 +16,7 @@
 #include <unordered_set>
 
 namespace ebmcodegen::util {
+    using CodeWriter = futils::code::LocWriter<std::string, std::vector, ebm::AnyRef>;
 
     template <typename T>
     concept has_get_visitor_from_context = requires(T ctx) {
@@ -29,6 +31,85 @@ namespace ebmcodegen::util {
             return ctx;
         }
     }
+
+    template <class CodeWriter>
+    auto code_write(auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
+        CodeWriter w;
+        w.write(std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_write(ebm::AnyRef loc, auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
+        CodeWriter w;
+        w.write_with_loc(loc, std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_writeln(auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
+        CodeWriter w;
+        w.writeln(std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_writeln(ebm::AnyRef loc, auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
+        CodeWriter w;
+        w.writeln_with_loc(loc, std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_joint_write(auto&& joint, auto&& vec) {
+        CodeWriter w;
+        bool first = true;
+        using T = std::decay_t<decltype(vec)>;
+        for (auto&& v : vec) {
+            if (!first) {
+                w.write(joint);
+            }
+            w.write(v);
+            first = false;
+        }
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_joint_write(auto&& joint, size_t count, auto&& func) {
+        CodeWriter w;
+        bool first = true;
+        for (size_t i = 0; i < count; ++i) {
+            if (!first) {
+                w.write(joint);
+            }
+            if constexpr (std::is_invocable_v<decltype(func), size_t>) {
+                w.write(func(i));
+            }
+            else {
+                w.write(func);
+            }
+            first = false;
+        }
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_joint_write(ebm::AnyRef loc, auto&&... vec) {
+        CodeWriter w;
+        auto loc_scope = w.with_loc_scope(loc);
+        w.write(code_joint_write<CodeWriter>(std::forward<decltype(vec)>(vec)...));
+        return w;
+    }
+
+#define CODE(...) (code_write<CodeWriter>(__VA_ARGS__))
+#define CODELINE(...) (code_writeln<CodeWriter>(__VA_ARGS__))
+
+#define SEPARATED(...) (code_joint_write<CodeWriter>(__VA_ARGS__))
 
     // remove top level brace
     inline std::string tidy_condition_brace(std::string&& brace) {
@@ -61,13 +142,13 @@ namespace ebmcodegen::util {
         return tidy_condition_brace(std::string(brace));
     }
 
-    ebmgen::expected<std::string> get_size_str(auto&& ctx, const ebm::Size& s) {
+    ebmgen::expected<CodeWriter> get_size_str(auto&& ctx, const ebm::Size& s) {
         if (auto size = s.size()) {
-            return std::format("{}", size->value());
+            return CODE(std::format("{}", size->value()));
         }
         else if (auto ref = s.ref()) {
             MAYBE(expr, visit_Expression(ctx, *ref));
-            return expr.to_string();
+            return expr.to_writer();
         }
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
     }
@@ -114,7 +195,7 @@ namespace ebmcodegen::util {
                 is_candidate = BytesType::vector;
             }
         }
-        if (candidate == BytesType::both || candidate == BytesType::array) {
+        if (candidate == BytesType::both || candidate == BytesType::array) {  // for backward compatibility
             if (type->body.kind == ebm::TypeKind::ARRAY) {
                 is_candidate = BytesType::array;
             }
@@ -393,85 +474,6 @@ namespace ebmcodegen::util {
         }
         return ebmgen::unexpect_error("type not found in variant members");
     }
-
-    template <class CodeWriter>
-    auto code_write(auto&&... args) {
-        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
-        CodeWriter w;
-        w.write(std::forward<decltype(args)>(args)...);
-        return w;
-    }
-
-    template <class CodeWriter>
-    auto code_write(ebm::AnyRef loc, auto&&... args) {
-        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
-        CodeWriter w;
-        w.write_with_loc(loc, std::forward<decltype(args)>(args)...);
-        return w;
-    }
-
-    template <class CodeWriter>
-    auto code_writeln(auto&&... args) {
-        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
-        CodeWriter w;
-        w.writeln(std::forward<decltype(args)>(args)...);
-        return w;
-    }
-
-    template <class CodeWriter>
-    auto code_writeln(ebm::AnyRef loc, auto&&... args) {
-        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
-        CodeWriter w;
-        w.writeln_with_loc(loc, std::forward<decltype(args)>(args)...);
-        return w;
-    }
-
-    template <class CodeWriter>
-    auto code_joint_write(auto&& joint, auto&& vec) {
-        CodeWriter w;
-        bool first = true;
-        using T = std::decay_t<decltype(vec)>;
-        for (auto&& v : vec) {
-            if (!first) {
-                w.write(joint);
-            }
-            w.write(v);
-            first = false;
-        }
-        return w;
-    }
-
-    template <class CodeWriter>
-    auto code_joint_write(auto&& joint, size_t count, auto&& func) {
-        CodeWriter w;
-        bool first = true;
-        for (size_t i = 0; i < count; ++i) {
-            if (!first) {
-                w.write(joint);
-            }
-            if constexpr (std::is_invocable_v<decltype(func), size_t>) {
-                w.write(func(i));
-            }
-            else {
-                w.write(func);
-            }
-            first = false;
-        }
-        return w;
-    }
-
-    template <class CodeWriter>
-    auto code_joint_write(ebm::AnyRef loc, auto&&... vec) {
-        CodeWriter w;
-        auto loc_scope = w.with_loc_scope(loc);
-        w.write(code_joint_write<CodeWriter>(std::forward<decltype(vec)>(vec)...));
-        return w;
-    }
-
-#define CODE(...) (code_write<CodeWriter>(__VA_ARGS__))
-#define CODELINE(...) (code_writeln<CodeWriter>(__VA_ARGS__))
-
-#define SEPARATED(...) (code_joint_write<CodeWriter>(__VA_ARGS__))
 
     namespace internal {
         constexpr bool is_c_ident(const char* ident) {

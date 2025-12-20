@@ -1,14 +1,21 @@
 ## 4. コード生成ロジック (ビジターフック)
 
 ### 4.1 ビジターフックの概要
-ビジターフックは、C++コードスニペットを含む`.hpp`ファイルです。これはクラス定義では**ありません**。代わりに、`ebmcodegen`によって動的に生成される関数のリテラルボディです。`ebmcodegen`は`visit_Statement_WRITE_DATA(...)`のような関数を生成し、あなたの`.hpp`ファイル (例: `visitor/Statement_WRITE_DATA.hpp`) の内容は、その関数のボディに直接`#include`されます。関数、したがってあなたのフックコードは、`expected<Result>`型の値を**返さなければなりません**。`Result`構造体は、生成されたコード文字列をその`value`メンバーに保持します。
+ビジターフックは、特定のEBMノード（例: `Statement_WRITE_DATA`）のコード生成ロジックです。
+最新の**クラスベースフックシステム**では、ロジックは生成されたコンテキストクラスのメソッドとして実装されます。このシステムは、完全なIDEサポート（自動補完）と型安全性を提供します。
+
+-   **構造**: `DEFINE_VISITOR(HookName)`マクロを使用してビジターロジックを定義します。
+-   **コンテキスト**: 必要なすべてのデータ（EBMフィールド、ヘルパー関数、ビジターインスタンス）は、単一の`ctx`オブジェクトを介してアクセスできます。
+-   **戻り値の型**: フックは`expected<Result>`を返さなければなりません。`Result`には、生成されたコードを保持する`CodeWriter`オブジェクトが含まれています。
+
+*注: フックが単純な`.hpp`ファイルであり、ジェネレーターに直接インクルードされるレガシーな「直接インクルード」システムも存在します。これは後方互換性のためにサポートされていますが、新しい実装では**非推奨**です。*
 
 ### 4.2 `ebmtemplate.py`によるビジターフックの管理
 `script/ebmtemplate.py`スクリプトは、`ebmcodegen`をラップし、ビジターフックのライフサイクルを簡素化します。
 -   **`python script/ebmtemplate.py`**: ヘルプを表示します。
 -   **`python script/ebmtemplate.py interactive`**: スクリプト機能のインタラクティブガイドを開始します。
 -   **`python script/ebmtemplate.py <template_target>`**: フックファイルの概要を標準出力に出力します。
--   **`python script/ebmtemplate.py <template_target> <lang>`**: `src/ebmcg/ebm2<lang>/visitor/`に新しいフックファイル (`.hpp`) を生成します。
+-   **`python script/ebmtemplate.py <template_target> <lang>`**: `src/ebmcg/ebm2<lang>/visitor/`に新しいフックファイル (`.hpp`) を生成します。**デフォルトでは、クラスベースのフックが生成されます。**
 -   **`python script/ebmtemplate.py update <lang>`**: 指定された言語の既存のすべてのフックの自動生成されたコメントブロック (利用可能な変数リスト) を更新します。
 -   **`python script/ebmtemplate.py test`**: 利用可能なすべてのテンプレートターゲットの生成をテストします。
 -   **`python script/ebmtemplate.py list <lang>`**: 指定された[lang]ディレクトリ内のすべての定義済みテンプレートをリストします。
@@ -16,38 +23,41 @@
 ### 4.3 ビジターフック実装のワークフロー
 1.  **ターゲットの検索**: 処理したいEBMノードを決定します。`tool/ebmcodegen --mode hooklist`を使用して、利用可能なフックをリストします。
 2.  **ファイルの作成**: `python script/ebmtemplate.py <template_target> <lang>`を使用してフックファイルを生成します。
-3.  **ロジックの実装**: 新しく作成されたファイル (`src/ebmcg/ebm2<lang>/visitor/<template_target>.hpp`) を開きます。`/*here to write the hook*/`コメントをC++実装に置き換えます。
-4.  **ビルドと検証**: フックを実装した後、`python script/unictest.py` (またはデバッグ用に`python script/unictest.py --print-stdout`) を実行して、変更をビルドおよび検証します。これにより、ビルドプロセスがトリガーされ、`unictest`フレームワークで定義されたテストが実行されます。`unictest.py`は、適切な場合に`--debug-unimplemented`フラグをコードジェネレーター実行可能ファイルに自動的に渡します。また、ビルドシステムが新しいファイルを認識するように、フックファイルの作成時に`src/ebmcg/ebm2<lang>/main.cpp`の最終更新時間を更新することを忘れないでください。
+    *   例: `python script/ebmtemplate.py Statement_WRITE_DATA rust` は `src/ebmcg/ebm2rust/visitor/Statement_WRITE_DATA_class.hpp` を作成します。
+3.  **ロジックの実装**: 新しく作成されたファイルを開きます。`DEFINE_VISITOR`ブロック内の`/*here to write the hook*/`コメントを実装に置き換えます。データにアクセスするには`ctx`オブジェクトを使用します。
+4.  **ビルドと検証**: フックを実装した後、`python script/unictest.py` (またはデバッグ用に`python script/unictest.py --print-stdout`) を実行して、変更をビルドおよび検証します。これにより、ビルドプロセスがトリガーされ、テストが実行されます。`unictest.py`は、適切な場合に`--debug-unimplemented`フラグをコードジェネレーターに渡して、未実装のフックを特定するのに役立ちます。
 
 ### 4.4 ビジターフックAPIリファレンス
 
-ビジターフックは、`ebmcodegen`によって生成されるC++関数の本体として機能します。これらのフック内で利用可能な主要なAPI要素を以下に示します。
+ビジターフックは、`DEFINE_VISITOR`マクロ内で実装されます。
 
 #### 4.4.1 戻り値の型と`Result`構造体
 
 すべてのビジターフックは`expected<Result>`型の値を返さなければなりません。
 
--   **`expected<T>`**: エラーが発生する可能性のある操作の結果を表す型です。成功した場合は`T`型の値を保持し、失敗した場合はエラー情報を保持します。`ebmgen`プロジェクトでは、エラーハンドリングのために`MAYBE`マクロと組み合わせて使用されます。
+-   **`expected<T>`**: エラーが発生する可能性のある操作の結果を表す型です。エラーハンドリングのために`MAYBE`マクロと組み合わせて使用されます。
 -   **`Result`構造体**:
-    -   `CodeWriter value`: 生成されたコードを保持する`CodeWriter`オブジェクトです。`CodeWriter`は、インデントなどを考慮しながらコードを効率的に構築するためのユーティリティです。フックの目的は、この`value`メンバーにターゲット言語のコードを構築することです。
+    -   `CodeWriter value`: 生成されたコード文字列を保持します。フックの目的は、このオブジェクト内にターゲット言語のコードを構築することです。
 
-#### 4.4.2 利用可能な変数
+#### 4.4.2 利用可能な変数 (`ctx`)
 
-各ビジターフックは、訪問しているEBMノードのフィールドに対応する変数に直接アクセスできます。これらの変数は、`ebmtemplate.py <template_target> <lang>`でフックファイルを生成した際に、自動生成されるコメントブロックにリストされます。
+クラスベースシステムでは、すべての変数は**`ctx`**オブジェクトを介してアクセスされます。
+`ctx`の利用可能なメンバーは、フックファイルの先頭にある自動生成されたコメントブロックにリストされています。
 
--   **例**: `Statement_WRITE_DATA`フックの場合、`io_data`や`endian`などの変数が利用可能です。
--   **変数の更新**: EBM構造 (`extended_binary_module.bgn`) が変更された場合は、`python script/ebmtemplate.py update <lang>`を実行して、既存のフックのコメントブロック内の変数リストを更新してください。
+-   **EBMフィールド**: 訪問しているノードのフィールドに直接アクセスします (例: `ctx.io_data`, `ctx.endian`)。
+-   **ヘルパーアクセサ**: 例: `ctx.identifier()` でステートメントに関連付けられた名前を取得します。
+-   **ビジターインスタンス**: `ctx.visitor` でメインのビジターオブジェクトにアクセスできます (ただし、通常は `ctx.visit` ラッパーを使用します)。
+
+-   **変数の更新**: EBM構造が変更された場合は、`python script/ebmtemplate.py update <lang>`を実行して、コメントブロックを更新してください。
 
 #### 4.4.3 ヘルパー関数とマクロ
 
-ビジターフック内でコード生成ロジックを簡素化するために、いくつかのヘルパー関数とマクロが提供されています。
-
--   **`MAYBE(var, expr)`**: エラーハンドリングマクロ。`expr`が`expected`型の値を返し、それがエラーである場合に、現在の関数からエラーを伝播して早期リターンします。成功した場合は、`expr`の値を`var`に代入します。
-    -   **使用例**: `MAYBE(sub_expr_str, visit_Expression(*this, some_expression_ref));`
--   **`visit_Expression(*this, expression_ref)`**: 指定された`ExpressionRef`に対応するEBM式を再帰的に訪問し、その結果として生成されたコードを返します。
--   **`visit_Statement(*this, statement_ref)`**: 指定された`StatementRef`に対応するEBMステートメントを再帰的に訪問し、その結果として生成されたコードを返します。
--   **`std::format`**: C++20で導入された文字列フォーマット機能。生成するコード文字列を整形するために使用できます。
--   **`to_string(enum_value)`**: EBMの列挙型 (例: `SizeUnit`, `Endian`) の値を対応する文字列表現に変換するために使用されます。
+-   **`MAYBE(var, expr)`**: エラーハンドリングマクロ。`expr`がエラーを返した場合、それを伝播して早期リターンします。成功した場合は、値が`var`に代入されます。
+    -   **使用例**: `MAYBE(res, ctx.visit(ctx.some_expr));`
+-   **`ctx.visit(ref)`**: `ref`で参照されるEBMオブジェクト (Statement, Expression, Typeなど) を再帰的に訪問し、生成されたコード (`expected<Result>`) を返します。
+    -   **使用例**: `MAYBE(code, ctx.visit(ctx.stmt.body));`
+-   **`std::format`**: C++20の文字列フォーマット機能。
+-   **`to_string(enum_value)`**: EBMの列挙型 (例: `SizeUnit`, `Endian`) の値を文字列に変換します。
 
 #### 4.4.4 `extended_binary_module.hpp`の参照
 

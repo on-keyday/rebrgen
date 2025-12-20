@@ -16,14 +16,17 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-{
-    MAYBE(typ, module_.get_type(type));
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_DEFAULT_VALUE_before) {
+    using namespace CODEGEN_NAMESPACE;
+    MAYBE(typ, ctx.get(ctx.type));
     if (typ.body.kind == ebm::TypeKind::ARRAY) {
         MAYBE(length, typ.body.length());
         return CODE("[Default::default();", std::format("{}", length.value()), "]");
     }
-    if(typ.body.kind == ebm::TypeKind::STRUCT || typ.body.kind == ebm::TypeKind::RECURSIVE_STRUCT){
-        MAYBE(ident, visit_Type(*this, type));
+    if (typ.body.kind == ebm::TypeKind::STRUCT || typ.body.kind == ebm::TypeKind::RECURSIVE_STRUCT) {
+        MAYBE(ident, ctx.visit(ctx.type));
         return CODE(ident.to_writer(), " { ..Default::default() }");
     }
+    return pass;
 }

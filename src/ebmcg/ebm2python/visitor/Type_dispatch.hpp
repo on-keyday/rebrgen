@@ -11,8 +11,8 @@
       id: TypeRef
       body: TypeBody
         kind: TypeKind
+        array_type: *TypeRef
         base_type: *TypeRef
-        common_type: *TypeRef
         element_type: *TypeRef
         func_desc: *FuncTypeDesc
           return_type: TypeRef
@@ -24,15 +24,18 @@
         id: *StatementRef
         inner_type: *TypeRef
         length: *Varint
-        members: *Types
-          len: Varint
-          container: std::vector<TypeRef>
         pointee_type: *TypeRef
-        related_field: *StatementRef
         size: *Varint
+        variant_desc: *VariantDesc
+          common_type: TypeRef
+          members: Types
+            len: Varint
+            container: std::vector<TypeRef>
+          related_field: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+#include "ebm/extended_binary_module.hpp"
 const auto& type = in;
 
 auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {

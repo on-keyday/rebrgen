@@ -52,8 +52,11 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     }
 
     if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_GETTER ||
-        ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER) {
-        if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER) {
+        ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER ||
+        ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER ||
+        ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+        if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER ||
+            ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
             func_prefix += "set_";
         }
         else {

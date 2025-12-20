@@ -13,11 +13,12 @@
         wm: ebmcodegen::WriterManager<CodeWriter>
       item_id: ebm::TypeRef
       kind: const ebm::TypeKind&
-      common_type: const ebm::TypeRef&
-      members: const ebm::Types&
-        len: Varint
-        container: std::vector<TypeRef>
-      related_field: const ebm::StatementRef&
+      variant_desc: const ebm::VariantDesc&
+        common_type: TypeRef
+        members: Types
+          len: Varint
+          container: std::vector<TypeRef>
+        related_field: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

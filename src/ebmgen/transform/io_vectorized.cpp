@@ -131,8 +131,8 @@ namespace ebmgen {
         }
         std::map<std::uint64_t, ebm::StatementRef> map_statements;
         for (auto& [block_id, updates] : update) {
-            auto& stmt = tctx.statement_repository().get_all()[block_id];
-            auto block = get_block(stmt.body);
+            auto stmt_id = tctx.statement_repository().get_all()[block_id].id;
+            auto block = get_block(tctx.statement_repository().get_all()[block_id].body);
             if (!block) {
                 return unexpect_error("Failed to get block from statement");
             }
@@ -142,6 +142,8 @@ namespace ebmgen {
                 print_if_verbose("Adding vectorized I/O statement for block ", block_id, ": ", get_id(new_stmt), "\n");
                 new_statements.emplace_back(group_range, std::move(new_stmt));
             }
+            block = get_block(tctx.statement_repository().get_all()[block_id].body);  // refetch because memory may be relocated
+            assert(block);
             ebm::Block updated_block;
             size_t g = 0;
             for (size_t b = 0; b < block->container.size(); ++b) {
@@ -155,7 +157,7 @@ namespace ebmgen {
             }
             auto& ctx = tctx.context();
             EBM_BLOCK(new_block, std::move(updated_block));
-            map_statements.emplace(get_id(stmt.id), new_block);
+            map_statements.emplace(get_id(stmt_id), new_block);
         }
         for (size_t i = 0; i < current_added; i++) {
             auto& stmt = tctx.statement_repository().get_all()[i];

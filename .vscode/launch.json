@@ -123,7 +123,7 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "C:/workspace/shbrgen/rebrgen/src/test/capnproto_test.bgn",
+        "C:/workspace/shbrgen/rebrgen/brgen/example/tcp_segment.bgn",
         "-I",
         "-g"
       ],

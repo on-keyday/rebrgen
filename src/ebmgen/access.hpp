@@ -40,6 +40,7 @@ namespace ebmgen {
 
     template <size_t N = 10>
     struct FieldNames {
+        constexpr static size_t max_depth = N;
         FieldOnlyTag tags[N]{};
         size_t depth = 0;
         constexpr void add_tag(const FieldOnlyTag& tag) {
@@ -163,7 +164,7 @@ namespace ebmgen {
         }
     };
 
-    template <Name V, size_t offset = 0, size_t step = 0>
+    template <size_t N, Name<N> V, size_t offset = 0, size_t step = 0>
     struct FieldAccessor {
         static constexpr auto field_index = V.tags[offset].field_tag.index;
 
@@ -176,16 +177,16 @@ namespace ebmgen {
 
         static constexpr decltype(auto) get_field(auto&& ctx, auto&& in) {
             using T = std::decay_t<decltype(in)>;
-#define REF_TO_INSTANCE(RefType, Instance, getter_name)                                                                                  \
-    else if constexpr (std::is_same_v<T, RefType>) {                                                                                     \
-        return FieldAccessor<V, offset, step + 1>::get_field(ctx, ctx.get_##getter_name(in));                                            \
-    }                                                                                                                                    \
-    else if constexpr (std::is_same_v<T, RefType*> || std::is_same_v<T, const RefType*>) {                                               \
-        if (!in) {                                                                                                                       \
-            using ResultT = std::decay_t<decltype(FieldAccessor<V, offset, step + 1>::get_field(ctx, *static_cast<RefType*>(nullptr)))>; \
-            return ResultT{};                                                                                                            \
-        }                                                                                                                                \
-        return FieldAccessor<V, offset, step + 1>::get_field(ctx, *in);                                                                  \
+#define REF_TO_INSTANCE(RefType, Instance, getter_name)                                                                                     \
+    else if constexpr (std::is_same_v<T, RefType>) {                                                                                        \
+        return FieldAccessor<N, V, offset, step + 1>::get_field(ctx, ctx.get_##getter_name(in));                                            \
+    }                                                                                                                                       \
+    else if constexpr (std::is_same_v<T, RefType*> || std::is_same_v<T, const RefType*>) {                                                  \
+        if (!in) {                                                                                                                          \
+            using ResultT = std::decay_t<decltype(FieldAccessor<N, V, offset, step + 1>::get_field(ctx, *static_cast<RefType*>(nullptr)))>; \
+            return ResultT{};                                                                                                               \
+        }                                                                                                                                   \
+        return FieldAccessor<N, V, offset, step + 1>::get_field(ctx, *in);                                                                  \
     }
             if constexpr (false) {
             }
@@ -195,7 +196,7 @@ namespace ebmgen {
 #undef REF_TO_INSTANCE
             else if constexpr (offset + 1 < V.depth) {
                 if constexpr (V.tags[offset].field_tag.is_array_index) {
-                    using ResultT = std::decay_t<decltype(FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, std::addressof((*in)[V.tags[offset].field_tag.index])))>;
+                    using ResultT = std::decay_t<decltype(FieldAccessor<N, V, offset + 1, step + 1>::get_field(ctx, std::addressof((*in)[V.tags[offset].field_tag.index])))>;
                     if constexpr (std::is_pointer_v<std::decay_t<decltype(in)>>) {
                         if (!in) {
                             return ResultT{};
@@ -203,21 +204,21 @@ namespace ebmgen {
                         if (in->size() <= V.tags[offset].field_tag.index) {
                             return ResultT{};
                         }
-                        return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, std::addressof((*in)[V.tags[offset].field_tag.index]));
+                        return FieldAccessor<N, V, offset + 1, step + 1>::get_field(ctx, std::addressof((*in)[V.tags[offset].field_tag.index]));
                     }
                     else {
                         if (in.size() <= V.tags[offset].field_tag.index) {
                             return ResultT{};
                         }
-                        return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, std::addressof(in[V.tags[offset].field_tag.index]));
+                        return FieldAccessor<N, V, offset + 1, step + 1>::get_field(ctx, std::addressof(in[V.tags[offset].field_tag.index]));
                     }
                 }
                 else {
                     if constexpr (V.tags[offset].field_tag.index == instance_index) {
-                        return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, in);
+                        return FieldAccessor<N, V, offset + 1, step + 1>::get_field(ctx, in);
                     }
                     else {
-                        return FieldAccessor<V, offset + 1, step + 1>::get_field(ctx, ebmcodegen::get_field<field_index>(in));
+                        return FieldAccessor<N, V, offset + 1, step + 1>::get_field(ctx, ebmcodegen::get_field<field_index>(in));
                     }
                 }
             }
@@ -258,10 +259,15 @@ namespace ebmgen {
         }
     };
 
-    template <FieldNames<> N>
+    template <size_t N, FieldNames<N> V>
     constexpr decltype(auto) access_field(auto&& ctx, auto&& in) {
-        constexpr auto name = Name<>::make<std::remove_pointer_t<std::decay_t<decltype(in)>>>(N);
-        return FieldAccessor<name>::get_field(ctx, in);
+        constexpr auto name = Name<>::make<std::remove_pointer_t<std::decay_t<decltype(in)>>>(V);
+        return FieldAccessor<N, name>::get_field(ctx, in);
+    }
+
+    template <FieldNames<10> V>
+    constexpr decltype(auto) access_field(auto&& ctx, auto&& in) {
+        return access_field<V.max_depth, V>(ctx, in);
     }
 
     namespace test {

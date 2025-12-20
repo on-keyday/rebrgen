@@ -679,3 +679,50 @@ DEFINE_VISITOR(Statement_ENUM_DECL) {
 | **Developer Exp.**  | Low (requires memorization)             | **High** (IDE-assisted)                  |
 
 In conclusion, the main goal of transitioning to the new system was to achieve **full IDE code completion**, thereby making the implementation of hooks significantly faster, more reliable, and more accessible to developers.
+
+#### 15. Documentation Structure (`docs/`)
+
+The `docs/` directory, located at the root of the `rebrgen` project, contains all project-related documentation.
+
+```
+docs/
+├── draft/                      # Work-in-progress documents and rough notes.
+│   ├── wd_draft/
+│   ├── wd_refined/
+│   └── consolidation_notes.md
+├── en/                         # English documentation.
+│   ├── concepts_guidelines.md
+│   ├── development_setup.md
+│   ├── inconsistencies_notes.md
+│   ├── index.md
+│   ├── magic_access_path.md
+│   ├── project_overview.md
+│   ├── script_reference.md
+│   ├── testing_verification.md
+│   ├── visitor_hooks_and_dsl.md
+│   └── working_with_ebm_codegen.md
+├── gemini/                     # Memos and instructions specifically for the Gemini agent.
+│   └── access_api_documentation.md
+├── ja/                         # Japanese documentation. (Same structure as /en/)
+│   ├── concepts_guidelines.md
+│   ├── development_setup.md
+│   ├── inconsistencies_notes.md
+│   ├── index.md
+│   ├── magic_access_path.md
+│   ├── project_overview.md
+│   ├── script_reference.md
+│   ├── testing_verification.md
+│   ├── visitor_hooks_and_dsl.md
+│   └── working_with_ebm_codegen.md
+└── old/                        # Outdated or archived documents.
+    ├── cline/
+    ├── abstract_ops.json
+    ├── architecture.md
+    ├── binary_module.md
+    ├── bm2python_hooks.md
+    ├── complexity_reduction_plan.md
+    ├── hook_file_templates.md
+    ├── refactoring_plan.md
+    ├── template_parameters.md
+    └── words.md
+```

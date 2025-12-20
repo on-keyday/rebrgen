@@ -40,6 +40,25 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_WRITE_DATA) {
     using namespace CODEGEN_NAMESPACE;
+    using namespace CODEGEN_NAMESPACE;
+    if (auto cand = is_bytes_type(ctx, ctx.write_data.data_type)) {
+        MAYBE(target, ctx.visit(ctx.write_data.target));
+        MAYBE(size_str, get_size_str(ctx, ctx.write_data.size));
+        auto io_ = ctx.identifier(ctx.write_data.io_ref);
+        auto offset_val = CODE("0");
+        if (auto offset = ctx.write_data.offset()) {
+            MAYBE(offset_str, ctx.visit(*offset));
+            offset_val = offset_str.to_writer();
+        }
+        if (cand == BytesType::vector) {
+            return CODELINE("EBM_WRITE_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
+        }
+        auto annot = ctx.get_field<"array_annotation">(ctx.write_data.data_type);
+        if (annot && *annot == ebm::ArrayAnnotation::write_temporary) {
+            return CODELINE("EBM_WRITE_ARRAY_BYTES_TEMPORARY(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
+        }
+        return CODELINE("EBM_WRITE_ARRAY_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
+    }
     if (auto lw = ctx.write_data.lowered_statement()) {
         return ctx.visit(lw->io_statement.id);
     }

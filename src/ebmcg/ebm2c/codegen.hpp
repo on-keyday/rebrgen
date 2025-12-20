@@ -301,6 +301,8 @@ namespace ebm2c {
     template<typename Context>
     expected<Result> dispatch_Statement_WRITE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
     template<typename Context>
+    expected<Result> dispatch_Statement_RESERVE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Context>
     expected<Result> dispatch_Statement_IF_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
     template<typename Context>
     expected<Result> dispatch_Statement_LOOP_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
@@ -385,6 +387,9 @@ namespace ebm2c {
             }
             case ebm::StatementKind::WRITE_DATA: {
                 return dispatch_Statement_WRITE_DATA(std::forward<Context>(ctx),in,alias_ref);
+            }
+            case ebm::StatementKind::RESERVE_DATA: {
+                return dispatch_Statement_RESERVE_DATA(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::IF_STATEMENT: {
                 return dispatch_Statement_IF_STATEMENT(std::forward<Context>(ctx),in,alias_ref);
@@ -1497,6 +1502,51 @@ namespace ebm2c {
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    struct Context_Statement_RESERVE_DATA : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA> {
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::ReserveData& reserve_data;
+    };
+    struct VisitorTag_Statement_RESERVE_DATA {};
+    template<typename VisitorImpl>
+    concept has_visitor_Statement_RESERVE_DATA = requires(VisitorImpl v) {
+         { v.visit(std::declval<Context_Statement_RESERVE_DATA&>()) } -> std::convertible_to<expected<Result>>;
+    };
+    // Deconstruct context fields
+    #define EBM2C_DECONSTRUCT_STATEMENT_RESERVE_DATA(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;
+    struct Context_Statement_RESERVE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_before> {
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::ReserveData& reserve_data;
+        ebmcodegen::util::MainLogicWrapper<Result> main_logic;
+    };
+    struct VisitorTag_Statement_RESERVE_DATA_before {};
+    template<typename VisitorImpl>
+    concept has_visitor_Statement_RESERVE_DATA_before = requires(VisitorImpl v) {
+         { v.visit(std::declval<Context_Statement_RESERVE_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
+    };
+    // Deconstruct context fields
+    #define EBM2C_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;
+    struct Context_Statement_RESERVE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_after> {
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::ReserveData& reserve_data;
+        ebmcodegen::util::MainLogicWrapper<Result> main_logic;
+        expected<Result>& result;
+    };
+    struct VisitorTag_Statement_RESERVE_DATA_after {};
+    template<typename VisitorImpl>
+    concept has_visitor_Statement_RESERVE_DATA_after = requires(VisitorImpl v) {
+         { v.visit(std::declval<Context_Statement_RESERVE_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
+    };
+    // Deconstruct context fields
+    #define EBM2C_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IF_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
@@ -5826,6 +5876,12 @@ namespace ebm2c {
     #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2c::Context_Statement_WRITE_DATA_before
     #define EBM2C_CODEGEN_VISITOR_Statement_WRITE_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_WRITE_DATA_after>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2c::Context_Statement_WRITE_DATA_after
+    #define EBM2C_CODEGEN_VISITOR_Statement_RESERVE_DATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RESERVE_DATA>>
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA ebm2c::Context_Statement_RESERVE_DATA
+    #define EBM2C_CODEGEN_VISITOR_Statement_RESERVE_DATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RESERVE_DATA_before>>
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA_before ebm2c::Context_Statement_RESERVE_DATA_before
+    #define EBM2C_CODEGEN_VISITOR_Statement_RESERVE_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RESERVE_DATA_after>>
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA_after ebm2c::Context_Statement_RESERVE_DATA_after
     #define EBM2C_CODEGEN_VISITOR_Statement_IF_STATEMENT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IF_STATEMENT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_IF_STATEMENT ebm2c::Context_Statement_IF_STATEMENT
     #define EBM2C_CODEGEN_VISITOR_Statement_IF_STATEMENT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IF_STATEMENT_before>>

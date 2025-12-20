@@ -254,6 +254,9 @@ namespace ebmgen {
 
     // single route
     // a - b - c - d
+    // or
+    // a - b - c
+    //   \ - d (not merged finally)
     expected<void> single_route(CFGContext& tctx, ebm::StatementRef io_ref, std::vector<Route>& finalized_routes, size_t max_bit_size, bool write) {
         auto& ctx = tctx.tctx.context();
         ebm::Block block;
@@ -267,35 +270,7 @@ namespace ebmgen {
         //  EBM_DEFINE_ANONYMOUS_VARIABLE(current_bit_offset, count_t, zero);
         //  EBM_DEFINE_ANONYMOUS_VARIABLE(read_offset, count_t, zero);
 
-        ebm::StatementRef flush_buffer_statement;
-        if (write) {  // incremental reserving
-            MAYBE(new_id, ctx.repository().new_statement_id());
-            flush_buffer_statement = new_id;
-        }
-
-        // added_bit = current_bit_offset + add_bit
-        // new_size = (added_bit + 7) / 8
-        // for read_offset < new_size:
-        //    tmp_buffer[read_offset] = read u8
-        //    read_offset++
-        auto do_incremental = [&](ebm::StatementRef field, size_t& read_offset, size_t added_bit) -> expected<ebm::StatementRef> {
-            // EBMU_INT_LITERAL(seven, 7);
-            // EBMU_INT_LITERAL(eight, 8);
-            // EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
-            // EBM_BINARY_OP(new_size, ebm::BinaryOp::div, count_t, new_size_bit, eight);
-            // EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, read_offset, new_size);
-            auto new_size = (added_bit + 7) / 8;
-            if (read_offset >= new_size) {
-                return ebm::StatementRef{};
-            }
-            if (write) {  // incremental reserving
-                ebm::ReserveData reserve_data;
-                reserve_data.write_data = flush_buffer_statement;
-                MAYBE(reserve_size, make_fixed_size(new_size, ebm::SizeUnit::BYTE_FIXED));
-                reserve_data.size = reserve_size;
-                EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
-                return reserve_stmt;
-            }
+        auto do_read = [&](ebm::StatementRef field, size_t& read_offset, size_t new_size) -> expected<ebm::StatementRef> {
             ebm::Block block;
             size_t original_read_offset = read_offset;
             while (read_offset < new_size) {
@@ -318,6 +293,84 @@ namespace ebmgen {
             data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, read));
             EBM_READ_DATA(read_data, std::move(data));
             return read_data;
+        };
+
+        ebm::StatementRef flush_buffer_statement;
+        bool is_single_route = finalized_routes.size() == 1;
+        ebm::StatementRef initial_reserve_stmt;
+        if (write) {  // incremental reserving
+            MAYBE(new_id, ctx.repository().new_statement_id());
+            flush_buffer_statement = new_id;
+            if (is_single_route) {
+                // reserve upfront for single route
+                ebm::ReserveData reserve_data;
+                reserve_data.write_data = flush_buffer_statement;
+                MAYBE(reserve_size, make_fixed_size(max_bit_size / 8, ebm::SizeUnit::BYTE_FIXED));
+                reserve_data.size = reserve_size;
+                EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
+                initial_reserve_stmt = reserve_stmt;
+            }
+        }
+        else {
+            if (is_single_route) {
+                // read upfront for single route
+                size_t read_offset = 0;
+                MAYBE(read_data, do_read(finalized_routes[0].route[0]->original_node, read_offset, max_bit_size / 8));
+                initial_reserve_stmt = read_data;
+            }
+        }
+
+        // added_bit = current_bit_offset + add_bit
+        // new_size = (added_bit + 7) / 8
+        // for read_offset < new_size:
+        //    tmp_buffer[read_offset] = read u8
+        //    read_offset++
+        auto do_incremental = [&](ebm::StatementRef field, size_t& read_offset, size_t added_bit) -> expected<ebm::StatementRef> {
+            // EBMU_INT_LITERAL(seven, 7);
+            // EBMU_INT_LITERAL(eight, 8);
+            // EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
+            // EBM_BINARY_OP(new_size, ebm::BinaryOp::div, count_t, new_size_bit, eight);
+            // EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, read_offset, new_size);
+            auto new_size = (added_bit + 7) / 8;
+            if (read_offset >= new_size) {
+                return ebm::StatementRef{};
+            }
+            if (is_single_route) {
+                return ebm::StatementRef{};  // already reserved upfront
+            }
+            if (write) {  // incremental reserving
+                ebm::ReserveData reserve_data;
+                reserve_data.write_data = flush_buffer_statement;
+                MAYBE(reserve_size, make_fixed_size(new_size, ebm::SizeUnit::BYTE_FIXED));
+                reserve_data.size = reserve_size;
+                EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
+                return reserve_stmt;
+            }
+            /*
+            ebm::Block block;
+            size_t original_read_offset = read_offset;
+            while (read_offset < new_size) {
+                EBMU_INT_LITERAL(read_offset_expr, read_offset);
+                EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset_expr);
+                auto data = make_io_data(io_ref, field, indexed, u8_t, {}, get_size(8));
+                MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, field, 1, {}, indexed, u8_t));
+                data.attribute.has_lowered_statement(true);
+                data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, lowered));
+                EBM_READ_DATA(read_to_temporary, std::move(data));
+                append(block, read_to_temporary);
+                read_offset++;
+            }
+            EBM_BLOCK(read, std::move(block));
+            auto data = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, get_size((new_size - original_read_offset) * 8));
+            EBMU_INT_LITERAL(offset_lit, original_read_offset);
+            data.attribute.has_offset(true);
+            data.offset(offset_lit);
+            data.attribute.has_lowered_statement(true);
+            data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, read));
+            EBM_READ_DATA(read_data, std::move(data));
+            return read_data;
+            */
+            return do_read(field, read_offset, new_size);
         };
         auto flush_buffer = [&](ebm::StatementRef field, size_t new_size_bit) -> expected<ebm::StatementRef> {
             // EBMU_INT_LITERAL(eight, 8);
@@ -359,6 +412,9 @@ namespace ebmgen {
                     ebm::Block block;
                     if (i == 0) {
                         append(block, tmp_buffer_def);
+                        if (!is_nil(initial_reserve_stmt)) {
+                            append(block, initial_reserve_stmt);
+                        }
                         // append(block, current_bit_offset_def);
                         // if (!write) {
                         //    append(block, read_offset_def);

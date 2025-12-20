@@ -28,7 +28,7 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().field_name_prior_to_type = false;
     ctx.config().variable_name_prior_to_type = false;
     ctx.config().array_type_wrapper = [&](Result elem_type, size_t size, ebm::ArrayAnnotation anot) -> expected<Result> {
-        if (anot == ebm::ArrayAnnotation::read_temporary) {
+        if (anot == ebm::ArrayAnnotation::read_temporary || anot == ebm::ArrayAnnotation::write_temporary) {
             // directly reference to original input buffer
             return CODE(elem_type.to_writer(), "*");
         }

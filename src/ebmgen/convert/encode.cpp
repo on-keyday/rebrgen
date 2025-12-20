@@ -381,6 +381,7 @@ namespace ebmgen {
                 for (size_t i = 0; i < n; i++) {
                     size_t shift_idx = n - 1 - i;
                     MAYBE(elem, do_assign(i, shift_idx));
+                    append(encode_loop, elem);
                 }
                 EBM_BLOCK(enc_block, std::move(encode_loop));
                 return enc_block;

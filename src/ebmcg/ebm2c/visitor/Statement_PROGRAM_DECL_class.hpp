@@ -80,18 +80,88 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         }
         w.writeln("} while(0)");
         w.writeln("");
-        w.writeln("#define EBM_READ_BYTES(io, target, size, offset_value) do { \\");
+        w.writeln("#define EBM_READ_BYTES(io, target, size_value, offset_value) do { \\");
         {
             auto scope = w.indent_scope();
-            w.writeln("if (DECODER_CAN_READ((io), (size))) { \\");
+            w.writeln("if (DECODER_CAN_READ((io), (size_value))) { \\");
             {
                 auto inner_scope = w.indent_scope();
                 w.writeln("if ((offset_value) == 0) { \\");
-                w.indent_writeln("for (size_t i = 0; i < (size); i++) { \\");
-                w.indent_writeln("(target).data[i] = (io)->data[(io)->offset + i]; \\");
-                w.indent_writeln("} \\");
+                w.writeln("(target).data = (uint8_t*)((io)->data + (io)->offset); \\");
+                w.writeln("(target).size = (size_value); \\");
+                w.writeln("(target).capacity = (target).size; \\");
                 w.writeln("}  \\");
-                w.writeln("(io)->offset += (size); \\");
+                w.writeln("(io)->offset += (size_value); \\");
+            }
+            w.writeln("} else { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return -1; \\");
+            }
+            w.writeln("} \\");
+        }
+        w.writeln("} while(0)");
+        w.writeln("");
+    }
+
+    void write_encoder_macros(CodeWriter & w) {
+        w.writeln("#define EBM_RESERVE_DATA(io,target, size) do { \\");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if ((io)->offset + (size) > (size_t)((io)->data_end - (io)->data)) { \\");
+            w.indent_writeln("return -1; \\");
+            w.writeln("} \\");
+            w.writeln("target = (uint8_t*)((io)->data + (io)->offset); \\");
+        }
+        w.writeln("} while(0)");
+        w.writeln("");
+        w.writeln("#define EBM_WRITE_ARRAY_BYTES_TEMPORARY(io, source, size_value, offset_value) do { \\");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("(io)->offset += (size_value); \\");
+            }
+            w.writeln("} else { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return -1; \\");
+            }
+            w.writeln("} \\");
+        }
+        w.writeln("} while(0)");
+        w.writeln("");
+        w.writeln("#ifndef MEMCPY");
+        w.writeln("#define MEMCPY(dest, src, size) __builtin_memcpy((dest), (src), (size))");
+        w.writeln("#endif");
+        w.writeln("");
+        w.writeln("#define EBM_WRITE_BYTES(io, source, size_value, offset_value) do { \\");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if((io)->emit) { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("int res = (io)->emit((io), &(source), (size_value)); \\");
+                w.writeln("if (res != 0) { \\");
+                {
+                    auto inner_inner_scope = w.indent_scope();
+                    w.writeln("return res; \\");
+                }
+                w.writeln("} \\");
+            }
+            w.writeln("} \\");
+            w.writeln("else if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("if((source).size != (size_value)) { \\");
+                {
+                    auto inner_inner_scope = w.indent_scope();
+                    w.writeln("return -1; \\");
+                }
+                w.writeln("} \\");
+                w.writeln("MEMCPY((io)->data + (io)->offset, (source).data, (size_value)); \\");
+                w.writeln("(io)->offset += (size_value); \\");
             }
             w.writeln("} else { \\");
             {
@@ -145,16 +215,6 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         }
         w.writeln("");
 
-        w.writeln("typedef struct EncoderInput {");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("uint8_t* data;");
-            w.writeln("uint8_t* data_end;");
-            w.writeln("size_t offset;");
-        }
-        w.writeln("} EncoderInput;");
-        w.writeln("");
-
         if (c_ctx.vector_types.size() > 0) {
             w.writeln("// Vector type definitions");
             w.writeln("#ifndef VECTOR_OF");
@@ -195,6 +255,19 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }
             w.writeln("#endif");
         }
+
+        w.writeln("typedef struct EncoderInput {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("uint8_t* data;");
+            w.writeln("uint8_t* data_end;");
+            w.writeln("size_t offset;");
+            w.writeln("int (*emit)(struct EncoderInput* self, const VECTOR_OF(uint8_t)* data, size_t size);");
+        }
+        w.writeln("} EncoderInput;");
+        w.writeln("");
+
+        write_encoder_macros(w);
         w.writeln("typedef struct DecoderInput {");
         {
             auto scope = w.indent_scope();
@@ -301,9 +374,12 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     };
 
     ebmgen::expected<void> collect_structs(Context & ctx, C_Context & c_ctx) {
-        auto handle_struct_decl = [&](std::vector<ebm2c::Struct>& structs, ebm::StatementRef stmt_ref) {
+        auto handle_struct_decl = [&](std::vector<ebm2c::Struct>& structs, ebm::StatementRef stmt_ref, bool in_union) {
             auto struct_ = ctx.get_field<"struct_decl">(stmt_ref);
             if (!struct_) {
+                return;
+            }
+            if (is_nil(struct_->name) && !in_union) {
                 return;
             }
             Struct s;
@@ -333,7 +409,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         };
         MAYBE(sorted, sorted_struct(ctx));
         for (auto stmt_ref : sorted) {
-            handle_struct_decl(c_ctx.structs, stmt_ref);
+            handle_struct_decl(c_ctx.structs, stmt_ref, false);
         }
         for (auto& e : ctx.module().module().statements) {
             auto enum_decl = ctx.get_field<"enum_decl">(e.id);
@@ -354,7 +430,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 MAYBE(elem_type, s.body.element_type());
                 MAYBE(length, s.body.length());
                 MAYBE(annotation, s.body.array_annotation());
-                if (annotation == ebm::ArrayAnnotation::read_temporary) {
+                if (annotation == ebm::ArrayAnnotation::read_temporary || annotation == ebm::ArrayAnnotation::write_temporary) {
                     continue;
                 }
                 ebm2c::ArrayType a{.elem_type = elem_type, .size = length.value()};
@@ -371,7 +447,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 if (!struct_key) {
                     continue;
                 }
-                handle_struct_decl(u.variants, *struct_key);
+                handle_struct_decl(u.variants, *struct_key, true);
             }
             c_ctx.unions[ebmgen::get_id(s.id)] = u;
         }

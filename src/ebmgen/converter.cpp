@@ -235,13 +235,13 @@ namespace ebmgen {
         return get_single_type(ebm::TypeKind::DECODER_RETURN, ctx);
     }
 
-    expected<ebm::TypeRef> get_u8_n_array(ConverterContext& ctx, size_t n) {
+    expected<ebm::TypeRef> get_u8_n_array(ConverterContext& ctx, size_t n, ebm::ArrayAnnotation annot) {
         EBMU_U8(u8typ);
         ebm::TypeBody typ;
         typ.kind = ebm::TypeKind::ARRAY;
         typ.element_type(u8typ);
         typ.length(*varint(n));
-        typ.array_annotation(ebm::ArrayAnnotation::temporary);
+        typ.array_annotation(annot);
         EBMA_ADD_TYPE(type_ref, std::move(typ));
         return type_ref;
     }

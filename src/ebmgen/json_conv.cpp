@@ -1938,6 +1938,26 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(ReserveData& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("write_data")) {
+            if(!futils::json::convert_from_json(*got, obj.write_data)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("size")) {
+            if(!futils::json::convert_from_json(*got, obj.size)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(SetEndian& obj, const futils::json::JSON& j) {
         if (auto got = j.at("endian")) {
             Endian tmp;
@@ -2247,6 +2267,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.read_data(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("reserve_data")) {
+            ReserveData tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserve_data(std::move(tmp))) {
                 return false;
             }
         }
@@ -2871,8 +2900,12 @@ namespace ebm {
                 obj = ArrayAnnotation::none;
                 return true;
             }
-            if (s == "temporary") {
-                obj = ArrayAnnotation::temporary;
+            if (s == "read_temporary") {
+                obj = ArrayAnnotation::read_temporary;
+                return true;
+            }
+            if (s == "write_temporary") {
+                obj = ArrayAnnotation::write_temporary;
                 return true;
             }
             return false;
@@ -3857,6 +3890,10 @@ namespace ebm {
             }
             if (s == "WRITE_DATA") {
                 obj = StatementKind::WRITE_DATA;
+                return true;
+            }
+            if (s == "RESERVE_DATA") {
+                obj = StatementKind::RESERVE_DATA;
                 return true;
             }
             if (s == "IF_STATEMENT") {

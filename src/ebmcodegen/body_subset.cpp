@@ -34,6 +34,7 @@ namespace ebmcodegen {
             body.property_decl({});
             body.property_member_decl({});
             body.read_data({});
+            body.reserve_data({});
             body.struct_decl({});
             body.sub_byte_range({});
             body.target({});

@@ -6,7 +6,7 @@
 
 namespace ebmgen {
     expected<ebm::StatementRef> DecoderConverter::decode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, ebm::StatementRef field_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to) {
-        COMMON_BUFFER_SETUP(EBM_READ_DATA, read_ref, io_ref, field_ref);
+        COMMON_BUFFER_SETUP(EBM_READ_DATA, read_ref, io_ref, field_ref, ebm::ArrayAnnotation::read_temporary);
 
         if (n == 1) {  // special case for 1 byte
             EBM_INDEX(array_index, u8_t, buffer, zero);
@@ -21,13 +21,6 @@ namespace ebmgen {
             return block_ref;
         }
 
-        EBM_DEFINE_ANONYMOUS_VARIABLE(value_holder, value_type, zero);
-
-        EBMU_COUNTER_TYPE(counter_type);
-
-        EBM_COUNTER_LOOP_START(counter);
-
-        EBMU_INT_LITERAL(eight, 8);
         EBMU_INT_LITERAL(xFF, 0xff);
         // value_holder = value_type(0)
         // buffer = [0] * n
@@ -40,45 +33,52 @@ namespace ebmgen {
         //     shift_index = len - 1 - counter
         //   value_holder |= (value_type(buffer[counter]) << (8 * shift_index))
         // to = (may cast) value_holder
-        auto do_assign = [&](ebm::ExpressionRef shift_index) -> expected<ebm::StatementRef> {
-            EBM_BINARY_OP(shift, ebm::BinaryOp::mul, counter_type, shift_index, eight);
-            EBM_INDEX(array_index, u8_t, buffer, counter);
+        auto generate_mask = [&](std::optional<ebm::ExpressionRef> prev, size_t i, size_t shift_index) -> expected<ebm::ExpressionRef> {
+            EBMU_INT_LITERAL(shift, shift_index * 8);
+            EBMU_INT_LITERAL(idx, i);
+            EBM_INDEX(array_index, u8_t, buffer, idx);
             EBM_CAST(casted, value_type, u8_t, array_index);
             EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, value_type, casted, shift);
-            EBM_BINARY_OP(masked, ebm::BinaryOp::bit_or, value_type, value_holder, shifted);
-            EBM_ASSIGNMENT(res, value_holder, masked);
-            return res;
+            if (prev) {
+                EBM_BINARY_OP(combined, ebm::BinaryOp::bit_or, value_type, *prev, shifted);
+                return combined;
+            }
+            return shifted;
         };
 
         auto do_it = add_endian_specific(
             ctx,
             endian,
             [&] -> expected<ebm::StatementRef> {
-                return do_assign(counter);
+                std::optional<ebm::ExpressionRef> prev;
+                for (size_t i = 0; i < n; i++) {
+                    MAYBE(mask, generate_mask(prev, i, i));
+                    prev = mask;
+                }
+                EBM_CAST(cast_ref, cast_to, value_type, *prev);
+                EBM_ASSIGNMENT(assign, to, cast_ref);
+                return assign;
             },
             [&] -> expected<ebm::StatementRef> {
-                EBMU_INT_LITERAL(len_minus_one, n - 1);
-                EBM_BINARY_OP(shift_index, ebm::BinaryOp::sub, counter_type, len_minus_one, counter);
-                return do_assign(shift_index);
+                std::optional<ebm::ExpressionRef> prev;
+                for (size_t i = 0; i < n; i++) {
+                    size_t shift_index = n - 1 - i;
+                    MAYBE(mask, generate_mask(prev, i, shift_index));
+                    prev = mask;
+                }
+                EBM_CAST(cast_ref, cast_to, value_type, *prev);
+                EBM_ASSIGNMENT(assign, to, cast_ref);
+                return assign;
             });
         if (!do_it) {
             return unexpect_error(std::move(do_it.error()));
         }
 
-        EBMU_INT_LITERAL(len, n);
-
-        EBM_COUNTER_LOOP_END(loop_stmt, counter, len, *do_it);
-
-        EBM_CAST(cast_ref, cast_to, value_type, value_holder);
-        EBM_ASSIGNMENT(assign, to, cast_ref);
-
         ebm::Block block;
-        block.container.reserve(5);
-        append(block, value_holder_def);
+        block.container.reserve(3);
         append(block, buffer_def);
         append(block, read_ref);
-        append(block, loop_stmt);
-        append(block, assign);
+        append(block, *do_it);
         EBM_BLOCK(block_ref, std::move(block));
         return block_ref;
     }
@@ -228,7 +228,7 @@ namespace ebmgen {
                     }
                     auto str = ast::cast_to<ast::StrLiteralType>(next->field_type);
                     MAYBE(candidate, decode_base64(str->strong_ref));
-                    EBMU_U8_N_ARRAY(array_type, candidate.size());
+                    EBMU_U8_N_ARRAY(array_type, candidate.size(), ebm::ArrayAnnotation::read_temporary);
                     EBM_DEFAULT_VALUE(array_default, array_type);
                     EBM_DEFINE_ANONYMOUS_VARIABLE(temporary_read_buffer, array_type, array_default);
 
@@ -339,7 +339,7 @@ namespace ebmgen {
     expected<void> DecoderConverter::decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref) {
         MAYBE(candidate, decode_base64(typ->strong_ref));
 
-        EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
+        EBMU_U8_N_ARRAY(u8_n_array, candidate.size(), ebm::ArrayAnnotation::read_temporary);
         EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);
         EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
 

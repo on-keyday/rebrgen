@@ -53,6 +53,10 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         if (cand == BytesType::vector) {
             return CODELINE("EBM_READ_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
         }
+        auto annot = ctx.get_field<"array_annotation">(ctx.read_data.data_type);
+        if (annot && *annot == ebm::ArrayAnnotation::read_temporary) {
+            return CODELINE("EBM_READ_ARRAY_BYTES_TEMPORARY(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
+        }
         return CODELINE("EBM_READ_ARRAY_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ");");
     }
     if (auto lw = ctx.read_data.lowered_statement()) {

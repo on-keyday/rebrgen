@@ -478,6 +478,7 @@ enum StatementKind:
     ASSERT
     READ_DATA
     WRITE_DATA
+    RESERVE_DATA # reserve space in output stream
     IF_STATEMENT
     LOOP_STATEMENT
     MATCH_STATEMENT
@@ -586,6 +587,10 @@ format ImportDecl:
     path :StringRef # Path to the imported module
     program :StatementRef # Reference to the imported program declaration
 
+format ReserveData:
+    write_data :StatementRef # reference to WRITE_DATA
+    size :Size # size to reserve
+
 format StatementBody:
     kind :StatementKind
     match kind:
@@ -612,6 +617,8 @@ format StatementBody:
             read_data :IOData # Descriptor for reading data
         StatementKind.WRITE_DATA:
             write_data :IOData # Descriptor for writing data
+        StatementKind.RESERVE_DATA:
+            reserve_data :ReserveData
         StatementKind.IF_STATEMENT:
             if_statement :IfStatement
         StatementKind.LOOP_STATEMENT:
@@ -772,7 +779,8 @@ format VariantDesc:
 enum ArrayAnnotation:
     :u8
     none
-    temporary
+    read_temporary
+    write_temporary
 
 format TypeBody:
     kind :TypeKind

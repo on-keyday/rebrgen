@@ -77,7 +77,7 @@ namespace ebmgen {
                         MAYBE(fixed_bytes, make_fixed_size(*all_in_byte, ebm::SizeUnit::BYTE_FIXED));
                         total_size = fixed_bytes;
                         auto& ctx = tctx.context();
-                        EBMU_U8_N_ARRAY(typ, *all_in_byte);
+                        EBMU_U8_N_ARRAY(typ, *all_in_byte, write ? ebm::ArrayAnnotation::write_temporary : ebm::ArrayAnnotation::read_temporary);
                         data_typ = typ;
                     }
                     else {
@@ -85,7 +85,7 @@ namespace ebmgen {
                             MAYBE(fixed_bytes, make_fixed_size(all_in_bits / 8, ebm::SizeUnit::BYTE_FIXED));
                             total_size = fixed_bytes;
                             auto& ctx = tctx.context();
-                            EBMU_U8_N_ARRAY(typ, all_in_bits / 8);
+                            EBMU_U8_N_ARRAY(typ, all_in_bits / 8, write ? ebm::ArrayAnnotation::write_temporary : ebm::ArrayAnnotation::read_temporary);
                             data_typ = typ;
                         }
                         else {

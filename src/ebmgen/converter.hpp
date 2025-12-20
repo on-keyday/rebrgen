@@ -622,7 +622,7 @@ namespace ebmgen {
     expected<ebm::TypeRef> get_single_type(ebm::TypeKind kind, ConverterContext& ctx);
     expected<ebm::TypeRef> get_counter_type(ConverterContext& ctx);
     expected<ebm::TypeRef> get_unsigned_n_int(ConverterContext& ctx, size_t n);
-    expected<ebm::TypeRef> get_u8_n_array(ConverterContext& ctx, size_t n);
+    expected<ebm::TypeRef> get_u8_n_array(ConverterContext& ctx, size_t n, ebm::ArrayAnnotation annot);
     expected<ebm::TypeRef> get_bool_type(ConverterContext& ctx);
     expected<ebm::TypeRef> get_void_type(ConverterContext& ctx);
     expected<ebm::TypeRef> get_encoder_return_type(ConverterContext& ctx);

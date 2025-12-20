@@ -96,6 +96,13 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_reserve_data(ebm::ReserveData reserve_data) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementKind::RESERVE_DATA;
+        body.reserve_data(std::move(reserve_data));
+        return body;
+    }
+
     ebm::StatementBody make_read_data(ebm::IOData io_data) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::READ_DATA;

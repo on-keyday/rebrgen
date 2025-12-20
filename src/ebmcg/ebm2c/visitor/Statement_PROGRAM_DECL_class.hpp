@@ -32,6 +32,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         std::vector<ebm2c::Struct> structs;
         std::unordered_map<std::uint64_t, ebm2c::Union> unions;
         std::vector<ebm2c::VectorType> vector_types;
+        std::vector<ebm2c::ArrayType> array_types;
         std::vector<ebm2c::Enum> enums;
         bool has_can_read_stream = false;
     };
@@ -59,6 +60,48 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         w.writeln("#define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : ((io)->data_end - ((io)->data + (io)->offset)) >= (num_bytes))");
         w.writeln("#endif");
         w.writeln("");
+        w.writeln("#define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value) do { \\");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if (DECODER_CAN_READ((io), (size))) { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("if ((offset_value) == 0) { \\");
+                w.indent_writeln("(target) = (uint8_t*)((io)->data + (io)->offset); \\");
+                w.writeln("}  \\");
+                w.writeln("(io)->offset += (size); \\");
+            }
+            w.writeln("} else { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return -1; \\");
+            }
+            w.writeln("} \\");
+        }
+        w.writeln("} while(0)");
+        w.writeln("");
+        w.writeln("#define EBM_READ_BYTES(io, target, size, offset_value) do { \\");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if (DECODER_CAN_READ((io), (size))) { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("if ((offset_value) == 0) { \\");
+                w.indent_writeln("for (size_t i = 0; i < (size); i++) { \\");
+                w.indent_writeln("(target).data[i] = (io)->data[(io)->offset + i]; \\");
+                w.indent_writeln("} \\");
+                w.writeln("}  \\");
+                w.writeln("(io)->offset += (size); \\");
+            }
+            w.writeln("} else { \\");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return -1; \\");
+            }
+            w.writeln("} \\");
+        }
+        w.writeln("} while(0)");
+        w.writeln("");
     }
 
     DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
@@ -83,6 +126,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         };
         CodeWriter w;
         w.writeln("#include <stdint.h>");
+        w.writeln("#include <stddef.h>");
         w.writeln("");
         w.writeln("// Forward declarations");
         for (auto& s : c_ctx.structs) {
@@ -138,6 +182,18 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("#endif");
             w.writeln("");
             write_vector_macros(w);
+        }
+        if (c_ctx.array_types.size() > 0) {
+            w.writeln("// Array type definitions");
+            w.writeln("#ifndef ARRAY_OF");
+            w.writeln("#define ARRAY_OF(type, size) ArrayOf_##type##_##size");
+            for (auto& a : c_ctx.array_types) {
+                MAYBE(elem_type, ctx.visit(a.elem_type));
+                auto size_str = std::to_string(a.size);
+                w.writeln("typedef ", elem_type.to_writer(), " ARRAY_OF(", elem_type.to_writer(), ", ", size_str, ")[", size_str, "];");
+                w.writeln("");
+            }
+            w.writeln("#endif");
         }
         w.writeln("typedef struct DecoderInput {");
         {
@@ -292,6 +348,17 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 MAYBE(elem_type, s.body.element_type());
                 ebm2c::VectorType v{.elem_type = elem_type};
                 c_ctx.vector_types.push_back(v);
+                continue;
+            }
+            if (s.body.kind == ebm::TypeKind::ARRAY) {
+                MAYBE(elem_type, s.body.element_type());
+                MAYBE(length, s.body.length());
+                MAYBE(annotation, s.body.array_annotation());
+                if (annotation == ebm::ArrayAnnotation::read_temporary) {
+                    continue;
+                }
+                ebm2c::ArrayType a{.elem_type = elem_type, .size = length.value()};
+                c_ctx.array_types.push_back(a);
                 continue;
             }
             auto variant_desc = s.body.variant_desc();

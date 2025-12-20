@@ -64,13 +64,12 @@ namespace ebmgen {
         auto& ctx = tctx.tctx.context();
         auto low = io_copy.lowered_statement();
         auto bit_shift_to_bit_op = make_lowered_statement(ebm::LoweringIOType::BIT_FIELD_TO_BIT_SHIFT, lowered_bit_operation);
+        MAYBE(stmt, tctx.tctx.statement_repository().get_reloc_ptr(node_id));  // refetch because memory is relocated
         if (low) {
-            MAYBE(stmt, tctx.tctx.statement_repository().get(node_id));  // refetch because memory is relocated
-            MAYBE(io_, get_io(stmt, write));
+            MAYBE(io_, get_io(*stmt, write));
             if (auto low = io_.lowered_statement()) {
                 if (low->lowering_type == ebm::LoweringIOType::MULTI_REPRESENTATION) {
-                    MAYBE(stmt, tctx.tctx.statement_repository().get(low->io_statement.id));  // refetch because memory is relocated
-                    MAYBE(block, stmt.body.lowered_io_statements());
+                    MAYBE(block, stmt->body.lowered_io_statements());
                     append(block, bit_shift_to_bit_op);
                 }
                 else {
@@ -78,8 +77,7 @@ namespace ebmgen {
                     append(lows, *low);
                     append(lows, bit_shift_to_bit_op);
                     EBM_LOWERED_IO_STATEMENTS(l, std::move(lows));
-                    MAYBE(stmt, tctx.tctx.statement_repository().get(node_id));  // refetch because memory is relocated
-                    MAYBE(io_, get_io(stmt, write));
+                    MAYBE(io_, get_io(*stmt, write));  // refetch because memory is relocated
                     io_.attribute.has_lowered_statement(true);
                     io_.lowered_statement(make_lowered_statement(ebm::LoweringIOType::MULTI_REPRESENTATION, l));
                 }
@@ -90,8 +88,7 @@ namespace ebmgen {
             }
         }
         else {
-            MAYBE(stmt, tctx.tctx.statement_repository().get(node_id));  // refetch because memory is relocated
-            MAYBE(io_, get_io(stmt, write));
+            MAYBE(io_, get_io(*stmt, write));
             io_.attribute.has_lowered_statement(true);
             io_.lowered_statement(bit_shift_to_bit_op);
         }
@@ -106,7 +103,7 @@ namespace ebmgen {
     expected<void> multi_route_merged(CFGContext& tctx, ebm::StatementRef io_ref, std::vector<Route>& finalized_routes, size_t max_bit_size, bool write) {
         auto& ctx = tctx.tctx.context();
         ebm::Block block;
-        EBMU_U8_N_ARRAY(max_buffer_t, max_bit_size / 8);
+        EBMU_U8_N_ARRAY(max_buffer_t, max_bit_size / 8, write ? ebm::ArrayAnnotation::write_temporary : ebm::ArrayAnnotation::read_temporary);
         EBMU_COUNTER_TYPE(count_t);
         EBM_DEFAULT_VALUE(default_buf_v, max_buffer_t);
         EBMU_BOOL_TYPE(bool_t);
@@ -116,17 +113,31 @@ namespace ebmgen {
         EBM_DEFINE_ANONYMOUS_VARIABLE(current_bit_offset, count_t, zero);
         EBM_DEFINE_ANONYMOUS_VARIABLE(read_offset, count_t, zero);
 
+        ebm::StatementRef flush_buffer_statement;
+        if (write) {  // incremental reserving
+            MAYBE(new_id, ctx.repository().new_statement_id());
+            flush_buffer_statement = new_id;
+        }
+
         // added_bit = current_bit_offset + add_bit
         // new_size = (added_bit + 7) / 8
         // for read_offset < new_size:
         //    tmp_buffer[read_offset] = read u8
         //    read_offset++
-        auto read_incremental = [&](ebm::StatementRef field, ebm::ExpressionRef added_bit) -> expected<ebm::StatementRef> {
+        auto do_incremental = [&](ebm::StatementRef field, ebm::ExpressionRef added_bit) -> expected<ebm::StatementRef> {
             EBMU_INT_LITERAL(seven, 7);
             EBMU_INT_LITERAL(eight, 8);
             EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
             EBM_BINARY_OP(new_size, ebm::BinaryOp::div, count_t, new_size_bit, eight);
             EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, read_offset, new_size);
+            if (write) {  // incremental reserving
+                ebm::ReserveData reserve_data;
+                reserve_data.write_data = flush_buffer_statement;
+                MAYBE(reserve_size, make_dynamic_size(new_size, ebm::SizeUnit::BYTE_DYNAMIC));
+                reserve_data.size = reserve_size;
+                EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
+                return reserve_stmt;
+            }
             ebm::Block block;
             {
                 EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset);
@@ -155,8 +166,9 @@ namespace ebmgen {
             EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, new_size_bit, eight);
             MAYBE(cur_offset, make_dynamic_size(div, ebm::SizeUnit::BYTE_DYNAMIC));
             auto write_buffer = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, cur_offset);
-            EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
-            return flush_buffer;
+            auto write_data = make_write_data(std::move(write_buffer));
+            EBMA_ADD_STATEMENT(flush_stmt, flush_buffer_statement, std::move(write_data));
+            return flush_stmt;
         };
         std::set<std::shared_ptr<CFG>> reached_route;
         for (auto& r : finalized_routes) {
@@ -189,7 +201,7 @@ namespace ebmgen {
                         }
                     }
                     if (!write) {
-                        MAYBE(io_cond, read_incremental(io_copy.field, new_size_bit));
+                        MAYBE(io_cond, do_incremental(io_copy.field, new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
@@ -211,6 +223,7 @@ namespace ebmgen {
                         append(block, fin);
                     }
                     else {
+                        MAYBE(incremental_reserve, do_incremental(io_copy.field, new_size_bit));
                         EBM_CAST(casted, unsigned_t, io_copy.data_type, io_copy.target);
                         auto assign = add_endian_specific(
                             ctx, io_copy.attribute,
@@ -223,6 +236,7 @@ namespace ebmgen {
                         if (!assign) {
                             return unexpect_error(std::move(assign.error()));
                         }
+                        append(block, incremental_reserve);
                         append(block, *assign);
                         if (i == r.route.size() - 1) {
                             MAYBE(flush, flush_buffer(io_copy.field, new_size_bit));
@@ -243,7 +257,7 @@ namespace ebmgen {
     expected<void> single_route(CFGContext& tctx, ebm::StatementRef io_ref, std::vector<Route>& finalized_routes, size_t max_bit_size, bool write) {
         auto& ctx = tctx.tctx.context();
         ebm::Block block;
-        EBMU_U8_N_ARRAY(max_buffer_t, max_bit_size / 8);
+        EBMU_U8_N_ARRAY(max_buffer_t, max_bit_size / 8, write ? ebm::ArrayAnnotation::write_temporary : ebm::ArrayAnnotation::read_temporary);
         // EBMU_COUNTER_TYPE(count_t);
         EBM_DEFAULT_VALUE(default_buf_v, max_buffer_t);
         // EBMU_BOOL_TYPE(bool_t);
@@ -253,12 +267,18 @@ namespace ebmgen {
         //  EBM_DEFINE_ANONYMOUS_VARIABLE(current_bit_offset, count_t, zero);
         //  EBM_DEFINE_ANONYMOUS_VARIABLE(read_offset, count_t, zero);
 
+        ebm::StatementRef flush_buffer_statement;
+        if (write) {  // incremental reserving
+            MAYBE(new_id, ctx.repository().new_statement_id());
+            flush_buffer_statement = new_id;
+        }
+
         // added_bit = current_bit_offset + add_bit
         // new_size = (added_bit + 7) / 8
         // for read_offset < new_size:
         //    tmp_buffer[read_offset] = read u8
         //    read_offset++
-        auto read_incremental = [&](ebm::StatementRef field, size_t& read_offset, size_t added_bit) -> expected<ebm::StatementRef> {
+        auto do_incremental = [&](ebm::StatementRef field, size_t& read_offset, size_t added_bit) -> expected<ebm::StatementRef> {
             // EBMU_INT_LITERAL(seven, 7);
             // EBMU_INT_LITERAL(eight, 8);
             // EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
@@ -267,6 +287,14 @@ namespace ebmgen {
             auto new_size = (added_bit + 7) / 8;
             if (read_offset >= new_size) {
                 return ebm::StatementRef{};
+            }
+            if (write) {  // incremental reserving
+                ebm::ReserveData reserve_data;
+                reserve_data.write_data = flush_buffer_statement;
+                MAYBE(reserve_size, make_fixed_size(new_size, ebm::SizeUnit::BYTE_FIXED));
+                reserve_data.size = reserve_size;
+                EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
+                return reserve_stmt;
             }
             ebm::Block block;
             size_t original_read_offset = read_offset;
@@ -296,8 +324,9 @@ namespace ebmgen {
             // EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, new_size_bit, eight);
             MAYBE(cur_offset, make_fixed_size(new_size_bit / 8, ebm::SizeUnit::BYTE_FIXED));
             auto write_buffer = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, cur_offset);
-            EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
-            return flush_buffer;
+            auto write_data = make_write_data(std::move(write_buffer));
+            EBMA_ADD_STATEMENT(flush_stmt, flush_buffer_statement, std::move(write_data));
+            return flush_stmt;
         };
         std::set<std::shared_ptr<CFG>> reached_route;
         for (auto& r : finalized_routes) {
@@ -336,7 +365,7 @@ namespace ebmgen {
                         //}
                     }
                     if (!write) {
-                        MAYBE(io_cond, read_incremental(io_copy.field, read_offset, new_size_bit));
+                        MAYBE(io_cond, do_incremental(io_copy.field, read_offset, new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
@@ -360,6 +389,7 @@ namespace ebmgen {
                         append(block, fin);
                     }
                     else {
+                        MAYBE(incremental_reserve, do_incremental(io_copy.field, read_offset, new_size_bit));
                         EBM_CAST(casted, unsigned_t, io_copy.data_type, io_copy.target);
                         auto assign = add_endian_specific(
                             ctx, io_copy.attribute,
@@ -371,6 +401,9 @@ namespace ebmgen {
                             });
                         if (!assign) {
                             return unexpect_error(std::move(assign.error()));
+                        }
+                        if (!is_nil(incremental_reserve)) {
+                            append(block, incremental_reserve);
                         }
                         append(block, *assign);
                         if (i == r.route.size() - 1) {

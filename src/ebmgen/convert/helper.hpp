@@ -70,8 +70,8 @@ namespace ebmgen {
 #define EBMU_U8(ref_name) \
     EBMU_UINT_TYPE(ref_name, 8)
 
-#define EBMU_U8_N_ARRAY(ref_name, n) \
-    MAYBE(ref_name, get_u8_n_array(ctx, n))
+#define EBMU_U8_N_ARRAY(ref_name, n, annot) \
+    MAYBE(ref_name, get_u8_n_array(ctx, n, annot))
 
 #define EBMU_INT_LITERAL(ref_name, value) \
     MAYBE(ref_name, get_int_literal(ctx, value))
@@ -157,6 +157,11 @@ namespace ebmgen {
     EBM_AST_STATEMENT(ref_name, make_write_data, io_data)
 
     ebm::StatementBody make_read_data(ebm::IOData io_data);
+
+#define EBM_RESERVE_DATA(ref_name, reserve_data) \
+    EBM_AST_STATEMENT(ref_name, make_reserve_data, reserve_data)
+
+    ebm::StatementBody make_reserve_data(ebm::ReserveData reserve_data);
 
 #define EBM_READ_DATA(ref_name, io_data) \
     EBM_AST_STATEMENT(ref_name, make_read_data, io_data)
@@ -392,8 +397,8 @@ namespace ebmgen {
 
     ebm::Condition make_condition(ebm::ExpressionRef cond);
 
-#define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref, field_ref)                              \
-    EBMU_U8_N_ARRAY(u8_n_array, n);                                                            \
+#define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref, field_ref, annot)                       \
+    EBMU_U8_N_ARRAY(u8_n_array, n, annot);                                                     \
     EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                                                \
     EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);                            \
     EBMU_UINT_TYPE(value_type, n * 8);                                                         \

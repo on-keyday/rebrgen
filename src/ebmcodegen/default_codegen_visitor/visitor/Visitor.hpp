@@ -55,7 +55,7 @@ std::string property_setter_return_type = "bool";
 bool forward_type_in_function_decl = false;
 std::string function_return_type_separator = "->";
 bool use_base_type_of_enum = false;
-std::function<expected<Result>(Result elem_type, size_t len)> array_type_wrapper;
+std::function<expected<Result>(Result elem_type, size_t len, ebm::ArrayAnnotation anot)> array_type_wrapper;
 std::function<expected<Result>(Result elem_type)> vector_type_wrapper;
 std::function<expected<Result>(Result typ, bool is_state_variable)> param_type_wrapper;
 std::function<expected<Result>(Result elem_type)> pointer_type_wrapper;

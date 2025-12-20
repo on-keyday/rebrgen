@@ -192,7 +192,7 @@ namespace ebmgen {
                     //       src2json generates AST as json
                     MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(bop->right)));
                     EBMU_UINT_TYPE(u8_t, 8);
-                    EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
+                    EBMU_U8_N_ARRAY(u8_n_array, candidate.size(), ebm::ArrayAnnotation::none);
                     EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);
                     EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
                     ebm::Block block;

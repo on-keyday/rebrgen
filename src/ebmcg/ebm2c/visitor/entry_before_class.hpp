@@ -16,6 +16,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
     ctx.config().int_prefix = "int";
@@ -26,9 +27,13 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().variable_type_separator = " ";
     ctx.config().field_name_prior_to_type = false;
     ctx.config().variable_name_prior_to_type = false;
-    ctx.config().array_type_wrapper = [&](Result elem_type, size_t size) -> expected<Result> {
+    ctx.config().array_type_wrapper = [&](Result elem_type, size_t size, ebm::ArrayAnnotation anot) -> expected<Result> {
+        if (anot == ebm::ArrayAnnotation::read_temporary) {
+            // directly reference to original input buffer
+            return CODE(elem_type.to_writer(), "*");
+        }
         // placeholder $ will be replaced by declared variable name
-        return CODE(elem_type.to_writer(), "$[", std::to_string(size), "]");
+        return CODE("ARRAY_OF(", elem_type.to_writer(), ", ", std::to_string(size), ")");
     };
     ctx.config().vector_type_wrapper = [&](Result elem_type) -> expected<Result> {
         return CODE("VECTOR_OF(", elem_type.to_writer(), ")");

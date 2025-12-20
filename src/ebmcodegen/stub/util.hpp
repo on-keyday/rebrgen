@@ -35,6 +35,7 @@ namespace ebmcodegen::util {
     template <class CodeWriter>
     auto code_write(auto&&... args) {
         static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
+        static_assert(!(... || std::is_integral_v<std::decay_t<decltype(args)>>), "Integral types are not supported in code_write. Please convert them to string");
         CodeWriter w;
         w.write(std::forward<decltype(args)>(args)...);
         return w;
@@ -43,6 +44,7 @@ namespace ebmcodegen::util {
     template <class CodeWriter>
     auto code_write(ebm::AnyRef loc, auto&&... args) {
         static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
+        static_assert(!(... || std::is_integral_v<std::decay_t<decltype(args)>>), "Integral types are not supported in code_write. Please convert them to string");
         CodeWriter w;
         w.write_with_loc(loc, std::forward<decltype(args)>(args)...);
         return w;
@@ -51,6 +53,7 @@ namespace ebmcodegen::util {
     template <class CodeWriter>
     auto code_writeln(auto&&... args) {
         static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
+        static_assert(!(... || std::is_integral_v<std::decay_t<decltype(args)>>), "Integral types are not supported in code_writeln. Please convert them to string");
         CodeWriter w;
         w.writeln(std::forward<decltype(args)>(args)...);
         return w;
@@ -59,6 +62,7 @@ namespace ebmcodegen::util {
     template <class CodeWriter>
     auto code_writeln(ebm::AnyRef loc, auto&&... args) {
         static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
+        static_assert(!(... || std::is_integral_v<std::decay_t<decltype(args)>>), "Integral types are not supported in code_writeln. Please convert them to string");
         CodeWriter w;
         w.writeln_with_loc(loc, std::forward<decltype(args)>(args)...);
         return w;

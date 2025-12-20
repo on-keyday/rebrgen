@@ -40,6 +40,11 @@ namespace ebm2c {
         ebm::TypeRef elem_type;
     };
 
+    struct ArrayType {
+        ebm::TypeRef elem_type;
+        size_t size;
+    };
+
     inline std::string map_decl(std::string&& type_str, std::string&& variable) {
         auto first_dollar = type_str.find('$');
         if (first_dollar == std::string::npos) {

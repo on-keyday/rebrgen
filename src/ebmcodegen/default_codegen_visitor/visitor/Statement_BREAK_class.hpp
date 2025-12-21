@@ -15,6 +15,9 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-CodeWriter w;
-w.writeln("break");
-return w;
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_BREAK) {
+    CodeWriter w;
+    w.writeln("break", ctx.config().endof_statement);
+    return w;
+}

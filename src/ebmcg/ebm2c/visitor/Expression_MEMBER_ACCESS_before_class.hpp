@@ -50,6 +50,9 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
             args += ", ";
             args += param_name;
         }
+        if (prop->merge_mode != ebm::MergeMode::STRICT_TYPE) {
+            return CODE(getter_func_name, "(&", base.to_writer(), args, ").value");
+        }
         return CODE("(*", getter_func_name, "(&", base.to_writer(), args, "))");
     }
     MAYBE(body, ctx.get_field<"body.id">(ctx.member));

@@ -55155,6 +55155,10 @@ namespace ebm2c {
     expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
         auto& type = in.body.type;
         auto& kind = in.body.kind;
+        if (!in.body.io_ref()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::io_ref");
+        }
+        auto& io_ref = *in.body.io_ref();
         if (!in.body.stream_type()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::stream_type");
         }
@@ -55169,6 +55173,7 @@ namespace ebm2c {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .type = type,
                 .kind = kind,
+                .io_ref = io_ref,
                 .stream_type = stream_type,
                 .unit = unit,
             };
@@ -55179,6 +55184,7 @@ namespace ebm2c {
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .type = type,
             .kind = kind,
+            .io_ref = io_ref,
             .stream_type = stream_type,
             .unit = unit,
             .main_logic = main_logic,
@@ -55198,6 +55204,7 @@ namespace ebm2c {
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .type = type,
             .kind = kind,
+            .io_ref = io_ref,
             .stream_type = stream_type,
             .unit = unit,
             .main_logic = main_logic,
@@ -55218,6 +55225,10 @@ namespace ebm2c {
     expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
         auto& type = in.body.type;
         auto& kind = in.body.kind;
+        if (!in.body.io_ref()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::io_ref");
+        }
+        auto& io_ref = *in.body.io_ref();
         if (!in.body.stream_type()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::stream_type");
         }
@@ -55228,6 +55239,7 @@ namespace ebm2c {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .type = type,
                 .kind = kind,
+                .io_ref = io_ref,
                 .stream_type = stream_type,
             };
             return get_visitor_from_context(ctx).visit(new_ctx);
@@ -55237,6 +55249,7 @@ namespace ebm2c {
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .type = type,
             .kind = kind,
+            .io_ref = io_ref,
             .stream_type = stream_type,
             .main_logic = main_logic,
         };
@@ -55255,6 +55268,7 @@ namespace ebm2c {
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .type = type,
             .kind = kind,
+            .io_ref = io_ref,
             .stream_type = stream_type,
             .main_logic = main_logic,
             .result = main_result,

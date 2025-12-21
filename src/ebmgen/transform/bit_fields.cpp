@@ -161,9 +161,9 @@ namespace ebmgen {
             EBM_READ_DATA(read_data, std::move(data));
             return loop;
         };
-        auto flush_buffer = [&](ebm::StatementRef field, ebm::ExpressionRef new_size_bit) -> expected<ebm::StatementRef> {
+        auto flush_buffer = [&](ebm::StatementRef field) -> expected<ebm::StatementRef> {
             EBMU_INT_LITERAL(eight, 8);
-            EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, new_size_bit, eight);
+            EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, current_bit_offset, eight);
             MAYBE(cur_offset, make_dynamic_size(div, ebm::SizeUnit::BYTE_DYNAMIC));
             auto write_buffer = make_io_data(io_ref, field, tmp_buffer, max_buffer_t, {}, cur_offset);
             auto write_data = make_write_data(std::move(write_buffer));
@@ -238,12 +238,12 @@ namespace ebmgen {
                         }
                         append(block, incremental_reserve);
                         append(block, *assign);
-                        if (i == r.route.size() - 1) {
-                            MAYBE(flush, flush_buffer(io_copy.field, new_size_bit));
-                            append(block, flush);
-                        }
                     }
                     append(block, update_current_bit_offset);
+                    if (write && i == r.route.size() - 1) {
+                        MAYBE(flush, flush_buffer(io_copy.field));
+                        append(block, flush);
+                    }
                     EBM_BLOCK(lowered_bit_operation, std::move(block));
                     MAYBE_VOID(add, add_lowered_statements(tctx, io_copy, c->original_node, lowered_bit_operation, write));
                 }
@@ -465,6 +465,12 @@ namespace ebmgen {
                         if (i == r.route.size() - 1) {
                             MAYBE(flush, flush_buffer(io_copy.field, new_size_bit));
                             append(block, flush);
+                            // if other routes exist and this one is not last one,
+                            // need new flush buffer statement id
+                            if (finalized_routes.size() > 1 && &r != &finalized_routes.back()) {
+                                MAYBE(new_id, ctx.repository().new_statement_id());
+                                flush_buffer_statement = new_id;
+                            }
                         }
                     }
                     // append(block, update_current_bit_offset);
@@ -487,6 +493,7 @@ namespace ebmgen {
         size_t i = 0;
         // detect first divergence
         while (true) {
+            bool break_outer = false;
             std::shared_ptr<CFG> node;
             for (auto& r : finalized_routes) {
                 if (i >= r.route.size()) {
@@ -496,8 +503,12 @@ namespace ebmgen {
                     node = r.route[i];
                 }
                 else if (node != r.route[i]) {
+                    break_outer = true;
                     break;
                 }
+            }
+            if (break_outer) {
+                break;
             }
             if (!node) {
                 return false;

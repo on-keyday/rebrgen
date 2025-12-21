@@ -123,7 +123,7 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "C:/workspace/shbrgen/rebrgen/brgen/example/tcp_segment.bgn",
+        "C:/workspace/shbrgen/rebrgen/brgen/example/feature_test/varint_test.bgn",
         "-I",
         "-g"
       ],
@@ -151,7 +151,7 @@
       "name": "Debug ebm2python",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/ebm2c",
+      "program": "${workspaceRoot}/tool/ebm2python",
       "args": ["-i", "${workspaceRoot}/save/out.ebm"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
@@ -198,12 +198,12 @@
     {
       "type": "debugpy",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-504cd4dac7\\r-f06d0cf526\\t-4163cf40d8",
-      "name": "Debug ebm2python unictest (ExtendedBinaryModule)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-504cd4dac7\\r-f06d0cf526\\t-4163cf40d8\\test_script.py",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f7f2fbb37d\\r-88a6960f32\\t-3292a09255",
+      "name": "Debug ebm2python unictest (TestVarint)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f7f2fbb37d\\r-88a6960f32\\t-3292a09255\\test_script.py",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-504cd4dac7/r-f06d0cf526/t-4163cf40d8/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-504cd4dac7/r-f06d0cf526/t-4163cf40d8/output.bin"
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f7f2fbb37d/r-88a6960f32/t-3292a09255/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f7f2fbb37d/r-88a6960f32/t-3292a09255/output.bin"
       ]
     }
   ]

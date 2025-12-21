@@ -18,18 +18,26 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-/*here to write the hook*/
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Expression_DEFAULT_VALUE_before) {
     using namespace CODEGEN_NAMESPACE;
     MAYBE(typ, ctx.get(ctx.type));
-    if (typ.body.kind == ebm::TypeKind::ARRAY) {
-        MAYBE(length, typ.body.length());
-        return CODE("[Default::default();", std::format("{}", length.value()), "]");
+    if (auto annot = ctx.get_field<"array_annotation">(ctx.type)) {
+        if (*annot == ebm::ArrayAnnotation::read_temporary || *annot == ebm::ArrayAnnotation::write_temporary) {
+            // for temporary array, we use pointer type
+            return CODE("NULL");
+        }
     }
-    if (typ.body.kind == ebm::TypeKind::STRUCT || typ.body.kind == ebm::TypeKind::RECURSIVE_STRUCT) {
-        MAYBE(ident, ctx.visit(ctx.type));
-        return CODE(ident.to_writer(), " { ..Default::default() }");
+    if (typ.body.kind == ebm::TypeKind::STRUCT) {
+        MAYBE(id, typ.body.id());
+        auto name = ctx.identifier(id);
+        return CODE("(", name, "){}");
+    }
+    if (typ.body.kind == ebm::TypeKind::OPTIONAL) {
+        MAYBE(inner, typ.body.inner_type());
+        MAYBE(inner_text, ctx.visit(inner));
+        return CODE("(OPTIONAL_OF(", inner_text.to_writer(), ")){}");
     }
     return pass;
 }

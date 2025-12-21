@@ -215,8 +215,10 @@ format ExpressionBody:
             stream_type :StreamType
             unit :SizeUnit # Size unit for the offset (e.g., BIT_FIXED, BYTE_FIXED, ELEMENT_FIXED)
             unit == SizeUnit.BIT_FIXED || unit == SizeUnit.BYTE_FIXED
+            io_ref :StatementRef # Reference to the stream variable
         ExpressionKind.GET_REMAINING_BYTES:
             stream_type :StreamType
+            io_ref :StatementRef # Reference to the stream variable
         ExpressionKind.CAN_READ_STREAM:
             stream_type :StreamType
             num_bytes :Size

@@ -312,11 +312,12 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::ExpressionBody make_get_remaining_bytes(ebm::TypeRef type, ebm::StreamType stream_type) {
+    ebm::ExpressionBody make_get_remaining_bytes(ebm::TypeRef type, ebm::StreamType stream_type, ebm::StatementRef io_ref) {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::GET_REMAINING_BYTES;
         body.type = type;
         body.stream_type(stream_type);
+        body.io_ref(io_ref);
         return body;
     }
 

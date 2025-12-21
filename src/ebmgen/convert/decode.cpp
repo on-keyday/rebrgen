@@ -204,13 +204,13 @@ namespace ebmgen {
                     EBM_WHILE_LOOP(loop, can_read, element_decoder);
                     cond_loop = loop;
 
-                    EBM_GET_REMAINING_BYTES(remain_size, ebm::StreamType::INPUT);
+                    EBM_GET_REMAINING_BYTES(remain_size, ebm::StreamType::INPUT, io_desc.io_ref);
                     MAYBE_VOID(ok, set_dynamic_size(remain_size));
                 }
                 else if (field->eventual_follow == ast::Follow::end && field->follow == ast::Follow::fixed) {
                     auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
                     EBMU_INT_LITERAL(last, tail);
-                    EBM_GET_REMAINING_BYTES(remain_bytes, ebm::StreamType::INPUT);
+                    EBM_GET_REMAINING_BYTES(remain_bytes, ebm::StreamType::INPUT, io_desc.io_ref);
                     EBMU_BOOL_TYPE(bool_type);
                     EBM_BINARY_OP(cond, ebm::BinaryOp::greater, bool_type, remain_bytes, last);
                     MAYBE(element_decoder, underlying_decoder(std::nullopt));

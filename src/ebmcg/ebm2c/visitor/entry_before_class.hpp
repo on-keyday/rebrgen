@@ -63,6 +63,12 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().pointer_type_wrapper = [&](Result elem_type) -> expected<Result> {
         return CODE(elem_type.to_writer(), "*");
     };
+    ctx.config().optional_type_wrapper = [&](Result elem_type) -> expected<Result> {
+        return CODE("OPTIONAL_OF(", elem_type.to_writer(), ")");
+    };
+    ctx.config().recursive_struct_type_wrapper = [&](Result elem_type) -> expected<Result> {
+        return CODE(elem_type.to_writer(), "*");
+    };
     ctx.config().make_pointer_wrapper = [&](Result elem_type) -> expected<Result> {
         return CODE("(&", elem_type.to_writer(), ")");
     };

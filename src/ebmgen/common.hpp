@@ -216,6 +216,11 @@ namespace ebmgen {
         t.id = ref.id;
         return t;
     }
+
+    template <class B>
+    concept has_body_kind = requires(B b) {
+        { b.body.kind };
+    };
 }  // namespace ebmgen
 
 namespace ebm {

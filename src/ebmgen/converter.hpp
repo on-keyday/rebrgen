@@ -34,7 +34,14 @@ namespace std {
 
 namespace ebmgen {
 
-    void debug_id_inspect(std::uint64_t id);
+    enum class DebugIDInspect {
+        issue,
+        alias_creation_to,
+        alias_creation_from,
+        creation,
+    };
+
+    void debug_id_inspect(std::uint64_t id, DebugIDInspect issue);
 
     struct ReferenceSource {
        private:
@@ -42,7 +49,7 @@ namespace ebmgen {
 
        public:
         expected<ebm::Varint> new_id() {
-            debug_id_inspect(next_id);
+            debug_id_inspect(next_id, DebugIDInspect::issue);
             auto v = varint(next_id);
             if (!v) {
                 return unexpect_error(std::move(v.error()));
@@ -88,6 +95,7 @@ namespace ebmgen {
 
        private:
         expected<ID> add_internal(ID id, Body&& body) {
+            debug_id_inspect(get_id(id), DebugIDInspect::creation);
             id_index_map[get_id(id)] = instances.size();
             Instance instance;
             instance.id = id;
@@ -103,6 +111,8 @@ namespace ebmgen {
                 return unexpect_error(std::move(serialized.error()));
             }
             if (auto it = cache.find(*serialized); it != cache.end()) {
+                debug_id_inspect(get_id(it->second), DebugIDInspect::alias_creation_to);
+                debug_id_inspect(get_id(id), DebugIDInspect::alias_creation_from);
                 // add alias if the same body is already present
                 aliases.push_back(ebm::RefAlias{
                     .hint = hint,
@@ -477,7 +487,7 @@ namespace ebmgen {
 
         // after this call, getter functions will returns nullptr
         // before reuse it, you should call clear()
-        expected<void> finalize(ebm::ExtendedBinaryModule& mod);
+        expected<void> finalize(ebm::ExtendedBinaryModule& mod, bool verify_uniqueness);
 
         expected<void> add_files(std::vector<std::string>&& names);
 

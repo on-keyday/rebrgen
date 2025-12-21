@@ -317,12 +317,11 @@ namespace ebmgen {
 #define EBM_APPEND(ref_name, target, value) \
     EBM_AST_STATEMENT(ref_name, make_append, target, value)
 
-    ebm::ExpressionBody make_get_remaining_bytes(ebm::TypeRef type, ebm::StreamType stream_type);
+    ebm::ExpressionBody make_get_remaining_bytes(ebm::TypeRef type, ebm::StreamType stream_type, ebm::StatementRef io_ref);
 
-#define EBM_GET_REMAINING_BYTES(ref_name, stream_type) \
-    EBMU_COUNTER_TYPE(ref_name##_type_____);           \
-    EBM_AST_EXPRESSION(ref_name, make_get_remaining_bytes, ref_name##_type_____, stream_type)
-
+#define EBM_GET_REMAINING_BYTES(ref_name, stream_type, io_ref) \
+    EBMU_COUNTER_TYPE(ref_name##_type_____);                   \
+    EBM_AST_EXPRESSION(ref_name, make_get_remaining_bytes, ref_name##_type_____, stream_type, io_ref)
     ebm::StatementBody make_break(ebm::StatementRef loop_id);
     ebm::StatementBody make_continue(ebm::StatementRef loop_id);
 

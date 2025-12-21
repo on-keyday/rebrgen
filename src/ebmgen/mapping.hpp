@@ -59,6 +59,8 @@ namespace ebmgen {
         }
 
         bool valid() const;
+        size_t original_id_count() const;
+        size_t mapped_id_count() const ;
 
         const ebm::Identifier* get_identifier(const ebm::IdentifierRef& ref) const;
         const ebm::StringLiteral* get_string_literal(const ebm::StringRef& ref) const;

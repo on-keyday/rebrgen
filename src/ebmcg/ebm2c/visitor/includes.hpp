@@ -45,6 +45,10 @@ namespace ebm2c {
         size_t size;
     };
 
+    struct OptionalType {
+        ebm::TypeRef elem_type;
+    };
+
     inline std::string map_decl(std::string&& type_str, std::string&& variable) {
         auto first_dollar = type_str.find('$');
         if (first_dollar == std::string::npos) {

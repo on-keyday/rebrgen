@@ -60,6 +60,7 @@ std::function<expected<Result>(Result elem_type)> vector_type_wrapper;
 std::function<expected<Result>(Result typ, bool is_state_variable)> param_type_wrapper;
 std::function<expected<Result>(Result elem_type)> pointer_type_wrapper;
 std::function<expected<Result>(Result elem_type)> optional_type_wrapper;
+std::function<expected<Result>(Result elem_type)> recursive_struct_type_wrapper;
 std::function<expected<Result>(Result elem)> make_pointer_wrapper;
 std::function<expected<Result>(Result elem)> make_optional_wrapper;
 std::string variant_prefix = "Variant";

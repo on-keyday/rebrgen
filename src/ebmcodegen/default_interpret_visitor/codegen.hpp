@@ -3662,6 +3662,7 @@ namespace ebm2all {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
+        const ebm::StatementRef& io_ref;
         const ebm::StreamType& stream_type;
         const ebm::SizeUnit& unit;
     };
@@ -3672,12 +3673,13 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
     struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
+        const ebm::StatementRef& io_ref;
         const ebm::StreamType& stream_type;
         const ebm::SizeUnit& unit;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -3689,12 +3691,13 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
+        const ebm::StatementRef& io_ref;
         const ebm::StreamType& stream_type;
         const ebm::SizeUnit& unit;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -3707,12 +3710,13 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_REMAINING_BYTES : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
+        const ebm::StatementRef& io_ref;
         const ebm::StreamType& stream_type;
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES {};
@@ -3722,12 +3726,13 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;
     struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
+        const ebm::StatementRef& io_ref;
         const ebm::StreamType& stream_type;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
@@ -3738,12 +3743,13 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
+        const ebm::StatementRef& io_ref;
         const ebm::StreamType& stream_type;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
@@ -3755,7 +3761,7 @@ namespace ebm2all {
     };
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CAN_READ_STREAM : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;

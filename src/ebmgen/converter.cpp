@@ -1,6 +1,7 @@
 #include "converter.hpp"
 #include <core/ast/traverse.h>
 #include <functional>
+#include <unordered_set>
 #include "binary/log2i.h"
 #include "common.hpp"
 #include "convert/helper.hpp"
@@ -8,8 +9,8 @@
 #include "ebmgen/converter.hpp"
 namespace ebmgen {
 
-    void debug_id_inspect(std::uint64_t id) {
-        if (id == 12036) {
+    void debug_id_inspect(std::uint64_t id, DebugIDInspect inspect) {
+        if (id == 533) {
             ;
         }
     }
@@ -65,28 +66,55 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm) {
+    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm, bool verify_uniqueness) {
         MAYBE(max_id, ident_source.current_id());
         ebm.max_id = ebm::AnyRef{max_id};
         MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));
         ebm.identifiers_len = identifiers_len;
         ebm.identifiers = std::move(identifier_repo.get_all());
+        std::unordered_set<std::uint64_t> seen;
+
+        auto check_duplicate = [&](const auto& items, const char* item_name) -> expected<void> {
+            if (!verify_uniqueness) {
+                return {};
+            }
+            for (const auto& item : items) {
+                auto id = get_id(item.id);
+                if (!seen.insert(id).second) {
+                    if constexpr (has_body_kind<decltype(item)>) {
+                        return unexpect_error("Duplicate {}({}) found during finalize: {}", item_name, to_string(item.body.kind), id);
+                    }
+                    else {
+                        return unexpect_error("Duplicate {} found during finalize: {}", item_name, id);
+                    }
+                }
+            }
+            return {};
+        };
+        MAYBE_VOID(ok1, check_duplicate(ebm.identifiers, "identifier"));
 
         MAYBE(strings_len, varint(string_repo.get_all().size()));
         ebm.strings_len = strings_len;
         ebm.strings = std::move(string_repo.get_all());
 
+        MAYBE_VOID(ok2, check_duplicate(ebm.strings, "string literal"));
+
         MAYBE(types_len, varint(type_repo.get_all().size()));
         ebm.types_len = types_len;
         ebm.types = std::move(type_repo.get_all());
+
+        MAYBE_VOID(ok3, check_duplicate(ebm.types, "type"));
 
         MAYBE(statements_len, varint(statement_repo.get_all().size()));
         ebm.statements_len = statements_len;
         ebm.statements = std::move(statement_repo.get_all());
 
+        MAYBE_VOID(ok4, check_duplicate(ebm.statements, "statement"));
+
         MAYBE(expressions_len, varint(expression_repo.get_all().size()));
         ebm.expressions_len = expressions_len;
         ebm.expressions = std::move(expression_repo.get_all());
+        MAYBE_VOID(ok5, check_duplicate(ebm.expressions, "expression"));
 
         MAYBE(aliases_len, varint(aliases.size()));
         ebm.aliases_len = aliases_len;
@@ -94,6 +122,12 @@ namespace ebmgen {
         for (auto& alias : ebm.aliases) {
             if (alias.hint == ebm::AliasHint::ALIAS) {
                 return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", get_id(alias.from), get_id(alias.to));
+            }
+            if (verify_uniqueness) {
+                auto id = get_id(alias.from);
+                if (!seen.insert(id).second) {
+                    return unexpect_error("Duplicate alias({}) from id found during finalize: {}", to_string(alias.hint), id);
+                }
             }
         }
 

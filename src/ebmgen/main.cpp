@@ -80,6 +80,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view query;
     bool timing = false;
     bool print_output_size = false;
+    bool verify_uniqueness = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         auto exe_path = futils::wrap::get_exepath();
@@ -130,6 +131,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&query, "query,q", "run query to object and output matched objects to stdout", "QUERY");
         ctx.VarBool(&timing, "timing", "Processing timing (for performance debug)");
         ctx.VarBool(&print_output_size, "output-size", "print output size to stderr (for debugging)");
+        ctx.VarBool(&verify_uniqueness, "verify-uniqueness", "verify uniqueness of identifiers during conversion (for debugging)");
     }
 };
 
@@ -312,7 +314,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
         TIMING("load and parse");
 
-        auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug, .timer_cb = [&](const char* phase) {
+        auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug, .verify_uniqueness = flags.verify_uniqueness, .timer_cb = [&](const char* phase) {
                                                                                                TIMING(phase);
                                                                                            }});
         if (!output) {
@@ -331,7 +333,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             table.emplace(ebm);
         }
         if (!table->valid()) {
-            cerr << "error: invalid ebm structure\n";
+            cerr << "error: invalid ebm structure; " << table->original_id_count() << " original ids, " << table->mapped_id_count() << " mapped ids\n";
             return 1;
         }
     }

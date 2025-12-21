@@ -10,6 +10,7 @@
     generator_default_logic: std::function<expected<Result>()>
     default_logic: std::function<expected<Result>()>
     kind: TypeKind
+    array_annotation: ArrayAnnotation
     element_type: TypeRef
     length: Varint
 */

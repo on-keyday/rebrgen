@@ -2742,9 +2742,11 @@ namespace ebm {
         struct EBM_API union_struct_43{
             StreamType stream_type{};
             SizeUnit unit{};
+            StatementRef io_ref;
         };
         struct EBM_API union_struct_44{
             StreamType stream_type{};
+            StatementRef io_ref;
         };
         struct EBM_API union_struct_45{
             StreamType stream_type{};

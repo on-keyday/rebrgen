@@ -33,7 +33,9 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         std::unordered_map<std::uint64_t, ebm2c::Union> unions;
         std::vector<ebm2c::VectorType> vector_types;
         std::vector<ebm2c::ArrayType> array_types;
+        std::vector<ebm2c::OptionalType> optional_types;
         std::vector<ebm2c::Enum> enums;
+        std::set<std::string> optional_used;  // temporary ad-hoc set to track optional usage
         bool has_can_read_stream = false;
     };
 
@@ -101,6 +103,10 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("} \\");
         }
         w.writeln("} while(0)");
+        w.writeln("");
+        w.writeln("#ifndef EBM_GET_REMAINING_BYTES");
+        w.writeln("#define EBM_GET_REMAINING_BYTES(io) ((size_t)((io)->data_end - ((io)->data + (io)->offset)))");
+        w.writeln("#endif");
         w.writeln("");
     }
 
@@ -256,13 +262,33 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("#endif");
         }
 
+        if (c_ctx.optional_types.size() > 0) {
+            w.writeln("// Optional type definitions");
+            w.writeln("#ifndef OPTIONAL_OF");
+            w.writeln("#define OPTIONAL_OF(type) Optional_##type");
+            for (auto& o : c_ctx.optional_types) {
+                MAYBE(elem_type, ctx.visit(o.elem_type));
+                w.writeln("typedef struct {");
+                {
+                    auto scope = w.indent_scope();
+                    w.writeln("bool has_value;");
+                    w.writeln(elem_type.to_writer(), " value;");
+                }
+                w.writeln("} OPTIONAL_OF(", elem_type.to_writer(), ");");
+                w.writeln("");
+            }
+            w.writeln("#endif");
+        }
+
         w.writeln("typedef struct EncoderInput {");
         {
             auto scope = w.indent_scope();
             w.writeln("uint8_t* data;");
             w.writeln("uint8_t* data_end;");
             w.writeln("size_t offset;");
-            w.writeln("int (*emit)(struct EncoderInput* self, const VECTOR_OF(uint8_t)* data, size_t size);");
+            if (c_ctx.vector_types.size() > 0) {
+                w.writeln("int (*emit)(struct EncoderInput* self, const VECTOR_OF(uint8_t)* data, size_t size);");
+            }
         }
         w.writeln("} EncoderInput;");
         w.writeln("");
@@ -310,7 +336,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         };
         auto write_union = [&](Union& u) -> expected<void> {
             auto ident = std::format("Union{}", get_id(u.id));
-            w.writeln("union ", ident, " {");
+            w.writeln("typedef union ", ident, " {");
             auto scope = w.indent_scope();
             for (auto& v : u.variants) {
                 auto var_ident = ctx.identifier(v.id);
@@ -326,20 +352,24 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 w.writeln("}", var_ident, ";");
             }
             scope.execute();
-            w.writeln("};");
+            w.writeln("}", ident, ";");
             w.writeln("");
             return {};
         };
         for (auto& s : c_ctx.structs) {
             auto ident = ctx.identifier(s.id);
+            // first lookup unions used in this struct
+            for (auto& f : s.fields) {
+                MAYBE(typ, get_field_type(f.id));
+                if (auto found = c_ctx.unions.find(ebmgen::get_id(typ.second)); found != c_ctx.unions.end()) {
+                    MAYBE_VOID(ok, write_union(found->second));
+                }
+            }
             w.writeln("struct ", ident, " {");
             auto scope = w.indent_scope();
             for (auto& f : s.fields) {
                 auto field_ident = ctx.identifier(f.id);
                 MAYBE(typ, get_field_type(f.id));
-                if (auto found = c_ctx.unions.find(ebmgen::get_id(typ.second)); found != c_ctx.unions.end()) {
-                    MAYBE_VOID(ok, write_union(found->second));
-                }
                 w.writeln(typ.first.to_writer(), " ", field_ident, ";");
                 MAYBE_VOID(ok, collect_composite_fn(f.id));
             }
@@ -347,29 +377,35 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("};");
             w.writeln("");
         }
-        for (auto& composite_fn_ref : composite_fns) {
-            MAYBE(func, ctx.visit(composite_fn_ref));
-            w.writeln(func.to_writer());
-        }
-        // for each properties
-        for (auto& s : c_ctx.structs) {
-            for (auto& prop_ref : s.properties) {
-                MAYBE(prop, ctx.visit(prop_ref));
-                w.writeln(prop.to_writer());
-            }
-        }
-        // write encoding/decoding functions if any
-        for (auto& s : c_ctx.structs) {
-            if (s.encode_function) {
-                MAYBE(func, ctx.visit(*s.encode_function));
+        auto foreach_function = [&] -> expected<void> {
+            for (auto& composite_fn_ref : composite_fns) {
+                MAYBE(func, ctx.visit(composite_fn_ref));
                 w.writeln(func.to_writer());
             }
-            if (s.decode_function) {
-                MAYBE(func, ctx.visit(*s.decode_function));
-                w.writeln(func.to_writer());
+            // for each properties
+            for (auto& s : c_ctx.structs) {
+                for (auto& prop_ref : s.properties) {
+                    MAYBE(prop, ctx.visit(prop_ref));
+                    w.writeln(prop.to_writer());
+                }
             }
-        }
-
+            // write encoding/decoding functions if any
+            for (auto& s : c_ctx.structs) {
+                if (s.encode_function) {
+                    MAYBE(func, ctx.visit(*s.encode_function));
+                    w.writeln(func.to_writer());
+                }
+                if (s.decode_function) {
+                    MAYBE(func, ctx.visit(*s.decode_function));
+                    w.writeln(func.to_writer());
+                }
+            }
+            return {};
+        };
+        ctx.config().forward_decl = true;
+        MAYBE_VOID(fwd, foreach_function());
+        ctx.config().forward_decl = false;
+        MAYBE_VOID(def, foreach_function());
         return w;
     };
 
@@ -397,6 +433,11 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             if (auto props = struct_->properties()) {
                 for (auto& prop_ref : props->container) {
                     s.properties.push_back(prop_ref);
+                }
+            }
+            if (auto funcs = struct_->methods()) {
+                for (auto& func_ref : funcs->container) {
+                    s.properties.push_back(func_ref);
                 }
             }
             if (auto encode_func = struct_->encode_fn()) {
@@ -435,6 +476,17 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 }
                 ebm2c::ArrayType a{.elem_type = elem_type, .size = length.value()};
                 c_ctx.array_types.push_back(a);
+                continue;
+            }
+            if (s.body.kind == ebm::TypeKind::OPTIONAL) {
+                MAYBE(text_repr, ctx.visit(s.id));
+                if (c_ctx.optional_used.insert(text_repr.to_string()).second == false) {
+                    continue;
+                }
+                c_ctx.optional_used.insert(text_repr.to_string());
+                MAYBE(elem_type, s.body.inner_type());
+                ebm2c::OptionalType o{.elem_type = elem_type};
+                c_ctx.optional_types.push_back(o);
                 continue;
             }
             auto variant_desc = s.body.variant_desc();

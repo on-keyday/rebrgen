@@ -471,7 +471,9 @@ namespace ebmgen {
                         auto enum_type = target_expr.body.type;
                         body.kind = ebm::ExpressionKind::ENUM_IS_DEFINED;
                         body.target_expr(base_ref);
+                        auto scope = ctx.state().set_current_generate_type(GenerateType::Normal);
                         EBMA_CONVERT_STATEMENT(base_stmt, enum_->base.lock());
+                        scope.execute();
                         MAYBE(base_enum, ctx.repository().get_statement(base_stmt));
                         MAYBE(enum_decl_ref, base_enum.body.enum_decl());
                         auto enum_decl = enum_decl_ref;
@@ -566,13 +568,34 @@ namespace ebmgen {
             case ast::IOMethod::input_offset:
             case ast::IOMethod::input_bit_offset: {
                 body.kind = ebm::ExpressionKind::GET_STREAM_OFFSET;
-                body.stream_type(ebm::StreamType::INPUT);
+                MAYBE(current_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+                if (ctx.state().get_current_generate_type() != GenerateType::Encode) {
+                    body.io_ref(current_encdec.encoder_input_def);
+                    body.stream_type(ebm::StreamType::OUTPUT);
+                }
+                else if (ctx.state().get_current_generate_type() != GenerateType::Decode) {
+                    body.io_ref(current_encdec.decoder_input_def);
+                    body.stream_type(ebm::StreamType::INPUT);
+                }
+                else {
+                    return unexpect_error("input.offset/input.bit_offset can be used only inside encode/decode function");
+                }
                 body.unit(node->method == ast::IOMethod::input_bit_offset ? ebm::SizeUnit::BIT_FIXED : ebm::SizeUnit::BYTE_FIXED);
                 break;
             }
             case ast::IOMethod::input_remain: {
                 body.kind = ebm::ExpressionKind::GET_REMAINING_BYTES;
                 body.stream_type(ebm::StreamType::INPUT);
+                MAYBE(current_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+                if (ctx.state().get_current_generate_type() != GenerateType::Encode) {
+                    body.io_ref(current_encdec.encoder_input_def);
+                }
+                else if (ctx.state().get_current_generate_type() != GenerateType::Decode) {
+                    body.io_ref(current_encdec.decoder_input_def);
+                }
+                else {
+                    return unexpect_error("input.remain can be used only inside encode/decode function");
+                }
                 break;
             }
             case ast::IOMethod::input_subrange: {

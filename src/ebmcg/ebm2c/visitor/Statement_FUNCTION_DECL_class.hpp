@@ -66,7 +66,12 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
 
     inline_prefix = "inline ";  // TODO: currently, generateing all functions in header
 
-    w.writeln(inline_prefix, ret_type.to_writer(), " ", func_prefix, name, "(", params, ") ", ctx.config().begin_block);
+    w.write(inline_prefix, ret_type.to_writer(), " ", func_prefix, name, "(", params, ")");
+    if (ctx.config().forward_decl) {
+        w.writeln(ctx.config().endof_statement);
+        return w;
+    }
+    w.writeln(" ", ctx.config().begin_block);
     {
         auto scope = w.indent_scope();
         MAYBE(body, ctx.visit(ctx.func_decl.body));

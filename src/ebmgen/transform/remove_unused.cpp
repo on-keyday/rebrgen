@@ -8,10 +8,6 @@
 #include <testutil/timer.h>
 
 namespace ebmgen {
-    template <class B>
-    concept has_body_kind = requires(B b) {
-        { b.body.kind };
-    };
 
     using InverseRefs = std::unordered_map<size_t, std::vector<ebm::AnyRef>>;
 

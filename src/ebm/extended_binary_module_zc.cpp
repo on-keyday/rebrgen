@@ -2829,10 +2829,16 @@ namespace ebm::zc {
         return nullptr;
         }
         if (ExpressionKind::GET_STREAM_OFFSET==(*this).kind) {
-        return nullptr;
+        if(!std::holds_alternative<union_struct_43>(union_variant_26)) {
+            return nullptr;
+        }
+        return std::addressof(std::get<17>((*this).union_variant_26).io_ref);
         }
         if (ExpressionKind::GET_REMAINING_BYTES==(*this).kind) {
-        return nullptr;
+        if(!std::holds_alternative<union_struct_44>(union_variant_26)) {
+            return nullptr;
+        }
+        return std::addressof(std::get<18>((*this).union_variant_26).io_ref);
         }
         if (ExpressionKind::CAN_READ_STREAM==(*this).kind) {
         if(!std::holds_alternative<union_struct_45>(union_variant_26)) {
@@ -2895,10 +2901,18 @@ namespace ebm::zc {
             return false;
         }
         if (ExpressionKind::GET_STREAM_OFFSET==(*this).kind) {
-            return false;
+            if(!std::holds_alternative<union_struct_43>(union_variant_26)) {
+                union_variant_26 = union_struct_43();
+            }
+            std::get<17>((*this).union_variant_26).io_ref = v;
+            return true;
         }
         if (ExpressionKind::GET_REMAINING_BYTES==(*this).kind) {
-            return false;
+            if(!std::holds_alternative<union_struct_44>(union_variant_26)) {
+                union_variant_26 = union_struct_44();
+            }
+            std::get<18>((*this).union_variant_26).io_ref = v;
+            return true;
         }
         if (ExpressionKind::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_45>(union_variant_26)) {
@@ -2959,10 +2973,18 @@ namespace ebm::zc {
             return false;
         }
         if (ExpressionKind::GET_STREAM_OFFSET==(*this).kind) {
-            return false;
+            if(!std::holds_alternative<union_struct_43>(union_variant_26)) {
+                union_variant_26 = union_struct_43();
+            }
+            std::get<17>((*this).union_variant_26).io_ref = std::move(v);
+            return true;
         }
         if (ExpressionKind::GET_REMAINING_BYTES==(*this).kind) {
-            return false;
+            if(!std::holds_alternative<union_struct_44>(union_variant_26)) {
+                union_variant_26 = union_struct_44();
+            }
+            std::get<18>((*this).union_variant_26).io_ref = std::move(v);
+            return true;
         }
         if (ExpressionKind::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_45>(union_variant_26)) {
@@ -17564,6 +17586,9 @@ namespace ebm::zc {
             if (!((std::get<17>((*this).union_variant_26).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_26).unit == SizeUnit::BYTE_FIXED))) {
                 return ::futils::error::Error<>("encode: ExpressionBody: assertion failed; (std::get<17>((*this).union_variant_26).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_26).unit == SizeUnit::BYTE_FIXED)",::futils::error::Category::lib);
             }
+            if (auto err = std::get<17>((*this).union_variant_26).io_ref.encode(w)) {
+                return err;
+            }
         }
         else if (ExpressionKind::GET_REMAINING_BYTES==(*this).kind) {
             if(!std::holds_alternative<union_struct_44>(union_variant_26)) {
@@ -17572,6 +17597,9 @@ namespace ebm::zc {
             auto tmp_210_ = static_cast<std::uint8_t>(std::get<18>((*this).union_variant_26).stream_type);
             if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_210_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
+            }
+            if (auto err = std::get<18>((*this).union_variant_26).io_ref.encode(w)) {
+                return err;
             }
         }
         else if (ExpressionKind::CAN_READ_STREAM==(*this).kind) {
@@ -17937,6 +17965,9 @@ namespace ebm::zc {
             if (!((std::get<17>((*this).union_variant_26).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_26).unit == SizeUnit::BYTE_FIXED))) {
                 return ::futils::error::Error<>("decode: ExpressionBody: assertion failed; (std::get<17>((*this).union_variant_26).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_26).unit == SizeUnit::BYTE_FIXED)",::futils::error::Category::lib);
             }
+            if (auto err = std::get<17>((*this).union_variant_26).io_ref.decode(r)) {
+                return err;
+            }
         }
         else if (ExpressionKind::GET_REMAINING_BYTES==(*this).kind) {
             if(!std::holds_alternative<union_struct_44>(union_variant_26)) {
@@ -17947,6 +17978,9 @@ namespace ebm::zc {
                 return ::futils::error::Error<>("decode: ExpressionBody::stream_type: read int failed",::futils::error::Category::lib);
             }
             std::get<18>((*this).union_variant_26).stream_type = static_cast<StreamType>(tmp_219_);
+            if (auto err = std::get<18>((*this).union_variant_26).io_ref.decode(r)) {
+                return err;
+            }
         }
         else if (ExpressionKind::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_45>(union_variant_26)) {

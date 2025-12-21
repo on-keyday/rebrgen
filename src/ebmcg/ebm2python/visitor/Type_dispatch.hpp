@@ -11,7 +11,7 @@
       id: TypeRef
       body: TypeBody
         kind: TypeKind
-        array_type: *TypeRef
+        array_annotation: *ArrayAnnotation
         base_type: *TypeRef
         element_type: *TypeRef
         func_desc: *FuncTypeDesc

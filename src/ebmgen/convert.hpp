@@ -9,6 +9,7 @@ namespace ebmgen {
     // This will be the main entry point for the conversion logic
     struct Option {
         bool not_remove_unused = false;  // for debug transformation
+        bool verify_uniqueness = false;  // verify uniqueness of identifiers
         std::function<void(const char*)> timer_cb;
     };
 

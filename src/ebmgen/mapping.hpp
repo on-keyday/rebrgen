@@ -60,7 +60,7 @@ namespace ebmgen {
 
         bool valid() const;
         size_t original_id_count() const;
-        size_t mapped_id_count() const ;
+        size_t mapped_id_count() const;
 
         const ebm::Identifier* get_identifier(const ebm::IdentifierRef& ref) const;
         const ebm::StringLiteral* get_string_literal(const ebm::StringRef& ref) const;
@@ -100,10 +100,13 @@ namespace ebmgen {
         // Gets the identifier name associated with the given reference.
         // Code generator should use this, not direct access to IdentifierRef member access (via get_identifier).
         std::string get_associated_identifier(const ebm::StatementRef& ref, std::string_view prefix = "") const;
+        std::string get_associated_identifier(const ebm::WeakStatementRef& ref, std::string_view prefix = "") const;
         expected<std::string> get_associated_identifier(const ebm::ExpressionRef& ref, std::string_view prefix = "") const;
         expected<std::string> get_associated_identifier(const ebm::TypeRef& ref, std::string_view prefix = "") const;
 
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
+        const ebm::Identifier* get_identifier(const ebm::WeakStatementRef& ref) const;
+
 
         const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
 

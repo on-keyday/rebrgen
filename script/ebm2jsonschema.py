@@ -9,7 +9,7 @@ from util import execute
 
 def ref_to_body(type_name: str) -> str:
     """Ref型名から対応するボディ型名を生成する。"""
-    no_ref = type_name.removesuffix("Ref")
+    no_ref = type_name.removeprefix("Weak").removesuffix("Ref")
     if no_ref == "Identifier" or no_ref == "String":
         return "String"
     return no_ref + "Body"

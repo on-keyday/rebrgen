@@ -340,7 +340,7 @@ namespace ebmgen {
             }
             if (write) {  // incremental reserving
                 ebm::ReserveData reserve_data;
-                reserve_data.write_data = flush_buffer_statement;
+                reserve_data.write_data = ebm::WeakStatementRef{flush_buffer_statement};
                 MAYBE(reserve_size, make_fixed_size(new_size, ebm::SizeUnit::BYTE_FIXED));
                 reserve_data.size = reserve_size;
                 EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));

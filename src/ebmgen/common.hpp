@@ -217,6 +217,14 @@ namespace ebmgen {
         return t;
     }
 
+    constexpr ebm::WeakStatementRef to_weak(ebm::StatementRef ref){
+        return ebm::WeakStatementRef{ref};
+    }
+
+    constexpr ebm::StatementRef from_weak(ebm::WeakStatementRef ref){
+        return ref.id;
+    }
+
     template <class B>
     concept has_body_kind = requires(B b) {
         { b.body.kind };

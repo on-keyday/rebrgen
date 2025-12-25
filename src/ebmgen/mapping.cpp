@@ -181,6 +181,10 @@ namespace ebmgen {
         return get_identifier(ident);
     }
 
+    const ebm::Identifier* MappingTable::get_identifier(const ebm::WeakStatementRef& ref) const {
+        return get_identifier(ref.id);
+    }
+
     std::string_view MappingTable::get_default_prefix(ebm::StatementRef ref) const {
         if (auto stmt = get_statement(ref)) {
             return get_default_prefix(stmt->body.kind);
@@ -199,6 +203,10 @@ namespace ebmgen {
             prefix = get_default_prefix(ref);
         }
         return std::format("{}{}", prefix, get_id(ref));
+    }
+
+    std::string MappingTable::get_associated_identifier(const ebm::WeakStatementRef& ref, std::string_view prefix) const {
+        return get_associated_identifier(ref.id, prefix);
     }
 
     expected<std::string> MappingTable::get_associated_identifier(const ebm::ExpressionRef& ref, std::string_view prefix) const {

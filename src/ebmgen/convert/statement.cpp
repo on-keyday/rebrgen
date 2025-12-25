@@ -433,7 +433,7 @@ namespace ebmgen {
     expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ) {
         MAYBE(struct_type, ctx.repository().get_type(alt_type));
         MAYBE(base_struct_id, struct_type.body.id());
-        auto related_variant_ref = ctx.state().get_struct_variant_for_id(base_struct_id);
+        auto related_variant_ref = ctx.state().get_struct_variant_for_id(base_struct_id.id);
         if (!related_variant_ref) {
             return std::nullopt;
         }
@@ -621,7 +621,7 @@ namespace ebmgen {
 
         ebm::TypeBody struct_type_body;
         struct_type_body.kind = node->body->struct_type->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
-        struct_type_body.id(id);
+        struct_type_body.id(to_weak(id));
         EBMA_ADD_TYPE(struct_type, std::move(struct_type_body));
         ebm::ExpressionBody self_expr_body;
         self_expr_body.kind = ebm::ExpressionKind::SELF;
@@ -701,7 +701,7 @@ namespace ebmgen {
                 derived_fn = std::move(decl);
             }
             else {
-                derived_fn.parent_format = id;
+                derived_fn.parent_format = to_weak(id);
                 EBMA_ADD_IDENTIFIER(enc_name, typ == GenerateType::Encode ? "encode" : "decode");
                 MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
                 derived_fn.name = enc_name;
@@ -758,7 +758,7 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::EnumMember>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         ebm::EnumMemberDecl ebm_enum_member_decl;
         EBMA_CONVERT_STATEMENT(enum_decl_ref, node->belong.lock());
-        ebm_enum_member_decl.enum_decl = enum_decl_ref;
+        ebm_enum_member_decl.enum_decl = to_weak(enum_decl_ref);
         EBMA_ADD_IDENTIFIER(member_name_ref, node->ident->ident);
         ebm_enum_member_decl.name = member_name_ref;
         if (node->value) {
@@ -779,7 +779,7 @@ namespace ebmgen {
         if (auto parent = node->belong.lock()) {
             auto n = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(parent_ref, parent);
-            func_decl.parent_format = parent_ref;
+            func_decl.parent_format = ebm::WeakStatementRef{parent_ref};
             func_decl.kind = node->is_cast ? ebm::FunctionKind::CAST : ebm::FunctionKind::METHOD;
         }
         else {
@@ -889,7 +889,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<ebm::StatementBody> with_io_changed(ConverterContext& ctx, ebm::StatementRef* parent_io_def, ebm::ExpressionRef sub_byte_io, ebm::StatementRef sub_byte_io_def, bool is_enc, auto&& do_io) {
+    expected<ebm::StatementBody> with_io_changed(ConverterContext& ctx, ebm::WeakStatementRef* parent_io_def, ebm::ExpressionRef sub_byte_io, ebm::StatementRef sub_byte_io_def, bool is_enc, auto&& do_io) {
         // this changed io_.[encoder|decoder]_input[def] are used in [encode|decode]_field_type
         MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
         auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
@@ -898,7 +898,7 @@ namespace ebmgen {
             (is_enc ? io_.encoder_input : io_.decoder_input) = original;
             (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
         });
-        *parent_io_def = original_def;
+        *parent_io_def = to_weak(original_def);
         original = sub_byte_io;
         original_def = sub_byte_io_def;
         return do_io();
@@ -1045,7 +1045,7 @@ namespace ebmgen {
             field_decl.is_state_variable(node->is_state_variable);
             if (auto locked = node->belong_struct.lock(); locked && node->belong.lock()) {
                 MAYBE(parent_member_ref, ctx.get_statement_converter().convert_struct_decl(locked));
-                field_decl.parent_struct = parent_member_ref;
+                field_decl.parent_struct = to_weak(parent_member_ref);
             }
             body.field_decl(std::move(field_decl));
             temporary.execute();

@@ -24,7 +24,7 @@ class ValidationError(Exception):
 
 
 def ref_to_body(type_name: str):
-    no_ref = type_name.removesuffix("Ref")
+    no_ref = type_name.removeprefix("Weak").removesuffix("Ref")
     if no_ref == "Identifier" or no_ref == "String":
         body_name = "String"
     else:

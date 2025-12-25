@@ -111,6 +111,10 @@ format LoweredStatementRef:
 format LoweredExpressionRef:
     id :ExpressionRef
 
+format WeakStatementRef:
+    id :StatementRef
+
+
 enum ExpressionKind:
     :u8
     LITERAL_INT 
@@ -325,12 +329,12 @@ format MatchStatement:
 format FieldDecl:
     name :IdentifierRef # Field name
     field_type :TypeRef # Type of the field
-    parent_struct :StatementRef # Reference to parent struct/format
+    parent_struct :WeakStatementRef # Reference to parent struct/format
     is_state_variable :u1 # 0: regular, 1: state variable
     inner_composite :u1 # 0: normal field, 1: part of composite field
     reserved :u6  # Reserved for future use    
     if inner_composite == 1:
-        composite_field :StatementRef # Reference to CompositeFieldDecl
+        composite_field :WeakStatementRef # Reference to CompositeFieldDecl
         composite_getter :LoweredStatementRef # Getter function for composite field
         composite_setter :LoweredStatementRef # Setter function for composite field
 
@@ -377,7 +381,7 @@ format CompositeFieldDecl:
 
 format PropertyDecl:
     name :IdentifierRef # Property name
-    parent_format :StatementRef # Reference to parent format (e.g., struct, union)
+    parent_format :WeakStatementRef # Reference to parent format (e.g., struct, union)
     property_type :TypeRef # Type of the property
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
     setter_condition :ExpressionRef # maybe null
@@ -405,10 +409,10 @@ format FunctionDecl:
     name :IdentifierRef # Function name
     return_type :TypeRef # Return type of the function
     params: Block
-    parent_format :StatementRef # Reference to parent format (maybe null) (e.g., struct, union)
+    parent_format :WeakStatementRef # Reference to parent format (maybe null) (e.g., struct, union)
     kind :FunctionKind # Kind of the function
     if kind == FunctionKind.PROPERTY_GETTER || kind == FunctionKind.PROPERTY_SETTER:
-        property :StatementRef # Reference to the associated PropertyDecl
+        property :WeakStatementRef # Reference to the associated PropertyDecl
     body :StatementRef
 
 format EnumDecl:
@@ -418,7 +422,7 @@ format EnumDecl:
 
 format EnumMemberDecl:
     name :IdentifierRef # Member name
-    enum_decl :StatementRef # Reference to the parent enum declaration
+    enum_decl :WeakStatementRef # Reference to the parent enum declaration
     value :ExpressionRef # Integer value (e.g., 0, 1, 2)
     string_repr :StringRef # Optional string representation (e.g., "MemberName")
 
@@ -441,7 +445,7 @@ format SubByteRange:
         SubByteRangeType.expression:
             expression :ExpressionRef
     io_ref :StatementRef
-    parent_io_ref :StatementRef
+    parent_io_ref :WeakStatementRef
     io_statement :StatementRef
 
 
@@ -517,7 +521,7 @@ format Statement:
     body :StatementBody # Body of the statement
 
 format LoopFlowControl:
-    related_statement :StatementRef # Reference to the loop statement
+    related_statement :WeakStatementRef # Reference to the loop statement
 
 format ErrorReport:
     message :StringRef # Reference to error message string
@@ -590,7 +594,7 @@ format ImportDecl:
     program :StatementRef # Reference to the imported program declaration
 
 format ReserveData:
-    write_data :StatementRef # reference to WRITE_DATA
+    write_data :WeakStatementRef # reference to WRITE_DATA
     size :Size # size to reserve
 
 format StatementBody:
@@ -601,11 +605,11 @@ format StatementBody:
         StatementKind.ASSIGNMENT:
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
-            previous_assignment :StatementRef # Previous assignment or phi node (optional)
+            previous_assignment :WeakStatementRef # Previous assignment or phi node (optional)
         StatementKind.YIELD: # for match/if expression
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
-            previous_assignment :StatementRef # Previous assignment or phi node (optional)
+            previous_assignment :WeakStatementRef # Previous assignment or phi node (optional)
         StatementKind.APPEND:
             target :ExpressionRef # Target vector to append to
             value :ExpressionRef # Value to append
@@ -798,11 +802,11 @@ format TypeBody:
         TypeKind.VECTOR:
             element_type :TypeRef
         TypeKind.STRUCT:
-            id :StatementRef # Reference to struct name
+            id :WeakStatementRef # Reference to struct name
         TypeKind.RECURSIVE_STRUCT:
-            id :StatementRef # Reference to recursive struct name
+            id :WeakStatementRef # Reference to recursive struct name
         TypeKind.ENUM:
-            id :StatementRef # Reference to enum name
+            id :WeakStatementRef # Reference to enum name
             base_type :TypeRef # Optional base type (e.g., u8, u16)
         TypeKind.VARIANT:
             variant_desc :VariantDesc # Variant type description

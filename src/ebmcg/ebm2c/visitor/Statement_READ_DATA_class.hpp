@@ -41,6 +41,11 @@
 #include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
+    if (auto low = ctx.read_data.lowered_statement()) {
+        if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
+            return ctx.visit(low->io_statement.id);
+        }
+    }
     if (auto cand = is_bytes_type(ctx, ctx.read_data.data_type)) {
         MAYBE(target, ctx.visit(ctx.read_data.target));
         MAYBE(size_str, get_size_str(ctx, ctx.read_data.size));

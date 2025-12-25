@@ -74,4 +74,17 @@ namespace ebm2c {
         }
         return nullptr;
     }
+
+    bool is_optionalized_pointer_element(auto&& ctx, ebm::TypeRef pointee_ref) {
+        ebmgen::MappingTable& mapping = get_visitor(ctx).module_;
+        auto pointee_type = mapping.get_type(pointee_ref);
+        // currently, non common size int pointers(not 8,16,32,64) are not supported
+        // so convert them to optional types
+        if (auto size = pointee_type->body.size()) {
+            if (size->value() != 8 && size->value() != 16 && size->value() != 32 && size->value() != 64) {
+                return true;
+            }
+        }
+        return false;
+    }
 }  // namespace ebm2c

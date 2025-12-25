@@ -56,6 +56,18 @@ namespace ebmgen {
         return std::nullopt;
     }
 
+    expected<ebm::ExpressionRef> get_self(TransformContext& tctx, ebm::StatementRef stmt_ref) {
+        auto& ctx = tctx.context();
+        MAYBE(struct_stmt, tctx.statement_repository().get(stmt_ref));
+        MAYBE(struct_decl, struct_stmt.body.struct_decl());
+        ebm::TypeBody body;
+        body.kind = struct_decl.is_recursive() ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
+        body.id(stmt_ref);
+        EBMA_ADD_TYPE(self_type_ref, std::move(body));
+        EBM_SELF(self_expr, self_type_ref);
+        return self_expr;
+    }
+
     expected<std::pair<ebm::StatementRef, ebm::StatementRef>> derive_composite_accessor(
         TransformContext& tctx, ebm::StatementRef composite_ref,
         ebm::TypeRef composite_type,
@@ -72,15 +84,16 @@ namespace ebmgen {
         getter_decl.kind = ebm::FunctionKind::COMPOSITE_GETTER;
         setter_decl.kind = ebm::FunctionKind::COMPOSITE_SETTER;
         MAYBE(field_self_id, tctx.context().state().get_self_ref_for_id(field_ref));
-        MAYBE(self_expr, tctx.expression_repository().get(field_self_id));
-        MAYBE(base_, self_expr.body.base());  // must be MEMBER_ACCESS
-        auto original_field_type = self_expr.body.type;
-        auto base = base_;  // copy to avoid memory relocation
+        MAYBE(original_field, tctx.expression_repository().get(field_self_id));
+        // MAYBE(base_, self_expr.body.base());  // must be MEMBER_ACCESS
+        auto original_field_type = original_field.body.type;
+        // auto base = base_;  // copy to avoid memory relocation
+        MAYBE(self_, get_self(tctx, parent_ref));
         EBM_IDENTIFIER(composite_ident, composite_ref, composite_type);
-        EBM_MEMBER_ACCESS(composite_expr, composite_type, base, composite_ident);
-        EBMU_INT_LITERAL(offset_expr, offset);
-        EBMU_INT_LITERAL(size_expr, current_size);
-        EBMU_INT_LITERAL(total_size_expr, total_size);
+        EBM_MEMBER_ACCESS(composite_expr, composite_type, self_, composite_ident);
+        // EBMU_INT_LITERAL(offset_expr, offset);
+        // EBMU_INT_LITERAL(size_expr, current_size);
+        // EBMU_INT_LITERAL(total_size_expr, total_size);
         EBM_DEFINE_PARAMETER(input_param, {}, original_field_type, false);
         append(setter_decl.params, input_param_def);
         MAYBE(setter_return_type, get_single_type(ebm::TypeKind::PROPERTY_SETTER_RETURN, ctx));

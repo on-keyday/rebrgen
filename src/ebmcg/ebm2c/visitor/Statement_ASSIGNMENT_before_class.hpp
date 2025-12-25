@@ -36,11 +36,15 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
         CodeWriter w;
         auto parent_ident = ctx.identifier(comp->parent_struct);
         MAYBE(member_ident, ctx.identifier(*member));
+        auto base_ = base_str.to_writer();
+        if (ctx.get_field<"struct_decl.related_variant">(comp->parent_struct)) {
+            base_ = CODE(std::move(base_), ".", parent_ident);
+        }
         auto setter_func_name = std::format(
             "{}_set_{}",
             parent_ident,
             member_ident);
-        w.writeln(setter_func_name, "(&", base_str.to_writer(), ", ", value.to_writer(), ");");
+        w.writeln(setter_func_name, "(&", base_, ", ", value.to_writer(), ");");
         return w;
     }
     /*here to write the hook*/

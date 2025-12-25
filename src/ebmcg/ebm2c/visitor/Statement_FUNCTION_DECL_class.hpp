@@ -64,6 +64,12 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         }
     }
 
+    // first, traverse body to determine
+    MAYBE(body, ctx.visit(ctx.func_decl.body));
+
+    if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+    }
+
     inline_prefix = "inline ";  // TODO: currently, generateing all functions in header
 
     w.write(inline_prefix, ret_type.to_writer(), " ", func_prefix, name, "(", params, ")");
@@ -74,7 +80,6 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     w.writeln(" ", ctx.config().begin_block);
     {
         auto scope = w.indent_scope();
-        MAYBE(body, ctx.visit(ctx.func_decl.body));
         w.write(body.to_writer());
     }
     w.writeln(ctx.config().end_block);

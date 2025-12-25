@@ -56,12 +56,6 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
         return CODE("(*", getter_func_name, "(&", base.to_writer(), args, "))");
     }
     MAYBE(body, ctx.get_field<"body.id">(ctx.member));
-    if (auto type_ref = get_variant_member_from_field(ctx, body)) {
-        MAYBE(base, ctx.visit(ctx.base));
-        MAYBE(ident, ctx.identifier(*type_ref));
-        MAYBE(member, ctx.visit(ctx.member));
-        return CODE(base.to_writer(), ".", ident, ".", member.to_writer());
-    }
     if (auto comp_getter = get_composite_field(ctx, ctx.member)) {
         if (auto comp = comp_getter->composite_getter()) {
             MAYBE(getter_decl, ctx.get_field<"func_decl">(comp->id));
@@ -81,8 +75,18 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
                 }
                 args += param_name;
             }
-            return CODE(getter_func_name, "(&", base.to_writer(), args.empty() ? "" : ", ", args, ")");
+            auto base_ = base.to_writer();
+            if (ctx.get_field<"struct_decl.related_variant">(comp_getter->parent_struct)) {
+                base_ = CODE(std::move(base_), ".", parent_ident);
+            }
+            return CODE(getter_func_name, "(&", base_, args.empty() ? "" : ", ", args, ")");
         }
+    }
+    if (auto type_ref = get_variant_member_from_field(ctx, body)) {
+        MAYBE(base, ctx.visit(ctx.base));
+        MAYBE(ident, ctx.identifier(*type_ref));
+        MAYBE(member, ctx.visit(ctx.member));
+        return CODE(base.to_writer(), ".", ident, ".", member.to_writer());
     }
     return pass;
 }

@@ -18,8 +18,8 @@ namespace ebmgen {
     expected<void> vectorized_io(TransformContext& tctx, bool write) {
         // Implementation of the grouping I/O transformation
         auto& all_statements = tctx.statement_repository().get_all();
-        auto current_added = all_statements.size();
-        auto current_alias = tctx.alias_vector().size();
+        const auto current_added = all_statements.size();
+        const auto current_alias = tctx.alias_vector().size();
         std::map<size_t, std::vector<std::pair<std::pair<size_t, size_t>, std::function<expected<ebm::StatementRef>()>>>> update;
         for (size_t i = 0; i < current_added; ++i) {
             auto block = get_block(all_statements[i].body);
@@ -132,17 +132,13 @@ namespace ebmgen {
         std::map<std::uint64_t, ebm::StatementRef> map_statements;
         for (auto& [block_id, updates] : update) {
             auto stmt_id = tctx.statement_repository().get_all()[block_id].id;
-            auto block = get_block(tctx.statement_repository().get_all()[block_id].body);
-            if (!block) {
-                return unexpect_error("Failed to get block from statement");
-            }
             std::vector<std::pair<std::pair<size_t, size_t>, ebm::StatementRef>> new_statements;
             for (auto& [group_range, updater] : updates) {
                 MAYBE(new_stmt, updater());
-                print_if_verbose("Adding vectorized I/O statement for block ", block_id, ": ", get_id(new_stmt), "\n");
+                print_if_verbose("Adding vectorized I/O statement for block ", get_id(stmt_id), ": ", get_id(new_stmt), "\n");
                 new_statements.emplace_back(group_range, std::move(new_stmt));
             }
-            block = get_block(tctx.statement_repository().get_all()[block_id].body);  // refetch because memory may be relocated
+            auto block = get_block(tctx.statement_repository().get_all()[block_id].body);  // refetch because memory may be relocated
             assert(block);
             ebm::Block updated_block;
             size_t g = 0;
@@ -170,7 +166,8 @@ namespace ebmgen {
                     }
                 }
                 else
-                    VISITOR_RECURSE(visitor, name, value)
+                    VISITOR_RECURSE_ARRAY(visitor, name, value)
+                else VISITOR_RECURSE(visitor, name, value)
             });
         }
         for (size_t i = 0; i < current_alias; i++) {

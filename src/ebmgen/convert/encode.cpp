@@ -55,6 +55,7 @@ namespace ebmgen {
                 auto io_data = ctx.repository().get_statement(encode_stmt)->body.write_data();
                 io_desc.attribute = io_data->attribute;
                 io_desc.size = io_data->size;
+                io_desc.attribute.has_lowered_statement(true);
                 io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ENUM_UNDERLYING_TO_INT, encode_stmt));
             }
             else {
@@ -326,13 +327,19 @@ namespace ebmgen {
     expected<ebm::StatementRef> EncoderConverter::encode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, ebm::StatementRef field_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
         COMMON_BUFFER_SETUP(EBM_WRITE_DATA, write_ref, io_ref, field_ref, ebm::ArrayAnnotation::write_temporary);
         EBM_CAST(casted, value_type, cast_from, from);  // if value_type == cast_from, then this is a no-op
+        MAYBE(fixed_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));
+        ebm::ReserveData reserve_data;
+        reserve_data.write_data = write_ref;
+        reserve_data.size = fixed_size;
+        EBM_RESERVE_DATA(reserve, std::move(reserve_data));
 
         if (n == 1) {  // special case for 1 byte
             EBM_INDEX(array_index, u8_t, buffer, zero);
             EBM_ASSIGNMENT(assign, array_index, casted);
             ebm::Block block;
-            block.container.reserve(3);
+            block.container.reserve(4);
             append(block, buffer_def);
+            append(block, reserve);
             append(block, assign);
             append(block, write_ref);
             EBM_BLOCK(block_ref, std::move(block));
@@ -389,12 +396,6 @@ namespace ebmgen {
         if (!do_it) {
             return unexpect_error(std::move(do_it.error()));
         }
-
-        MAYBE(fixed_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));
-        ebm::ReserveData reserve_data;
-        reserve_data.write_data = write_ref;
-        reserve_data.size = fixed_size;
-        EBM_RESERVE_DATA(reserve, std::move(reserve_data));
 
         ebm::Block block;
         block.container.reserve(4);

@@ -121,12 +121,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": [
-        "-i",
-        "C:/workspace/shbrgen/rebrgen/brgen/example/feature_test/varint_test.bgn",
-        "-I",
-        "-g"
-      ],
+      "args": ["-i", "${workspaceRoot}/src/test/simple_case.bgn", "-Iv"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
@@ -151,7 +146,7 @@
       "name": "Debug ebm2python",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/ebm2python",
+      "program": "${workspaceRoot}/tool/ebm2c",
       "args": ["-i", "${workspaceRoot}/save/out.ebm"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

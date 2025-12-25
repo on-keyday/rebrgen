@@ -9,3 +9,4 @@
 
 /*here to write the hook*/
 bool forward_decl = false;
+bool ptr_to_optional = false;

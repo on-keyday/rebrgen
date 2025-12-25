@@ -789,4 +789,25 @@ namespace ebmcodegen::util {
         }
         return result;
     }
+
+    ebmgen::expected<ebm::StatementRef> parent_struct_to_parent_format(auto&& visitor, ebm::StatementRef struct_ref) {
+        ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+        MAYBE(struct_stmt, module_.get_statement(struct_ref));
+        auto p = struct_stmt.body.struct_decl();
+        ebm::StatementRef stmt_ref = struct_ref;
+        while (p) {
+            auto rel = p->related_variant();
+            if (!rel) {
+                return stmt_ref;
+            }
+            MAYBE(variant_type, module_.get_type(*rel));
+            MAYBE(variant_desc, variant_type.body.variant_desc());
+            MAYBE(parent_field_stmt, module_.get_statement(variant_desc.related_field));
+            MAYBE(field_decl, parent_field_stmt.body.field_decl());
+            stmt_ref = field_decl.parent_struct;
+            MAYBE(parent_struct_stmt, module_.get_statement(stmt_ref));
+            p = parent_struct_stmt.body.struct_decl();
+        }
+        return ebmgen::unexpect_error("cannot find parent format");
+    }
 }  // namespace ebmcodegen::util

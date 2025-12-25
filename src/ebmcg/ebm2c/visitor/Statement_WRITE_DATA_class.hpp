@@ -38,9 +38,14 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_WRITE_DATA) {
     using namespace CODEGEN_NAMESPACE;
-    using namespace CODEGEN_NAMESPACE;
+    if (auto low = ctx.write_data.lowered_statement()) {
+        if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
+            return ctx.visit(low->io_statement.id);
+        }
+    }
     if (auto cand = is_bytes_type(ctx, ctx.write_data.data_type)) {
         MAYBE(target, ctx.visit(ctx.write_data.target));
         MAYBE(size_str, get_size_str(ctx, ctx.write_data.size));

@@ -159,7 +159,7 @@ namespace ebmgen {
             data.attribute.has_lowered_statement(true);
             data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, loop));
             EBM_READ_DATA(read_data, std::move(data));
-            return loop;
+            return read_data;
         };
         auto flush_buffer = [&](ebm::StatementRef field) -> expected<ebm::StatementRef> {
             EBMU_INT_LITERAL(eight, 8);

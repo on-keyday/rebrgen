@@ -20,7 +20,7 @@
         length: *ExpressionRef
         offset: *ExpressionRef
         io_ref: StatementRef
-        parent_io_ref: StatementRef
+        parent_io_ref: WeakStatementRef
         io_statement: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

@@ -14,7 +14,8 @@
       item_id: ebm::TypeRef
       kind: const ebm::TypeKind&
       base_type: const ebm::TypeRef&
-      id: const ebm::StatementRef&
+      id: const ebm::WeakStatementRef&
+        id: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

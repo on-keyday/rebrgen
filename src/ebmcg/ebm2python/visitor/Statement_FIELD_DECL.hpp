@@ -13,11 +13,11 @@
     field_decl: FieldDecl
       name: IdentifierRef
       field_type: TypeRef
-      parent_struct: StatementRef
+      parent_struct: WeakStatementRef
       is_state_variable: bool
       inner_composite: bool
       reserved: std::uint8_t
-      composite_field: *StatementRef
+      composite_field: *WeakStatementRef
       composite_getter: *LoweredStatementRef
       composite_setter: *LoweredStatementRef
 */

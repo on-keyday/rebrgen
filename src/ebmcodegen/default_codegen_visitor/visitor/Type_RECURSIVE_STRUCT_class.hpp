@@ -13,7 +13,8 @@
         wm: ebmcodegen::WriterManager<CodeWriter>
       item_id: ebm::TypeRef
       kind: const ebm::TypeKind&
-      id: const ebm::StatementRef&
+      id: const ebm::WeakStatementRef&
+        id: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

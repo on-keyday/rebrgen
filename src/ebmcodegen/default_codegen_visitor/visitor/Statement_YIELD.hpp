@@ -10,7 +10,7 @@
     generator_default_logic: std::function<expected<Result>()>
     default_logic: std::function<expected<Result>()>
     kind: StatementKind
-    previous_assignment: StatementRef
+    previous_assignment: WeakStatementRef
     target: ExpressionRef
     value: ExpressionRef
 */

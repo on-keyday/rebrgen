@@ -11,7 +11,7 @@
     default_logic: std::function<expected<Result>()>
     kind: TypeKind
     base_type: TypeRef
-    id: StatementRef
+    id: WeakStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

@@ -12,7 +12,7 @@
     kind: StatementKind
     property_decl: PropertyDecl
       name: IdentifierRef
-      parent_format: StatementRef
+      parent_format: WeakStatementRef
       property_type: TypeRef
       merge_mode: MergeMode
       setter_condition: ExpressionRef

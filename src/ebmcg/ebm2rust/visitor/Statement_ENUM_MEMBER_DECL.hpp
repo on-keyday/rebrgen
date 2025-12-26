@@ -12,7 +12,7 @@
     kind: StatementKind
     enum_member_decl: EnumMemberDecl
       name: IdentifierRef
-      enum_decl: StatementRef
+      enum_decl: WeakStatementRef
       value: ExpressionRef
       string_repr: StringRef
 */

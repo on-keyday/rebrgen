@@ -14,7 +14,7 @@
       item_id: ebm::StatementRef
       kind: const ebm::StatementKind&
       reserve_data: const ebm::ReserveData&
-        write_data: StatementRef
+        write_data: WeakStatementRef
         size: Size
           unit: SizeUnit
           ref: *ExpressionRef

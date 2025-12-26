@@ -10,7 +10,7 @@
     generator_default_logic: std::function<expected<Result>()>
     default_logic: std::function<expected<Result>()>
     kind: TypeKind
-    id: StatementRef
+    id: WeakStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

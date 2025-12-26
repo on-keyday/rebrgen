@@ -15,7 +15,7 @@
       kind: const ebm::StatementKind&
       enum_member_decl: const ebm::EnumMemberDecl&
         name: IdentifierRef
-        enum_decl: StatementRef
+        enum_decl: WeakStatementRef
         value: ExpressionRef
         string_repr: StringRef
 */

@@ -16,6 +16,12 @@ namespace ebmcodegen {
     constexpr auto macro_CODEGEN_CONTEXT = "CODEGEN_CONTEXT";
     constexpr auto macro_CODEGEN_EXPECTED_PRIORITY = "CODEGEN_EXPECTED_PRIORITY";
     constexpr auto legacy_compat_ptr_name = "__legacy_compat_ptr";
+    constexpr auto template_param_result(bool is_decl) {
+        if (is_decl) {
+            return "typename Result = Result";
+        }
+        return "typename Result";
+    }
 
     struct ContextClassField {
         std::string_view name;
@@ -60,7 +66,7 @@ namespace ebmcodegen {
         std::string_view base;     // like Statement, Expression, Type
         std::string_view variant;  // like BLOCK, ASSIGNMENT, etc
         ContextClassKind kind = ContextClassKind_Normal;
-        // std::vector<TypeParam> type_params;
+        std::vector<TypeParam> type_params;
         std::vector<ContextClassField> fields;
 
         std::string body_name() const {
@@ -232,11 +238,13 @@ namespace ebmcodegen {
             auto for_before = base;
             for_before.kind = ContextClassKind(base.kind | ContextClassKind_Before | ContextClassKind_Observe);
             for_before.fields.push_back(ContextClassField{.name = "main_logic", .type = "ebmcodegen::util::MainLogicWrapper<Result>"});
+            for_before.type_params.push_back({"Result", ""});
             result.before() = std::move(for_before);
             auto for_after = base;
             for_after.kind = ContextClassKind(base.kind | ContextClassKind_After | ContextClassKind_Observe);
             for_after.fields.push_back(ContextClassField{.name = "main_logic", .type = "ebmcodegen::util::MainLogicWrapper<Result>"});
             for_after.fields.push_back(ContextClassField{.name = "result", .type = result_type + "&"});
+            for_after.type_params.push_back({"Result", ""});
             result.after() = std::move(for_after);
         };
 
@@ -259,6 +267,8 @@ namespace ebmcodegen {
         add_common_visitor(post_entry.main());
         post_entry.main().fields.push_back(ContextClassField{.name = "entry_result", .type = result_type + "&"});
         add_context_variant_for_before_after(post_entry);
+        // add type param Result
+        post_entry.main().type_params.push_back({"Result", ""});
         context_classes.push_back(std::move(post_entry));
 
         auto convert = [&](auto t, std::string_view kind, auto subset) {
@@ -398,25 +408,24 @@ namespace ebmcodegen {
 
     std::string context_instance_name(const ContextClass& cls) {
         // return std::format("{}<{}>", context_name(cls), cls.type_param_arguments());
-        return context_name(cls);
+        auto name = context_name(cls);
+        if (cls.type_params.size()) {
+            name += "<";
+            for (size_t i = 0; i < cls.type_params.size(); i++) {
+                if (i != 0) {
+                    name += ", ";
+                }
+                name += cls.type_params[i].name;
+            }
+            name += ">";
+        }
+        return name;
     }
 
     void construct_instance(CodeWriter& w, const ContextClass& cls, std::string_view instance_name /*, std::vector<std::string_view> type_params*/, std::vector<std::string_view> args) {
         // assert(type_params.size() == cls.type_params.size());
         assert(args.size() == cls.fields.size());
-        w.write(context_name(cls));
-        /*
-        if (type_params.size() > 0) {
-            w.write("<");
-            for (size_t i = 0; i < type_params.size(); i++) {
-                if (i != 0) {
-                    w.write(", ");
-                }
-                w.write(type_params[i]);
-            }
-            w.write(">");
-        }
-        */
+        w.write(context_instance_name(cls));
         w.writeln(" ", instance_name, "{");
         {
             auto scope = w.indent_scope();
@@ -477,14 +486,13 @@ namespace ebmcodegen {
         w.writeln("}");
     }
 
-    void generate_visitor_requirements(CodeWriter& w, const ContextClass& cls, const std::string_view result_type) {
+    void generate_visitor_requirements(CodeWriter& w, const std::string_view result_type) {
         // w.writeln("template<typename VisitorImpl,", cls.type_parameters_body(false), ">");
-        w.writeln("template<typename VisitorImpl>");
-        w.writeln("concept ", visitor_requirements_name(cls), " = requires(VisitorImpl v) {");
+        w.writeln("template<typename VisitorImpl,typename Context>");
+        w.writeln("concept HasVisitor = !std::is_base_of_v<ContextBase<std::decay_t<VisitorImpl>>,std::decay_t<VisitorImpl>> && requires(VisitorImpl v,Context c) {");
         {
             auto requires_scope = w.indent_scope();
-            auto instance = context_instance_name(cls);
-            w.writeln(" { v.visit(std::declval<", instance, "&>()) } -> std::convertible_to<", result_type, ">;");
+            w.writeln(" { v.visit(c) } -> std::convertible_to<", result_type, ">;");
         }
         w.writeln("};");
     }
@@ -496,7 +504,7 @@ namespace ebmcodegen {
     void generate_dispatch_fn_signature(CodeWriter& w, const ContextClass& cls, const std::string_view result_type, bool is_decl) {
         auto fn_name = dispatch_fn_name(cls);
         if (cls.has(ContextClassKind_Special)) {
-            w.writeln("template<typename Context>");
+            w.writeln("template<", template_param_result(is_decl), ",typename Context>");
             w.write(result_type, " ", fn_name, "(Context&& ctx");
             if (cls.base == "pre_visitor") {  // special case: pre_visitor has ebm ref
                 w.write(",ebm::ExtendedBinaryModule& ebm");
@@ -510,14 +518,14 @@ namespace ebmcodegen {
             }
         }
         else if (cls.has(ContextClassKind_List)) {
-            w.writeln("template<typename Context>");
+            w.writeln("template<", template_param_result(is_decl), ",typename Context>");
             w.write(result_type, " ", fn_name, "(Context&& ctx,const ebm::", cls.class_name(), "& in)");
             if (is_decl) {
                 w.writeln(";");
             }
         }
         else {
-            w.writeln("template<typename Context>");
+            w.writeln("template<", template_param_result(is_decl), ",typename Context>");
             w.write(result_type, " ", fn_name, "(Context&& ctx,const ebm::", cls.base, "& in,ebm::", cls.ref_name(), " alias_ref");
             if (is_decl) {
                 w.writeln(" = {});");
@@ -528,10 +536,14 @@ namespace ebmcodegen {
         }
     }
 
+    constexpr auto get_visitor_arg_fn = "get_visitor_arg_from_context";
+    constexpr auto get_visitor_fn = "get_visitor_from_context";
+
     void generate_dispatcher_function(CodeWriter& hdr, CodeWriter& src, const ContextClasses& clss, const std::string_view result_type) {
         auto& cls = clss.main();
         generate_dispatch_fn_signature(hdr, cls, result_type, true);
-        auto visitor_arg = "get_visitor_from_context(ctx)";
+        const auto visitor_arg = std::format("{}(ctx)", get_visitor_arg_fn);
+        const auto get_visitor = [&](auto tctx) { return std::format("{}(ctx,{})", get_visitor_fn, tctx); };
         auto id_arg = "is_nil(alias_ref) ? in.id : alias_ref";
         auto make_args = [&](const ContextClass& cls, std::vector<std::string_view> additional_args) {
             std::vector<std::string_view> args;
@@ -566,18 +578,18 @@ namespace ebmcodegen {
                 {
                     auto main_scope = src.indent_scope();
                     auto args = make_args(cls, {});
-                    construct_instance(src, clss.main(), "new_ctx", /*{"std::decay_t<decltype(get_visitor_from_context(ctx))>"},*/ args);
-                    src.writeln("return get_visitor_from_context(ctx).visit(new_ctx);");
+                    construct_instance(src, clss.main(), "new_ctx", args);
+                    src.writeln("return ", get_visitor("new_ctx"), ".visit(new_ctx);");
                 }
                 src.writeln("};");
                 auto before_args = make_args(clss.before(), {"main_logic"});
-                construct_instance(src, clss.before(), "before_ctx", /*{"std::decay_t<decltype(get_visitor_from_context(ctx))>", "decltype(main_logic)"},*/ before_args);
-                src.writeln(result_type, " before_result = get_visitor_from_context(ctx).visit(before_ctx);");
+                construct_instance(src, clss.before(), "before_ctx", before_args);
+                src.writeln(result_type, " before_result = ", get_visitor("before_ctx"), ".visit(before_ctx);");
                 handle_hijack_logic(src, "before_result");
                 src.writeln(result_type, " main_result = main_logic();");
                 auto after_args = make_args(clss.after(), {"main_logic", "main_result"});
-                construct_instance(src, clss.after(), "after_ctx", /*{"std::decay_t<decltype(get_visitor_from_context(ctx))>", "decltype(main_logic)"},*/ after_args);
-                src.writeln(result_type, " after_result = get_visitor_from_context(ctx).visit(after_ctx);");
+                construct_instance(src, clss.after(), "after_ctx", after_args);
+                src.writeln(result_type, " after_result = ", get_visitor("after_ctx"), ".visit(after_ctx);");
                 handle_hijack_logic(src, "after_result");
                 src.writeln("return main_result;");
             }
@@ -587,7 +599,23 @@ namespace ebmcodegen {
 
     void generate_context_class(CodeWriter& w, const ContextClass& cls) {
         // w.writeln(cls.type_parameters(true));
-        w.writeln("struct ", context_name(cls), " : ebmcodegen::util::ContextBase<", context_name(cls), "> {");
+        if (cls.type_params.size()) {
+            w.write("template <");
+            for (size_t i = 0; i < cls.type_params.size(); i++) {
+                if (i != 0) {
+                    w.write(", ");
+                }
+                if (cls.type_params[i].constraint.size()) {
+                    w.write(cls.type_params[i].constraint, " ");
+                }
+                else {
+                    w.write("typename ");
+                }
+                w.write(cls.type_params[i].name);
+            }
+            w.writeln(">");
+        }
+        w.writeln("struct ", context_name(cls), " : ebmcodegen::util::ContextBase<", context_instance_name(cls), "> {");
         {
             auto scope = w.indent_scope();
             for (auto& field : cls.fields) {
@@ -1089,38 +1117,87 @@ namespace ebmcodegen {
         }
     }
 
-    void generate_list_dispatch_default(CodeWriter& w, const ContextClass& cls, bool is_codegen, const std::string_view result_type) {
+    std::string list_dispatcher_customization_point_name(const ContextClass& cls) {
+        return "ListDispatcher_" + cls.class_name();
+    }
+
+    void generate_list_dispatch_customization_point(CodeWriter& w, const ContextClass& cls, const std::string_view result_type, bool is_codegen) {
+        w.writeln("template<typename T>");
+        w.writeln("struct ", list_dispatcher_customization_point_name(cls), " {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("template<typename Context>");
+            w.writeln("expected<void> on_dispatch(Context&& ctx,const ebm::", cls.class_name(), "& in,", result_type, "&& result) {");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return {}; // Default no-op implementation");
+            }
+            w.writeln("}");
+
+            w.writeln("template<typename Context>");
+            w.writeln(result_type, " finalize(Context&& ctx, const ebm::", cls.class_name(), "& in) {");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return {}; // Default no-op implementation");
+            }
+            w.writeln("}");
+        }
+        w.writeln("};");
+        w.writeln();
+        // specialization for Result
+        w.writeln("template<>");
+        w.writeln("struct ", list_dispatcher_customization_point_name(cls), "<Result> {");
+        {
+            auto scope = w.indent_scope();
+            if (is_codegen) {
+                w.writeln("CodeWriter result;");
+            }
+            w.writeln("template<typename Context>");
+            w.writeln("expected<void> on_dispatch(Context&& ctx,const ebm::", cls.class_name(), "& in,", result_type, "&& result) {");
+            {
+                auto inner_scope = w.indent_scope();
+                if (is_codegen) {
+                    w.writeln("this->result.write(std::move(result->to_writer()));");
+                }
+                w.writeln("return {};");
+            }
+            w.writeln("}");
+
+            w.writeln("template<typename Context>");
+            w.writeln(result_type, " finalize(Context&& ctx, const ebm::", cls.class_name(), "& in) {");
+            {
+                auto inner_scope = w.indent_scope();
+                w.writeln("return std::move(result);");
+            }
+            w.writeln("}");
+        }
+        w.writeln("};");
+    }
+
+    void generate_list_dispatch_default(CodeWriter& hdr, const ContextClass& cls, bool is_codegen, const std::string_view result_type) {
         if (!cls.has(ContextClassKind_List)) {
             return;
         }
+        generate_list_dispatch_customization_point(hdr, cls, result_type, is_codegen);
         auto class_name = cls.class_name();
-        w.writeln("template<typename Context>");
-        w.writeln(result_type, " dispatch_", class_name, "_default(Context&& ctx,const ebm::", class_name, "& in) {");
+        hdr.writeln("template<", template_param_result(true), ", typename Context>");
+        hdr.writeln(result_type, " dispatch_", class_name, "_default(Context&& ctx,const ebm::", class_name, "& in) {");
         {
-            auto list_scope = w.indent_scope();
-            if (is_codegen) {
-                w.writeln("CodeWriter w;");
-            }
-            w.writeln("for(auto& elem:in.container) {");
+            auto list_scope = hdr.indent_scope();
+            hdr.writeln("", list_dispatcher_customization_point_name(cls), "<Result> dispatcher;");
+            hdr.writeln("for(auto& elem:in.container) {");
             {
-                auto loop_scope = w.indent_scope();
-                w.writeln("auto result = visit_", cls.base, "(ctx,elem);");
-                w.writeln("if (!result) {");
-                w.indent_writeln("return unexpect_error(std::move(result.error()));");
-                w.writeln("}");
-                if (is_codegen) {
-                    w.writeln("w.write(result->to_writer());");
-                }
+                auto loop_scope = hdr.indent_scope();
+                hdr.writeln("auto result = visit_", cls.base, "(ctx,elem);");
+                hdr.writeln("if (!result) {");
+                hdr.indent_writeln("return unexpect_error(std::move(result.error()));");
+                hdr.writeln("}");
+                hdr.writeln("MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));");
             }
-            w.writeln("}");
-            if (is_codegen) {
-                w.writeln("return w;");
-            }
-            else {
-                w.writeln("return {};");  // Placeholder for non-codegen mode
-            }
+            hdr.writeln("}");
+            hdr.writeln("return dispatcher.finalize(std::forward<Context>(ctx),in);");
         }
-        w.writeln("}");
+        hdr.writeln("}");
     }
 
     void generate_generic_dispatch_default(CodeWriter& w, const ContextClass& cls, const std::string_view result_type) {
@@ -1128,7 +1205,7 @@ namespace ebmcodegen {
             return;
         }
         auto class_name = cls.class_name();
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " dispatch_", class_name, "_default(Context&& ctx,const ebm::", class_name, "& in,ebm::", cls.ref_name(), " alias_ref = {}) {");
         {
             auto scope = w.indent_scope();
@@ -1141,7 +1218,7 @@ namespace ebmcodegen {
                         w.writeln("case ebm::", cls.base, "Kind::", to_string(T(i)), ": {");
                         {
                             auto case_scope = w.indent_scope();
-                            w.writeln("return dispatch_", cls.base, "_", to_string(T(i)), "(std::forward<Context>(ctx),in,alias_ref);");
+                            w.writeln("return dispatch_", cls.base, "_", to_string(T(i)), "<Result>(std::forward<Context>(ctx),in,alias_ref);");
                         }
                         w.writeln("}");
                     }
@@ -1198,7 +1275,7 @@ namespace ebmcodegen {
                     if (cls.has(ContextClassKind_Special)) {
                         third_arg = "0";
                     }
-                    src.writeln("return visit_unimplemented(get_visitor_from_context(ctx),\"", cls.class_name(), "\",", third_arg, ");");
+                    src.writeln("return visit_unimplemented(", get_visitor_arg_fn, "(ctx),\"", cls.class_name(), "\",", third_arg, ");");
                 }
             }
             src.writeln("}");
@@ -1277,14 +1354,15 @@ namespace ebmcodegen {
         hdr.writeln("#define ", macro_CODEGEN_CONTEXT, "(name) ", upper(ns_name), "_", macro_CODEGEN_CONTEXT, "_##name");
     }
 
-    void generate_get_visitor_from_context(CodeWriter& w) {
+    void generate_get_visitor_from_context(CodeWriter& w, const std::string_view result_type) {
         w.writeln("template<typename Context>");
         w.writeln("concept HasVisitorInContext = requires(const Context& ctx) { ctx.visitor; };");
         w.writeln("template<typename Context>");
         w.writeln("concept HasLegacyVisitorInContext = requires(const Context& ctx) { *ctx.", legacy_compat_ptr_name, "; };");
+        generate_visitor_requirements(w, result_type);
 
         w.writeln("template<typename Context>");
-        w.writeln("decltype(auto) get_visitor_from_context(Context&& ctx) {");
+        w.writeln("decltype(auto) ", get_visitor_arg_fn, "(Context&& ctx) {");
         {
             auto scope = w.indent_scope();
             w.writeln("if constexpr (HasVisitorInContext<Context>) {");
@@ -1303,6 +1381,25 @@ namespace ebmcodegen {
             {
                 auto else_scope = w.indent_scope();
                 w.writeln("static_assert(dependent_false<Context>, \"No visitor found in context\");");
+            }
+            w.writeln("}");
+        }
+        w.writeln("}");
+
+        w.writeln("template<typename UserContext,typename TypeContext>");
+        w.writeln("auto& ", get_visitor_fn, "(UserContext&& uctx,TypeContext&& ctx) {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if constexpr (HasVisitor<UserContext,TypeContext>) {");
+            {
+                auto if_scope = w.indent_scope();
+                w.writeln("return uctx;");
+            }
+            w.writeln("}");
+            w.writeln("else {");
+            {
+                auto else_scope = w.indent_scope();
+                w.writeln("return ", get_visitor_arg_fn, "(uctx);");
             }
             w.writeln("}");
         }
@@ -1407,21 +1504,21 @@ namespace ebmcodegen {
             return;
         }
         w.writeln("// list visitor for ", cls.class_name());
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " visit_", cls.class_name(), "(Context&& ctx,const ebm::", cls.class_name(), "& in) {");
         {
             auto scope = w.indent_scope();
             auto dispatch_fn = dispatch_fn_name(cls);
-            w.writeln("return ", dispatch_fn, "(ctx,in);");
+            w.writeln("return ", dispatch_fn, "<Result>(std::forward<Context>(ctx),in);");
         }
         w.writeln("}");
 
         w.writeln("// for DSL convenience");
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " visit_Object(Context&& ctx,const ebm::", cls.class_name(), "& in)  {");
         {
             auto scope = w.indent_scope();
-            w.writeln("return visit_", cls.class_name(), "(ctx,in);");
+            w.writeln("return visit_", cls.class_name(), "<Result>(std::forward<Context>(ctx),in);");
         }
         w.writeln("}");
     }
@@ -1431,42 +1528,42 @@ namespace ebmcodegen {
             return;
         }
         w.writeln("// generic visitor for ", cls.class_name());
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " visit_", cls.class_name(), "(Context&& ctx,const ebm::", cls.class_name(), "& in,ebm::", cls.ref_name(), " alias_ref = {}) {");
         {
             auto scope = w.indent_scope();
             auto dispatch_fn = dispatch_fn_name(cls);
-            w.writeln("return ", dispatch_fn, "(ctx,in,alias_ref);");
+            w.writeln("return ", dispatch_fn, "<Result>(std::forward<Context>(ctx),in,alias_ref);");
         }
         w.writeln("}");
 
         w.writeln("// short-hand visitor for ", cls.class_name());
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " visit_", cls.class_name(), "(Context&& ctx,const ebm::", cls.ref_name(), "& ref) {");
         {
             auto scope = w.indent_scope();
-            w.writeln("MAYBE(elem, get_visitor_from_context(ctx).module_.get_", lower(cls.class_name()), "(ref));");
+            w.writeln("MAYBE(elem, ", get_visitor_arg_fn, "(ctx).module_.get_", lower(cls.class_name()), "(ref));");
             auto dispatch_fn = dispatch_fn_name(cls);
-            w.writeln("return ", dispatch_fn, "(ctx,elem,ref);");
+            w.writeln("return ", dispatch_fn, "<Result>(std::forward<Context>(ctx),elem,ref);");
         }
         w.writeln("}");
 
         w.writeln("// for DSL convenience");
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " visit_Object(Context&& ctx,const ebm::", cls.class_name(), "& in, ebm::", cls.ref_name(), " alias_ref = {})  {");
         {
             auto scope = w.indent_scope();
-            w.writeln("return visit_", cls.class_name(), "(ctx,in,alias_ref);");
+            w.writeln("return visit_", cls.class_name(), "<Result>(std::forward<Context>(ctx),in,alias_ref);");
         }
         w.writeln("}");
 
         w.writeln("// for DSL convenience");
-        w.writeln("template<typename Context>");
+        w.writeln("template<", template_param_result(true), ", typename Context>");
         w.writeln(result_type, " visit_Object(Context&& ctx, ebm::", cls.ref_name(), " ref)  {");
         {
             auto scope = w.indent_scope();
             auto dispatch_fn = dispatch_fn_name(cls);
-            w.writeln("return visit_", cls.class_name(), "(ctx,ref);");
+            w.writeln("return visit_", cls.class_name(), "<Result>(std::forward<Context>(ctx),ref);");
         }
         w.writeln("}");
     }
@@ -1584,7 +1681,7 @@ namespace ebmcodegen {
         }
         generate_hook_tag(src, hooks.back());  // hidden hook in source
         generate_always_false_template(hdr);
-        generate_get_visitor_from_context(hdr);
+        generate_get_visitor_from_context(hdr, result_type);
         for (auto& cls_group : context_classes) {
             generate_dispatcher_function(hdr, src, cls_group, result_type);
             generate_list_dispatch_default(hdr, cls_group.main(), is_codegen, result_type);
@@ -1600,7 +1697,6 @@ namespace ebmcodegen {
             for (auto& cls : cls_group.classes) {
                 generate_context_class(hdr, cls);
                 generate_visitor_tag(hdr, cls);
-                generate_visitor_requirements(hdr, cls, result_type);
                 deconstruct_context_fields_macro(hdr, ns_name, cls);
                 generate_generator_default_hook(src, hooks.back(), hooks.size() - 1, cls, is_codegen, result_type);
             }

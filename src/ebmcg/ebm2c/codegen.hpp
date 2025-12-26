@@ -264,8 +264,12 @@ namespace ebm2c {
     concept HasVisitorInContext = requires(const Context& ctx) { ctx.visitor; };
     template<typename Context>
     concept HasLegacyVisitorInContext = requires(const Context& ctx) { *ctx.__legacy_compat_ptr; };
+    template<typename VisitorImpl,typename Context>
+    concept HasVisitor = !std::is_base_of_v<ContextBase<std::decay_t<VisitorImpl>>,std::decay_t<VisitorImpl>> && requires(VisitorImpl v,Context c) {
+         { v.visit(c) } -> std::convertible_to<expected<Result>>;
+    };
     template<typename Context>
-    decltype(auto) get_visitor_from_context(Context&& ctx) {
+    decltype(auto) get_visitor_arg_from_context(Context&& ctx) {
         if constexpr (HasVisitorInContext<Context>) {
             return *ctx.visitor.__legacy_compat_ptr;
         }
@@ -276,658 +280,742 @@ namespace ebm2c {
             static_assert(dependent_false<Context>, "No visitor found in context");
         }
     }
-    template<typename Context>
+    template<typename UserContext,typename TypeContext>
+    auto& get_visitor_from_context(UserContext&& uctx,TypeContext&& ctx) {
+        if constexpr (HasVisitor<UserContext,TypeContext>) {
+            return uctx;
+        }
+        else {
+            return get_visitor_arg_from_context(uctx);
+        }
+    }
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_entry(Context&& ctx);
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_pre_visitor(Context&& ctx,ebm::ExtendedBinaryModule& ebm);
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_post_entry(Context&& ctx,expected<Result>& entry_result);
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_BLOCK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ASSIGNMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_YIELD(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_APPEND(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ASSERT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_READ_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_WRITE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_RESERVE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_IF_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_LOOP_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_MATCH_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_MATCH_BRANCH(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_BREAK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_CONTINUE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_FUNCTION_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_VARIABLE_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PARAMETER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_FIELD_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_COMPOSITE_FIELD_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ENUM_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ENUM_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_STRUCT_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_UNION_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PROGRAM_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PROPERTY_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_METADATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_IMPORT_MODULE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_EXPRESSION(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_REPORT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_LOWERED_IO_STATEMENTS(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_INIT_CHECK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ENDIAN_VARIABLE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> dispatch_Statement_default(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {}) {
         switch(in.body.kind) {
             case ebm::StatementKind::BLOCK: {
-                return dispatch_Statement_BLOCK(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_BLOCK<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ASSIGNMENT: {
-                return dispatch_Statement_ASSIGNMENT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ASSIGNMENT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::YIELD: {
-                return dispatch_Statement_YIELD(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_YIELD<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::APPEND: {
-                return dispatch_Statement_APPEND(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_APPEND<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::RETURN: {
-                return dispatch_Statement_RETURN(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_RETURN<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ERROR_RETURN: {
-                return dispatch_Statement_ERROR_RETURN(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ERROR_RETURN<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ASSERT: {
-                return dispatch_Statement_ASSERT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ASSERT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::READ_DATA: {
-                return dispatch_Statement_READ_DATA(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_READ_DATA<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::WRITE_DATA: {
-                return dispatch_Statement_WRITE_DATA(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_WRITE_DATA<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::RESERVE_DATA: {
-                return dispatch_Statement_RESERVE_DATA(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_RESERVE_DATA<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::IF_STATEMENT: {
-                return dispatch_Statement_IF_STATEMENT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_IF_STATEMENT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::LOOP_STATEMENT: {
-                return dispatch_Statement_LOOP_STATEMENT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_LOOP_STATEMENT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::MATCH_STATEMENT: {
-                return dispatch_Statement_MATCH_STATEMENT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_MATCH_STATEMENT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::MATCH_BRANCH: {
-                return dispatch_Statement_MATCH_BRANCH(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_MATCH_BRANCH<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::BREAK: {
-                return dispatch_Statement_BREAK(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_BREAK<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::CONTINUE: {
-                return dispatch_Statement_CONTINUE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_CONTINUE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::FUNCTION_DECL: {
-                return dispatch_Statement_FUNCTION_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_FUNCTION_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::VARIABLE_DECL: {
-                return dispatch_Statement_VARIABLE_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_VARIABLE_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::PARAMETER_DECL: {
-                return dispatch_Statement_PARAMETER_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_PARAMETER_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::FIELD_DECL: {
-                return dispatch_Statement_FIELD_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_FIELD_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::COMPOSITE_FIELD_DECL: {
-                return dispatch_Statement_COMPOSITE_FIELD_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_COMPOSITE_FIELD_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ENUM_DECL: {
-                return dispatch_Statement_ENUM_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ENUM_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ENUM_MEMBER_DECL: {
-                return dispatch_Statement_ENUM_MEMBER_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ENUM_MEMBER_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::STRUCT_DECL: {
-                return dispatch_Statement_STRUCT_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_STRUCT_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::UNION_DECL: {
-                return dispatch_Statement_UNION_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_UNION_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::UNION_MEMBER_DECL: {
-                return dispatch_Statement_UNION_MEMBER_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_UNION_MEMBER_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::PROGRAM_DECL: {
-                return dispatch_Statement_PROGRAM_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_PROGRAM_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::PROPERTY_DECL: {
-                return dispatch_Statement_PROPERTY_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_PROPERTY_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::PROPERTY_MEMBER_DECL: {
-                return dispatch_Statement_PROPERTY_MEMBER_DECL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_PROPERTY_MEMBER_DECL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::METADATA: {
-                return dispatch_Statement_METADATA(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_METADATA<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::IMPORT_MODULE: {
-                return dispatch_Statement_IMPORT_MODULE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_IMPORT_MODULE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::EXPRESSION: {
-                return dispatch_Statement_EXPRESSION(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_EXPRESSION<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ERROR_REPORT: {
-                return dispatch_Statement_ERROR_REPORT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ERROR_REPORT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::LOWERED_IO_STATEMENTS: {
-                return dispatch_Statement_LOWERED_IO_STATEMENTS(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_LOWERED_IO_STATEMENTS<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::SUB_BYTE_RANGE: {
-                return dispatch_Statement_SUB_BYTE_RANGE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_SUB_BYTE_RANGE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::INIT_CHECK: {
-                return dispatch_Statement_INIT_CHECK(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_INIT_CHECK<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::StatementKind::ENDIAN_VARIABLE: {
-                return dispatch_Statement_ENDIAN_VARIABLE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Statement_ENDIAN_VARIABLE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             default: {
                 return unexpect_error("Unknown Statement kind: {}", to_string(in.body.kind));
             }
         }
     }
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Block(Context&& ctx,const ebm::Block& in);
-    template<typename Context>
+    template<typename T>
+    struct ListDispatcher_Block {
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
+            return {}; // Default no-op implementation
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Block& in) {
+            return {}; // Default no-op implementation
+        }
+    };
+    
+    template<>
+    struct ListDispatcher_Block<Result> {
+        CodeWriter result;
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
+            this->result.write(std::move(result->to_writer()));
+            return {};
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Block& in) {
+            return std::move(result);
+        }
+    };
+    template<typename Result = Result, typename Context>
     expected<Result> dispatch_Block_default(Context&& ctx,const ebm::Block& in) {
-        CodeWriter w;
+        ListDispatcher_Block<Result> dispatcher;
         for(auto& elem:in.container) {
             auto result = visit_Statement(ctx,elem);
             if (!result) {
                 return unexpect_error(std::move(result.error()));
             }
-            w.write(result->to_writer());
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));
         }
-        return w;
+        return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_INT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_INT64(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_BOOL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_STRING(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_TYPE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_CHAR(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_IDENTIFIER(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_BINARY_OP(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_UNARY_OP(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CALL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_INDEX_ACCESS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_MEMBER_ACCESS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ENUM_MEMBER(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_TYPE_CAST(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_RANGE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_DEFAULT_VALUE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_IS_LITTLE_ENDIAN(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CAN_READ_STREAM(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ARRAY_SIZE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ENUM_IS_DEFINED(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_IS_ERROR(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_MAX_VALUE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_READ_DATA(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_WRITE_DATA(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CONDITIONAL_STATEMENT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CONDITIONAL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_AVAILABLE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SIZEOF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SUB_RANGE_INIT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_OR_COND(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ADDRESS_OF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_OPTIONAL_OF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SETTER_STATUS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SELF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_AS_ARG(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> dispatch_Expression_default(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {}) {
         switch(in.body.kind) {
             case ebm::ExpressionKind::LITERAL_INT: {
-                return dispatch_Expression_LITERAL_INT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_LITERAL_INT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::LITERAL_INT64: {
-                return dispatch_Expression_LITERAL_INT64(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_LITERAL_INT64<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::LITERAL_BOOL: {
-                return dispatch_Expression_LITERAL_BOOL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_LITERAL_BOOL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::LITERAL_STRING: {
-                return dispatch_Expression_LITERAL_STRING(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_LITERAL_STRING<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::LITERAL_TYPE: {
-                return dispatch_Expression_LITERAL_TYPE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_LITERAL_TYPE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::LITERAL_CHAR: {
-                return dispatch_Expression_LITERAL_CHAR(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_LITERAL_CHAR<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::IDENTIFIER: {
-                return dispatch_Expression_IDENTIFIER(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_IDENTIFIER<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::BINARY_OP: {
-                return dispatch_Expression_BINARY_OP(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_BINARY_OP<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::UNARY_OP: {
-                return dispatch_Expression_UNARY_OP(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_UNARY_OP<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::CALL: {
-                return dispatch_Expression_CALL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_CALL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::INDEX_ACCESS: {
-                return dispatch_Expression_INDEX_ACCESS(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_INDEX_ACCESS<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::MEMBER_ACCESS: {
-                return dispatch_Expression_MEMBER_ACCESS(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_MEMBER_ACCESS<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::ENUM_MEMBER: {
-                return dispatch_Expression_ENUM_MEMBER(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_ENUM_MEMBER<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::TYPE_CAST: {
-                return dispatch_Expression_TYPE_CAST(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_TYPE_CAST<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::RANGE: {
-                return dispatch_Expression_RANGE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_RANGE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::DEFAULT_VALUE: {
-                return dispatch_Expression_DEFAULT_VALUE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_DEFAULT_VALUE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::IS_LITTLE_ENDIAN: {
-                return dispatch_Expression_IS_LITTLE_ENDIAN(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_IS_LITTLE_ENDIAN<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::GET_STREAM_OFFSET: {
-                return dispatch_Expression_GET_STREAM_OFFSET(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_GET_STREAM_OFFSET<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::GET_REMAINING_BYTES: {
-                return dispatch_Expression_GET_REMAINING_BYTES(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_GET_REMAINING_BYTES<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::CAN_READ_STREAM: {
-                return dispatch_Expression_CAN_READ_STREAM(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_CAN_READ_STREAM<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::ARRAY_SIZE: {
-                return dispatch_Expression_ARRAY_SIZE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_ARRAY_SIZE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::ENUM_IS_DEFINED: {
-                return dispatch_Expression_ENUM_IS_DEFINED(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_ENUM_IS_DEFINED<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::IS_ERROR: {
-                return dispatch_Expression_IS_ERROR(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_IS_ERROR<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::MAX_VALUE: {
-                return dispatch_Expression_MAX_VALUE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_MAX_VALUE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::READ_DATA: {
-                return dispatch_Expression_READ_DATA(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_READ_DATA<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::WRITE_DATA: {
-                return dispatch_Expression_WRITE_DATA(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_WRITE_DATA<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::CONDITIONAL_STATEMENT: {
-                return dispatch_Expression_CONDITIONAL_STATEMENT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_CONDITIONAL_STATEMENT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::CONDITIONAL: {
-                return dispatch_Expression_CONDITIONAL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_CONDITIONAL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::AVAILABLE: {
-                return dispatch_Expression_AVAILABLE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_AVAILABLE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::SIZEOF: {
-                return dispatch_Expression_SIZEOF(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_SIZEOF<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::SUB_RANGE_INIT: {
-                return dispatch_Expression_SUB_RANGE_INIT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_SUB_RANGE_INIT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::OR_COND: {
-                return dispatch_Expression_OR_COND(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_OR_COND<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::ADDRESS_OF: {
-                return dispatch_Expression_ADDRESS_OF(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_ADDRESS_OF<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::OPTIONAL_OF: {
-                return dispatch_Expression_OPTIONAL_OF(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_OPTIONAL_OF<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::SETTER_STATUS: {
-                return dispatch_Expression_SETTER_STATUS(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_SETTER_STATUS<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::SELF: {
-                return dispatch_Expression_SELF(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_SELF<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::ExpressionKind::AS_ARG: {
-                return dispatch_Expression_AS_ARG(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Expression_AS_ARG<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             default: {
                 return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
             }
         }
     }
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expressions(Context&& ctx,const ebm::Expressions& in);
-    template<typename Context>
+    template<typename T>
+    struct ListDispatcher_Expressions {
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
+            return {}; // Default no-op implementation
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Expressions& in) {
+            return {}; // Default no-op implementation
+        }
+    };
+    
+    template<>
+    struct ListDispatcher_Expressions<Result> {
+        CodeWriter result;
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
+            this->result.write(std::move(result->to_writer()));
+            return {};
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Expressions& in) {
+            return std::move(result);
+        }
+    };
+    template<typename Result = Result, typename Context>
     expected<Result> dispatch_Expressions_default(Context&& ctx,const ebm::Expressions& in) {
-        CodeWriter w;
+        ListDispatcher_Expressions<Result> dispatcher;
         for(auto& elem:in.container) {
             auto result = visit_Expression(ctx,elem);
             if (!result) {
                 return unexpect_error(std::move(result.error()));
             }
-            w.write(result->to_writer());
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));
         }
-        return w;
+        return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_INT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_UINT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_USIZE(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_FLOAT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_STRUCT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_RECURSIVE_STRUCT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_BOOL(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_VOID(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_META(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ENUM(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ARRAY(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_VECTOR(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_VARIANT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_RANGE(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ENCODER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_DECODER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ENCODER_INPUT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_DECODER_INPUT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_OPTIONAL(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_PTR(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_FUNCTION(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> dispatch_Type_default(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {}) {
         switch(in.body.kind) {
             case ebm::TypeKind::INT: {
-                return dispatch_Type_INT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_INT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::UINT: {
-                return dispatch_Type_UINT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_UINT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::USIZE: {
-                return dispatch_Type_USIZE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_USIZE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::FLOAT: {
-                return dispatch_Type_FLOAT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_FLOAT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::STRUCT: {
-                return dispatch_Type_STRUCT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_STRUCT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::RECURSIVE_STRUCT: {
-                return dispatch_Type_RECURSIVE_STRUCT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_RECURSIVE_STRUCT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::BOOL: {
-                return dispatch_Type_BOOL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_BOOL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::VOID: {
-                return dispatch_Type_VOID(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_VOID<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::META: {
-                return dispatch_Type_META(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_META<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::ENUM: {
-                return dispatch_Type_ENUM(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_ENUM<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::ARRAY: {
-                return dispatch_Type_ARRAY(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_ARRAY<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::VECTOR: {
-                return dispatch_Type_VECTOR(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_VECTOR<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::VARIANT: {
-                return dispatch_Type_VARIANT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_VARIANT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::RANGE: {
-                return dispatch_Type_RANGE(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_RANGE<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::ENCODER_RETURN: {
-                return dispatch_Type_ENCODER_RETURN(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_ENCODER_RETURN<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::DECODER_RETURN: {
-                return dispatch_Type_DECODER_RETURN(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_DECODER_RETURN<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::ENCODER_INPUT: {
-                return dispatch_Type_ENCODER_INPUT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_ENCODER_INPUT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::DECODER_INPUT: {
-                return dispatch_Type_DECODER_INPUT(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_DECODER_INPUT<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::PROPERTY_SETTER_RETURN: {
-                return dispatch_Type_PROPERTY_SETTER_RETURN(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_PROPERTY_SETTER_RETURN<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::OPTIONAL: {
-                return dispatch_Type_OPTIONAL(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_OPTIONAL<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::PTR: {
-                return dispatch_Type_PTR(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_PTR<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             case ebm::TypeKind::FUNCTION: {
-                return dispatch_Type_FUNCTION(std::forward<Context>(ctx),in,alias_ref);
+                return dispatch_Type_FUNCTION<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             default: {
                 return unexpect_error("Unknown Type kind: {}", to_string(in.body.kind));
             }
         }
     }
-    template<typename Context>
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Types(Context&& ctx,const ebm::Types& in);
-    template<typename Context>
+    template<typename T>
+    struct ListDispatcher_Types {
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
+            return {}; // Default no-op implementation
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Types& in) {
+            return {}; // Default no-op implementation
+        }
+    };
+    
+    template<>
+    struct ListDispatcher_Types<Result> {
+        CodeWriter result;
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
+            this->result.write(std::move(result->to_writer()));
+            return {};
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Types& in) {
+            return std::move(result);
+        }
+    };
+    template<typename Result = Result, typename Context>
     expected<Result> dispatch_Types_default(Context&& ctx,const ebm::Types& in) {
-        CodeWriter w;
+        ListDispatcher_Types<Result> dispatcher;
         for(auto& elem:in.container) {
             auto result = visit_Type(ctx,elem);
             if (!result) {
                 return unexpect_error(std::move(result.error()));
             }
-            w.write(result->to_writer());
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));
         }
-        return w;
+        return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
     // for backward compatibility
     
     // generic visitor for Statement
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {}) {
-        return dispatch_Statement(ctx,in,alias_ref);
+        return dispatch_Statement<Result>(std::forward<Context>(ctx),in,alias_ref);
     }
     // short-hand visitor for Statement
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Statement(Context&& ctx,const ebm::StatementRef& ref) {
-        MAYBE(elem, get_visitor_from_context(ctx).module_.get_statement(ref));
-        return dispatch_Statement(ctx,elem,ref);
+        MAYBE(elem, get_visitor_arg_from_context(ctx).module_.get_statement(ref));
+        return dispatch_Statement<Result>(std::forward<Context>(ctx),elem,ref);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Statement& in, ebm::StatementRef alias_ref = {})  {
-        return visit_Statement(ctx,in,alias_ref);
+        return visit_Statement<Result>(std::forward<Context>(ctx),in,alias_ref);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx, ebm::StatementRef ref)  {
-        return visit_Statement(ctx,ref);
+        return visit_Statement<Result>(std::forward<Context>(ctx),ref);
     }
     // list visitor for Block
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Block(Context&& ctx,const ebm::Block& in) {
-        return dispatch_Block(ctx,in);
+        return dispatch_Block<Result>(std::forward<Context>(ctx),in);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Block& in)  {
-        return visit_Block(ctx,in);
+        return visit_Block<Result>(std::forward<Context>(ctx),in);
     }
     // generic visitor for Expression
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Expression(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {}) {
-        return dispatch_Expression(ctx,in,alias_ref);
+        return dispatch_Expression<Result>(std::forward<Context>(ctx),in,alias_ref);
     }
     // short-hand visitor for Expression
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Expression(Context&& ctx,const ebm::ExpressionRef& ref) {
-        MAYBE(elem, get_visitor_from_context(ctx).module_.get_expression(ref));
-        return dispatch_Expression(ctx,elem,ref);
+        MAYBE(elem, get_visitor_arg_from_context(ctx).module_.get_expression(ref));
+        return dispatch_Expression<Result>(std::forward<Context>(ctx),elem,ref);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Expression& in, ebm::ExpressionRef alias_ref = {})  {
-        return visit_Expression(ctx,in,alias_ref);
+        return visit_Expression<Result>(std::forward<Context>(ctx),in,alias_ref);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx, ebm::ExpressionRef ref)  {
-        return visit_Expression(ctx,ref);
+        return visit_Expression<Result>(std::forward<Context>(ctx),ref);
     }
     // list visitor for Expressions
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Expressions(Context&& ctx,const ebm::Expressions& in) {
-        return dispatch_Expressions(ctx,in);
+        return dispatch_Expressions<Result>(std::forward<Context>(ctx),in);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Expressions& in)  {
-        return visit_Expressions(ctx,in);
+        return visit_Expressions<Result>(std::forward<Context>(ctx),in);
     }
     // generic visitor for Type
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Type(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {}) {
-        return dispatch_Type(ctx,in,alias_ref);
+        return dispatch_Type<Result>(std::forward<Context>(ctx),in,alias_ref);
     }
     // short-hand visitor for Type
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Type(Context&& ctx,const ebm::TypeRef& ref) {
-        MAYBE(elem, get_visitor_from_context(ctx).module_.get_type(ref));
-        return dispatch_Type(ctx,elem,ref);
+        MAYBE(elem, get_visitor_arg_from_context(ctx).module_.get_type(ref));
+        return dispatch_Type<Result>(std::forward<Context>(ctx),elem,ref);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Type& in, ebm::TypeRef alias_ref = {})  {
-        return visit_Type(ctx,in,alias_ref);
+        return visit_Type<Result>(std::forward<Context>(ctx),in,alias_ref);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx, ebm::TypeRef ref)  {
-        return visit_Type(ctx,ref);
+        return visit_Type<Result>(std::forward<Context>(ctx),ref);
     }
     // list visitor for Types
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Types(Context&& ctx,const ebm::Types& in) {
-        return dispatch_Types(ctx,in);
+        return dispatch_Types<Result>(std::forward<Context>(ctx),in);
     }
     // for DSL convenience
-    template<typename Context>
+    template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Types& in)  {
-        return visit_Types(ctx,in);
+        return visit_Types<Result>(std::forward<Context>(ctx),in);
     }
     template<class R = void, typename Context,typename Callback>
     R get_visitor_impl(Context&& ctx,Callback&& cb);
@@ -972,35 +1060,25 @@ namespace ebm2c {
         BaseVisitor& visitor;
     };
     struct VisitorTag_entry {};
-    template<typename VisitorImpl>
-    concept has_visitor_entry = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_entry&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;
-    struct Context_entry_before : ebmcodegen::util::ContextBase<Context_entry_before> {
+    template <typename Result>
+    struct Context_entry_before : ebmcodegen::util::ContextBase<Context_entry_before<Result>> {
         BaseVisitor& visitor;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_entry_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_entry_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_entry_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;
-    struct Context_entry_after : ebmcodegen::util::ContextBase<Context_entry_after> {
+    template <typename Result>
+    struct Context_entry_after : ebmcodegen::util::ContextBase<Context_entry_after<Result>> {
         BaseVisitor& visitor;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_entry_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_entry_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_entry_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1009,76 +1087,57 @@ namespace ebm2c {
         ebm::ExtendedBinaryModule& ebm;
     };
     struct VisitorTag_pre_visitor {};
-    template<typename VisitorImpl>
-    concept has_visitor_pre_visitor = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_pre_visitor&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_PRE_VISITOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;
-    struct Context_pre_visitor_before : ebmcodegen::util::ContextBase<Context_pre_visitor_before> {
+    template <typename Result>
+    struct Context_pre_visitor_before : ebmcodegen::util::ContextBase<Context_pre_visitor_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_pre_visitor_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_pre_visitor_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_pre_visitor_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_PRE_VISITOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;
-    struct Context_pre_visitor_after : ebmcodegen::util::ContextBase<Context_pre_visitor_after> {
+    template <typename Result>
+    struct Context_pre_visitor_after : ebmcodegen::util::ContextBase<Context_pre_visitor_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_pre_visitor_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_pre_visitor_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_pre_visitor_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_post_entry : ebmcodegen::util::ContextBase<Context_post_entry> {
+    template <typename Result>
+    struct Context_post_entry : ebmcodegen::util::ContextBase<Context_post_entry<Result>> {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
     };
     struct VisitorTag_post_entry {};
-    template<typename VisitorImpl>
-    concept has_visitor_post_entry = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_post_entry&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_POST_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;
-    struct Context_post_entry_before : ebmcodegen::util::ContextBase<Context_post_entry_before> {
+    template <typename Result>
+    struct Context_post_entry_before : ebmcodegen::util::ContextBase<Context_post_entry_before<Result>> {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_post_entry_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_post_entry_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_post_entry_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;
-    struct Context_post_entry_after : ebmcodegen::util::ContextBase<Context_post_entry_after> {
+    template <typename Result>
+    struct Context_post_entry_after : ebmcodegen::util::ContextBase<Context_post_entry_after<Result>> {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_post_entry_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_post_entry_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_post_entry_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1089,14 +1148,11 @@ namespace ebm2c {
         const ebm::Block& block;
     };
     struct VisitorTag_Statement_BLOCK {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_BLOCK = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_BLOCK&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
-    struct Context_Statement_BLOCK_before : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_before> {
+    template <typename Result>
+    struct Context_Statement_BLOCK_before : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1104,14 +1160,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_BLOCK_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_BLOCK_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_BLOCK_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_BLOCK_after : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_after> {
+    template <typename Result>
+    struct Context_Statement_BLOCK_after : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1120,10 +1173,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_BLOCK_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_BLOCK_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_BLOCK_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1136,14 +1185,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_ASSIGNMENT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ASSIGNMENT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ASSIGNMENT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ASSIGNMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
-    struct Context_Statement_ASSIGNMENT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_before> {
+    template <typename Result>
+    struct Context_Statement_ASSIGNMENT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1153,14 +1199,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ASSIGNMENT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ASSIGNMENT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ASSIGNMENT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ASSIGNMENT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_after> {
+    template <typename Result>
+    struct Context_Statement_ASSIGNMENT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1171,10 +1214,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ASSIGNMENT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ASSIGNMENT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ASSIGNMENT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1187,14 +1226,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_YIELD {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_YIELD = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_YIELD&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_YIELD(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
-    struct Context_Statement_YIELD_before : ebmcodegen::util::ContextBase<Context_Statement_YIELD_before> {
+    template <typename Result>
+    struct Context_Statement_YIELD_before : ebmcodegen::util::ContextBase<Context_Statement_YIELD_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1204,14 +1240,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_YIELD_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_YIELD_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_YIELD_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_YIELD_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_YIELD_after : ebmcodegen::util::ContextBase<Context_Statement_YIELD_after> {
+    template <typename Result>
+    struct Context_Statement_YIELD_after : ebmcodegen::util::ContextBase<Context_Statement_YIELD_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1222,10 +1255,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_YIELD_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_YIELD_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_YIELD_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1237,14 +1266,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_APPEND {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_APPEND = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_APPEND&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_APPEND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;
-    struct Context_Statement_APPEND_before : ebmcodegen::util::ContextBase<Context_Statement_APPEND_before> {
+    template <typename Result>
+    struct Context_Statement_APPEND_before : ebmcodegen::util::ContextBase<Context_Statement_APPEND_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1253,14 +1279,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_APPEND_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_APPEND_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_APPEND_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_APPEND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_APPEND_after : ebmcodegen::util::ContextBase<Context_Statement_APPEND_after> {
+    template <typename Result>
+    struct Context_Statement_APPEND_after : ebmcodegen::util::ContextBase<Context_Statement_APPEND_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1270,10 +1293,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_APPEND_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_APPEND_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_APPEND_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1284,14 +1303,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_RETURN {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_RETURN = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_RETURN&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
-    struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before> {
+    template <typename Result>
+    struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1299,14 +1315,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_RETURN_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_RETURN_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after> {
+    template <typename Result>
+    struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1315,10 +1328,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_RETURN_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_RETURN_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1329,14 +1338,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_ERROR_RETURN {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ERROR_RETURN = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ERROR_RETURN&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
-    struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before> {
+    template <typename Result>
+    struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1344,14 +1350,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ERROR_RETURN_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ERROR_RETURN_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ERROR_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after> {
+    template <typename Result>
+    struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1360,10 +1363,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ERROR_RETURN_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ERROR_RETURN_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ERROR_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1374,14 +1373,11 @@ namespace ebm2c {
         const ebm::AssertDesc& assert_desc;
     };
     struct VisitorTag_Statement_ASSERT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ASSERT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ASSERT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ASSERT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;
-    struct Context_Statement_ASSERT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_before> {
+    template <typename Result>
+    struct Context_Statement_ASSERT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1389,14 +1385,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ASSERT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ASSERT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ASSERT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ASSERT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_after> {
+    template <typename Result>
+    struct Context_Statement_ASSERT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1405,10 +1398,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ASSERT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ASSERT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ASSERT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1419,14 +1408,11 @@ namespace ebm2c {
         const ebm::IOData& read_data;
     };
     struct VisitorTag_Statement_READ_DATA {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_READ_DATA = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_READ_DATA&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;
-    struct Context_Statement_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_before> {
+    template <typename Result>
+    struct Context_Statement_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1434,14 +1420,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_READ_DATA_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_READ_DATA_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_READ_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_after> {
+    template <typename Result>
+    struct Context_Statement_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1450,10 +1433,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_READ_DATA_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_READ_DATA_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_READ_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1464,14 +1443,11 @@ namespace ebm2c {
         const ebm::IOData& write_data;
     };
     struct VisitorTag_Statement_WRITE_DATA {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_WRITE_DATA = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_WRITE_DATA&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;
-    struct Context_Statement_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_before> {
+    template <typename Result>
+    struct Context_Statement_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1479,14 +1455,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_WRITE_DATA_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_WRITE_DATA_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_WRITE_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_after> {
+    template <typename Result>
+    struct Context_Statement_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1495,10 +1468,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_WRITE_DATA_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_WRITE_DATA_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_WRITE_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1509,14 +1478,11 @@ namespace ebm2c {
         const ebm::ReserveData& reserve_data;
     };
     struct VisitorTag_Statement_RESERVE_DATA {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_RESERVE_DATA = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_RESERVE_DATA&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_RESERVE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;
-    struct Context_Statement_RESERVE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_before> {
+    template <typename Result>
+    struct Context_Statement_RESERVE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1524,14 +1490,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_RESERVE_DATA_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_RESERVE_DATA_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_RESERVE_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_RESERVE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_after> {
+    template <typename Result>
+    struct Context_Statement_RESERVE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1540,10 +1503,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_RESERVE_DATA_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_RESERVE_DATA_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_RESERVE_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1554,14 +1513,11 @@ namespace ebm2c {
         const ebm::IfStatement& if_statement;
     };
     struct VisitorTag_Statement_IF_STATEMENT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_IF_STATEMENT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_IF_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_IF_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;
-    struct Context_Statement_IF_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_before> {
+    template <typename Result>
+    struct Context_Statement_IF_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1569,14 +1525,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_IF_STATEMENT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_IF_STATEMENT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_IF_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_IF_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_after> {
+    template <typename Result>
+    struct Context_Statement_IF_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1585,10 +1538,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_IF_STATEMENT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_IF_STATEMENT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_IF_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1599,14 +1548,11 @@ namespace ebm2c {
         const ebm::LoopStatement& loop;
     };
     struct VisitorTag_Statement_LOOP_STATEMENT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_LOOP_STATEMENT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_LOOP_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;
-    struct Context_Statement_LOOP_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_before> {
+    template <typename Result>
+    struct Context_Statement_LOOP_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1614,14 +1560,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_LOOP_STATEMENT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_LOOP_STATEMENT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_LOOP_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_LOOP_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_after> {
+    template <typename Result>
+    struct Context_Statement_LOOP_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1630,10 +1573,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_LOOP_STATEMENT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_LOOP_STATEMENT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_LOOP_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1644,14 +1583,11 @@ namespace ebm2c {
         const ebm::MatchStatement& match_statement;
     };
     struct VisitorTag_Statement_MATCH_STATEMENT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_MATCH_STATEMENT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_MATCH_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;
-    struct Context_Statement_MATCH_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_before> {
+    template <typename Result>
+    struct Context_Statement_MATCH_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1659,14 +1595,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_MATCH_STATEMENT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_MATCH_STATEMENT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_MATCH_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_MATCH_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_after> {
+    template <typename Result>
+    struct Context_Statement_MATCH_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1675,10 +1608,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_MATCH_STATEMENT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_MATCH_STATEMENT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_MATCH_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1689,14 +1618,11 @@ namespace ebm2c {
         const ebm::MatchBranch& match_branch;
     };
     struct VisitorTag_Statement_MATCH_BRANCH {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_MATCH_BRANCH = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_MATCH_BRANCH&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_MATCH_BRANCH(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;
-    struct Context_Statement_MATCH_BRANCH_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_before> {
+    template <typename Result>
+    struct Context_Statement_MATCH_BRANCH_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1704,14 +1630,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_MATCH_BRANCH_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_MATCH_BRANCH_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_MATCH_BRANCH_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_MATCH_BRANCH_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_after> {
+    template <typename Result>
+    struct Context_Statement_MATCH_BRANCH_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1720,10 +1643,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_MATCH_BRANCH_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_MATCH_BRANCH_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_MATCH_BRANCH_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1734,14 +1653,11 @@ namespace ebm2c {
         const ebm::LoopFlowControl& break_;
     };
     struct VisitorTag_Statement_BREAK {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_BREAK = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_BREAK&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BREAK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;
-    struct Context_Statement_BREAK_before : ebmcodegen::util::ContextBase<Context_Statement_BREAK_before> {
+    template <typename Result>
+    struct Context_Statement_BREAK_before : ebmcodegen::util::ContextBase<Context_Statement_BREAK_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1749,14 +1665,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_BREAK_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_BREAK_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_BREAK_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BREAK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_BREAK_after : ebmcodegen::util::ContextBase<Context_Statement_BREAK_after> {
+    template <typename Result>
+    struct Context_Statement_BREAK_after : ebmcodegen::util::ContextBase<Context_Statement_BREAK_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1765,10 +1678,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_BREAK_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_BREAK_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_BREAK_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1779,14 +1688,11 @@ namespace ebm2c {
         const ebm::LoopFlowControl& continue_;
     };
     struct VisitorTag_Statement_CONTINUE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_CONTINUE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_CONTINUE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_CONTINUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;
-    struct Context_Statement_CONTINUE_before : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_before> {
+    template <typename Result>
+    struct Context_Statement_CONTINUE_before : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1794,14 +1700,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_CONTINUE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_CONTINUE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_CONTINUE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_CONTINUE_after : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_after> {
+    template <typename Result>
+    struct Context_Statement_CONTINUE_after : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1810,10 +1713,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_CONTINUE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_CONTINUE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_CONTINUE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1824,14 +1723,11 @@ namespace ebm2c {
         const ebm::FunctionDecl& func_decl;
     };
     struct VisitorTag_Statement_FUNCTION_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_FUNCTION_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_FUNCTION_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_FUNCTION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;
-    struct Context_Statement_FUNCTION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_FUNCTION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1839,14 +1735,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_FUNCTION_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_FUNCTION_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_FUNCTION_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_FUNCTION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_FUNCTION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1855,10 +1748,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_FUNCTION_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_FUNCTION_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_FUNCTION_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1869,14 +1758,11 @@ namespace ebm2c {
         const ebm::VariableDecl& var_decl;
     };
     struct VisitorTag_Statement_VARIABLE_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_VARIABLE_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_VARIABLE_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_VARIABLE_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;
-    struct Context_Statement_VARIABLE_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_VARIABLE_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1884,14 +1770,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_VARIABLE_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_VARIABLE_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_VARIABLE_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_VARIABLE_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_VARIABLE_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1900,10 +1783,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_VARIABLE_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_VARIABLE_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_VARIABLE_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1914,14 +1793,11 @@ namespace ebm2c {
         const ebm::ParameterDecl& param_decl;
     };
     struct VisitorTag_Statement_PARAMETER_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PARAMETER_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PARAMETER_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PARAMETER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;
-    struct Context_Statement_PARAMETER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_PARAMETER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1929,14 +1805,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_PARAMETER_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PARAMETER_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PARAMETER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PARAMETER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_PARAMETER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1945,10 +1818,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_PARAMETER_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PARAMETER_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PARAMETER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -1959,14 +1828,11 @@ namespace ebm2c {
         const ebm::FieldDecl& field_decl;
     };
     struct VisitorTag_Statement_FIELD_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_FIELD_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_FIELD_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;
-    struct Context_Statement_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1974,14 +1840,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_FIELD_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_FIELD_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_FIELD_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1990,10 +1853,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_FIELD_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_FIELD_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_FIELD_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2004,14 +1863,11 @@ namespace ebm2c {
         const ebm::CompositeFieldDecl& composite_field_decl;
     };
     struct VisitorTag_Statement_COMPOSITE_FIELD_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_COMPOSITE_FIELD_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_COMPOSITE_FIELD_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;
-    struct Context_Statement_COMPOSITE_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_COMPOSITE_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2019,14 +1875,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_COMPOSITE_FIELD_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_COMPOSITE_FIELD_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_COMPOSITE_FIELD_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_COMPOSITE_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_COMPOSITE_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2035,10 +1888,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_COMPOSITE_FIELD_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_COMPOSITE_FIELD_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_COMPOSITE_FIELD_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2049,14 +1898,11 @@ namespace ebm2c {
         const ebm::EnumDecl& enum_decl;
     };
     struct VisitorTag_Statement_ENUM_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENUM_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENUM_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENUM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;
-    struct Context_Statement_ENUM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_ENUM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2064,14 +1910,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ENUM_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENUM_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENUM_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ENUM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_ENUM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2080,10 +1923,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ENUM_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENUM_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENUM_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2094,14 +1933,11 @@ namespace ebm2c {
         const ebm::EnumMemberDecl& enum_member_decl;
     };
     struct VisitorTag_Statement_ENUM_MEMBER_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENUM_MEMBER_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENUM_MEMBER_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;
-    struct Context_Statement_ENUM_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_ENUM_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2109,14 +1945,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ENUM_MEMBER_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENUM_MEMBER_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENUM_MEMBER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ENUM_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_ENUM_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2125,10 +1958,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ENUM_MEMBER_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENUM_MEMBER_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENUM_MEMBER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2139,14 +1968,11 @@ namespace ebm2c {
         const ebm::StructDecl& struct_decl;
     };
     struct VisitorTag_Statement_STRUCT_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_STRUCT_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_STRUCT_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_STRUCT_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;
-    struct Context_Statement_STRUCT_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_STRUCT_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2154,14 +1980,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_STRUCT_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_STRUCT_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_STRUCT_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_STRUCT_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_STRUCT_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2170,10 +1993,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_STRUCT_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_STRUCT_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_STRUCT_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2183,28 +2002,22 @@ namespace ebm2c {
         const ebm::StatementKind& kind;
     };
     struct VisitorTag_Statement_UNION_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_UNION_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_UNION_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_UNION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Statement_UNION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_UNION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_UNION_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_UNION_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_UNION_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_UNION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_UNION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2212,10 +2025,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_UNION_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_UNION_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_UNION_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2225,28 +2034,22 @@ namespace ebm2c {
         const ebm::StatementKind& kind;
     };
     struct VisitorTag_Statement_UNION_MEMBER_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_UNION_MEMBER_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_UNION_MEMBER_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Statement_UNION_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_UNION_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_UNION_MEMBER_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_UNION_MEMBER_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_UNION_MEMBER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_UNION_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_UNION_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2254,10 +2057,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_UNION_MEMBER_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_UNION_MEMBER_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_UNION_MEMBER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2268,14 +2067,11 @@ namespace ebm2c {
         const ebm::Block& block;
     };
     struct VisitorTag_Statement_PROGRAM_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROGRAM_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROGRAM_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROGRAM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
-    struct Context_Statement_PROGRAM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_PROGRAM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2283,14 +2079,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_PROGRAM_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROGRAM_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROGRAM_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PROGRAM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_PROGRAM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2299,10 +2092,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_PROGRAM_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROGRAM_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROGRAM_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2313,14 +2102,11 @@ namespace ebm2c {
         const ebm::PropertyDecl& property_decl;
     };
     struct VisitorTag_Statement_PROPERTY_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROPERTY_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROPERTY_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROPERTY_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;
-    struct Context_Statement_PROPERTY_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_PROPERTY_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2328,14 +2114,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_PROPERTY_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROPERTY_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROPERTY_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PROPERTY_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_PROPERTY_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2344,10 +2127,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_PROPERTY_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROPERTY_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROPERTY_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2358,14 +2137,11 @@ namespace ebm2c {
         const ebm::PropertyMemberDecl& property_member_decl;
     };
     struct VisitorTag_Statement_PROPERTY_MEMBER_DECL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROPERTY_MEMBER_DECL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROPERTY_MEMBER_DECL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;
-    struct Context_Statement_PROPERTY_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_before> {
+    template <typename Result>
+    struct Context_Statement_PROPERTY_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2373,14 +2149,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_PROPERTY_MEMBER_DECL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROPERTY_MEMBER_DECL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROPERTY_MEMBER_DECL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PROPERTY_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_after> {
+    template <typename Result>
+    struct Context_Statement_PROPERTY_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2389,10 +2162,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_PROPERTY_MEMBER_DECL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_PROPERTY_MEMBER_DECL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_PROPERTY_MEMBER_DECL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2403,14 +2172,11 @@ namespace ebm2c {
         const ebm::Metadata& metadata;
     };
     struct VisitorTag_Statement_METADATA {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_METADATA = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_METADATA&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_METADATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;
-    struct Context_Statement_METADATA_before : ebmcodegen::util::ContextBase<Context_Statement_METADATA_before> {
+    template <typename Result>
+    struct Context_Statement_METADATA_before : ebmcodegen::util::ContextBase<Context_Statement_METADATA_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2418,14 +2184,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_METADATA_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_METADATA_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_METADATA_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_METADATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_METADATA_after : ebmcodegen::util::ContextBase<Context_Statement_METADATA_after> {
+    template <typename Result>
+    struct Context_Statement_METADATA_after : ebmcodegen::util::ContextBase<Context_Statement_METADATA_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2434,10 +2197,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_METADATA_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_METADATA_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_METADATA_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2448,14 +2207,11 @@ namespace ebm2c {
         const ebm::ImportDecl& import_decl;
     };
     struct VisitorTag_Statement_IMPORT_MODULE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_IMPORT_MODULE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_IMPORT_MODULE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_IMPORT_MODULE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;
-    struct Context_Statement_IMPORT_MODULE_before : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_before> {
+    template <typename Result>
+    struct Context_Statement_IMPORT_MODULE_before : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2463,14 +2219,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_IMPORT_MODULE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_IMPORT_MODULE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_IMPORT_MODULE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_IMPORT_MODULE_after : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_after> {
+    template <typename Result>
+    struct Context_Statement_IMPORT_MODULE_after : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2479,10 +2232,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_IMPORT_MODULE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_IMPORT_MODULE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_IMPORT_MODULE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2493,14 +2242,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& expression;
     };
     struct VisitorTag_Statement_EXPRESSION {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_EXPRESSION = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_EXPRESSION&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;
-    struct Context_Statement_EXPRESSION_before : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_before> {
+    template <typename Result>
+    struct Context_Statement_EXPRESSION_before : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2508,14 +2254,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_EXPRESSION_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_EXPRESSION_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_EXPRESSION_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_EXPRESSION_after : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_after> {
+    template <typename Result>
+    struct Context_Statement_EXPRESSION_after : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2524,10 +2267,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_EXPRESSION_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_EXPRESSION_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_EXPRESSION_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2538,14 +2277,11 @@ namespace ebm2c {
         const ebm::ErrorReport& error_report;
     };
     struct VisitorTag_Statement_ERROR_REPORT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ERROR_REPORT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ERROR_REPORT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ERROR_REPORT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;
-    struct Context_Statement_ERROR_REPORT_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_before> {
+    template <typename Result>
+    struct Context_Statement_ERROR_REPORT_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2553,14 +2289,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ERROR_REPORT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ERROR_REPORT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ERROR_REPORT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ERROR_REPORT_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_after> {
+    template <typename Result>
+    struct Context_Statement_ERROR_REPORT_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2569,10 +2302,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ERROR_REPORT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ERROR_REPORT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ERROR_REPORT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2583,14 +2312,11 @@ namespace ebm2c {
         const ebm::LoweredIOStatements& lowered_io_statements;
     };
     struct VisitorTag_Statement_LOWERED_IO_STATEMENTS {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_LOWERED_IO_STATEMENTS = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_LOWERED_IO_STATEMENTS&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;
-    struct Context_Statement_LOWERED_IO_STATEMENTS_before : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_before> {
+    template <typename Result>
+    struct Context_Statement_LOWERED_IO_STATEMENTS_before : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2598,14 +2324,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_LOWERED_IO_STATEMENTS_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_LOWERED_IO_STATEMENTS_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_LOWERED_IO_STATEMENTS_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_LOWERED_IO_STATEMENTS_after : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_after> {
+    template <typename Result>
+    struct Context_Statement_LOWERED_IO_STATEMENTS_after : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2614,10 +2337,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_LOWERED_IO_STATEMENTS_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_LOWERED_IO_STATEMENTS_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_LOWERED_IO_STATEMENTS_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2628,14 +2347,11 @@ namespace ebm2c {
         const ebm::SubByteRange& sub_byte_range;
     };
     struct VisitorTag_Statement_SUB_BYTE_RANGE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_SUB_BYTE_RANGE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_SUB_BYTE_RANGE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;
-    struct Context_Statement_SUB_BYTE_RANGE_before : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_before> {
+    template <typename Result>
+    struct Context_Statement_SUB_BYTE_RANGE_before : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2643,14 +2359,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_SUB_BYTE_RANGE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_SUB_BYTE_RANGE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_SUB_BYTE_RANGE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_SUB_BYTE_RANGE_after : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_after> {
+    template <typename Result>
+    struct Context_Statement_SUB_BYTE_RANGE_after : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2659,10 +2372,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_SUB_BYTE_RANGE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_SUB_BYTE_RANGE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_SUB_BYTE_RANGE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2673,14 +2382,11 @@ namespace ebm2c {
         const ebm::InitCheck& init_check;
     };
     struct VisitorTag_Statement_INIT_CHECK {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_INIT_CHECK = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_INIT_CHECK&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_INIT_CHECK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;
-    struct Context_Statement_INIT_CHECK_before : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_before> {
+    template <typename Result>
+    struct Context_Statement_INIT_CHECK_before : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2688,14 +2394,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_INIT_CHECK_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_INIT_CHECK_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_INIT_CHECK_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_INIT_CHECK_after : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_after> {
+    template <typename Result>
+    struct Context_Statement_INIT_CHECK_after : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2704,10 +2407,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_INIT_CHECK_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_INIT_CHECK_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_INIT_CHECK_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2718,14 +2417,11 @@ namespace ebm2c {
         const ebm::EndianVariable& endian_variable;
     };
     struct VisitorTag_Statement_ENDIAN_VARIABLE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENDIAN_VARIABLE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENDIAN_VARIABLE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;
-    struct Context_Statement_ENDIAN_VARIABLE_before : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_before> {
+    template <typename Result>
+    struct Context_Statement_ENDIAN_VARIABLE_before : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_before<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2733,14 +2429,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ENDIAN_VARIABLE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENDIAN_VARIABLE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENDIAN_VARIABLE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ENDIAN_VARIABLE_after : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_after> {
+    template <typename Result>
+    struct Context_Statement_ENDIAN_VARIABLE_after : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_after<Result>> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2749,10 +2442,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_ENDIAN_VARIABLE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_ENDIAN_VARIABLE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_ENDIAN_VARIABLE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2762,28 +2451,22 @@ namespace ebm2c {
         ebm::StatementRef alias_ref;
     };
     struct VisitorTag_Statement {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
-    struct Context_Statement_before : ebmcodegen::util::ContextBase<Context_Statement_before> {
+    template <typename Result>
+    struct Context_Statement_before : ebmcodegen::util::ContextBase<Context_Statement_before<Result>> {
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_after : ebmcodegen::util::ContextBase<Context_Statement_after> {
+    template <typename Result>
+    struct Context_Statement_after : ebmcodegen::util::ContextBase<Context_Statement_after<Result>> {
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2791,10 +2474,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Statement_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Statement_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Statement_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2803,37 +2482,27 @@ namespace ebm2c {
         const ebm::Block& in;
     };
     struct VisitorTag_Block {};
-    template<typename VisitorImpl>
-    concept has_visitor_Block = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Block&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
-    struct Context_Block_before : ebmcodegen::util::ContextBase<Context_Block_before> {
+    template <typename Result>
+    struct Context_Block_before : ebmcodegen::util::ContextBase<Context_Block_before<Result>> {
         BaseVisitor& visitor;
         const ebm::Block& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Block_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Block_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Block_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
-    struct Context_Block_after : ebmcodegen::util::ContextBase<Context_Block_after> {
+    template <typename Result>
+    struct Context_Block_after : ebmcodegen::util::ContextBase<Context_Block_after<Result>> {
         BaseVisitor& visitor;
         const ebm::Block& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_Block_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Block_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Block_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2845,14 +2514,11 @@ namespace ebm2c {
         const ebm::Varint& int_value;
     };
     struct VisitorTag_Expression_LITERAL_INT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_INT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_INT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;
-    struct Context_Expression_LITERAL_INT_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_before> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_INT_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2861,14 +2527,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_LITERAL_INT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_INT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_INT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_INT_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_after> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_INT_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2878,10 +2541,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_LITERAL_INT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_INT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_INT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2893,14 +2552,11 @@ namespace ebm2c {
         const std::uint64_t& int64_value;
     };
     struct VisitorTag_Expression_LITERAL_INT64 {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_INT64 = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_INT64&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_INT64(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;
-    struct Context_Expression_LITERAL_INT64_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_before> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_INT64_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2909,14 +2565,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_LITERAL_INT64_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_INT64_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_INT64_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_INT64_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_after> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_INT64_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2926,10 +2579,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_LITERAL_INT64_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_INT64_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_INT64_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2941,14 +2590,11 @@ namespace ebm2c {
         const std::uint8_t& bool_value;
     };
     struct VisitorTag_Expression_LITERAL_BOOL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_BOOL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_BOOL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;
-    struct Context_Expression_LITERAL_BOOL_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_before> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_BOOL_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2957,14 +2603,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_LITERAL_BOOL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_BOOL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_BOOL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_BOOL_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_after> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_BOOL_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2974,10 +2617,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_LITERAL_BOOL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_BOOL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_BOOL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -2989,14 +2628,11 @@ namespace ebm2c {
         const ebm::StringRef& string_value;
     };
     struct VisitorTag_Expression_LITERAL_STRING {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_STRING = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_STRING&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_STRING(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;
-    struct Context_Expression_LITERAL_STRING_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_before> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_STRING_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3005,14 +2641,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_LITERAL_STRING_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_STRING_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_STRING_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_STRING_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_after> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_STRING_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3022,10 +2655,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_LITERAL_STRING_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_STRING_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_STRING_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3037,14 +2666,11 @@ namespace ebm2c {
         const ebm::TypeRef& type_ref;
     };
     struct VisitorTag_Expression_LITERAL_TYPE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_TYPE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_TYPE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;
-    struct Context_Expression_LITERAL_TYPE_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_before> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_TYPE_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3053,14 +2679,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_LITERAL_TYPE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_TYPE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_TYPE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_TYPE_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_after> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_TYPE_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3070,10 +2693,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_LITERAL_TYPE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_TYPE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_TYPE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3085,14 +2704,11 @@ namespace ebm2c {
         const ebm::Varint& char_value;
     };
     struct VisitorTag_Expression_LITERAL_CHAR {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_CHAR = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_CHAR&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;
-    struct Context_Expression_LITERAL_CHAR_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_before> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_CHAR_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3101,14 +2717,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_LITERAL_CHAR_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_CHAR_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_CHAR_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_CHAR_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_after> {
+    template <typename Result>
+    struct Context_Expression_LITERAL_CHAR_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3118,10 +2731,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_LITERAL_CHAR_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_LITERAL_CHAR_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_LITERAL_CHAR_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3133,14 +2742,11 @@ namespace ebm2c {
         const ebm::StatementRef& id;
     };
     struct VisitorTag_Expression_IDENTIFIER {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IDENTIFIER = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IDENTIFIER&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IDENTIFIER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;
-    struct Context_Expression_IDENTIFIER_before : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_before> {
+    template <typename Result>
+    struct Context_Expression_IDENTIFIER_before : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3149,14 +2755,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_IDENTIFIER_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IDENTIFIER_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IDENTIFIER_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_IDENTIFIER_after : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_after> {
+    template <typename Result>
+    struct Context_Expression_IDENTIFIER_after : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3166,10 +2769,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_IDENTIFIER_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IDENTIFIER_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IDENTIFIER_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3183,14 +2782,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& right;
     };
     struct VisitorTag_Expression_BINARY_OP {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_BINARY_OP = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_BINARY_OP&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_BINARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;
-    struct Context_Expression_BINARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_before> {
+    template <typename Result>
+    struct Context_Expression_BINARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3201,14 +2797,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_BINARY_OP_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_BINARY_OP_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_BINARY_OP_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_BINARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_after> {
+    template <typename Result>
+    struct Context_Expression_BINARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3220,10 +2813,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_BINARY_OP_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_BINARY_OP_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_BINARY_OP_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3236,14 +2825,11 @@ namespace ebm2c {
         const ebm::UnaryOp& uop;
     };
     struct VisitorTag_Expression_UNARY_OP {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_UNARY_OP = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_UNARY_OP&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_UNARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;
-    struct Context_Expression_UNARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_before> {
+    template <typename Result>
+    struct Context_Expression_UNARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3253,14 +2839,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_UNARY_OP_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_UNARY_OP_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_UNARY_OP_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_UNARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_after> {
+    template <typename Result>
+    struct Context_Expression_UNARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3271,10 +2854,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_UNARY_OP_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_UNARY_OP_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_UNARY_OP_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3286,14 +2865,11 @@ namespace ebm2c {
         const ebm::CallDesc& call_desc;
     };
     struct VisitorTag_Expression_CALL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CALL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CALL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CALL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;
-    struct Context_Expression_CALL_before : ebmcodegen::util::ContextBase<Context_Expression_CALL_before> {
+    template <typename Result>
+    struct Context_Expression_CALL_before : ebmcodegen::util::ContextBase<Context_Expression_CALL_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3302,14 +2878,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_CALL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CALL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CALL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CALL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CALL_after : ebmcodegen::util::ContextBase<Context_Expression_CALL_after> {
+    template <typename Result>
+    struct Context_Expression_CALL_after : ebmcodegen::util::ContextBase<Context_Expression_CALL_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3319,10 +2892,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_CALL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CALL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CALL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3335,14 +2904,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& index;
     };
     struct VisitorTag_Expression_INDEX_ACCESS {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_INDEX_ACCESS = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_INDEX_ACCESS&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;
-    struct Context_Expression_INDEX_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_before> {
+    template <typename Result>
+    struct Context_Expression_INDEX_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3352,14 +2918,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_INDEX_ACCESS_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_INDEX_ACCESS_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_INDEX_ACCESS_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_INDEX_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_after> {
+    template <typename Result>
+    struct Context_Expression_INDEX_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3370,10 +2933,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_INDEX_ACCESS_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_INDEX_ACCESS_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_INDEX_ACCESS_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3386,14 +2945,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& member;
     };
     struct VisitorTag_Expression_MEMBER_ACCESS {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_MEMBER_ACCESS = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_MEMBER_ACCESS&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;
-    struct Context_Expression_MEMBER_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_before> {
+    template <typename Result>
+    struct Context_Expression_MEMBER_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3403,14 +2959,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_MEMBER_ACCESS_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_MEMBER_ACCESS_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_MEMBER_ACCESS_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_MEMBER_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_after> {
+    template <typename Result>
+    struct Context_Expression_MEMBER_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3421,10 +2974,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_MEMBER_ACCESS_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_MEMBER_ACCESS_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_MEMBER_ACCESS_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3437,14 +2986,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& member;
     };
     struct VisitorTag_Expression_ENUM_MEMBER {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ENUM_MEMBER = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ENUM_MEMBER&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;
-    struct Context_Expression_ENUM_MEMBER_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_before> {
+    template <typename Result>
+    struct Context_Expression_ENUM_MEMBER_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3454,14 +3000,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_ENUM_MEMBER_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ENUM_MEMBER_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ENUM_MEMBER_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ENUM_MEMBER_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_after> {
+    template <typename Result>
+    struct Context_Expression_ENUM_MEMBER_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3472,10 +3015,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_ENUM_MEMBER_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ENUM_MEMBER_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ENUM_MEMBER_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3489,14 +3028,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& source_expr;
     };
     struct VisitorTag_Expression_TYPE_CAST {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_TYPE_CAST = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_TYPE_CAST&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;
-    struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before> {
+    template <typename Result>
+    struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3507,14 +3043,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_TYPE_CAST_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_TYPE_CAST_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_TYPE_CAST_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after> {
+    template <typename Result>
+    struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3526,10 +3059,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_TYPE_CAST_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_TYPE_CAST_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_TYPE_CAST_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3542,14 +3071,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& start;
     };
     struct VisitorTag_Expression_RANGE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_RANGE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_RANGE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;
-    struct Context_Expression_RANGE_before : ebmcodegen::util::ContextBase<Context_Expression_RANGE_before> {
+    template <typename Result>
+    struct Context_Expression_RANGE_before : ebmcodegen::util::ContextBase<Context_Expression_RANGE_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3559,14 +3085,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_RANGE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_RANGE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_RANGE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_RANGE_after : ebmcodegen::util::ContextBase<Context_Expression_RANGE_after> {
+    template <typename Result>
+    struct Context_Expression_RANGE_after : ebmcodegen::util::ContextBase<Context_Expression_RANGE_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3577,10 +3100,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_RANGE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_RANGE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_RANGE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3591,14 +3110,11 @@ namespace ebm2c {
         const ebm::ExpressionKind& kind;
     };
     struct VisitorTag_Expression_DEFAULT_VALUE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_DEFAULT_VALUE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_DEFAULT_VALUE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
-    struct Context_Expression_DEFAULT_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_before> {
+    template <typename Result>
+    struct Context_Expression_DEFAULT_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3606,14 +3122,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_DEFAULT_VALUE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_DEFAULT_VALUE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_DEFAULT_VALUE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_DEFAULT_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_after> {
+    template <typename Result>
+    struct Context_Expression_DEFAULT_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3622,10 +3135,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_DEFAULT_VALUE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_DEFAULT_VALUE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_DEFAULT_VALUE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3637,14 +3146,11 @@ namespace ebm2c {
         const ebm::StatementRef& endian_expr;
     };
     struct VisitorTag_Expression_IS_LITTLE_ENDIAN {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IS_LITTLE_ENDIAN = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IS_LITTLE_ENDIAN&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;
-    struct Context_Expression_IS_LITTLE_ENDIAN_before : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_before> {
+    template <typename Result>
+    struct Context_Expression_IS_LITTLE_ENDIAN_before : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3653,14 +3159,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_IS_LITTLE_ENDIAN_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IS_LITTLE_ENDIAN_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IS_LITTLE_ENDIAN_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_IS_LITTLE_ENDIAN_after : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_after> {
+    template <typename Result>
+    struct Context_Expression_IS_LITTLE_ENDIAN_after : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3670,10 +3173,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_IS_LITTLE_ENDIAN_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IS_LITTLE_ENDIAN_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IS_LITTLE_ENDIAN_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3687,14 +3186,11 @@ namespace ebm2c {
         const ebm::SizeUnit& unit;
     };
     struct VisitorTag_Expression_GET_STREAM_OFFSET {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_GET_STREAM_OFFSET = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_GET_STREAM_OFFSET&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
-    struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before> {
+    template <typename Result>
+    struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3705,14 +3201,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_GET_STREAM_OFFSET_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_GET_STREAM_OFFSET_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_GET_STREAM_OFFSET_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after> {
+    template <typename Result>
+    struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3724,10 +3217,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_GET_STREAM_OFFSET_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_GET_STREAM_OFFSET_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_GET_STREAM_OFFSET_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3740,14 +3229,11 @@ namespace ebm2c {
         const ebm::StreamType& stream_type;
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_GET_REMAINING_BYTES = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_GET_REMAINING_BYTES&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;
-    struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before> {
+    template <typename Result>
+    struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3757,14 +3243,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_GET_REMAINING_BYTES_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_GET_REMAINING_BYTES_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after> {
+    template <typename Result>
+    struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3775,10 +3258,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_GET_REMAINING_BYTES_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_GET_REMAINING_BYTES_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3792,14 +3271,11 @@ namespace ebm2c {
         const ebm::StreamType& stream_type;
     };
     struct VisitorTag_Expression_CAN_READ_STREAM {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CAN_READ_STREAM = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CAN_READ_STREAM&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;
-    struct Context_Expression_CAN_READ_STREAM_before : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_before> {
+    template <typename Result>
+    struct Context_Expression_CAN_READ_STREAM_before : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3810,14 +3286,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_CAN_READ_STREAM_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CAN_READ_STREAM_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CAN_READ_STREAM_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CAN_READ_STREAM_after : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_after> {
+    template <typename Result>
+    struct Context_Expression_CAN_READ_STREAM_after : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3829,10 +3302,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_CAN_READ_STREAM_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CAN_READ_STREAM_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CAN_READ_STREAM_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3844,14 +3313,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& array_expr;
     };
     struct VisitorTag_Expression_ARRAY_SIZE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ARRAY_SIZE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ARRAY_SIZE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;
-    struct Context_Expression_ARRAY_SIZE_before : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_before> {
+    template <typename Result>
+    struct Context_Expression_ARRAY_SIZE_before : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3860,14 +3326,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_ARRAY_SIZE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ARRAY_SIZE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ARRAY_SIZE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ARRAY_SIZE_after : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_after> {
+    template <typename Result>
+    struct Context_Expression_ARRAY_SIZE_after : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3877,10 +3340,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_ARRAY_SIZE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ARRAY_SIZE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ARRAY_SIZE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3893,14 +3352,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_ENUM_IS_DEFINED {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ENUM_IS_DEFINED = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ENUM_IS_DEFINED&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_ENUM_IS_DEFINED_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_before> {
+    template <typename Result>
+    struct Context_Expression_ENUM_IS_DEFINED_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3910,14 +3366,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_ENUM_IS_DEFINED_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ENUM_IS_DEFINED_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ENUM_IS_DEFINED_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ENUM_IS_DEFINED_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_after> {
+    template <typename Result>
+    struct Context_Expression_ENUM_IS_DEFINED_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3928,10 +3381,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_ENUM_IS_DEFINED_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ENUM_IS_DEFINED_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ENUM_IS_DEFINED_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3943,14 +3392,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_IS_ERROR {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IS_ERROR = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IS_ERROR&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IS_ERROR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_IS_ERROR_before : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_before> {
+    template <typename Result>
+    struct Context_Expression_IS_ERROR_before : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3959,14 +3405,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_IS_ERROR_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IS_ERROR_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IS_ERROR_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_IS_ERROR_after : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_after> {
+    template <typename Result>
+    struct Context_Expression_IS_ERROR_after : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3976,10 +3419,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_IS_ERROR_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_IS_ERROR_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_IS_ERROR_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -3991,14 +3430,11 @@ namespace ebm2c {
         const ebm::LoweredExpressionRef& lowered_expr;
     };
     struct VisitorTag_Expression_MAX_VALUE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_MAX_VALUE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_MAX_VALUE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_MAX_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;
-    struct Context_Expression_MAX_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_before> {
+    template <typename Result>
+    struct Context_Expression_MAX_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4007,14 +3443,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_MAX_VALUE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_MAX_VALUE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_MAX_VALUE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_MAX_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_after> {
+    template <typename Result>
+    struct Context_Expression_MAX_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4024,10 +3457,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_MAX_VALUE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_MAX_VALUE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_MAX_VALUE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4040,14 +3469,11 @@ namespace ebm2c {
         const ebm::StatementRef& target_stmt;
     };
     struct VisitorTag_Expression_READ_DATA {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_READ_DATA = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_READ_DATA&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;
-    struct Context_Expression_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_before> {
+    template <typename Result>
+    struct Context_Expression_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4057,14 +3483,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_READ_DATA_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_READ_DATA_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_READ_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_after> {
+    template <typename Result>
+    struct Context_Expression_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4075,10 +3498,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_READ_DATA_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_READ_DATA_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_READ_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4091,14 +3510,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_WRITE_DATA {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_WRITE_DATA = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_WRITE_DATA&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_before> {
+    template <typename Result>
+    struct Context_Expression_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4108,14 +3524,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_WRITE_DATA_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_WRITE_DATA_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_WRITE_DATA_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_after> {
+    template <typename Result>
+    struct Context_Expression_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4126,10 +3539,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_WRITE_DATA_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_WRITE_DATA_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_WRITE_DATA_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4142,14 +3551,11 @@ namespace ebm2c {
         const ebm::StatementRef& target_stmt;
     };
     struct VisitorTag_Expression_CONDITIONAL_STATEMENT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CONDITIONAL_STATEMENT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CONDITIONAL_STATEMENT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;
-    struct Context_Expression_CONDITIONAL_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_before> {
+    template <typename Result>
+    struct Context_Expression_CONDITIONAL_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4159,14 +3565,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_CONDITIONAL_STATEMENT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CONDITIONAL_STATEMENT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CONDITIONAL_STATEMENT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CONDITIONAL_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_after> {
+    template <typename Result>
+    struct Context_Expression_CONDITIONAL_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4177,10 +3580,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_CONDITIONAL_STATEMENT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CONDITIONAL_STATEMENT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CONDITIONAL_STATEMENT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4195,14 +3594,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& then;
     };
     struct VisitorTag_Expression_CONDITIONAL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CONDITIONAL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CONDITIONAL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CONDITIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;
-    struct Context_Expression_CONDITIONAL_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_before> {
+    template <typename Result>
+    struct Context_Expression_CONDITIONAL_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4214,14 +3610,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_CONDITIONAL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CONDITIONAL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CONDITIONAL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CONDITIONAL_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_after> {
+    template <typename Result>
+    struct Context_Expression_CONDITIONAL_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4234,10 +3627,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_CONDITIONAL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_CONDITIONAL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_CONDITIONAL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4250,14 +3639,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_AVAILABLE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_AVAILABLE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_AVAILABLE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AVAILABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_AVAILABLE_before : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_before> {
+    template <typename Result>
+    struct Context_Expression_AVAILABLE_before : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4267,14 +3653,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_AVAILABLE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_AVAILABLE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_AVAILABLE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_AVAILABLE_after : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_after> {
+    template <typename Result>
+    struct Context_Expression_AVAILABLE_after : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4285,10 +3668,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_AVAILABLE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_AVAILABLE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_AVAILABLE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4301,14 +3680,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_SIZEOF {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SIZEOF = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SIZEOF&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SIZEOF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_SIZEOF_before : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_before> {
+    template <typename Result>
+    struct Context_Expression_SIZEOF_before : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4318,14 +3694,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_SIZEOF_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SIZEOF_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SIZEOF_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SIZEOF_after : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_after> {
+    template <typename Result>
+    struct Context_Expression_SIZEOF_after : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4336,10 +3709,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_SIZEOF_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SIZEOF_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SIZEOF_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4351,14 +3720,11 @@ namespace ebm2c {
         const ebm::StatementRef& sub_range;
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SUB_RANGE_INIT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SUB_RANGE_INIT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;
-    struct Context_Expression_SUB_RANGE_INIT_before : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_before> {
+    template <typename Result>
+    struct Context_Expression_SUB_RANGE_INIT_before : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4367,14 +3733,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SUB_RANGE_INIT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SUB_RANGE_INIT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SUB_RANGE_INIT_after : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_after> {
+    template <typename Result>
+    struct Context_Expression_SUB_RANGE_INIT_after : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4384,10 +3747,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SUB_RANGE_INIT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SUB_RANGE_INIT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4399,14 +3758,11 @@ namespace ebm2c {
         const ebm::Expressions& or_cond;
     };
     struct VisitorTag_Expression_OR_COND {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_OR_COND = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_OR_COND&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_OR_COND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;
-    struct Context_Expression_OR_COND_before : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_before> {
+    template <typename Result>
+    struct Context_Expression_OR_COND_before : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4415,14 +3771,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_OR_COND_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_OR_COND_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_OR_COND_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_OR_COND_after : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_after> {
+    template <typename Result>
+    struct Context_Expression_OR_COND_after : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4432,10 +3785,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_OR_COND_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_OR_COND_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_OR_COND_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4447,14 +3796,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_ADDRESS_OF {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ADDRESS_OF = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ADDRESS_OF&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ADDRESS_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_ADDRESS_OF_before : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_before> {
+    template <typename Result>
+    struct Context_Expression_ADDRESS_OF_before : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4463,14 +3809,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_ADDRESS_OF_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ADDRESS_OF_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ADDRESS_OF_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ADDRESS_OF_after : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_after> {
+    template <typename Result>
+    struct Context_Expression_ADDRESS_OF_after : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4480,10 +3823,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_ADDRESS_OF_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_ADDRESS_OF_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_ADDRESS_OF_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4495,14 +3834,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_OPTIONAL_OF {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_OPTIONAL_OF = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_OPTIONAL_OF&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_OPTIONAL_OF_before : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_before> {
+    template <typename Result>
+    struct Context_Expression_OPTIONAL_OF_before : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4511,14 +3847,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_OPTIONAL_OF_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_OPTIONAL_OF_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_OPTIONAL_OF_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_OPTIONAL_OF_after : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_after> {
+    template <typename Result>
+    struct Context_Expression_OPTIONAL_OF_after : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4528,10 +3861,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_OPTIONAL_OF_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_OPTIONAL_OF_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_OPTIONAL_OF_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4543,14 +3872,11 @@ namespace ebm2c {
         const ebm::SetterStatus& setter_status;
     };
     struct VisitorTag_Expression_SETTER_STATUS {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SETTER_STATUS = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SETTER_STATUS&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SETTER_STATUS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;
-    struct Context_Expression_SETTER_STATUS_before : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_before> {
+    template <typename Result>
+    struct Context_Expression_SETTER_STATUS_before : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4559,14 +3885,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_SETTER_STATUS_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SETTER_STATUS_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SETTER_STATUS_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SETTER_STATUS_after : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_after> {
+    template <typename Result>
+    struct Context_Expression_SETTER_STATUS_after : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4576,10 +3899,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_SETTER_STATUS_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SETTER_STATUS_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SETTER_STATUS_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4590,14 +3909,11 @@ namespace ebm2c {
         const ebm::ExpressionKind& kind;
     };
     struct VisitorTag_Expression_SELF {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SELF = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SELF&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SELF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
-    struct Context_Expression_SELF_before : ebmcodegen::util::ContextBase<Context_Expression_SELF_before> {
+    template <typename Result>
+    struct Context_Expression_SELF_before : ebmcodegen::util::ContextBase<Context_Expression_SELF_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4605,14 +3921,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_SELF_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SELF_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SELF_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SELF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SELF_after : ebmcodegen::util::ContextBase<Context_Expression_SELF_after> {
+    template <typename Result>
+    struct Context_Expression_SELF_after : ebmcodegen::util::ContextBase<Context_Expression_SELF_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4621,10 +3934,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_SELF_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_SELF_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_SELF_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4636,14 +3945,11 @@ namespace ebm2c {
         const ebm::ExpressionRef& target_expr;
     };
     struct VisitorTag_Expression_AS_ARG {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_AS_ARG = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_AS_ARG&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AS_ARG(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_AS_ARG_before : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_before> {
+    template <typename Result>
+    struct Context_Expression_AS_ARG_before : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_before<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4652,14 +3958,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_AS_ARG_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_AS_ARG_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_AS_ARG_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_AS_ARG_after : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_after> {
+    template <typename Result>
+    struct Context_Expression_AS_ARG_after : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_after<Result>> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4669,10 +3972,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_AS_ARG_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_AS_ARG_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_AS_ARG_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4682,28 +3981,22 @@ namespace ebm2c {
         ebm::ExpressionRef alias_ref;
     };
     struct VisitorTag_Expression {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
-    struct Context_Expression_before : ebmcodegen::util::ContextBase<Context_Expression_before> {
+    template <typename Result>
+    struct Context_Expression_before : ebmcodegen::util::ContextBase<Context_Expression_before<Result>> {
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_after : ebmcodegen::util::ContextBase<Context_Expression_after> {
+    template <typename Result>
+    struct Context_Expression_after : ebmcodegen::util::ContextBase<Context_Expression_after<Result>> {
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -4711,10 +4004,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Expression_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expression_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expression_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4723,37 +4012,27 @@ namespace ebm2c {
         const ebm::Expressions& in;
     };
     struct VisitorTag_Expressions {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expressions = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expressions&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSIONS(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
-    struct Context_Expressions_before : ebmcodegen::util::ContextBase<Context_Expressions_before> {
+    template <typename Result>
+    struct Context_Expressions_before : ebmcodegen::util::ContextBase<Context_Expressions_before<Result>> {
         BaseVisitor& visitor;
         const ebm::Expressions& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expressions_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expressions_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expressions_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSIONS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
-    struct Context_Expressions_after : ebmcodegen::util::ContextBase<Context_Expressions_after> {
+    template <typename Result>
+    struct Context_Expressions_after : ebmcodegen::util::ContextBase<Context_Expressions_after<Result>> {
         BaseVisitor& visitor;
         const ebm::Expressions& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_Expressions_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Expressions_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Expressions_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4764,14 +4043,11 @@ namespace ebm2c {
         const ebm::Varint& size;
     };
     struct VisitorTag_Type_INT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_INT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_INT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
-    struct Context_Type_INT_before : ebmcodegen::util::ContextBase<Context_Type_INT_before> {
+    template <typename Result>
+    struct Context_Type_INT_before : ebmcodegen::util::ContextBase<Context_Type_INT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4779,14 +4055,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_INT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_INT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_INT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_INT_after : ebmcodegen::util::ContextBase<Context_Type_INT_after> {
+    template <typename Result>
+    struct Context_Type_INT_after : ebmcodegen::util::ContextBase<Context_Type_INT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4795,10 +4068,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_INT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_INT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_INT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4809,14 +4078,11 @@ namespace ebm2c {
         const ebm::Varint& size;
     };
     struct VisitorTag_Type_UINT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_UINT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_UINT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_UINT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
-    struct Context_Type_UINT_before : ebmcodegen::util::ContextBase<Context_Type_UINT_before> {
+    template <typename Result>
+    struct Context_Type_UINT_before : ebmcodegen::util::ContextBase<Context_Type_UINT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4824,14 +4090,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_UINT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_UINT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_UINT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_UINT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_UINT_after : ebmcodegen::util::ContextBase<Context_Type_UINT_after> {
+    template <typename Result>
+    struct Context_Type_UINT_after : ebmcodegen::util::ContextBase<Context_Type_UINT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4840,10 +4103,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_UINT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_UINT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_UINT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4853,28 +4112,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_USIZE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_USIZE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_USIZE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_USIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_USIZE_before : ebmcodegen::util::ContextBase<Context_Type_USIZE_before> {
+    template <typename Result>
+    struct Context_Type_USIZE_before : ebmcodegen::util::ContextBase<Context_Type_USIZE_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_USIZE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_USIZE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_USIZE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_USIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_USIZE_after : ebmcodegen::util::ContextBase<Context_Type_USIZE_after> {
+    template <typename Result>
+    struct Context_Type_USIZE_after : ebmcodegen::util::ContextBase<Context_Type_USIZE_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4882,10 +4135,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_USIZE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_USIZE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_USIZE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4896,14 +4145,11 @@ namespace ebm2c {
         const ebm::Varint& size;
     };
     struct VisitorTag_Type_FLOAT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_FLOAT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_FLOAT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_FLOAT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
-    struct Context_Type_FLOAT_before : ebmcodegen::util::ContextBase<Context_Type_FLOAT_before> {
+    template <typename Result>
+    struct Context_Type_FLOAT_before : ebmcodegen::util::ContextBase<Context_Type_FLOAT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4911,14 +4157,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_FLOAT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_FLOAT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_FLOAT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_FLOAT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_FLOAT_after : ebmcodegen::util::ContextBase<Context_Type_FLOAT_after> {
+    template <typename Result>
+    struct Context_Type_FLOAT_after : ebmcodegen::util::ContextBase<Context_Type_FLOAT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4927,10 +4170,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_FLOAT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_FLOAT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_FLOAT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4941,14 +4180,11 @@ namespace ebm2c {
         const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_STRUCT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_STRUCT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_STRUCT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
-    struct Context_Type_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_STRUCT_before> {
+    template <typename Result>
+    struct Context_Type_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_STRUCT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4956,14 +4192,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_STRUCT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_STRUCT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_STRUCT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_STRUCT_after> {
+    template <typename Result>
+    struct Context_Type_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_STRUCT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4972,10 +4205,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_STRUCT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_STRUCT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_STRUCT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -4986,14 +4215,11 @@ namespace ebm2c {
         const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_RECURSIVE_STRUCT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_RECURSIVE_STRUCT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
-    struct Context_Type_RECURSIVE_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_before> {
+    template <typename Result>
+    struct Context_Type_RECURSIVE_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5001,14 +4227,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_RECURSIVE_STRUCT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_RECURSIVE_STRUCT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_RECURSIVE_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_after> {
+    template <typename Result>
+    struct Context_Type_RECURSIVE_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5017,10 +4240,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_RECURSIVE_STRUCT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_RECURSIVE_STRUCT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5030,28 +4249,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_BOOL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_BOOL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_BOOL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_BOOL_before : ebmcodegen::util::ContextBase<Context_Type_BOOL_before> {
+    template <typename Result>
+    struct Context_Type_BOOL_before : ebmcodegen::util::ContextBase<Context_Type_BOOL_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_BOOL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_BOOL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_BOOL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_BOOL_after : ebmcodegen::util::ContextBase<Context_Type_BOOL_after> {
+    template <typename Result>
+    struct Context_Type_BOOL_after : ebmcodegen::util::ContextBase<Context_Type_BOOL_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5059,10 +4272,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_BOOL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_BOOL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_BOOL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5072,28 +4281,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_VOID {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VOID = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VOID&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VOID(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_VOID_before : ebmcodegen::util::ContextBase<Context_Type_VOID_before> {
+    template <typename Result>
+    struct Context_Type_VOID_before : ebmcodegen::util::ContextBase<Context_Type_VOID_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_VOID_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VOID_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VOID_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VOID_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_VOID_after : ebmcodegen::util::ContextBase<Context_Type_VOID_after> {
+    template <typename Result>
+    struct Context_Type_VOID_after : ebmcodegen::util::ContextBase<Context_Type_VOID_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5101,10 +4304,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_VOID_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VOID_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VOID_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5114,28 +4313,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_META {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_META = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_META&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_META(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_META_before : ebmcodegen::util::ContextBase<Context_Type_META_before> {
+    template <typename Result>
+    struct Context_Type_META_before : ebmcodegen::util::ContextBase<Context_Type_META_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_META_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_META_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_META_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_META_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_META_after : ebmcodegen::util::ContextBase<Context_Type_META_after> {
+    template <typename Result>
+    struct Context_Type_META_after : ebmcodegen::util::ContextBase<Context_Type_META_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5143,10 +4336,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_META_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_META_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_META_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5158,14 +4347,11 @@ namespace ebm2c {
         const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_ENUM {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENUM = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENUM&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENUM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;
-    struct Context_Type_ENUM_before : ebmcodegen::util::ContextBase<Context_Type_ENUM_before> {
+    template <typename Result>
+    struct Context_Type_ENUM_before : ebmcodegen::util::ContextBase<Context_Type_ENUM_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5174,14 +4360,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_ENUM_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENUM_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENUM_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENUM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ENUM_after : ebmcodegen::util::ContextBase<Context_Type_ENUM_after> {
+    template <typename Result>
+    struct Context_Type_ENUM_after : ebmcodegen::util::ContextBase<Context_Type_ENUM_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5191,10 +4374,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_ENUM_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENUM_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENUM_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5207,14 +4386,11 @@ namespace ebm2c {
         const ebm::Varint& length;
     };
     struct VisitorTag_Type_ARRAY {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ARRAY = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ARRAY&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ARRAY(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
-    struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before> {
+    template <typename Result>
+    struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5224,14 +4400,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_ARRAY_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ARRAY_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ARRAY_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after> {
+    template <typename Result>
+    struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5242,10 +4415,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_ARRAY_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ARRAY_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ARRAY_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5256,14 +4425,11 @@ namespace ebm2c {
         const ebm::TypeRef& element_type;
     };
     struct VisitorTag_Type_VECTOR {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VECTOR = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VECTOR&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VECTOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;
-    struct Context_Type_VECTOR_before : ebmcodegen::util::ContextBase<Context_Type_VECTOR_before> {
+    template <typename Result>
+    struct Context_Type_VECTOR_before : ebmcodegen::util::ContextBase<Context_Type_VECTOR_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5271,14 +4437,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_VECTOR_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VECTOR_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VECTOR_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VECTOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_VECTOR_after : ebmcodegen::util::ContextBase<Context_Type_VECTOR_after> {
+    template <typename Result>
+    struct Context_Type_VECTOR_after : ebmcodegen::util::ContextBase<Context_Type_VECTOR_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5287,10 +4450,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_VECTOR_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VECTOR_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VECTOR_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5301,14 +4460,11 @@ namespace ebm2c {
         const ebm::VariantDesc& variant_desc;
     };
     struct VisitorTag_Type_VARIANT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VARIANT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VARIANT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VARIANT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;
-    struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before> {
+    template <typename Result>
+    struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5316,14 +4472,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_VARIANT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VARIANT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VARIANT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after> {
+    template <typename Result>
+    struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5332,10 +4485,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_VARIANT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_VARIANT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_VARIANT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5346,14 +4495,11 @@ namespace ebm2c {
         const ebm::TypeRef& base_type;
     };
     struct VisitorTag_Type_RANGE {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_RANGE = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_RANGE&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;
-    struct Context_Type_RANGE_before : ebmcodegen::util::ContextBase<Context_Type_RANGE_before> {
+    template <typename Result>
+    struct Context_Type_RANGE_before : ebmcodegen::util::ContextBase<Context_Type_RANGE_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5361,14 +4507,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_RANGE_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_RANGE_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_RANGE_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_RANGE_after : ebmcodegen::util::ContextBase<Context_Type_RANGE_after> {
+    template <typename Result>
+    struct Context_Type_RANGE_after : ebmcodegen::util::ContextBase<Context_Type_RANGE_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5377,10 +4520,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_RANGE_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_RANGE_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_RANGE_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5390,28 +4529,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_ENCODER_RETURN {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENCODER_RETURN = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENCODER_RETURN&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENCODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_ENCODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_before> {
+    template <typename Result>
+    struct Context_Type_ENCODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_ENCODER_RETURN_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENCODER_RETURN_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENCODER_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ENCODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_after> {
+    template <typename Result>
+    struct Context_Type_ENCODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5419,10 +4552,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_ENCODER_RETURN_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENCODER_RETURN_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENCODER_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5432,28 +4561,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_DECODER_RETURN {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_DECODER_RETURN = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_DECODER_RETURN&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_DECODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_DECODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_before> {
+    template <typename Result>
+    struct Context_Type_DECODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_DECODER_RETURN_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_DECODER_RETURN_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_DECODER_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_DECODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_after> {
+    template <typename Result>
+    struct Context_Type_DECODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5461,10 +4584,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_DECODER_RETURN_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_DECODER_RETURN_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_DECODER_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5474,28 +4593,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_ENCODER_INPUT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENCODER_INPUT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENCODER_INPUT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENCODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_ENCODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_before> {
+    template <typename Result>
+    struct Context_Type_ENCODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_ENCODER_INPUT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENCODER_INPUT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENCODER_INPUT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ENCODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_after> {
+    template <typename Result>
+    struct Context_Type_ENCODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5503,10 +4616,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_ENCODER_INPUT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_ENCODER_INPUT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_ENCODER_INPUT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5516,28 +4625,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_DECODER_INPUT {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_DECODER_INPUT = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_DECODER_INPUT&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_DECODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_DECODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_before> {
+    template <typename Result>
+    struct Context_Type_DECODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_DECODER_INPUT_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_DECODER_INPUT_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_DECODER_INPUT_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_DECODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_after> {
+    template <typename Result>
+    struct Context_Type_DECODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5545,10 +4648,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_DECODER_INPUT_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_DECODER_INPUT_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_DECODER_INPUT_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5558,28 +4657,22 @@ namespace ebm2c {
         const ebm::TypeKind& kind;
     };
     struct VisitorTag_Type_PROPERTY_SETTER_RETURN {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_PROPERTY_SETTER_RETURN = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_PROPERTY_SETTER_RETURN&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_PROPERTY_SETTER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_before> {
+    template <typename Result>
+    struct Context_Type_PROPERTY_SETTER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_PROPERTY_SETTER_RETURN_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_PROPERTY_SETTER_RETURN_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_PROPERTY_SETTER_RETURN_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_PROPERTY_SETTER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_after> {
+    template <typename Result>
+    struct Context_Type_PROPERTY_SETTER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5587,10 +4680,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_PROPERTY_SETTER_RETURN_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_PROPERTY_SETTER_RETURN_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_PROPERTY_SETTER_RETURN_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5601,14 +4690,11 @@ namespace ebm2c {
         const ebm::TypeRef& inner_type;
     };
     struct VisitorTag_Type_OPTIONAL {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_OPTIONAL = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_OPTIONAL&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_OPTIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;
-    struct Context_Type_OPTIONAL_before : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_before> {
+    template <typename Result>
+    struct Context_Type_OPTIONAL_before : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5616,14 +4702,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_OPTIONAL_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_OPTIONAL_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_OPTIONAL_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_OPTIONAL_after : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_after> {
+    template <typename Result>
+    struct Context_Type_OPTIONAL_after : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5632,10 +4715,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_OPTIONAL_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_OPTIONAL_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_OPTIONAL_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5646,14 +4725,11 @@ namespace ebm2c {
         const ebm::TypeRef& pointee_type;
     };
     struct VisitorTag_Type_PTR {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_PTR = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_PTR&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_PTR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;
-    struct Context_Type_PTR_before : ebmcodegen::util::ContextBase<Context_Type_PTR_before> {
+    template <typename Result>
+    struct Context_Type_PTR_before : ebmcodegen::util::ContextBase<Context_Type_PTR_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5661,14 +4737,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_PTR_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_PTR_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_PTR_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_PTR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_PTR_after : ebmcodegen::util::ContextBase<Context_Type_PTR_after> {
+    template <typename Result>
+    struct Context_Type_PTR_after : ebmcodegen::util::ContextBase<Context_Type_PTR_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5677,10 +4750,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_PTR_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_PTR_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_PTR_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5691,14 +4760,11 @@ namespace ebm2c {
         const ebm::FuncTypeDesc& func_desc;
     };
     struct VisitorTag_Type_FUNCTION {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_FUNCTION = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_FUNCTION&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;
-    struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before> {
+    template <typename Result>
+    struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5706,14 +4772,11 @@ namespace ebm2c {
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_FUNCTION_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_FUNCTION_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_FUNCTION_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after> {
+    template <typename Result>
+    struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after<Result>> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5722,10 +4785,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_FUNCTION_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_FUNCTION_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_FUNCTION_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5735,28 +4794,22 @@ namespace ebm2c {
         ebm::TypeRef alias_ref;
     };
     struct VisitorTag_Type {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
-    struct Context_Type_before : ebmcodegen::util::ContextBase<Context_Type_before> {
+    template <typename Result>
+    struct Context_Type_before : ebmcodegen::util::ContextBase<Context_Type_before<Result>> {
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_after : ebmcodegen::util::ContextBase<Context_Type_after> {
+    template <typename Result>
+    struct Context_Type_after : ebmcodegen::util::ContextBase<Context_Type_after<Result>> {
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -5764,10 +4817,6 @@ namespace ebm2c {
         expected<Result>& result;
     };
     struct VisitorTag_Type_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Type_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Type_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
@@ -5776,670 +4825,660 @@ namespace ebm2c {
         const ebm::Types& in;
     };
     struct VisitorTag_Types {};
-    template<typename VisitorImpl>
-    concept has_visitor_Types = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Types&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPES(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
-    struct Context_Types_before : ebmcodegen::util::ContextBase<Context_Types_before> {
+    template <typename Result>
+    struct Context_Types_before : ebmcodegen::util::ContextBase<Context_Types_before<Result>> {
         BaseVisitor& visitor;
         const ebm::Types& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Types_before {};
-    template<typename VisitorImpl>
-    concept has_visitor_Types_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Types_before&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
-    struct Context_Types_after : ebmcodegen::util::ContextBase<Context_Types_after> {
+    template <typename Result>
+    struct Context_Types_after : ebmcodegen::util::ContextBase<Context_Types_after<Result>> {
         BaseVisitor& visitor;
         const ebm::Types& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_Types_after {};
-    template<typename VisitorImpl>
-    concept has_visitor_Types_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_Types_after&>()) } -> std::convertible_to<expected<Result>>;
-    };
     // Deconstruct context fields
     #define EBM2C_DECONSTRUCT_TYPES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     #define EBM2C_CODEGEN_VISITOR_entry ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_entry>>
     #define EBM2C_CODEGEN_CONTEXT_entry ebm2c::Context_entry
     #define EBM2C_CODEGEN_VISITOR_entry_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_entry_before>>
-    #define EBM2C_CODEGEN_CONTEXT_entry_before ebm2c::Context_entry_before
+    #define EBM2C_CODEGEN_CONTEXT_entry_before ebm2c::Context_entry_before<Result>
     #define EBM2C_CODEGEN_VISITOR_entry_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_entry_after>>
-    #define EBM2C_CODEGEN_CONTEXT_entry_after ebm2c::Context_entry_after
+    #define EBM2C_CODEGEN_CONTEXT_entry_after ebm2c::Context_entry_after<Result>
     #define EBM2C_CODEGEN_VISITOR_pre_visitor ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_pre_visitor>>
     #define EBM2C_CODEGEN_CONTEXT_pre_visitor ebm2c::Context_pre_visitor
     #define EBM2C_CODEGEN_VISITOR_pre_visitor_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_pre_visitor_before>>
-    #define EBM2C_CODEGEN_CONTEXT_pre_visitor_before ebm2c::Context_pre_visitor_before
+    #define EBM2C_CODEGEN_CONTEXT_pre_visitor_before ebm2c::Context_pre_visitor_before<Result>
     #define EBM2C_CODEGEN_VISITOR_pre_visitor_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_pre_visitor_after>>
-    #define EBM2C_CODEGEN_CONTEXT_pre_visitor_after ebm2c::Context_pre_visitor_after
+    #define EBM2C_CODEGEN_CONTEXT_pre_visitor_after ebm2c::Context_pre_visitor_after<Result>
     #define EBM2C_CODEGEN_VISITOR_post_entry ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_post_entry>>
-    #define EBM2C_CODEGEN_CONTEXT_post_entry ebm2c::Context_post_entry
+    #define EBM2C_CODEGEN_CONTEXT_post_entry ebm2c::Context_post_entry<Result>
     #define EBM2C_CODEGEN_VISITOR_post_entry_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_post_entry_before>>
-    #define EBM2C_CODEGEN_CONTEXT_post_entry_before ebm2c::Context_post_entry_before
+    #define EBM2C_CODEGEN_CONTEXT_post_entry_before ebm2c::Context_post_entry_before<Result>
     #define EBM2C_CODEGEN_VISITOR_post_entry_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_post_entry_after>>
-    #define EBM2C_CODEGEN_CONTEXT_post_entry_after ebm2c::Context_post_entry_after
+    #define EBM2C_CODEGEN_CONTEXT_post_entry_after ebm2c::Context_post_entry_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_BLOCK ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_BLOCK>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_BLOCK ebm2c::Context_Statement_BLOCK
     #define EBM2C_CODEGEN_VISITOR_Statement_BLOCK_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_BLOCK_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_BLOCK_before ebm2c::Context_Statement_BLOCK_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_BLOCK_before ebm2c::Context_Statement_BLOCK_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_BLOCK_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_BLOCK_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_BLOCK_after ebm2c::Context_Statement_BLOCK_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_BLOCK_after ebm2c::Context_Statement_BLOCK_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ASSIGNMENT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ASSIGNMENT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ASSIGNMENT ebm2c::Context_Statement_ASSIGNMENT
     #define EBM2C_CODEGEN_VISITOR_Statement_ASSIGNMENT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ASSIGNMENT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSIGNMENT_before ebm2c::Context_Statement_ASSIGNMENT_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSIGNMENT_before ebm2c::Context_Statement_ASSIGNMENT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ASSIGNMENT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ASSIGNMENT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSIGNMENT_after ebm2c::Context_Statement_ASSIGNMENT_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSIGNMENT_after ebm2c::Context_Statement_ASSIGNMENT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_YIELD ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_YIELD>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_YIELD ebm2c::Context_Statement_YIELD
     #define EBM2C_CODEGEN_VISITOR_Statement_YIELD_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_YIELD_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_YIELD_before ebm2c::Context_Statement_YIELD_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_YIELD_before ebm2c::Context_Statement_YIELD_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_YIELD_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_YIELD_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_YIELD_after ebm2c::Context_Statement_YIELD_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_YIELD_after ebm2c::Context_Statement_YIELD_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_APPEND ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_APPEND>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_APPEND ebm2c::Context_Statement_APPEND
     #define EBM2C_CODEGEN_VISITOR_Statement_APPEND_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_APPEND_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_APPEND_before ebm2c::Context_Statement_APPEND_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_APPEND_before ebm2c::Context_Statement_APPEND_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_APPEND_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_APPEND_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_APPEND_after ebm2c::Context_Statement_APPEND_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_APPEND_after ebm2c::Context_Statement_APPEND_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_RETURN ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RETURN>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_RETURN ebm2c::Context_Statement_RETURN
     #define EBM2C_CODEGEN_VISITOR_Statement_RETURN_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RETURN_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_RETURN_before ebm2c::Context_Statement_RETURN_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RETURN_before ebm2c::Context_Statement_RETURN_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_RETURN_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RETURN_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_RETURN_after ebm2c::Context_Statement_RETURN_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RETURN_after ebm2c::Context_Statement_RETURN_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ERROR_RETURN ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ERROR_RETURN>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_RETURN ebm2c::Context_Statement_ERROR_RETURN
     #define EBM2C_CODEGEN_VISITOR_Statement_ERROR_RETURN_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ERROR_RETURN_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_RETURN_before ebm2c::Context_Statement_ERROR_RETURN_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_RETURN_before ebm2c::Context_Statement_ERROR_RETURN_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ERROR_RETURN_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ERROR_RETURN_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_RETURN_after ebm2c::Context_Statement_ERROR_RETURN_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_RETURN_after ebm2c::Context_Statement_ERROR_RETURN_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ASSERT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ASSERT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ASSERT ebm2c::Context_Statement_ASSERT
     #define EBM2C_CODEGEN_VISITOR_Statement_ASSERT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ASSERT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSERT_before ebm2c::Context_Statement_ASSERT_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSERT_before ebm2c::Context_Statement_ASSERT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ASSERT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ASSERT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSERT_after ebm2c::Context_Statement_ASSERT_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ASSERT_after ebm2c::Context_Statement_ASSERT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_READ_DATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_READ_DATA>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_READ_DATA ebm2c::Context_Statement_READ_DATA
     #define EBM2C_CODEGEN_VISITOR_Statement_READ_DATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_READ_DATA_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_READ_DATA_before ebm2c::Context_Statement_READ_DATA_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_READ_DATA_before ebm2c::Context_Statement_READ_DATA_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_READ_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_READ_DATA_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_READ_DATA_after ebm2c::Context_Statement_READ_DATA_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_READ_DATA_after ebm2c::Context_Statement_READ_DATA_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_WRITE_DATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_WRITE_DATA>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA ebm2c::Context_Statement_WRITE_DATA
     #define EBM2C_CODEGEN_VISITOR_Statement_WRITE_DATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_WRITE_DATA_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2c::Context_Statement_WRITE_DATA_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2c::Context_Statement_WRITE_DATA_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_WRITE_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_WRITE_DATA_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2c::Context_Statement_WRITE_DATA_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2c::Context_Statement_WRITE_DATA_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_RESERVE_DATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RESERVE_DATA>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA ebm2c::Context_Statement_RESERVE_DATA
     #define EBM2C_CODEGEN_VISITOR_Statement_RESERVE_DATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RESERVE_DATA_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA_before ebm2c::Context_Statement_RESERVE_DATA_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA_before ebm2c::Context_Statement_RESERVE_DATA_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_RESERVE_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_RESERVE_DATA_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA_after ebm2c::Context_Statement_RESERVE_DATA_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_RESERVE_DATA_after ebm2c::Context_Statement_RESERVE_DATA_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_IF_STATEMENT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IF_STATEMENT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_IF_STATEMENT ebm2c::Context_Statement_IF_STATEMENT
     #define EBM2C_CODEGEN_VISITOR_Statement_IF_STATEMENT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IF_STATEMENT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_IF_STATEMENT_before ebm2c::Context_Statement_IF_STATEMENT_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_IF_STATEMENT_before ebm2c::Context_Statement_IF_STATEMENT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_IF_STATEMENT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IF_STATEMENT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_IF_STATEMENT_after ebm2c::Context_Statement_IF_STATEMENT_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_IF_STATEMENT_after ebm2c::Context_Statement_IF_STATEMENT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_LOOP_STATEMENT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_LOOP_STATEMENT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT ebm2c::Context_Statement_LOOP_STATEMENT
     #define EBM2C_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_LOOP_STATEMENT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_before ebm2c::Context_Statement_LOOP_STATEMENT_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_before ebm2c::Context_Statement_LOOP_STATEMENT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_LOOP_STATEMENT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_after ebm2c::Context_Statement_LOOP_STATEMENT_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_after ebm2c::Context_Statement_LOOP_STATEMENT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_MATCH_STATEMENT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_MATCH_STATEMENT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT ebm2c::Context_Statement_MATCH_STATEMENT
     #define EBM2C_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_MATCH_STATEMENT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_before ebm2c::Context_Statement_MATCH_STATEMENT_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_before ebm2c::Context_Statement_MATCH_STATEMENT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_MATCH_STATEMENT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_after ebm2c::Context_Statement_MATCH_STATEMENT_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_after ebm2c::Context_Statement_MATCH_STATEMENT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_MATCH_BRANCH ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_MATCH_BRANCH>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_BRANCH ebm2c::Context_Statement_MATCH_BRANCH
     #define EBM2C_CODEGEN_VISITOR_Statement_MATCH_BRANCH_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_MATCH_BRANCH_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_before ebm2c::Context_Statement_MATCH_BRANCH_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_before ebm2c::Context_Statement_MATCH_BRANCH_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_MATCH_BRANCH_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_MATCH_BRANCH_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_after ebm2c::Context_Statement_MATCH_BRANCH_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_after ebm2c::Context_Statement_MATCH_BRANCH_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_BREAK ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_BREAK>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_BREAK ebm2c::Context_Statement_BREAK
     #define EBM2C_CODEGEN_VISITOR_Statement_BREAK_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_BREAK_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_BREAK_before ebm2c::Context_Statement_BREAK_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_BREAK_before ebm2c::Context_Statement_BREAK_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_BREAK_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_BREAK_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_BREAK_after ebm2c::Context_Statement_BREAK_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_BREAK_after ebm2c::Context_Statement_BREAK_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_CONTINUE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_CONTINUE>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_CONTINUE ebm2c::Context_Statement_CONTINUE
     #define EBM2C_CODEGEN_VISITOR_Statement_CONTINUE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_CONTINUE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_CONTINUE_before ebm2c::Context_Statement_CONTINUE_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_CONTINUE_before ebm2c::Context_Statement_CONTINUE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_CONTINUE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_CONTINUE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_CONTINUE_after ebm2c::Context_Statement_CONTINUE_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_CONTINUE_after ebm2c::Context_Statement_CONTINUE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_FUNCTION_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_FUNCTION_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_FUNCTION_DECL ebm2c::Context_Statement_FUNCTION_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_FUNCTION_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_FUNCTION_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_before ebm2c::Context_Statement_FUNCTION_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_before ebm2c::Context_Statement_FUNCTION_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_FUNCTION_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_FUNCTION_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_after ebm2c::Context_Statement_FUNCTION_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_after ebm2c::Context_Statement_FUNCTION_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_VARIABLE_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_VARIABLE_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_VARIABLE_DECL ebm2c::Context_Statement_VARIABLE_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_VARIABLE_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_VARIABLE_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_before ebm2c::Context_Statement_VARIABLE_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_before ebm2c::Context_Statement_VARIABLE_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_VARIABLE_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_VARIABLE_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_after ebm2c::Context_Statement_VARIABLE_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_after ebm2c::Context_Statement_VARIABLE_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PARAMETER_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PARAMETER_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_PARAMETER_DECL ebm2c::Context_Statement_PARAMETER_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_PARAMETER_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PARAMETER_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_before ebm2c::Context_Statement_PARAMETER_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_before ebm2c::Context_Statement_PARAMETER_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PARAMETER_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PARAMETER_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_after ebm2c::Context_Statement_PARAMETER_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_after ebm2c::Context_Statement_PARAMETER_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_FIELD_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_FIELD_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_FIELD_DECL ebm2c::Context_Statement_FIELD_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_FIELD_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_FIELD_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_FIELD_DECL_before ebm2c::Context_Statement_FIELD_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_FIELD_DECL_before ebm2c::Context_Statement_FIELD_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_FIELD_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_FIELD_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_FIELD_DECL_after ebm2c::Context_Statement_FIELD_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_FIELD_DECL_after ebm2c::Context_Statement_FIELD_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_COMPOSITE_FIELD_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL ebm2c::Context_Statement_COMPOSITE_FIELD_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_before ebm2c::Context_Statement_COMPOSITE_FIELD_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_before ebm2c::Context_Statement_COMPOSITE_FIELD_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_after ebm2c::Context_Statement_COMPOSITE_FIELD_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_after ebm2c::Context_Statement_COMPOSITE_FIELD_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ENUM_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENUM_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_DECL ebm2c::Context_Statement_ENUM_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_ENUM_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENUM_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_DECL_before ebm2c::Context_Statement_ENUM_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_DECL_before ebm2c::Context_Statement_ENUM_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ENUM_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENUM_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_DECL_after ebm2c::Context_Statement_ENUM_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_DECL_after ebm2c::Context_Statement_ENUM_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENUM_MEMBER_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL ebm2c::Context_Statement_ENUM_MEMBER_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENUM_MEMBER_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_before ebm2c::Context_Statement_ENUM_MEMBER_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_before ebm2c::Context_Statement_ENUM_MEMBER_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENUM_MEMBER_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_after ebm2c::Context_Statement_ENUM_MEMBER_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_after ebm2c::Context_Statement_ENUM_MEMBER_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_STRUCT_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_STRUCT_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_STRUCT_DECL ebm2c::Context_Statement_STRUCT_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_STRUCT_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_STRUCT_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_STRUCT_DECL_before ebm2c::Context_Statement_STRUCT_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_STRUCT_DECL_before ebm2c::Context_Statement_STRUCT_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_STRUCT_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_STRUCT_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_STRUCT_DECL_after ebm2c::Context_Statement_STRUCT_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_STRUCT_DECL_after ebm2c::Context_Statement_STRUCT_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_UNION_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_UNION_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_DECL ebm2c::Context_Statement_UNION_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_UNION_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_UNION_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_DECL_before ebm2c::Context_Statement_UNION_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_DECL_before ebm2c::Context_Statement_UNION_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_UNION_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_UNION_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_DECL_after ebm2c::Context_Statement_UNION_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_DECL_after ebm2c::Context_Statement_UNION_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_UNION_MEMBER_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL ebm2c::Context_Statement_UNION_MEMBER_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_UNION_MEMBER_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_before ebm2c::Context_Statement_UNION_MEMBER_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_before ebm2c::Context_Statement_UNION_MEMBER_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_UNION_MEMBER_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_after ebm2c::Context_Statement_UNION_MEMBER_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_after ebm2c::Context_Statement_UNION_MEMBER_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PROGRAM_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROGRAM_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_PROGRAM_DECL ebm2c::Context_Statement_PROGRAM_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_PROGRAM_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROGRAM_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_before ebm2c::Context_Statement_PROGRAM_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_before ebm2c::Context_Statement_PROGRAM_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PROGRAM_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROGRAM_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_after ebm2c::Context_Statement_PROGRAM_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_after ebm2c::Context_Statement_PROGRAM_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PROPERTY_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROPERTY_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_DECL ebm2c::Context_Statement_PROPERTY_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_PROPERTY_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROPERTY_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_before ebm2c::Context_Statement_PROPERTY_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_before ebm2c::Context_Statement_PROPERTY_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PROPERTY_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROPERTY_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_after ebm2c::Context_Statement_PROPERTY_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_after ebm2c::Context_Statement_PROPERTY_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROPERTY_MEMBER_DECL>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL ebm2c::Context_Statement_PROPERTY_MEMBER_DECL
     #define EBM2C_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_before ebm2c::Context_Statement_PROPERTY_MEMBER_DECL_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_before ebm2c::Context_Statement_PROPERTY_MEMBER_DECL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_after ebm2c::Context_Statement_PROPERTY_MEMBER_DECL_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_after ebm2c::Context_Statement_PROPERTY_MEMBER_DECL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_METADATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_METADATA>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_METADATA ebm2c::Context_Statement_METADATA
     #define EBM2C_CODEGEN_VISITOR_Statement_METADATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_METADATA_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_METADATA_before ebm2c::Context_Statement_METADATA_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_METADATA_before ebm2c::Context_Statement_METADATA_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_METADATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_METADATA_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_METADATA_after ebm2c::Context_Statement_METADATA_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_METADATA_after ebm2c::Context_Statement_METADATA_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_IMPORT_MODULE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IMPORT_MODULE>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_IMPORT_MODULE ebm2c::Context_Statement_IMPORT_MODULE
     #define EBM2C_CODEGEN_VISITOR_Statement_IMPORT_MODULE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IMPORT_MODULE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_before ebm2c::Context_Statement_IMPORT_MODULE_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_before ebm2c::Context_Statement_IMPORT_MODULE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_IMPORT_MODULE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_IMPORT_MODULE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_after ebm2c::Context_Statement_IMPORT_MODULE_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_after ebm2c::Context_Statement_IMPORT_MODULE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_EXPRESSION ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_EXPRESSION>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_EXPRESSION ebm2c::Context_Statement_EXPRESSION
     #define EBM2C_CODEGEN_VISITOR_Statement_EXPRESSION_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_EXPRESSION_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_EXPRESSION_before ebm2c::Context_Statement_EXPRESSION_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_EXPRESSION_before ebm2c::Context_Statement_EXPRESSION_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_EXPRESSION_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_EXPRESSION_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_EXPRESSION_after ebm2c::Context_Statement_EXPRESSION_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_EXPRESSION_after ebm2c::Context_Statement_EXPRESSION_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ERROR_REPORT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ERROR_REPORT>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_REPORT ebm2c::Context_Statement_ERROR_REPORT
     #define EBM2C_CODEGEN_VISITOR_Statement_ERROR_REPORT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ERROR_REPORT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_REPORT_before ebm2c::Context_Statement_ERROR_REPORT_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_REPORT_before ebm2c::Context_Statement_ERROR_REPORT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ERROR_REPORT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ERROR_REPORT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_REPORT_after ebm2c::Context_Statement_ERROR_REPORT_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ERROR_REPORT_after ebm2c::Context_Statement_ERROR_REPORT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_LOWERED_IO_STATEMENTS>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS ebm2c::Context_Statement_LOWERED_IO_STATEMENTS
     #define EBM2C_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_before ebm2c::Context_Statement_LOWERED_IO_STATEMENTS_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_before ebm2c::Context_Statement_LOWERED_IO_STATEMENTS_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_after ebm2c::Context_Statement_LOWERED_IO_STATEMENTS_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_after ebm2c::Context_Statement_LOWERED_IO_STATEMENTS_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_SUB_BYTE_RANGE>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE ebm2c::Context_Statement_SUB_BYTE_RANGE
     #define EBM2C_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_SUB_BYTE_RANGE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_before ebm2c::Context_Statement_SUB_BYTE_RANGE_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_before ebm2c::Context_Statement_SUB_BYTE_RANGE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_SUB_BYTE_RANGE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_after ebm2c::Context_Statement_SUB_BYTE_RANGE_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_after ebm2c::Context_Statement_SUB_BYTE_RANGE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_INIT_CHECK ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_INIT_CHECK>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_INIT_CHECK ebm2c::Context_Statement_INIT_CHECK
     #define EBM2C_CODEGEN_VISITOR_Statement_INIT_CHECK_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_INIT_CHECK_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_INIT_CHECK_before ebm2c::Context_Statement_INIT_CHECK_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_INIT_CHECK_before ebm2c::Context_Statement_INIT_CHECK_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_INIT_CHECK_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_INIT_CHECK_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_INIT_CHECK_after ebm2c::Context_Statement_INIT_CHECK_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_INIT_CHECK_after ebm2c::Context_Statement_INIT_CHECK_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENDIAN_VARIABLE>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE ebm2c::Context_Statement_ENDIAN_VARIABLE
     #define EBM2C_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENDIAN_VARIABLE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2c::Context_Statement_ENDIAN_VARIABLE_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2c::Context_Statement_ENDIAN_VARIABLE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2c::Context_Statement_ENDIAN_VARIABLE_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2c::Context_Statement_ENDIAN_VARIABLE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement>>
     #define EBM2C_CODEGEN_CONTEXT_Statement_dispatch ebm2c::Context_Statement
     #define EBM2C_CODEGEN_VISITOR_Statement_before_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_before_dispatch ebm2c::Context_Statement_before
+    #define EBM2C_CODEGEN_CONTEXT_Statement_before_dispatch ebm2c::Context_Statement_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Statement_after_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Statement_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Statement_after_dispatch ebm2c::Context_Statement_after
+    #define EBM2C_CODEGEN_CONTEXT_Statement_after_dispatch ebm2c::Context_Statement_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Block ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Block>>
     #define EBM2C_CODEGEN_CONTEXT_Block ebm2c::Context_Block
     #define EBM2C_CODEGEN_VISITOR_Block_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Block_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Block_before ebm2c::Context_Block_before
+    #define EBM2C_CODEGEN_CONTEXT_Block_before ebm2c::Context_Block_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Block_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Block_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Block_after ebm2c::Context_Block_after
+    #define EBM2C_CODEGEN_CONTEXT_Block_after ebm2c::Context_Block_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_INT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_INT>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT ebm2c::Context_Expression_LITERAL_INT
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_INT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_INT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT_before ebm2c::Context_Expression_LITERAL_INT_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT_before ebm2c::Context_Expression_LITERAL_INT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_INT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_INT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT_after ebm2c::Context_Expression_LITERAL_INT_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT_after ebm2c::Context_Expression_LITERAL_INT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_INT64 ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_INT64>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT64 ebm2c::Context_Expression_LITERAL_INT64
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_INT64_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_INT64_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT64_before ebm2c::Context_Expression_LITERAL_INT64_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT64_before ebm2c::Context_Expression_LITERAL_INT64_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_INT64_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_INT64_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT64_after ebm2c::Context_Expression_LITERAL_INT64_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_INT64_after ebm2c::Context_Expression_LITERAL_INT64_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_BOOL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_BOOL>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_BOOL ebm2c::Context_Expression_LITERAL_BOOL
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_BOOL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_BOOL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_before ebm2c::Context_Expression_LITERAL_BOOL_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_before ebm2c::Context_Expression_LITERAL_BOOL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_BOOL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_BOOL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_after ebm2c::Context_Expression_LITERAL_BOOL_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_after ebm2c::Context_Expression_LITERAL_BOOL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_STRING ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_STRING>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_STRING ebm2c::Context_Expression_LITERAL_STRING
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_STRING_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_STRING_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_STRING_before ebm2c::Context_Expression_LITERAL_STRING_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_STRING_before ebm2c::Context_Expression_LITERAL_STRING_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_STRING_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_STRING_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_STRING_after ebm2c::Context_Expression_LITERAL_STRING_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_STRING_after ebm2c::Context_Expression_LITERAL_STRING_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_TYPE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_TYPE>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_TYPE ebm2c::Context_Expression_LITERAL_TYPE
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_TYPE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_TYPE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_before ebm2c::Context_Expression_LITERAL_TYPE_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_before ebm2c::Context_Expression_LITERAL_TYPE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_TYPE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_TYPE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_after ebm2c::Context_Expression_LITERAL_TYPE_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_after ebm2c::Context_Expression_LITERAL_TYPE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_CHAR ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_CHAR>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_CHAR ebm2c::Context_Expression_LITERAL_CHAR
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_CHAR_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_CHAR_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_before ebm2c::Context_Expression_LITERAL_CHAR_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_before ebm2c::Context_Expression_LITERAL_CHAR_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_LITERAL_CHAR_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_LITERAL_CHAR_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_after ebm2c::Context_Expression_LITERAL_CHAR_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_after ebm2c::Context_Expression_LITERAL_CHAR_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_IDENTIFIER ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IDENTIFIER>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_IDENTIFIER ebm2c::Context_Expression_IDENTIFIER
     #define EBM2C_CODEGEN_VISITOR_Expression_IDENTIFIER_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IDENTIFIER_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_IDENTIFIER_before ebm2c::Context_Expression_IDENTIFIER_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_IDENTIFIER_before ebm2c::Context_Expression_IDENTIFIER_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_IDENTIFIER_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IDENTIFIER_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_IDENTIFIER_after ebm2c::Context_Expression_IDENTIFIER_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_IDENTIFIER_after ebm2c::Context_Expression_IDENTIFIER_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_BINARY_OP ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_BINARY_OP>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_BINARY_OP ebm2c::Context_Expression_BINARY_OP
     #define EBM2C_CODEGEN_VISITOR_Expression_BINARY_OP_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_BINARY_OP_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_BINARY_OP_before ebm2c::Context_Expression_BINARY_OP_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_BINARY_OP_before ebm2c::Context_Expression_BINARY_OP_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_BINARY_OP_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_BINARY_OP_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_BINARY_OP_after ebm2c::Context_Expression_BINARY_OP_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_BINARY_OP_after ebm2c::Context_Expression_BINARY_OP_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_UNARY_OP ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_UNARY_OP>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_UNARY_OP ebm2c::Context_Expression_UNARY_OP
     #define EBM2C_CODEGEN_VISITOR_Expression_UNARY_OP_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_UNARY_OP_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_UNARY_OP_before ebm2c::Context_Expression_UNARY_OP_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_UNARY_OP_before ebm2c::Context_Expression_UNARY_OP_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_UNARY_OP_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_UNARY_OP_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_UNARY_OP_after ebm2c::Context_Expression_UNARY_OP_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_UNARY_OP_after ebm2c::Context_Expression_UNARY_OP_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CALL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CALL>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_CALL ebm2c::Context_Expression_CALL
     #define EBM2C_CODEGEN_VISITOR_Expression_CALL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CALL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CALL_before ebm2c::Context_Expression_CALL_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CALL_before ebm2c::Context_Expression_CALL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CALL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CALL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CALL_after ebm2c::Context_Expression_CALL_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CALL_after ebm2c::Context_Expression_CALL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_INDEX_ACCESS ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_INDEX_ACCESS>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_INDEX_ACCESS ebm2c::Context_Expression_INDEX_ACCESS
     #define EBM2C_CODEGEN_VISITOR_Expression_INDEX_ACCESS_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_INDEX_ACCESS_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_before ebm2c::Context_Expression_INDEX_ACCESS_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_before ebm2c::Context_Expression_INDEX_ACCESS_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_INDEX_ACCESS_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_INDEX_ACCESS_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_after ebm2c::Context_Expression_INDEX_ACCESS_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_after ebm2c::Context_Expression_INDEX_ACCESS_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_MEMBER_ACCESS ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_MEMBER_ACCESS>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS ebm2c::Context_Expression_MEMBER_ACCESS
     #define EBM2C_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_MEMBER_ACCESS_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_before ebm2c::Context_Expression_MEMBER_ACCESS_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_before ebm2c::Context_Expression_MEMBER_ACCESS_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_MEMBER_ACCESS_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_after ebm2c::Context_Expression_MEMBER_ACCESS_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_after ebm2c::Context_Expression_MEMBER_ACCESS_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ENUM_MEMBER ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ENUM_MEMBER>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_MEMBER ebm2c::Context_Expression_ENUM_MEMBER
     #define EBM2C_CODEGEN_VISITOR_Expression_ENUM_MEMBER_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ENUM_MEMBER_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_before ebm2c::Context_Expression_ENUM_MEMBER_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_before ebm2c::Context_Expression_ENUM_MEMBER_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ENUM_MEMBER_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ENUM_MEMBER_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_after ebm2c::Context_Expression_ENUM_MEMBER_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_after ebm2c::Context_Expression_ENUM_MEMBER_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_TYPE_CAST ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_TYPE_CAST>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_TYPE_CAST ebm2c::Context_Expression_TYPE_CAST
     #define EBM2C_CODEGEN_VISITOR_Expression_TYPE_CAST_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_TYPE_CAST_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_TYPE_CAST_before ebm2c::Context_Expression_TYPE_CAST_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_TYPE_CAST_before ebm2c::Context_Expression_TYPE_CAST_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_TYPE_CAST_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_TYPE_CAST_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_TYPE_CAST_after ebm2c::Context_Expression_TYPE_CAST_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_TYPE_CAST_after ebm2c::Context_Expression_TYPE_CAST_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_RANGE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_RANGE>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_RANGE ebm2c::Context_Expression_RANGE
     #define EBM2C_CODEGEN_VISITOR_Expression_RANGE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_RANGE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_RANGE_before ebm2c::Context_Expression_RANGE_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_RANGE_before ebm2c::Context_Expression_RANGE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_RANGE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_RANGE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_RANGE_after ebm2c::Context_Expression_RANGE_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_RANGE_after ebm2c::Context_Expression_RANGE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_DEFAULT_VALUE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_DEFAULT_VALUE>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE ebm2c::Context_Expression_DEFAULT_VALUE
     #define EBM2C_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_DEFAULT_VALUE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_before ebm2c::Context_Expression_DEFAULT_VALUE_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_before ebm2c::Context_Expression_DEFAULT_VALUE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_DEFAULT_VALUE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_after ebm2c::Context_Expression_DEFAULT_VALUE_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_after ebm2c::Context_Expression_DEFAULT_VALUE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IS_LITTLE_ENDIAN>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN ebm2c::Context_Expression_IS_LITTLE_ENDIAN
     #define EBM2C_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_before ebm2c::Context_Expression_IS_LITTLE_ENDIAN_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_before ebm2c::Context_Expression_IS_LITTLE_ENDIAN_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_after ebm2c::Context_Expression_IS_LITTLE_ENDIAN_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_after ebm2c::Context_Expression_IS_LITTLE_ENDIAN_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_GET_STREAM_OFFSET>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET ebm2c::Context_Expression_GET_STREAM_OFFSET
     #define EBM2C_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_GET_STREAM_OFFSET_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_before ebm2c::Context_Expression_GET_STREAM_OFFSET_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_before ebm2c::Context_Expression_GET_STREAM_OFFSET_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_GET_STREAM_OFFSET_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_after ebm2c::Context_Expression_GET_STREAM_OFFSET_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_after ebm2c::Context_Expression_GET_STREAM_OFFSET_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_GET_REMAINING_BYTES>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES ebm2c::Context_Expression_GET_REMAINING_BYTES
     #define EBM2C_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_GET_REMAINING_BYTES_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_before ebm2c::Context_Expression_GET_REMAINING_BYTES_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_before ebm2c::Context_Expression_GET_REMAINING_BYTES_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_GET_REMAINING_BYTES_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_after ebm2c::Context_Expression_GET_REMAINING_BYTES_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_after ebm2c::Context_Expression_GET_REMAINING_BYTES_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CAN_READ_STREAM ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CAN_READ_STREAM>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM ebm2c::Context_Expression_CAN_READ_STREAM
     #define EBM2C_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CAN_READ_STREAM_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_before ebm2c::Context_Expression_CAN_READ_STREAM_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_before ebm2c::Context_Expression_CAN_READ_STREAM_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CAN_READ_STREAM_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_after ebm2c::Context_Expression_CAN_READ_STREAM_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_after ebm2c::Context_Expression_CAN_READ_STREAM_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ARRAY_SIZE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ARRAY_SIZE>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_ARRAY_SIZE ebm2c::Context_Expression_ARRAY_SIZE
     #define EBM2C_CODEGEN_VISITOR_Expression_ARRAY_SIZE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ARRAY_SIZE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_before ebm2c::Context_Expression_ARRAY_SIZE_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_before ebm2c::Context_Expression_ARRAY_SIZE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ARRAY_SIZE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ARRAY_SIZE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_after ebm2c::Context_Expression_ARRAY_SIZE_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_after ebm2c::Context_Expression_ARRAY_SIZE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ENUM_IS_DEFINED>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED ebm2c::Context_Expression_ENUM_IS_DEFINED
     #define EBM2C_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ENUM_IS_DEFINED_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_before ebm2c::Context_Expression_ENUM_IS_DEFINED_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_before ebm2c::Context_Expression_ENUM_IS_DEFINED_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ENUM_IS_DEFINED_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_after ebm2c::Context_Expression_ENUM_IS_DEFINED_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_after ebm2c::Context_Expression_ENUM_IS_DEFINED_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_IS_ERROR ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IS_ERROR>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_IS_ERROR ebm2c::Context_Expression_IS_ERROR
     #define EBM2C_CODEGEN_VISITOR_Expression_IS_ERROR_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IS_ERROR_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_ERROR_before ebm2c::Context_Expression_IS_ERROR_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_ERROR_before ebm2c::Context_Expression_IS_ERROR_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_IS_ERROR_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_IS_ERROR_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_ERROR_after ebm2c::Context_Expression_IS_ERROR_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_IS_ERROR_after ebm2c::Context_Expression_IS_ERROR_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_MAX_VALUE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_MAX_VALUE>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_MAX_VALUE ebm2c::Context_Expression_MAX_VALUE
     #define EBM2C_CODEGEN_VISITOR_Expression_MAX_VALUE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_MAX_VALUE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_MAX_VALUE_before ebm2c::Context_Expression_MAX_VALUE_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_MAX_VALUE_before ebm2c::Context_Expression_MAX_VALUE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_MAX_VALUE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_MAX_VALUE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_MAX_VALUE_after ebm2c::Context_Expression_MAX_VALUE_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_MAX_VALUE_after ebm2c::Context_Expression_MAX_VALUE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_READ_DATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_READ_DATA>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_READ_DATA ebm2c::Context_Expression_READ_DATA
     #define EBM2C_CODEGEN_VISITOR_Expression_READ_DATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_READ_DATA_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_READ_DATA_before ebm2c::Context_Expression_READ_DATA_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_READ_DATA_before ebm2c::Context_Expression_READ_DATA_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_READ_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_READ_DATA_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_READ_DATA_after ebm2c::Context_Expression_READ_DATA_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_READ_DATA_after ebm2c::Context_Expression_READ_DATA_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_WRITE_DATA ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_WRITE_DATA>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_WRITE_DATA ebm2c::Context_Expression_WRITE_DATA
     #define EBM2C_CODEGEN_VISITOR_Expression_WRITE_DATA_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_WRITE_DATA_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_WRITE_DATA_before ebm2c::Context_Expression_WRITE_DATA_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_WRITE_DATA_before ebm2c::Context_Expression_WRITE_DATA_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_WRITE_DATA_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_WRITE_DATA_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_WRITE_DATA_after ebm2c::Context_Expression_WRITE_DATA_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_WRITE_DATA_after ebm2c::Context_Expression_WRITE_DATA_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CONDITIONAL_STATEMENT>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT ebm2c::Context_Expression_CONDITIONAL_STATEMENT
     #define EBM2C_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_before ebm2c::Context_Expression_CONDITIONAL_STATEMENT_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_before ebm2c::Context_Expression_CONDITIONAL_STATEMENT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_after ebm2c::Context_Expression_CONDITIONAL_STATEMENT_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_after ebm2c::Context_Expression_CONDITIONAL_STATEMENT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CONDITIONAL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CONDITIONAL>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL ebm2c::Context_Expression_CONDITIONAL
     #define EBM2C_CODEGEN_VISITOR_Expression_CONDITIONAL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CONDITIONAL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_before ebm2c::Context_Expression_CONDITIONAL_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_before ebm2c::Context_Expression_CONDITIONAL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_CONDITIONAL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_CONDITIONAL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_after ebm2c::Context_Expression_CONDITIONAL_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_CONDITIONAL_after ebm2c::Context_Expression_CONDITIONAL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_AVAILABLE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_AVAILABLE>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_AVAILABLE ebm2c::Context_Expression_AVAILABLE
     #define EBM2C_CODEGEN_VISITOR_Expression_AVAILABLE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_AVAILABLE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_AVAILABLE_before ebm2c::Context_Expression_AVAILABLE_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_AVAILABLE_before ebm2c::Context_Expression_AVAILABLE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_AVAILABLE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_AVAILABLE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_AVAILABLE_after ebm2c::Context_Expression_AVAILABLE_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_AVAILABLE_after ebm2c::Context_Expression_AVAILABLE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SIZEOF ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SIZEOF>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_SIZEOF ebm2c::Context_Expression_SIZEOF
     #define EBM2C_CODEGEN_VISITOR_Expression_SIZEOF_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SIZEOF_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SIZEOF_before ebm2c::Context_Expression_SIZEOF_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SIZEOF_before ebm2c::Context_Expression_SIZEOF_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SIZEOF_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SIZEOF_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SIZEOF_after ebm2c::Context_Expression_SIZEOF_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SIZEOF_after ebm2c::Context_Expression_SIZEOF_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SUB_RANGE_INIT>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT ebm2c::Context_Expression_SUB_RANGE_INIT
     #define EBM2C_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SUB_RANGE_INIT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_before ebm2c::Context_Expression_SUB_RANGE_INIT_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_before ebm2c::Context_Expression_SUB_RANGE_INIT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SUB_RANGE_INIT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_after ebm2c::Context_Expression_SUB_RANGE_INIT_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_after ebm2c::Context_Expression_SUB_RANGE_INIT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_OR_COND ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_OR_COND>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_OR_COND ebm2c::Context_Expression_OR_COND
     #define EBM2C_CODEGEN_VISITOR_Expression_OR_COND_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_OR_COND_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_OR_COND_before ebm2c::Context_Expression_OR_COND_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_OR_COND_before ebm2c::Context_Expression_OR_COND_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_OR_COND_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_OR_COND_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_OR_COND_after ebm2c::Context_Expression_OR_COND_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_OR_COND_after ebm2c::Context_Expression_OR_COND_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ADDRESS_OF ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ADDRESS_OF>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_ADDRESS_OF ebm2c::Context_Expression_ADDRESS_OF
     #define EBM2C_CODEGEN_VISITOR_Expression_ADDRESS_OF_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ADDRESS_OF_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ADDRESS_OF_before ebm2c::Context_Expression_ADDRESS_OF_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ADDRESS_OF_before ebm2c::Context_Expression_ADDRESS_OF_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_ADDRESS_OF_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_ADDRESS_OF_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_ADDRESS_OF_after ebm2c::Context_Expression_ADDRESS_OF_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_ADDRESS_OF_after ebm2c::Context_Expression_ADDRESS_OF_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_OPTIONAL_OF ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_OPTIONAL_OF>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_OPTIONAL_OF ebm2c::Context_Expression_OPTIONAL_OF
     #define EBM2C_CODEGEN_VISITOR_Expression_OPTIONAL_OF_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_OPTIONAL_OF_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_before ebm2c::Context_Expression_OPTIONAL_OF_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_before ebm2c::Context_Expression_OPTIONAL_OF_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_OPTIONAL_OF_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_OPTIONAL_OF_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_after ebm2c::Context_Expression_OPTIONAL_OF_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_after ebm2c::Context_Expression_OPTIONAL_OF_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SETTER_STATUS ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SETTER_STATUS>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_SETTER_STATUS ebm2c::Context_Expression_SETTER_STATUS
     #define EBM2C_CODEGEN_VISITOR_Expression_SETTER_STATUS_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SETTER_STATUS_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SETTER_STATUS_before ebm2c::Context_Expression_SETTER_STATUS_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SETTER_STATUS_before ebm2c::Context_Expression_SETTER_STATUS_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SETTER_STATUS_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SETTER_STATUS_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SETTER_STATUS_after ebm2c::Context_Expression_SETTER_STATUS_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SETTER_STATUS_after ebm2c::Context_Expression_SETTER_STATUS_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SELF ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SELF>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_SELF ebm2c::Context_Expression_SELF
     #define EBM2C_CODEGEN_VISITOR_Expression_SELF_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SELF_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SELF_before ebm2c::Context_Expression_SELF_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SELF_before ebm2c::Context_Expression_SELF_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_SELF_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_SELF_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_SELF_after ebm2c::Context_Expression_SELF_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_SELF_after ebm2c::Context_Expression_SELF_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_AS_ARG ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_AS_ARG>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_AS_ARG ebm2c::Context_Expression_AS_ARG
     #define EBM2C_CODEGEN_VISITOR_Expression_AS_ARG_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_AS_ARG_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2c::Context_Expression_AS_ARG_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2c::Context_Expression_AS_ARG_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_AS_ARG_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_AS_ARG_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2c::Context_Expression_AS_ARG_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2c::Context_Expression_AS_ARG_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression>>
     #define EBM2C_CODEGEN_CONTEXT_Expression_dispatch ebm2c::Context_Expression
     #define EBM2C_CODEGEN_VISITOR_Expression_before_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_before_dispatch ebm2c::Context_Expression_before
+    #define EBM2C_CODEGEN_CONTEXT_Expression_before_dispatch ebm2c::Context_Expression_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expression_after_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expression_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expression_after_dispatch ebm2c::Context_Expression_after
+    #define EBM2C_CODEGEN_CONTEXT_Expression_after_dispatch ebm2c::Context_Expression_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Expressions ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expressions>>
     #define EBM2C_CODEGEN_CONTEXT_Expressions ebm2c::Context_Expressions
     #define EBM2C_CODEGEN_VISITOR_Expressions_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expressions_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Expressions_before ebm2c::Context_Expressions_before
+    #define EBM2C_CODEGEN_CONTEXT_Expressions_before ebm2c::Context_Expressions_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Expressions_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Expressions_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Expressions_after ebm2c::Context_Expressions_after
+    #define EBM2C_CODEGEN_CONTEXT_Expressions_after ebm2c::Context_Expressions_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_INT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_INT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_INT ebm2c::Context_Type_INT
     #define EBM2C_CODEGEN_VISITOR_Type_INT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_INT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_INT_before ebm2c::Context_Type_INT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_INT_before ebm2c::Context_Type_INT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_INT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_INT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_INT_after ebm2c::Context_Type_INT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_INT_after ebm2c::Context_Type_INT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_UINT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_UINT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_UINT ebm2c::Context_Type_UINT
     #define EBM2C_CODEGEN_VISITOR_Type_UINT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_UINT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_UINT_before ebm2c::Context_Type_UINT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_UINT_before ebm2c::Context_Type_UINT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_UINT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_UINT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_UINT_after ebm2c::Context_Type_UINT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_UINT_after ebm2c::Context_Type_UINT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_USIZE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_USIZE>>
     #define EBM2C_CODEGEN_CONTEXT_Type_USIZE ebm2c::Context_Type_USIZE
     #define EBM2C_CODEGEN_VISITOR_Type_USIZE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_USIZE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_USIZE_before ebm2c::Context_Type_USIZE_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_USIZE_before ebm2c::Context_Type_USIZE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_USIZE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_USIZE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_USIZE_after ebm2c::Context_Type_USIZE_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_USIZE_after ebm2c::Context_Type_USIZE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_FLOAT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_FLOAT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_FLOAT ebm2c::Context_Type_FLOAT
     #define EBM2C_CODEGEN_VISITOR_Type_FLOAT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_FLOAT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_FLOAT_before ebm2c::Context_Type_FLOAT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_FLOAT_before ebm2c::Context_Type_FLOAT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_FLOAT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_FLOAT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_FLOAT_after ebm2c::Context_Type_FLOAT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_FLOAT_after ebm2c::Context_Type_FLOAT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_STRUCT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_STRUCT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_STRUCT ebm2c::Context_Type_STRUCT
     #define EBM2C_CODEGEN_VISITOR_Type_STRUCT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_STRUCT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_STRUCT_before ebm2c::Context_Type_STRUCT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_STRUCT_before ebm2c::Context_Type_STRUCT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_STRUCT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_STRUCT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_STRUCT_after ebm2c::Context_Type_STRUCT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_STRUCT_after ebm2c::Context_Type_STRUCT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_RECURSIVE_STRUCT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT ebm2c::Context_Type_RECURSIVE_STRUCT
     #define EBM2C_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_RECURSIVE_STRUCT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_before ebm2c::Context_Type_RECURSIVE_STRUCT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_before ebm2c::Context_Type_RECURSIVE_STRUCT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_RECURSIVE_STRUCT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_after ebm2c::Context_Type_RECURSIVE_STRUCT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_after ebm2c::Context_Type_RECURSIVE_STRUCT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_BOOL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_BOOL>>
     #define EBM2C_CODEGEN_CONTEXT_Type_BOOL ebm2c::Context_Type_BOOL
     #define EBM2C_CODEGEN_VISITOR_Type_BOOL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_BOOL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_BOOL_before ebm2c::Context_Type_BOOL_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_BOOL_before ebm2c::Context_Type_BOOL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_BOOL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_BOOL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_BOOL_after ebm2c::Context_Type_BOOL_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_BOOL_after ebm2c::Context_Type_BOOL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_VOID ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VOID>>
     #define EBM2C_CODEGEN_CONTEXT_Type_VOID ebm2c::Context_Type_VOID
     #define EBM2C_CODEGEN_VISITOR_Type_VOID_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VOID_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_VOID_before ebm2c::Context_Type_VOID_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_VOID_before ebm2c::Context_Type_VOID_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_VOID_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VOID_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_VOID_after ebm2c::Context_Type_VOID_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_VOID_after ebm2c::Context_Type_VOID_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_META ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_META>>
     #define EBM2C_CODEGEN_CONTEXT_Type_META ebm2c::Context_Type_META
     #define EBM2C_CODEGEN_VISITOR_Type_META_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_META_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_META_before ebm2c::Context_Type_META_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_META_before ebm2c::Context_Type_META_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_META_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_META_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_META_after ebm2c::Context_Type_META_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_META_after ebm2c::Context_Type_META_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ENUM ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENUM>>
     #define EBM2C_CODEGEN_CONTEXT_Type_ENUM ebm2c::Context_Type_ENUM
     #define EBM2C_CODEGEN_VISITOR_Type_ENUM_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENUM_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ENUM_before ebm2c::Context_Type_ENUM_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_ENUM_before ebm2c::Context_Type_ENUM_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ENUM_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENUM_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ENUM_after ebm2c::Context_Type_ENUM_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_ENUM_after ebm2c::Context_Type_ENUM_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ARRAY ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ARRAY>>
     #define EBM2C_CODEGEN_CONTEXT_Type_ARRAY ebm2c::Context_Type_ARRAY
     #define EBM2C_CODEGEN_VISITOR_Type_ARRAY_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ARRAY_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ARRAY_before ebm2c::Context_Type_ARRAY_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_ARRAY_before ebm2c::Context_Type_ARRAY_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ARRAY_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ARRAY_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ARRAY_after ebm2c::Context_Type_ARRAY_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_ARRAY_after ebm2c::Context_Type_ARRAY_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_VECTOR ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VECTOR>>
     #define EBM2C_CODEGEN_CONTEXT_Type_VECTOR ebm2c::Context_Type_VECTOR
     #define EBM2C_CODEGEN_VISITOR_Type_VECTOR_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VECTOR_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_VECTOR_before ebm2c::Context_Type_VECTOR_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_VECTOR_before ebm2c::Context_Type_VECTOR_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_VECTOR_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VECTOR_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_VECTOR_after ebm2c::Context_Type_VECTOR_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_VECTOR_after ebm2c::Context_Type_VECTOR_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_VARIANT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VARIANT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_VARIANT ebm2c::Context_Type_VARIANT
     #define EBM2C_CODEGEN_VISITOR_Type_VARIANT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VARIANT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_VARIANT_before ebm2c::Context_Type_VARIANT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_VARIANT_before ebm2c::Context_Type_VARIANT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_VARIANT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_VARIANT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_VARIANT_after ebm2c::Context_Type_VARIANT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_VARIANT_after ebm2c::Context_Type_VARIANT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_RANGE ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_RANGE>>
     #define EBM2C_CODEGEN_CONTEXT_Type_RANGE ebm2c::Context_Type_RANGE
     #define EBM2C_CODEGEN_VISITOR_Type_RANGE_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_RANGE_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_RANGE_before ebm2c::Context_Type_RANGE_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_RANGE_before ebm2c::Context_Type_RANGE_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_RANGE_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_RANGE_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_RANGE_after ebm2c::Context_Type_RANGE_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_RANGE_after ebm2c::Context_Type_RANGE_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ENCODER_RETURN ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENCODER_RETURN>>
     #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_RETURN ebm2c::Context_Type_ENCODER_RETURN
     #define EBM2C_CODEGEN_VISITOR_Type_ENCODER_RETURN_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENCODER_RETURN_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_RETURN_before ebm2c::Context_Type_ENCODER_RETURN_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_RETURN_before ebm2c::Context_Type_ENCODER_RETURN_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ENCODER_RETURN_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENCODER_RETURN_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_RETURN_after ebm2c::Context_Type_ENCODER_RETURN_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_RETURN_after ebm2c::Context_Type_ENCODER_RETURN_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_DECODER_RETURN ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_DECODER_RETURN>>
     #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_RETURN ebm2c::Context_Type_DECODER_RETURN
     #define EBM2C_CODEGEN_VISITOR_Type_DECODER_RETURN_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_DECODER_RETURN_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_RETURN_before ebm2c::Context_Type_DECODER_RETURN_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_RETURN_before ebm2c::Context_Type_DECODER_RETURN_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_DECODER_RETURN_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_DECODER_RETURN_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_RETURN_after ebm2c::Context_Type_DECODER_RETURN_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_RETURN_after ebm2c::Context_Type_DECODER_RETURN_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ENCODER_INPUT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENCODER_INPUT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_INPUT ebm2c::Context_Type_ENCODER_INPUT
     #define EBM2C_CODEGEN_VISITOR_Type_ENCODER_INPUT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENCODER_INPUT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_INPUT_before ebm2c::Context_Type_ENCODER_INPUT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_INPUT_before ebm2c::Context_Type_ENCODER_INPUT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_ENCODER_INPUT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_ENCODER_INPUT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_INPUT_after ebm2c::Context_Type_ENCODER_INPUT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_ENCODER_INPUT_after ebm2c::Context_Type_ENCODER_INPUT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_DECODER_INPUT ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_DECODER_INPUT>>
     #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_INPUT ebm2c::Context_Type_DECODER_INPUT
     #define EBM2C_CODEGEN_VISITOR_Type_DECODER_INPUT_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_DECODER_INPUT_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_INPUT_before ebm2c::Context_Type_DECODER_INPUT_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_INPUT_before ebm2c::Context_Type_DECODER_INPUT_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_DECODER_INPUT_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_DECODER_INPUT_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_INPUT_after ebm2c::Context_Type_DECODER_INPUT_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_DECODER_INPUT_after ebm2c::Context_Type_DECODER_INPUT_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_PROPERTY_SETTER_RETURN>>
     #define EBM2C_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN ebm2c::Context_Type_PROPERTY_SETTER_RETURN
     #define EBM2C_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_before ebm2c::Context_Type_PROPERTY_SETTER_RETURN_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_before ebm2c::Context_Type_PROPERTY_SETTER_RETURN_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_after ebm2c::Context_Type_PROPERTY_SETTER_RETURN_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_after ebm2c::Context_Type_PROPERTY_SETTER_RETURN_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_OPTIONAL ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_OPTIONAL>>
     #define EBM2C_CODEGEN_CONTEXT_Type_OPTIONAL ebm2c::Context_Type_OPTIONAL
     #define EBM2C_CODEGEN_VISITOR_Type_OPTIONAL_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_OPTIONAL_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_OPTIONAL_before ebm2c::Context_Type_OPTIONAL_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_OPTIONAL_before ebm2c::Context_Type_OPTIONAL_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_OPTIONAL_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_OPTIONAL_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_OPTIONAL_after ebm2c::Context_Type_OPTIONAL_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_OPTIONAL_after ebm2c::Context_Type_OPTIONAL_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_PTR ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_PTR>>
     #define EBM2C_CODEGEN_CONTEXT_Type_PTR ebm2c::Context_Type_PTR
     #define EBM2C_CODEGEN_VISITOR_Type_PTR_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_PTR_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_PTR_before ebm2c::Context_Type_PTR_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_PTR_before ebm2c::Context_Type_PTR_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_PTR_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_PTR_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_PTR_after ebm2c::Context_Type_PTR_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_PTR_after ebm2c::Context_Type_PTR_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_FUNCTION ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_FUNCTION>>
     #define EBM2C_CODEGEN_CONTEXT_Type_FUNCTION ebm2c::Context_Type_FUNCTION
     #define EBM2C_CODEGEN_VISITOR_Type_FUNCTION_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_FUNCTION_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2c::Context_Type_FUNCTION_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2c::Context_Type_FUNCTION_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_FUNCTION_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_FUNCTION_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2c::Context_Type_FUNCTION_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2c::Context_Type_FUNCTION_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type>>
     #define EBM2C_CODEGEN_CONTEXT_Type_dispatch ebm2c::Context_Type
     #define EBM2C_CODEGEN_VISITOR_Type_before_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_before_dispatch ebm2c::Context_Type_before
+    #define EBM2C_CODEGEN_CONTEXT_Type_before_dispatch ebm2c::Context_Type_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Type_after_dispatch ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Type_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Type_after_dispatch ebm2c::Context_Type_after
+    #define EBM2C_CODEGEN_CONTEXT_Type_after_dispatch ebm2c::Context_Type_after<Result>
     #define EBM2C_CODEGEN_VISITOR_Types ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Types>>
     #define EBM2C_CODEGEN_CONTEXT_Types ebm2c::Context_Types
     #define EBM2C_CODEGEN_VISITOR_Types_before ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Types_before>>
-    #define EBM2C_CODEGEN_CONTEXT_Types_before ebm2c::Context_Types_before
+    #define EBM2C_CODEGEN_CONTEXT_Types_before ebm2c::Context_Types_before<Result>
     #define EBM2C_CODEGEN_VISITOR_Types_after ebm2c::Visitor<ebm2c::UserHook<ebm2c::VisitorTag_Types_after>>
-    #define EBM2C_CODEGEN_CONTEXT_Types_after ebm2c::Context_Types_after
+    #define EBM2C_CODEGEN_CONTEXT_Types_after ebm2c::Context_Types_after<Result>
     #define CODEGEN_NAMESPACE ebm2c
     #define CODEGEN_VISITOR(name) EBM2C_CODEGEN_VISITOR_##name
     #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2C_CODEGEN_CONTEXT_PARAMETERS_##name

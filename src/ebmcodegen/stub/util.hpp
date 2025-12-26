@@ -20,12 +20,12 @@ namespace ebmcodegen::util {
 
     template <typename T>
     concept has_get_visitor_from_context = requires(T ctx) {
-        { get_visitor_from_context(ctx) };
+        { get_visitor_arg_from_context(ctx) };
     };
 
     auto& get_visitor(auto&& ctx) {
         if constexpr (has_get_visitor_from_context<decltype(ctx)>) {
-            return get_visitor_from_context(ctx);
+            return get_visitor_arg_from_context(ctx);
         }
         else {
             return ctx;

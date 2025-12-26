@@ -72,6 +72,11 @@ if something_changed:
         stdout=sys.stdout,
         stderr=sys.stderr,
     )
+    sp.check_call(
+        ["python", "script/ebmcodegen.py", "all"],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
     # rerun script/build.py to build the tools again
     sp.check_call(["python", "script/build.py"], stdout=sys.stdout, stderr=sys.stderr)
 

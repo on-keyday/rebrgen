@@ -2,6 +2,7 @@
 #include "stub/class_based.hpp"
 #include "ebmgen/common.hpp"
 #include "error/error.h"
+#include "helper/defer_ex.h"
 #include "stub/structs.hpp"
 #include <cstddef>
 #include <format>
@@ -488,7 +489,7 @@ namespace ebmcodegen {
 
     void generate_visitor_requirements(CodeWriter& w, const std::string_view result_type) {
         // w.writeln("template<typename VisitorImpl,", cls.type_parameters_body(false), ">");
-        w.writeln("template<typename VisitorImpl,typename Context>");
+        w.writeln("template<", template_param_result(false), ",typename VisitorImpl,typename Context>");
         w.writeln("concept HasVisitor = !std::is_base_of_v<ContextBase<std::decay_t<VisitorImpl>>,std::decay_t<VisitorImpl>> && requires(VisitorImpl v,Context c) {");
         {
             auto requires_scope = w.indent_scope();
@@ -543,7 +544,7 @@ namespace ebmcodegen {
         auto& cls = clss.main();
         generate_dispatch_fn_signature(hdr, cls, result_type, true);
         const auto visitor_arg = std::format("{}(ctx)", get_visitor_arg_fn);
-        const auto get_visitor = [&](auto tctx) { return std::format("{}(ctx,{})", get_visitor_fn, tctx); };
+        const auto get_visitor = [&](auto tctx) { return std::format("{}<Result>(ctx,{})", get_visitor_fn, tctx); };
         auto id_arg = "is_nil(alias_ref) ? in.id : alias_ref";
         auto make_args = [&](const ContextClass& cls, std::vector<std::string_view> additional_args) {
             std::vector<std::string_view> args;
@@ -618,6 +619,7 @@ namespace ebmcodegen {
         w.writeln("struct ", context_name(cls), " : ebmcodegen::util::ContextBase<", context_instance_name(cls), "> {");
         {
             auto scope = w.indent_scope();
+            w.writeln("constexpr static std::string_view context_name = \"", cls.class_name(), "\";");
             for (auto& field : cls.fields) {
                 w.writeln(field.type, " ", field.name, ";");
             }
@@ -1122,7 +1124,7 @@ namespace ebmcodegen {
     }
 
     void generate_list_dispatch_customization_point(CodeWriter& w, const ContextClass& cls, const std::string_view result_type, bool is_codegen) {
-        w.writeln("template<typename T>");
+        w.writeln("template<typename Result>");
         w.writeln("struct ", list_dispatcher_customization_point_name(cls), " {");
         {
             auto scope = w.indent_scope();
@@ -1130,6 +1132,12 @@ namespace ebmcodegen {
             w.writeln("expected<void> on_dispatch(Context&& ctx,const ebm::", cls.class_name(), "& in,", result_type, "&& result) {");
             {
                 auto inner_scope = w.indent_scope();
+                w.writeln("if (!result) {");
+                {
+                    auto if_scope = w.indent_scope();
+                    w.writeln("return unexpect_error(std::move(result.error()));");
+                }
+                w.writeln("}");
                 w.writeln("return {}; // Default no-op implementation");
             }
             w.writeln("}");
@@ -1156,6 +1164,12 @@ namespace ebmcodegen {
             w.writeln("expected<void> on_dispatch(Context&& ctx,const ebm::", cls.class_name(), "& in,", result_type, "&& result) {");
             {
                 auto inner_scope = w.indent_scope();
+                w.writeln("if (!result) {");
+                {
+                    auto if_scope = w.indent_scope();
+                    w.writeln("return unexpect_error(std::move(result.error()));");
+                }
+                w.writeln("}");
                 if (is_codegen) {
                     w.writeln("this->result.write(std::move(result->to_writer()));");
                 }
@@ -1188,11 +1202,8 @@ namespace ebmcodegen {
             hdr.writeln("for(auto& elem:in.container) {");
             {
                 auto loop_scope = hdr.indent_scope();
-                hdr.writeln("auto result = visit_", cls.base, "(ctx,elem);");
-                hdr.writeln("if (!result) {");
-                hdr.indent_writeln("return unexpect_error(std::move(result.error()));");
-                hdr.writeln("}");
-                hdr.writeln("MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));");
+                hdr.writeln("auto result = visit_", cls.base, "<Result>(ctx,elem);");
+                hdr.writeln("MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));");
             }
             hdr.writeln("}");
             hdr.writeln("return dispatcher.finalize(std::forward<Context>(ctx),in);");
@@ -1386,11 +1397,11 @@ namespace ebmcodegen {
         }
         w.writeln("}");
 
-        w.writeln("template<typename UserContext,typename TypeContext>");
+        w.writeln("template<", template_param_result(false), ",typename UserContext,typename TypeContext>");
         w.writeln("auto& ", get_visitor_fn, "(UserContext&& uctx,TypeContext&& ctx) {");
         {
             auto scope = w.indent_scope();
-            w.writeln("if constexpr (HasVisitor<UserContext,TypeContext>) {");
+            w.writeln("if constexpr (HasVisitor<Result,UserContext,TypeContext>) {");
             {
                 auto if_scope = w.indent_scope();
                 w.writeln("return uctx;");
@@ -1651,6 +1662,156 @@ namespace ebmcodegen {
         return hooks;
     }
 
+    void generate_traversal_children_for_class(CodeWriter& hdr, CodeWriter& src, const ContextClass& cls, std::string_view result_type, const std::map<std::string_view, Struct>& struct_map) {
+        hdr.writeln("template<", template_param_result(true), ", typename UserContext,typename TypeContext>");
+        hdr.writeln(result_type, " traverse_children_", cls.class_name(), "(UserContext&& ctx,TypeContext&& type_ctx);");
+        src.writeln("template<", template_param_result(false), ", typename UserContext,typename TypeContext>");
+        src.writeln(result_type, " traverse_children_", cls.class_name(), "(UserContext&& ctx,TypeContext&& type_ctx) {");
+        {
+            auto scope = src.indent_scope();
+            auto do_full_name = [&](const StructField* field, std::string_view prefix, bool root) {
+                auto full_name = std::format("{}{}", prefix, field->name);
+                futils::helper::DynDefer if_scope;
+                if (field->attr & PTR && !root) {
+                    full_name = full_name + "()";
+                    src.writeln("if (auto ptr = ", full_name, ") {");
+                    if_scope = src.indent_scope_ex();
+                    full_name = "(*ptr)";
+                }
+                src.writeln("if (!is_nil(", full_name, ")) {");
+                {
+                    auto inner_scope = src.indent_scope();
+                    auto result_name = std::format("result_{}", field->name);
+                    src.writeln("auto ", result_name, " = visit_Object<Result>(std::forward<UserContext>(ctx),", full_name, ");");
+                    src.writeln("if (!", result_name, ") {");
+                    src.indent_writeln("return unexpect_error(std::move(", result_name, ".error()));");
+                    src.writeln("}");
+                }
+                src.writeln("}");
+                if (if_scope) {
+                    if_scope.execute();
+                    src.writeln("}");
+                }
+            };
+            auto handle_recursive = [&](auto&& handle_recursive, const StructField* field, std::string_view prefix, bool root) -> void {
+                if (field->type.ends_with("Ref")) {
+                    auto removed_ref_type = field->type.substr(0, field->type.size() - 3);
+                    auto body_name = std::format("{}Body", removed_ref_type);
+                    if (auto found = struct_map.find(body_name); found == struct_map.end()) {
+                        return;  // Weak or LoweredRef
+                    }
+                    do_full_name(field, prefix, root);
+                    return;
+                }
+                if (field->type == "Block" || field->type == "Expressions" || field->type == "Types" ||
+                    field->type == "Statement" || field->type == "Expression" || field->type == "Type") {
+                    bool has_alias_ref = (field->type == "Statement" || field->type == "Expression" || field->type == "Type");
+                    // invoke default dispatch
+                    auto dispatch_fn = std::format("dispatch_{}_default", field->type);
+                    auto full_name = std::format("{}{}", prefix, field->name);
+                    futils::helper::DynDefer if_scope;
+                    if (field->attr & PTR && !root) {
+                        full_name = full_name + "()";
+                        src.writeln("if (auto ptr = ", full_name, ") {");
+                        if_scope = src.indent_scope_ex();
+                        full_name = "(*ptr)";
+                    }
+                    src.write("auto result_", field->name, " = ", dispatch_fn, "<Result>(std::forward<UserContext>(ctx),", full_name);
+                    if (has_alias_ref) {
+                        src.write(",", prefix, "alias_ref");
+                    }
+                    src.writeln(");");
+                    src.writeln("if (!result_", field->name, ") {");
+                    src.indent_writeln("return unexpect_error(std::move(result_", field->name, ".error()));");
+                    src.writeln("}");
+                    if (if_scope) {
+                        if_scope.execute();
+                        src.writeln("}");
+                    }
+                    return;
+                }
+                if (auto found = struct_map.find(field->type); found != struct_map.end()) {
+                    auto& struct_def = found->second;
+                    futils::helper::DynDefer if_scope;
+                    std::string new_prefix = std::format("{}{}.", prefix, field->name);
+                    if (field->attr & PTR && !root) {
+                        src.writeln("if (auto ptr_", field->name, " = ", prefix, field->name, "()) {");
+                        if_scope = src.indent_scope_ex();
+                        new_prefix = std::format("(*ptr_{}).", field->name);
+                    }
+                    for (auto& sub_field : struct_def.fields) {
+                        handle_recursive(handle_recursive, &sub_field, new_prefix, false);
+                    }
+                    if (if_scope) {
+                        if_scope.execute();
+                        src.writeln("}");
+                    }
+                }
+            };
+            for (auto& field : cls.fields) {
+                const StructField* field_ptr = nullptr;
+                StructField dummy_field{};
+                if (field.name == "in") {
+                    auto it = struct_map.find(cls.class_name());
+                    if (it != struct_map.end()) {
+                        dummy_field = StructField{
+                            .name = field.name,
+                            .type = it->first,
+                            .attr = NONE,
+                        };
+                        field_ptr = &dummy_field;
+                    }
+                }
+                else if (field.base) {
+                    field_ptr = field.base;
+                }
+                if (!field_ptr) {
+                    continue;
+                }
+                auto prefix = std::format("type_ctx.", field_ptr->name);
+                handle_recursive(handle_recursive, field_ptr, prefix, true);
+            }
+            src.writeln("return {};");
+        }
+        src.writeln("}");
+    }
+
+    void generate_generic_traversal_children(CodeWriter& hdr, CodeWriter& src, const std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
+        hdr.writeln("template<", template_param_result(true), ", typename UserContext, typename TypeContext>");
+        hdr.writeln(result_type, " traverse_children(UserContext&& uctx, TypeContext&& type_ctx);");
+        src.writeln("template<", template_param_result(false), ", typename UserContext, typename TypeContext>");
+        src.writeln(result_type, " traverse_children(UserContext&& uctx, TypeContext&& type_ctx) {");
+        {
+            auto scope = src.indent_scope();
+            src.writeln("using TypeContextType = std::decay_t<TypeContext>;");
+            src.writeln("if constexpr (false) {}");
+            for (auto& cls_group : context_classes) {
+                std::string main_before_or_after;
+                for (auto& cls : cls_group.classes) {
+                    auto context_name = context_instance_name(cls);
+                    if (!main_before_or_after.empty()) {
+                        main_before_or_after += " || ";
+                    }
+                    main_before_or_after += std::format("std::is_same_v<TypeContextType,{}>", context_name);
+                }
+                src.writeln("else if constexpr (", main_before_or_after, ") {");
+                auto& cls = cls_group.main();
+                {
+                    auto if_scope = src.indent_scope();
+                    src.writeln("return traverse_children_", cls.class_name(), "<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));");
+                }
+                src.writeln("}");
+            }
+            src.writeln("else {");
+            {
+                auto else_scope = src.indent_scope();
+                src.writeln("static_assert(dependent_false<TypeContext>, \"traverse_children not implemented for this context type\");");
+            }
+            src.writeln("}");
+        }
+        src.writeln("}");
+    }
+
     void generate(const IncludeLocations& locations, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs) {
         auto result_type = "expected<Result>";
         auto context_classes = generate_context_classes(structs);
@@ -1686,7 +1847,9 @@ namespace ebmcodegen {
             generate_dispatcher_function(hdr, src, cls_group, result_type);
             generate_list_dispatch_default(hdr, cls_group.main(), is_codegen, result_type);
             generate_generic_dispatch_default(hdr, cls_group.main(), result_type);
+            generate_traversal_children_for_class(hdr, src, cls_group.main(), result_type, structs);
         }
+        generate_generic_traversal_children(hdr, src, context_classes, result_type);
         generate_user_interface(hdr, context_classes, result_type);
         generate_impl_getter_header(hdr);
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);

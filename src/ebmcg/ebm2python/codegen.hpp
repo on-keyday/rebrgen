@@ -264,7 +264,7 @@ namespace ebm2python {
     concept HasVisitorInContext = requires(const Context& ctx) { ctx.visitor; };
     template<typename Context>
     concept HasLegacyVisitorInContext = requires(const Context& ctx) { *ctx.__legacy_compat_ptr; };
-    template<typename VisitorImpl,typename Context>
+    template<typename Result,typename VisitorImpl,typename Context>
     concept HasVisitor = !std::is_base_of_v<ContextBase<std::decay_t<VisitorImpl>>,std::decay_t<VisitorImpl>> && requires(VisitorImpl v,Context c) {
          { v.visit(c) } -> std::convertible_to<expected<Result>>;
     };
@@ -280,9 +280,9 @@ namespace ebm2python {
             static_assert(dependent_false<Context>, "No visitor found in context");
         }
     }
-    template<typename UserContext,typename TypeContext>
+    template<typename Result,typename UserContext,typename TypeContext>
     auto& get_visitor_from_context(UserContext&& uctx,TypeContext&& ctx) {
-        if constexpr (HasVisitor<UserContext,TypeContext>) {
+        if constexpr (HasVisitor<Result,UserContext,TypeContext>) {
             return uctx;
         }
         else {
@@ -291,84 +291,164 @@ namespace ebm2python {
     }
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_entry(Context&& ctx);
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_entry(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_pre_visitor(Context&& ctx,ebm::ExtendedBinaryModule& ebm);
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_pre_visitor(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_post_entry(Context&& ctx,expected<Result>& entry_result);
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_post_entry(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_BLOCK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_BLOCK(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ASSIGNMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ASSIGNMENT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_YIELD(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_YIELD(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_APPEND(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_APPEND(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_RETURN(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ERROR_RETURN(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ASSERT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ASSERT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_READ_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_READ_DATA(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_WRITE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_WRITE_DATA(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_RESERVE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_RESERVE_DATA(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_IF_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_IF_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_LOOP_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_LOOP_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_MATCH_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_MATCH_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_MATCH_BRANCH(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_MATCH_BRANCH(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_BREAK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_BREAK(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_CONTINUE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_CONTINUE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_FUNCTION_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_FUNCTION_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_VARIABLE_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_VARIABLE_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PARAMETER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PARAMETER_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_FIELD_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_FIELD_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_COMPOSITE_FIELD_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_COMPOSITE_FIELD_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ENUM_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ENUM_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ENUM_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ENUM_MEMBER_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_STRUCT_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_STRUCT_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_UNION_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_UNION_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_UNION_MEMBER_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PROGRAM_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PROGRAM_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PROPERTY_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PROPERTY_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PROPERTY_MEMBER_DECL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_METADATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_METADATA(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_IMPORT_MODULE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_IMPORT_MODULE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_EXPRESSION(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_EXPRESSION(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_REPORT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ERROR_REPORT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_LOWERED_IO_STATEMENTS(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_LOWERED_IO_STATEMENTS(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_SUB_BYTE_RANGE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_INIT_CHECK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_INIT_CHECK(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement_ENDIAN_VARIABLE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ENDIAN_VARIABLE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
     template<typename Result = Result, typename Context>
@@ -490,12 +570,17 @@ namespace ebm2python {
             }
         }
     }
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Block(Context&& ctx,const ebm::Block& in);
-    template<typename T>
+    template<typename Result>
     struct ListDispatcher_Block {
         template<typename Context>
         expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
             return {}; // Default no-op implementation
         }
         template<typename Context>
@@ -509,6 +594,9 @@ namespace ebm2python {
         CodeWriter result;
         template<typename Context>
         expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
             this->result.write(std::move(result->to_writer()));
             return {};
         }
@@ -521,88 +609,161 @@ namespace ebm2python {
     expected<Result> dispatch_Block_default(Context&& ctx,const ebm::Block& in) {
         ListDispatcher_Block<Result> dispatcher;
         for(auto& elem:in.container) {
-            auto result = visit_Statement(ctx,elem);
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));
+            auto result = visit_Statement<Result>(ctx,elem);
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
         }
         return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Block(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_INT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_INT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_INT64(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_INT64(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_BOOL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_BOOL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_STRING(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_STRING(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_TYPE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_TYPE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_CHAR(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_CHAR(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_IDENTIFIER(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_IDENTIFIER(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_BINARY_OP(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_BINARY_OP(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_UNARY_OP(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_UNARY_OP(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CALL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CALL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_INDEX_ACCESS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_INDEX_ACCESS(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_MEMBER_ACCESS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_MEMBER_ACCESS(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ENUM_MEMBER(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ENUM_MEMBER(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_TYPE_CAST(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_TYPE_CAST(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_RANGE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_RANGE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_DEFAULT_VALUE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_DEFAULT_VALUE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_IS_LITTLE_ENDIAN(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_IS_LITTLE_ENDIAN(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_GET_STREAM_OFFSET(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_GET_REMAINING_BYTES(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CAN_READ_STREAM(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CAN_READ_STREAM(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ARRAY_SIZE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ARRAY_SIZE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ENUM_IS_DEFINED(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ENUM_IS_DEFINED(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_IS_ERROR(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_IS_ERROR(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_MAX_VALUE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_MAX_VALUE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_READ_DATA(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_READ_DATA(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_WRITE_DATA(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_WRITE_DATA(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CONDITIONAL_STATEMENT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CONDITIONAL_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_CONDITIONAL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CONDITIONAL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_AVAILABLE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_AVAILABLE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SIZEOF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SIZEOF(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SUB_RANGE_INIT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SUB_RANGE_INIT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_OR_COND(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_OR_COND(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_ADDRESS_OF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ADDRESS_OF(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_OPTIONAL_OF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_OPTIONAL_OF(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SETTER_STATUS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SETTER_STATUS(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_SELF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SELF(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression_AS_ARG(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_AS_ARG(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expression(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
     template<typename Result = Result, typename Context>
@@ -724,12 +885,17 @@ namespace ebm2python {
             }
         }
     }
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expressions(Context&& ctx,const ebm::Expressions& in);
-    template<typename T>
+    template<typename Result>
     struct ListDispatcher_Expressions {
         template<typename Context>
         expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
             return {}; // Default no-op implementation
         }
         template<typename Context>
@@ -743,6 +909,9 @@ namespace ebm2python {
         CodeWriter result;
         template<typename Context>
         expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
             this->result.write(std::move(result->to_writer()));
             return {};
         }
@@ -755,58 +924,101 @@ namespace ebm2python {
     expected<Result> dispatch_Expressions_default(Context&& ctx,const ebm::Expressions& in) {
         ListDispatcher_Expressions<Result> dispatcher;
         for(auto& elem:in.container) {
-            auto result = visit_Expression(ctx,elem);
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));
+            auto result = visit_Expression<Result>(ctx,elem);
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
         }
         return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expressions(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_INT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_INT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_UINT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_UINT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_USIZE(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_USIZE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_FLOAT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_FLOAT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_STRUCT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_STRUCT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_RECURSIVE_STRUCT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_RECURSIVE_STRUCT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_BOOL(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_BOOL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_VOID(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_VOID(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_META(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_META(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ENUM(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ENUM(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ARRAY(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ARRAY(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_VECTOR(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_VECTOR(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_VARIANT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_VARIANT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_RANGE(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_RANGE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ENCODER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ENCODER_RETURN(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_DECODER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_DECODER_RETURN(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_ENCODER_INPUT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ENCODER_INPUT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_DECODER_INPUT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_DECODER_INPUT(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_PROPERTY_SETTER_RETURN(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_OPTIONAL(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_OPTIONAL(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_PTR(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_PTR(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type_FUNCTION(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_FUNCTION(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Type(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref = {});
     template<typename Result = Result, typename Context>
@@ -883,12 +1095,17 @@ namespace ebm2python {
             }
         }
     }
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Types(Context&& ctx,const ebm::Types& in);
-    template<typename T>
+    template<typename Result>
     struct ListDispatcher_Types {
         template<typename Context>
         expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
             return {}; // Default no-op implementation
         }
         template<typename Context>
@@ -902,6 +1119,9 @@ namespace ebm2python {
         CodeWriter result;
         template<typename Context>
         expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
             this->result.write(std::move(result->to_writer()));
             return {};
         }
@@ -914,14 +1134,15 @@ namespace ebm2python {
     expected<Result> dispatch_Types_default(Context&& ctx,const ebm::Types& in) {
         ListDispatcher_Types<Result> dispatcher;
         for(auto& elem:in.container) {
-            auto result = visit_Type(ctx,elem);
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(*result)));
+            auto result = visit_Type<Result>(ctx,elem);
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
         }
         return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Types(UserContext&& ctx,TypeContext&& type_ctx);
+    template<typename Result = Result, typename UserContext, typename TypeContext>
+    expected<Result> traverse_children(UserContext&& uctx, TypeContext&& type_ctx);
     // for backward compatibility
     
     // generic visitor for Statement
@@ -1057,6 +1278,7 @@ namespace ebm2python {
     template<typename Tag>
     struct Visitor; // Customization point struct
     struct Context_entry : ebmcodegen::util::ContextBase<Context_entry> {
+        constexpr static std::string_view context_name = "entry";
         BaseVisitor& visitor;
     };
     struct VisitorTag_entry {};
@@ -1065,6 +1287,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;
     template <typename Result>
     struct Context_entry_before : ebmcodegen::util::ContextBase<Context_entry_before<Result>> {
+        constexpr static std::string_view context_name = "entry_before";
         BaseVisitor& visitor;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
@@ -1074,6 +1297,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_entry_after : ebmcodegen::util::ContextBase<Context_entry_after<Result>> {
+        constexpr static std::string_view context_name = "entry_after";
         BaseVisitor& visitor;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
@@ -1083,6 +1307,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_pre_visitor : ebmcodegen::util::ContextBase<Context_pre_visitor> {
+        constexpr static std::string_view context_name = "pre_visitor";
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
     };
@@ -1092,6 +1317,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;
     template <typename Result>
     struct Context_pre_visitor_before : ebmcodegen::util::ContextBase<Context_pre_visitor_before<Result>> {
+        constexpr static std::string_view context_name = "pre_visitor_before";
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1102,6 +1328,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_pre_visitor_after : ebmcodegen::util::ContextBase<Context_pre_visitor_after<Result>> {
+        constexpr static std::string_view context_name = "pre_visitor_after";
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1113,6 +1340,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     template <typename Result>
     struct Context_post_entry : ebmcodegen::util::ContextBase<Context_post_entry<Result>> {
+        constexpr static std::string_view context_name = "post_entry";
         BaseVisitor& visitor;
         expected<Result>& entry_result;
     };
@@ -1122,6 +1350,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;
     template <typename Result>
     struct Context_post_entry_before : ebmcodegen::util::ContextBase<Context_post_entry_before<Result>> {
+        constexpr static std::string_view context_name = "post_entry_before";
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1132,6 +1361,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_post_entry_after : ebmcodegen::util::ContextBase<Context_post_entry_after<Result>> {
+        constexpr static std::string_view context_name = "post_entry_after";
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1142,6 +1372,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BLOCK : ebmcodegen::util::ContextBase<Context_Statement_BLOCK> {
+        constexpr static std::string_view context_name = "Statement_BLOCK";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1153,6 +1384,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
     template <typename Result>
     struct Context_Statement_BLOCK_before : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_BLOCK_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1165,6 +1397,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_BLOCK_after : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_BLOCK_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1177,6 +1410,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSIGNMENT : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT> {
+        constexpr static std::string_view context_name = "Statement_ASSIGNMENT";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1190,6 +1424,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_ASSIGNMENT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ASSIGNMENT_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1204,6 +1439,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ASSIGNMENT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ASSIGNMENT_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1218,6 +1454,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_YIELD : ebmcodegen::util::ContextBase<Context_Statement_YIELD> {
+        constexpr static std::string_view context_name = "Statement_YIELD";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1231,6 +1468,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_YIELD_before : ebmcodegen::util::ContextBase<Context_Statement_YIELD_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_YIELD_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1245,6 +1483,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_YIELD_after : ebmcodegen::util::ContextBase<Context_Statement_YIELD_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_YIELD_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1259,6 +1498,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_APPEND : ebmcodegen::util::ContextBase<Context_Statement_APPEND> {
+        constexpr static std::string_view context_name = "Statement_APPEND";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1271,6 +1511,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_APPEND_before : ebmcodegen::util::ContextBase<Context_Statement_APPEND_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_APPEND_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1284,6 +1525,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_APPEND_after : ebmcodegen::util::ContextBase<Context_Statement_APPEND_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_APPEND_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1297,6 +1539,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_RETURN : ebmcodegen::util::ContextBase<Context_Statement_RETURN> {
+        constexpr static std::string_view context_name = "Statement_RETURN";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1308,6 +1551,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_RETURN_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1320,6 +1564,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_RETURN_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1332,6 +1577,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_RETURN : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN> {
+        constexpr static std::string_view context_name = "Statement_ERROR_RETURN";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1343,6 +1589,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ERROR_RETURN_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1355,6 +1602,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ERROR_RETURN_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1367,6 +1615,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSERT : ebmcodegen::util::ContextBase<Context_Statement_ASSERT> {
+        constexpr static std::string_view context_name = "Statement_ASSERT";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1378,6 +1627,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;
     template <typename Result>
     struct Context_Statement_ASSERT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ASSERT_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1390,6 +1640,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ASSERT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ASSERT_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1402,6 +1653,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_READ_DATA : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA> {
+        constexpr static std::string_view context_name = "Statement_READ_DATA";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1413,6 +1665,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;
     template <typename Result>
     struct Context_Statement_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_READ_DATA_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1425,6 +1678,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_READ_DATA_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1437,6 +1691,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA> {
+        constexpr static std::string_view context_name = "Statement_WRITE_DATA";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1448,6 +1703,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;
     template <typename Result>
     struct Context_Statement_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_WRITE_DATA_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1460,6 +1716,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_WRITE_DATA_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1472,6 +1729,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_RESERVE_DATA : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA> {
+        constexpr static std::string_view context_name = "Statement_RESERVE_DATA";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1483,6 +1741,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;
     template <typename Result>
     struct Context_Statement_RESERVE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_RESERVE_DATA_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1495,6 +1754,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_RESERVE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_RESERVE_DATA_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1507,6 +1767,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IF_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT> {
+        constexpr static std::string_view context_name = "Statement_IF_STATEMENT";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1518,6 +1779,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;
     template <typename Result>
     struct Context_Statement_IF_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_IF_STATEMENT_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1530,6 +1792,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_IF_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_IF_STATEMENT_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1542,6 +1805,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_LOOP_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT> {
+        constexpr static std::string_view context_name = "Statement_LOOP_STATEMENT";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1553,6 +1817,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;
     template <typename Result>
     struct Context_Statement_LOOP_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_LOOP_STATEMENT_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1565,6 +1830,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_LOOP_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_LOOP_STATEMENT_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1577,6 +1843,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_MATCH_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT> {
+        constexpr static std::string_view context_name = "Statement_MATCH_STATEMENT";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1588,6 +1855,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;
     template <typename Result>
     struct Context_Statement_MATCH_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_MATCH_STATEMENT_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1600,6 +1868,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_MATCH_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_MATCH_STATEMENT_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1612,6 +1881,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_MATCH_BRANCH : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH> {
+        constexpr static std::string_view context_name = "Statement_MATCH_BRANCH";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1623,6 +1893,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;
     template <typename Result>
     struct Context_Statement_MATCH_BRANCH_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_MATCH_BRANCH_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1635,6 +1906,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_MATCH_BRANCH_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_MATCH_BRANCH_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1647,6 +1919,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BREAK : ebmcodegen::util::ContextBase<Context_Statement_BREAK> {
+        constexpr static std::string_view context_name = "Statement_BREAK";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1658,6 +1931,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;
     template <typename Result>
     struct Context_Statement_BREAK_before : ebmcodegen::util::ContextBase<Context_Statement_BREAK_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_BREAK_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1670,6 +1944,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_BREAK_after : ebmcodegen::util::ContextBase<Context_Statement_BREAK_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_BREAK_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1682,6 +1957,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_CONTINUE : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE> {
+        constexpr static std::string_view context_name = "Statement_CONTINUE";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1693,6 +1969,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;
     template <typename Result>
     struct Context_Statement_CONTINUE_before : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_CONTINUE_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1705,6 +1982,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_CONTINUE_after : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_CONTINUE_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1717,6 +1995,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_FUNCTION_DECL : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL> {
+        constexpr static std::string_view context_name = "Statement_FUNCTION_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1728,6 +2007,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;
     template <typename Result>
     struct Context_Statement_FUNCTION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_FUNCTION_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1740,6 +2020,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_FUNCTION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_FUNCTION_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1752,6 +2033,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_VARIABLE_DECL : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL> {
+        constexpr static std::string_view context_name = "Statement_VARIABLE_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1763,6 +2045,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;
     template <typename Result>
     struct Context_Statement_VARIABLE_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_VARIABLE_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1775,6 +2058,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_VARIABLE_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_VARIABLE_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1787,6 +2071,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PARAMETER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL> {
+        constexpr static std::string_view context_name = "Statement_PARAMETER_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1798,6 +2083,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;
     template <typename Result>
     struct Context_Statement_PARAMETER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_PARAMETER_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1810,6 +2096,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PARAMETER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_PARAMETER_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1822,6 +2109,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL> {
+        constexpr static std::string_view context_name = "Statement_FIELD_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1833,6 +2121,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;
     template <typename Result>
     struct Context_Statement_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_FIELD_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1845,6 +2134,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_FIELD_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1857,6 +2147,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_COMPOSITE_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL> {
+        constexpr static std::string_view context_name = "Statement_COMPOSITE_FIELD_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1868,6 +2159,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;
     template <typename Result>
     struct Context_Statement_COMPOSITE_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_COMPOSITE_FIELD_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1880,6 +2172,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_COMPOSITE_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_COMPOSITE_FIELD_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1892,6 +2185,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENUM_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL> {
+        constexpr static std::string_view context_name = "Statement_ENUM_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1903,6 +2197,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;
     template <typename Result>
     struct Context_Statement_ENUM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ENUM_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1915,6 +2210,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ENUM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ENUM_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1927,6 +2223,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENUM_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL> {
+        constexpr static std::string_view context_name = "Statement_ENUM_MEMBER_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1938,6 +2235,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;
     template <typename Result>
     struct Context_Statement_ENUM_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ENUM_MEMBER_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1950,6 +2248,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ENUM_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ENUM_MEMBER_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1962,6 +2261,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_STRUCT_DECL : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL> {
+        constexpr static std::string_view context_name = "Statement_STRUCT_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1973,6 +2273,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;
     template <typename Result>
     struct Context_Statement_STRUCT_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_STRUCT_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1985,6 +2286,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_STRUCT_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_STRUCT_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1997,6 +2299,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_UNION_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL> {
+        constexpr static std::string_view context_name = "Statement_UNION_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2007,6 +2310,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Statement_UNION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_UNION_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2018,6 +2322,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_UNION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_UNION_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2029,6 +2334,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_UNION_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL> {
+        constexpr static std::string_view context_name = "Statement_UNION_MEMBER_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2039,6 +2345,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Statement_UNION_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_UNION_MEMBER_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2050,6 +2357,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_UNION_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_UNION_MEMBER_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2061,6 +2369,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROGRAM_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL> {
+        constexpr static std::string_view context_name = "Statement_PROGRAM_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2072,6 +2381,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
     template <typename Result>
     struct Context_Statement_PROGRAM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_PROGRAM_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2084,6 +2394,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PROGRAM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_PROGRAM_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2096,6 +2407,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROPERTY_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL> {
+        constexpr static std::string_view context_name = "Statement_PROPERTY_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2107,6 +2419,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;
     template <typename Result>
     struct Context_Statement_PROPERTY_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_PROPERTY_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2119,6 +2432,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PROPERTY_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_PROPERTY_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2131,6 +2445,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROPERTY_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL> {
+        constexpr static std::string_view context_name = "Statement_PROPERTY_MEMBER_DECL";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2142,6 +2457,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;
     template <typename Result>
     struct Context_Statement_PROPERTY_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_PROPERTY_MEMBER_DECL_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2154,6 +2470,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PROPERTY_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_PROPERTY_MEMBER_DECL_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2166,6 +2483,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_METADATA : ebmcodegen::util::ContextBase<Context_Statement_METADATA> {
+        constexpr static std::string_view context_name = "Statement_METADATA";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2177,6 +2495,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;
     template <typename Result>
     struct Context_Statement_METADATA_before : ebmcodegen::util::ContextBase<Context_Statement_METADATA_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_METADATA_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2189,6 +2508,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_METADATA_after : ebmcodegen::util::ContextBase<Context_Statement_METADATA_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_METADATA_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2201,6 +2521,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IMPORT_MODULE : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE> {
+        constexpr static std::string_view context_name = "Statement_IMPORT_MODULE";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2212,6 +2533,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;
     template <typename Result>
     struct Context_Statement_IMPORT_MODULE_before : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_IMPORT_MODULE_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2224,6 +2546,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_IMPORT_MODULE_after : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_IMPORT_MODULE_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2236,6 +2559,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_EXPRESSION : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION> {
+        constexpr static std::string_view context_name = "Statement_EXPRESSION";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2247,6 +2571,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;
     template <typename Result>
     struct Context_Statement_EXPRESSION_before : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_EXPRESSION_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2259,6 +2584,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_EXPRESSION_after : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_EXPRESSION_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2271,6 +2597,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_REPORT : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT> {
+        constexpr static std::string_view context_name = "Statement_ERROR_REPORT";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2282,6 +2609,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;
     template <typename Result>
     struct Context_Statement_ERROR_REPORT_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ERROR_REPORT_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2294,6 +2622,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ERROR_REPORT_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ERROR_REPORT_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2306,6 +2635,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_LOWERED_IO_STATEMENTS : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS> {
+        constexpr static std::string_view context_name = "Statement_LOWERED_IO_STATEMENTS";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2317,6 +2647,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;
     template <typename Result>
     struct Context_Statement_LOWERED_IO_STATEMENTS_before : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_LOWERED_IO_STATEMENTS_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2329,6 +2660,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_LOWERED_IO_STATEMENTS_after : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_LOWERED_IO_STATEMENTS_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2341,6 +2673,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_SUB_BYTE_RANGE : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE> {
+        constexpr static std::string_view context_name = "Statement_SUB_BYTE_RANGE";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2352,6 +2685,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;
     template <typename Result>
     struct Context_Statement_SUB_BYTE_RANGE_before : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_SUB_BYTE_RANGE_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2364,6 +2698,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_SUB_BYTE_RANGE_after : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_SUB_BYTE_RANGE_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2376,6 +2711,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_INIT_CHECK : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK> {
+        constexpr static std::string_view context_name = "Statement_INIT_CHECK";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2387,6 +2723,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;
     template <typename Result>
     struct Context_Statement_INIT_CHECK_before : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_INIT_CHECK_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2399,6 +2736,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_INIT_CHECK_after : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_INIT_CHECK_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2411,6 +2749,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENDIAN_VARIABLE : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE> {
+        constexpr static std::string_view context_name = "Statement_ENDIAN_VARIABLE";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2422,6 +2761,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;
     template <typename Result>
     struct Context_Statement_ENDIAN_VARIABLE_before : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ENDIAN_VARIABLE_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2434,6 +2774,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ENDIAN_VARIABLE_after : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ENDIAN_VARIABLE_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2446,6 +2787,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement : ebmcodegen::util::ContextBase<Context_Statement> {
+        constexpr static std::string_view context_name = "Statement";
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2456,6 +2798,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     template <typename Result>
     struct Context_Statement_before : ebmcodegen::util::ContextBase<Context_Statement_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_before";
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2467,6 +2810,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_after : ebmcodegen::util::ContextBase<Context_Statement_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_after";
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2478,6 +2822,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Block : ebmcodegen::util::ContextBase<Context_Block> {
+        constexpr static std::string_view context_name = "Block";
         BaseVisitor& visitor;
         const ebm::Block& in;
     };
@@ -2487,6 +2832,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     template <typename Result>
     struct Context_Block_before : ebmcodegen::util::ContextBase<Context_Block_before<Result>> {
+        constexpr static std::string_view context_name = "Block_before";
         BaseVisitor& visitor;
         const ebm::Block& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -2497,6 +2843,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Block_after : ebmcodegen::util::ContextBase<Context_Block_after<Result>> {
+        constexpr static std::string_view context_name = "Block_after";
         BaseVisitor& visitor;
         const ebm::Block& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -2507,6 +2854,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_INT : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_INT";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2519,6 +2867,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;
     template <typename Result>
     struct Context_Expression_LITERAL_INT_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_INT_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2532,6 +2881,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_INT_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_INT_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2545,6 +2895,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_INT64 : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_INT64";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2557,6 +2908,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;
     template <typename Result>
     struct Context_Expression_LITERAL_INT64_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_INT64_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2570,6 +2922,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_INT64_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_INT64_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2583,6 +2936,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_BOOL : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_BOOL";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2595,6 +2949,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;
     template <typename Result>
     struct Context_Expression_LITERAL_BOOL_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_BOOL_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2608,6 +2963,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_BOOL_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_BOOL_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2621,6 +2977,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_STRING : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_STRING";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2633,6 +2990,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;
     template <typename Result>
     struct Context_Expression_LITERAL_STRING_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_STRING_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2646,6 +3004,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_STRING_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_STRING_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2659,6 +3018,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_TYPE : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_TYPE";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2671,6 +3031,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;
     template <typename Result>
     struct Context_Expression_LITERAL_TYPE_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_TYPE_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2684,6 +3045,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_TYPE_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_TYPE_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2697,6 +3059,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_CHAR : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_CHAR";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2709,6 +3072,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;
     template <typename Result>
     struct Context_Expression_LITERAL_CHAR_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_CHAR_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2722,6 +3086,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_CHAR_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_LITERAL_CHAR_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2735,6 +3100,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IDENTIFIER : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER> {
+        constexpr static std::string_view context_name = "Expression_IDENTIFIER";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2747,6 +3113,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Expression_IDENTIFIER_before : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_IDENTIFIER_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2760,6 +3127,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_IDENTIFIER_after : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_IDENTIFIER_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2773,6 +3141,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_BINARY_OP : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP> {
+        constexpr static std::string_view context_name = "Expression_BINARY_OP";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2787,6 +3156,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;
     template <typename Result>
     struct Context_Expression_BINARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_BINARY_OP_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2802,6 +3172,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_BINARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_BINARY_OP_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2817,6 +3188,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_UNARY_OP : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP> {
+        constexpr static std::string_view context_name = "Expression_UNARY_OP";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2830,6 +3202,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;
     template <typename Result>
     struct Context_Expression_UNARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_UNARY_OP_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2844,6 +3217,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_UNARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_UNARY_OP_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2858,6 +3232,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CALL : ebmcodegen::util::ContextBase<Context_Expression_CALL> {
+        constexpr static std::string_view context_name = "Expression_CALL";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2870,6 +3245,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;
     template <typename Result>
     struct Context_Expression_CALL_before : ebmcodegen::util::ContextBase<Context_Expression_CALL_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_CALL_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2883,6 +3259,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CALL_after : ebmcodegen::util::ContextBase<Context_Expression_CALL_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_CALL_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2896,6 +3273,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_INDEX_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS> {
+        constexpr static std::string_view context_name = "Expression_INDEX_ACCESS";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2909,6 +3287,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;
     template <typename Result>
     struct Context_Expression_INDEX_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_INDEX_ACCESS_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2923,6 +3302,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_INDEX_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_INDEX_ACCESS_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2937,6 +3317,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_MEMBER_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS> {
+        constexpr static std::string_view context_name = "Expression_MEMBER_ACCESS";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2950,6 +3331,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;
     template <typename Result>
     struct Context_Expression_MEMBER_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_MEMBER_ACCESS_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2964,6 +3346,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_MEMBER_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_MEMBER_ACCESS_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2978,6 +3361,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ENUM_MEMBER : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER> {
+        constexpr static std::string_view context_name = "Expression_ENUM_MEMBER";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2991,6 +3375,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;
     template <typename Result>
     struct Context_Expression_ENUM_MEMBER_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_ENUM_MEMBER_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3005,6 +3390,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ENUM_MEMBER_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_ENUM_MEMBER_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3019,6 +3405,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_TYPE_CAST : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST> {
+        constexpr static std::string_view context_name = "Expression_TYPE_CAST";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3033,6 +3420,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;
     template <typename Result>
     struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_TYPE_CAST_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3048,6 +3436,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_TYPE_CAST_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3063,6 +3452,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_RANGE : ebmcodegen::util::ContextBase<Context_Expression_RANGE> {
+        constexpr static std::string_view context_name = "Expression_RANGE";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3076,6 +3466,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;
     template <typename Result>
     struct Context_Expression_RANGE_before : ebmcodegen::util::ContextBase<Context_Expression_RANGE_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_RANGE_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3090,6 +3481,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_RANGE_after : ebmcodegen::util::ContextBase<Context_Expression_RANGE_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_RANGE_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3104,6 +3496,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_DEFAULT_VALUE : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE> {
+        constexpr static std::string_view context_name = "Expression_DEFAULT_VALUE";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3115,6 +3508,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Expression_DEFAULT_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_DEFAULT_VALUE_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3127,6 +3521,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_DEFAULT_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_DEFAULT_VALUE_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3139,6 +3534,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IS_LITTLE_ENDIAN : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN> {
+        constexpr static std::string_view context_name = "Expression_IS_LITTLE_ENDIAN";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3151,6 +3547,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;
     template <typename Result>
     struct Context_Expression_IS_LITTLE_ENDIAN_before : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_IS_LITTLE_ENDIAN_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3164,6 +3561,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_IS_LITTLE_ENDIAN_after : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_IS_LITTLE_ENDIAN_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3177,6 +3575,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_STREAM_OFFSET : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET> {
+        constexpr static std::string_view context_name = "Expression_GET_STREAM_OFFSET";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3191,6 +3590,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
     template <typename Result>
     struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_GET_STREAM_OFFSET_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3206,6 +3606,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_GET_STREAM_OFFSET_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3221,6 +3622,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_REMAINING_BYTES : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES> {
+        constexpr static std::string_view context_name = "Expression_GET_REMAINING_BYTES";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3234,6 +3636,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;
     template <typename Result>
     struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_GET_REMAINING_BYTES_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3248,6 +3651,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_GET_REMAINING_BYTES_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3262,6 +3666,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CAN_READ_STREAM : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM> {
+        constexpr static std::string_view context_name = "Expression_CAN_READ_STREAM";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3276,6 +3681,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;
     template <typename Result>
     struct Context_Expression_CAN_READ_STREAM_before : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_CAN_READ_STREAM_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3291,6 +3697,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CAN_READ_STREAM_after : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_CAN_READ_STREAM_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3306,6 +3713,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ARRAY_SIZE : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE> {
+        constexpr static std::string_view context_name = "Expression_ARRAY_SIZE";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3318,6 +3726,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;
     template <typename Result>
     struct Context_Expression_ARRAY_SIZE_before : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_ARRAY_SIZE_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3331,6 +3740,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ARRAY_SIZE_after : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_ARRAY_SIZE_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3344,6 +3754,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ENUM_IS_DEFINED : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED> {
+        constexpr static std::string_view context_name = "Expression_ENUM_IS_DEFINED";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3357,6 +3768,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_ENUM_IS_DEFINED_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_ENUM_IS_DEFINED_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3371,6 +3783,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ENUM_IS_DEFINED_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_ENUM_IS_DEFINED_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3385,6 +3798,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IS_ERROR : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR> {
+        constexpr static std::string_view context_name = "Expression_IS_ERROR";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3397,6 +3811,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_IS_ERROR_before : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_IS_ERROR_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3410,6 +3825,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_IS_ERROR_after : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_IS_ERROR_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3423,6 +3839,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_MAX_VALUE : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE> {
+        constexpr static std::string_view context_name = "Expression_MAX_VALUE";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3435,6 +3852,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;
     template <typename Result>
     struct Context_Expression_MAX_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_MAX_VALUE_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3448,6 +3866,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_MAX_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_MAX_VALUE_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3461,6 +3880,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_READ_DATA : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA> {
+        constexpr static std::string_view context_name = "Expression_READ_DATA";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3474,6 +3894,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;
     template <typename Result>
     struct Context_Expression_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_READ_DATA_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3488,6 +3909,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_READ_DATA_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3502,6 +3924,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA> {
+        constexpr static std::string_view context_name = "Expression_WRITE_DATA";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3515,6 +3938,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_WRITE_DATA_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3529,6 +3953,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_WRITE_DATA_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3543,6 +3968,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CONDITIONAL_STATEMENT : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT> {
+        constexpr static std::string_view context_name = "Expression_CONDITIONAL_STATEMENT";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3556,6 +3982,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_CONDITIONAL_STATEMENT_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3570,6 +3997,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_CONDITIONAL_STATEMENT_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3584,6 +4012,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CONDITIONAL : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL> {
+        constexpr static std::string_view context_name = "Expression_CONDITIONAL";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3599,6 +4028,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_CONDITIONAL_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3615,6 +4045,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_CONDITIONAL_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3631,6 +4062,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_AVAILABLE : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE> {
+        constexpr static std::string_view context_name = "Expression_AVAILABLE";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3644,6 +4076,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_AVAILABLE_before : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_AVAILABLE_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3658,6 +4091,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_AVAILABLE_after : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_AVAILABLE_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3672,6 +4106,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SIZEOF : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF> {
+        constexpr static std::string_view context_name = "Expression_SIZEOF";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3685,6 +4120,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_SIZEOF_before : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_SIZEOF_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3699,6 +4135,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SIZEOF_after : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_SIZEOF_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3713,6 +4150,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SUB_RANGE_INIT : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT> {
+        constexpr static std::string_view context_name = "Expression_SUB_RANGE_INIT";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3725,6 +4163,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;
     template <typename Result>
     struct Context_Expression_SUB_RANGE_INIT_before : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_SUB_RANGE_INIT_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3738,6 +4177,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SUB_RANGE_INIT_after : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_SUB_RANGE_INIT_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3751,6 +4191,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_OR_COND : ebmcodegen::util::ContextBase<Context_Expression_OR_COND> {
+        constexpr static std::string_view context_name = "Expression_OR_COND";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3763,6 +4204,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;
     template <typename Result>
     struct Context_Expression_OR_COND_before : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_OR_COND_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3776,6 +4218,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_OR_COND_after : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_OR_COND_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3789,6 +4232,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ADDRESS_OF : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF> {
+        constexpr static std::string_view context_name = "Expression_ADDRESS_OF";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3801,6 +4245,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_ADDRESS_OF_before : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_ADDRESS_OF_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3814,6 +4259,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ADDRESS_OF_after : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_ADDRESS_OF_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3827,6 +4273,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_OPTIONAL_OF : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF> {
+        constexpr static std::string_view context_name = "Expression_OPTIONAL_OF";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3839,6 +4286,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_OPTIONAL_OF_before : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_OPTIONAL_OF_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3852,6 +4300,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_OPTIONAL_OF_after : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_OPTIONAL_OF_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3865,6 +4314,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SETTER_STATUS : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS> {
+        constexpr static std::string_view context_name = "Expression_SETTER_STATUS";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3877,6 +4327,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;
     template <typename Result>
     struct Context_Expression_SETTER_STATUS_before : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_SETTER_STATUS_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3890,6 +4341,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SETTER_STATUS_after : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_SETTER_STATUS_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3903,6 +4355,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SELF : ebmcodegen::util::ContextBase<Context_Expression_SELF> {
+        constexpr static std::string_view context_name = "Expression_SELF";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3914,6 +4367,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Expression_SELF_before : ebmcodegen::util::ContextBase<Context_Expression_SELF_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_SELF_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3926,6 +4380,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SELF_after : ebmcodegen::util::ContextBase<Context_Expression_SELF_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_SELF_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3938,6 +4393,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_AS_ARG : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG> {
+        constexpr static std::string_view context_name = "Expression_AS_ARG";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3950,6 +4406,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_AS_ARG_before : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_AS_ARG_before";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3963,6 +4420,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_AS_ARG_after : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_AS_ARG_after";
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3976,6 +4434,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression : ebmcodegen::util::ContextBase<Context_Expression> {
+        constexpr static std::string_view context_name = "Expression";
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -3986,6 +4445,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     template <typename Result>
     struct Context_Expression_before : ebmcodegen::util::ContextBase<Context_Expression_before<Result>> {
+        constexpr static std::string_view context_name = "Expression_before";
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -3997,6 +4457,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_after : ebmcodegen::util::ContextBase<Context_Expression_after<Result>> {
+        constexpr static std::string_view context_name = "Expression_after";
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -4008,6 +4469,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expressions : ebmcodegen::util::ContextBase<Context_Expressions> {
+        constexpr static std::string_view context_name = "Expressions";
         BaseVisitor& visitor;
         const ebm::Expressions& in;
     };
@@ -4017,6 +4479,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     template <typename Result>
     struct Context_Expressions_before : ebmcodegen::util::ContextBase<Context_Expressions_before<Result>> {
+        constexpr static std::string_view context_name = "Expressions_before";
         BaseVisitor& visitor;
         const ebm::Expressions& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4027,6 +4490,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expressions_after : ebmcodegen::util::ContextBase<Context_Expressions_after<Result>> {
+        constexpr static std::string_view context_name = "Expressions_after";
         BaseVisitor& visitor;
         const ebm::Expressions& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4037,6 +4501,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_INT : ebmcodegen::util::ContextBase<Context_Type_INT> {
+        constexpr static std::string_view context_name = "Type_INT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4048,6 +4513,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     template <typename Result>
     struct Context_Type_INT_before : ebmcodegen::util::ContextBase<Context_Type_INT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_INT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4060,6 +4526,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_INT_after : ebmcodegen::util::ContextBase<Context_Type_INT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_INT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4072,6 +4539,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_UINT : ebmcodegen::util::ContextBase<Context_Type_UINT> {
+        constexpr static std::string_view context_name = "Type_UINT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4083,6 +4551,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     template <typename Result>
     struct Context_Type_UINT_before : ebmcodegen::util::ContextBase<Context_Type_UINT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_UINT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4095,6 +4564,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_UINT_after : ebmcodegen::util::ContextBase<Context_Type_UINT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_UINT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4107,6 +4577,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_USIZE : ebmcodegen::util::ContextBase<Context_Type_USIZE> {
+        constexpr static std::string_view context_name = "Type_USIZE";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4117,6 +4588,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_USIZE_before : ebmcodegen::util::ContextBase<Context_Type_USIZE_before<Result>> {
+        constexpr static std::string_view context_name = "Type_USIZE_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4128,6 +4600,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_USIZE_after : ebmcodegen::util::ContextBase<Context_Type_USIZE_after<Result>> {
+        constexpr static std::string_view context_name = "Type_USIZE_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4139,6 +4612,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_FLOAT : ebmcodegen::util::ContextBase<Context_Type_FLOAT> {
+        constexpr static std::string_view context_name = "Type_FLOAT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4150,6 +4624,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     template <typename Result>
     struct Context_Type_FLOAT_before : ebmcodegen::util::ContextBase<Context_Type_FLOAT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_FLOAT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4162,6 +4637,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_FLOAT_after : ebmcodegen::util::ContextBase<Context_Type_FLOAT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_FLOAT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4174,6 +4650,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_STRUCT : ebmcodegen::util::ContextBase<Context_Type_STRUCT> {
+        constexpr static std::string_view context_name = "Type_STRUCT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4185,6 +4662,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Type_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_STRUCT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_STRUCT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4197,6 +4675,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_STRUCT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_STRUCT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4209,6 +4688,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RECURSIVE_STRUCT : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT> {
+        constexpr static std::string_view context_name = "Type_RECURSIVE_STRUCT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4220,6 +4700,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Type_RECURSIVE_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_RECURSIVE_STRUCT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4232,6 +4713,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_RECURSIVE_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_RECURSIVE_STRUCT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4244,6 +4726,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_BOOL : ebmcodegen::util::ContextBase<Context_Type_BOOL> {
+        constexpr static std::string_view context_name = "Type_BOOL";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4254,6 +4737,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_BOOL_before : ebmcodegen::util::ContextBase<Context_Type_BOOL_before<Result>> {
+        constexpr static std::string_view context_name = "Type_BOOL_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4265,6 +4749,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_BOOL_after : ebmcodegen::util::ContextBase<Context_Type_BOOL_after<Result>> {
+        constexpr static std::string_view context_name = "Type_BOOL_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4276,6 +4761,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VOID : ebmcodegen::util::ContextBase<Context_Type_VOID> {
+        constexpr static std::string_view context_name = "Type_VOID";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4286,6 +4772,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_VOID_before : ebmcodegen::util::ContextBase<Context_Type_VOID_before<Result>> {
+        constexpr static std::string_view context_name = "Type_VOID_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4297,6 +4784,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_VOID_after : ebmcodegen::util::ContextBase<Context_Type_VOID_after<Result>> {
+        constexpr static std::string_view context_name = "Type_VOID_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4308,6 +4796,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_META : ebmcodegen::util::ContextBase<Context_Type_META> {
+        constexpr static std::string_view context_name = "Type_META";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4318,6 +4807,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_META_before : ebmcodegen::util::ContextBase<Context_Type_META_before<Result>> {
+        constexpr static std::string_view context_name = "Type_META_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4329,6 +4819,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_META_after : ebmcodegen::util::ContextBase<Context_Type_META_after<Result>> {
+        constexpr static std::string_view context_name = "Type_META_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4340,6 +4831,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENUM : ebmcodegen::util::ContextBase<Context_Type_ENUM> {
+        constexpr static std::string_view context_name = "Type_ENUM";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4352,6 +4844,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Type_ENUM_before : ebmcodegen::util::ContextBase<Context_Type_ENUM_before<Result>> {
+        constexpr static std::string_view context_name = "Type_ENUM_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4365,6 +4858,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ENUM_after : ebmcodegen::util::ContextBase<Context_Type_ENUM_after<Result>> {
+        constexpr static std::string_view context_name = "Type_ENUM_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4378,6 +4872,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ARRAY : ebmcodegen::util::ContextBase<Context_Type_ARRAY> {
+        constexpr static std::string_view context_name = "Type_ARRAY";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4391,6 +4886,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
     template <typename Result>
     struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before<Result>> {
+        constexpr static std::string_view context_name = "Type_ARRAY_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4405,6 +4901,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after<Result>> {
+        constexpr static std::string_view context_name = "Type_ARRAY_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4419,6 +4916,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VECTOR : ebmcodegen::util::ContextBase<Context_Type_VECTOR> {
+        constexpr static std::string_view context_name = "Type_VECTOR";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4430,6 +4928,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;
     template <typename Result>
     struct Context_Type_VECTOR_before : ebmcodegen::util::ContextBase<Context_Type_VECTOR_before<Result>> {
+        constexpr static std::string_view context_name = "Type_VECTOR_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4442,6 +4941,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_VECTOR_after : ebmcodegen::util::ContextBase<Context_Type_VECTOR_after<Result>> {
+        constexpr static std::string_view context_name = "Type_VECTOR_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4454,6 +4954,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VARIANT : ebmcodegen::util::ContextBase<Context_Type_VARIANT> {
+        constexpr static std::string_view context_name = "Type_VARIANT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4465,6 +4966,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;
     template <typename Result>
     struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_VARIANT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4477,6 +4979,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_VARIANT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4489,6 +4992,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RANGE : ebmcodegen::util::ContextBase<Context_Type_RANGE> {
+        constexpr static std::string_view context_name = "Type_RANGE";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4500,6 +5004,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;
     template <typename Result>
     struct Context_Type_RANGE_before : ebmcodegen::util::ContextBase<Context_Type_RANGE_before<Result>> {
+        constexpr static std::string_view context_name = "Type_RANGE_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4512,6 +5017,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_RANGE_after : ebmcodegen::util::ContextBase<Context_Type_RANGE_after<Result>> {
+        constexpr static std::string_view context_name = "Type_RANGE_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4524,6 +5030,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENCODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN> {
+        constexpr static std::string_view context_name = "Type_ENCODER_RETURN";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4534,6 +5041,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_ENCODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_before<Result>> {
+        constexpr static std::string_view context_name = "Type_ENCODER_RETURN_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4545,6 +5053,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ENCODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_after<Result>> {
+        constexpr static std::string_view context_name = "Type_ENCODER_RETURN_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4556,6 +5065,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_DECODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN> {
+        constexpr static std::string_view context_name = "Type_DECODER_RETURN";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4566,6 +5076,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_DECODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_before<Result>> {
+        constexpr static std::string_view context_name = "Type_DECODER_RETURN_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4577,6 +5088,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_DECODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_after<Result>> {
+        constexpr static std::string_view context_name = "Type_DECODER_RETURN_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4588,6 +5100,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENCODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT> {
+        constexpr static std::string_view context_name = "Type_ENCODER_INPUT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4598,6 +5111,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_ENCODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_ENCODER_INPUT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4609,6 +5123,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ENCODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_ENCODER_INPUT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4620,6 +5135,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_DECODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT> {
+        constexpr static std::string_view context_name = "Type_DECODER_INPUT";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4630,6 +5146,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_DECODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_before<Result>> {
+        constexpr static std::string_view context_name = "Type_DECODER_INPUT_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4641,6 +5158,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_DECODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_after<Result>> {
+        constexpr static std::string_view context_name = "Type_DECODER_INPUT_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4652,6 +5170,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_PROPERTY_SETTER_RETURN : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN> {
+        constexpr static std::string_view context_name = "Type_PROPERTY_SETTER_RETURN";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4662,6 +5181,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_PROPERTY_SETTER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_before<Result>> {
+        constexpr static std::string_view context_name = "Type_PROPERTY_SETTER_RETURN_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4673,6 +5193,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_PROPERTY_SETTER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_after<Result>> {
+        constexpr static std::string_view context_name = "Type_PROPERTY_SETTER_RETURN_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4684,6 +5205,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_OPTIONAL : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL> {
+        constexpr static std::string_view context_name = "Type_OPTIONAL";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4695,6 +5217,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;
     template <typename Result>
     struct Context_Type_OPTIONAL_before : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_before<Result>> {
+        constexpr static std::string_view context_name = "Type_OPTIONAL_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4707,6 +5230,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_OPTIONAL_after : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_after<Result>> {
+        constexpr static std::string_view context_name = "Type_OPTIONAL_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4719,6 +5243,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_PTR : ebmcodegen::util::ContextBase<Context_Type_PTR> {
+        constexpr static std::string_view context_name = "Type_PTR";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4730,6 +5255,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;
     template <typename Result>
     struct Context_Type_PTR_before : ebmcodegen::util::ContextBase<Context_Type_PTR_before<Result>> {
+        constexpr static std::string_view context_name = "Type_PTR_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4742,6 +5268,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_PTR_after : ebmcodegen::util::ContextBase<Context_Type_PTR_after<Result>> {
+        constexpr static std::string_view context_name = "Type_PTR_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4754,6 +5281,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_FUNCTION : ebmcodegen::util::ContextBase<Context_Type_FUNCTION> {
+        constexpr static std::string_view context_name = "Type_FUNCTION";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4765,6 +5293,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;
     template <typename Result>
     struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before<Result>> {
+        constexpr static std::string_view context_name = "Type_FUNCTION_before";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4777,6 +5306,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after<Result>> {
+        constexpr static std::string_view context_name = "Type_FUNCTION_after";
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4789,6 +5319,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type : ebmcodegen::util::ContextBase<Context_Type> {
+        constexpr static std::string_view context_name = "Type";
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -4799,6 +5330,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     template <typename Result>
     struct Context_Type_before : ebmcodegen::util::ContextBase<Context_Type_before<Result>> {
+        constexpr static std::string_view context_name = "Type_before";
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -4810,6 +5342,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_after : ebmcodegen::util::ContextBase<Context_Type_after<Result>> {
+        constexpr static std::string_view context_name = "Type_after";
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -4821,6 +5354,7 @@ namespace ebm2python {
     #define EBM2PYTHON_DECONSTRUCT_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Types : ebmcodegen::util::ContextBase<Context_Types> {
+        constexpr static std::string_view context_name = "Types";
         BaseVisitor& visitor;
         const ebm::Types& in;
     };
@@ -4830,6 +5364,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     template <typename Result>
     struct Context_Types_before : ebmcodegen::util::ContextBase<Context_Types_before<Result>> {
+        constexpr static std::string_view context_name = "Types_before";
         BaseVisitor& visitor;
         const ebm::Types& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4840,6 +5375,7 @@ namespace ebm2python {
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Types_after : ebmcodegen::util::ContextBase<Context_Types_after<Result>> {
+        constexpr static std::string_view context_name = "Types_after";
         BaseVisitor& visitor;
         const ebm::Types& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;

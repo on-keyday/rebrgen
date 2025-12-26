@@ -43,7 +43,7 @@ namespace ebmgen {
             body.kind = ebm::TypeKind::VARIANT;
             EBMA_CONVERT_STATEMENT(related_field, field);
             ebm::VariantDesc desc;
-            desc.related_field = related_field;
+            desc.related_field = to_weak(related_field);
             ebm::Types members;
             for (auto& struct_member : n->structs) {
                 MAYBE(member_type_ref, ctx.get_statement_converter().convert_struct_decl(struct_member, varint_id));

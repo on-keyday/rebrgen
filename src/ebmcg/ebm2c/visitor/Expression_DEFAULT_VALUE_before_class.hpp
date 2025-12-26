@@ -4,7 +4,7 @@
 /*
   Name: Expression_DEFAULT_VALUE_before_class
   Available Variables:
-    ctx: Context_Expression_DEFAULT_VALUE_before
+    ctx: Context_Expression_DEFAULT_VALUE_before<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
         module_: ebmgen::MappingTable

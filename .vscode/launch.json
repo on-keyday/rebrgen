@@ -134,7 +134,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmcodegen",
-      "args": ["--mode", "class-based-codegen-source"],
+      "args": ["--mode", "codegen-class-source"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

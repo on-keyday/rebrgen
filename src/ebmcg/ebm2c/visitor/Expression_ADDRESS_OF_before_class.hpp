@@ -4,7 +4,7 @@
 /*
   Name: Expression_ADDRESS_OF_before_class
   Available Variables:
-    ctx: Context_Expression_ADDRESS_OF_before
+    ctx: Context_Expression_ADDRESS_OF_before<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
         module_: ebmgen::MappingTable

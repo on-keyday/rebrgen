@@ -4,7 +4,7 @@
 /*
   Name: entry_before_class
   Available Variables:
-    ctx: Context_entry_before
+    ctx: Context_entry_before<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
         module_: ebmgen::MappingTable

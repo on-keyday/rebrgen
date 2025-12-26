@@ -28,6 +28,37 @@
 
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/util.hpp"
+
+namespace CODEGEN_NAMESPACE {
+    struct Traversal {
+        TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(Traversal, BaseVisitor);
+        std::string_view func_name;
+        CodeWriter tmp;
+        expected<void> visit(CODEGEN_CONTEXT(Expression_ADDRESS_OF) & ctx) {
+            tmp.write("REACHING Expression_ADDRESS_OF");
+            return {};
+        }
+        template <typename Ctx>
+        expected<void> visit(Ctx&& ctx) {
+            if (ctx.is_before_or_after()) {
+                return pass;
+            }
+            if (!ctx.context_name.contains("Statement")) {
+                return {};
+            }
+            if (std::string_view(ctx.context_name) == "Statement_MATCH_STATEMENT" &&
+                func_name.contains("HighEdge")) {
+                tmp.writeln("// OK? Visiting ", ctx.context_name);
+            }
+            tmp.writeln("// Visiting ", ctx.context_name);
+            return traverse_children<void>(*this, std::forward<Ctx>(ctx));
+        }
+    };
+    static_assert(HasVisitor<void, Traversal, CODEGEN_CONTEXT(Expression_ADDRESS_OF) &>);
+
+}  // namespace CODEGEN_NAMESPACE
+
 DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
@@ -68,6 +99,10 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     MAYBE(body, ctx.visit(ctx.func_decl.body));
 
     if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+        Traversal traversal{ctx.visitor};
+        traversal.func_name = func_prefix;
+        visit_Object<void>(traversal, ctx.func_decl.body);
+        w.write(traversal.tmp);
     }
 
     inline_prefix = "inline ";  // TODO: currently, generateing all functions in header

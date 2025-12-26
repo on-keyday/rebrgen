@@ -304,7 +304,7 @@ namespace ebmcodegen::util {
             if (auto related_varint = decl->related_variant()) {
                 MAYBE(type, visitor.module_.get_type(*related_varint));
                 MAYBE(desc, type.body.variant_desc());
-                MAYBE(upper_layers, get_identifier_layer(visitor, desc.related_field, state));
+                MAYBE(upper_layers, get_identifier_layer(visitor, from_weak(desc.related_field), state));
                 layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
                 if (state == LayerState::as_expr) {
                     return layers;
@@ -738,7 +738,31 @@ namespace ebmcodegen::util {
         R get_impl(F&& f) const {
             return get_visitor_impl<R>(derived(), f);
         }
+
+        constexpr bool is_before_or_after() const {
+            constexpr auto name = std::string_view(D::context_name);
+            return name.ends_with("_before") || name.ends_with("_after");
+        }
     };
+
+    // template <class D, class V, class R = void>
+    // struct TraversalVisitorBase {
+    // TODO: because of HasVisitor concept doesn't work correctly in some compilers
+    //       when CRTP is involved, we use macro to define TraversalVisitorBase
+#define TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(D, V) \
+    V & visitor;                                  \
+    D(V& v)                                       \
+        : visitor(v) {}
+#define TRAVERSAL_VISITOR_BASE(D, V, R)                             \
+    TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(D, V)                       \
+    template <class Ctx>                                            \
+    ebmgen::expected<R> visit(Ctx&& ctx) {                          \
+        if (ctx.is_before_or_after()) {                             \
+            return pass;                                            \
+        }                                                           \
+        return traverse_children<R>(*this, std::forward<Ctx>(ctx)); \
+    }
+    //};
 
     // 0: most outer last index: most inner
     ebmgen::expected<std::vector<const ebm::Type*>> get_type_tree(auto&& ctx, ebm::TypeRef type_ref) {

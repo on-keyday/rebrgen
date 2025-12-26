@@ -780,7 +780,7 @@ format FuncTypeDesc:
 format VariantDesc:
     common_type :TypeRef # Optional common type for all union members
     members :Types # List of variant member types
-    related_field :StatementRef # Reference to the field that holds this variant (maybe null)
+    related_field :WeakStatementRef # Reference to the field that holds this variant (maybe null)
 
 enum ArrayAnnotation:
     :u8

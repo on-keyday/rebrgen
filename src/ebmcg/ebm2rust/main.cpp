@@ -51999,13 +51999,13 @@ namespace ebm2rust {
             Context_entry new_ctx{
                 .visitor = get_visitor_arg_from_context(ctx),
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_entry_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52020,7 +52020,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52031,6 +52031,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_entry(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_pre_visitor(Context&& ctx,ebm::ExtendedBinaryModule& ebm){
         auto main_logic = [&]() -> expected<Result>{
@@ -52038,14 +52042,14 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .ebm = ebm,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_pre_visitor_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
             .ebm = ebm,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52061,7 +52065,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52072,6 +52076,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_pre_visitor(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_post_entry(Context&& ctx,expected<Result>& entry_result){
         auto main_logic = [&]() -> expected<Result>{
@@ -52079,14 +52087,14 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .entry_result = entry_result,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_post_entry_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
             .entry_result = entry_result,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52102,7 +52110,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52112,6 +52120,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_post_entry(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_BLOCK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52127,7 +52139,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .block = block,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_BLOCK_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52136,7 +52148,7 @@ namespace ebm2rust {
             .block = block,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52154,7 +52166,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52164,6 +52176,14 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_BLOCK(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_block = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.block);
+        if (!result_block) {
+            return unexpect_error(std::move(result_block.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ASSIGNMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52189,7 +52209,7 @@ namespace ebm2rust {
                 .target = target,
                 .value = value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ASSIGNMENT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52200,7 +52220,7 @@ namespace ebm2rust {
             .value = value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52220,7 +52240,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52230,6 +52250,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ASSIGNMENT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.value)) {
+            auto result_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.value);
+            if (!result_value) {
+                return unexpect_error(std::move(result_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_YIELD(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52255,7 +52291,7 @@ namespace ebm2rust {
                 .target = target,
                 .value = value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_YIELD_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52266,7 +52302,7 @@ namespace ebm2rust {
             .value = value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52286,7 +52322,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52296,6 +52332,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_YIELD(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.value)) {
+            auto result_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.value);
+            if (!result_value) {
+                return unexpect_error(std::move(result_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_APPEND(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52316,7 +52368,7 @@ namespace ebm2rust {
                 .target = target,
                 .value = value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_APPEND_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52326,7 +52378,7 @@ namespace ebm2rust {
             .value = value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52345,7 +52397,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52355,6 +52407,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_APPEND(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.value)) {
+            auto result_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.value);
+            if (!result_value) {
+                return unexpect_error(std::move(result_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52370,7 +52438,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .value = value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_RETURN_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52379,7 +52447,7 @@ namespace ebm2rust {
             .value = value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52397,7 +52465,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52407,6 +52475,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_RETURN(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.value)) {
+            auto result_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.value);
+            if (!result_value) {
+                return unexpect_error(std::move(result_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52422,7 +52500,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .value = value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ERROR_RETURN_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52431,7 +52509,7 @@ namespace ebm2rust {
             .value = value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52449,7 +52527,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52459,6 +52537,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ERROR_RETURN(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.value)) {
+            auto result_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.value);
+            if (!result_value) {
+                return unexpect_error(std::move(result_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ASSERT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52474,7 +52562,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .assert_desc = assert_desc,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ASSERT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52483,7 +52571,7 @@ namespace ebm2rust {
             .assert_desc = assert_desc,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52501,7 +52589,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52511,6 +52599,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ASSERT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.assert_desc.condition.cond)) {
+            auto result_cond = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.assert_desc.condition.cond);
+            if (!result_cond) {
+                return unexpect_error(std::move(result_cond.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_READ_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52526,7 +52624,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .read_data = read_data,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_READ_DATA_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52535,7 +52633,7 @@ namespace ebm2rust {
             .read_data = read_data,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52553,7 +52651,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52563,6 +52661,60 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_READ_DATA(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.read_data.io_ref)) {
+            auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.read_data.io_ref);
+            if (!result_io_ref) {
+                return unexpect_error(std::move(result_io_ref.error()));
+            }
+        }
+        if (!is_nil(type_ctx.read_data.field)) {
+            auto result_field = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.read_data.field);
+            if (!result_field) {
+                return unexpect_error(std::move(result_field.error()));
+            }
+        }
+        if (!is_nil(type_ctx.read_data.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.read_data.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.read_data.data_type)) {
+            auto result_data_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.read_data.data_type);
+            if (!result_data_type) {
+                return unexpect_error(std::move(result_data_type.error()));
+            }
+        }
+        if (auto ptr = type_ctx.read_data.attribute.dynamic_ref()) {
+            if (!is_nil((*ptr))) {
+                auto result_dynamic_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_dynamic_ref) {
+                    return unexpect_error(std::move(result_dynamic_ref.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.read_data.size.ref()) {
+            if (!is_nil((*ptr))) {
+                auto result_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_ref) {
+                    return unexpect_error(std::move(result_ref.error()));
+                }
+            }
+        }
+        if (auto ptr_lowered_statement = type_ctx.read_data.lowered_statement()) {
+        }
+        if (auto ptr = type_ctx.read_data.offset()) {
+            if (!is_nil((*ptr))) {
+                auto result_offset = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_offset) {
+                    return unexpect_error(std::move(result_offset.error()));
+                }
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_WRITE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52578,7 +52730,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .write_data = write_data,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_WRITE_DATA_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52587,7 +52739,7 @@ namespace ebm2rust {
             .write_data = write_data,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52605,7 +52757,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52615,6 +52767,60 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_WRITE_DATA(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.write_data.io_ref)) {
+            auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.write_data.io_ref);
+            if (!result_io_ref) {
+                return unexpect_error(std::move(result_io_ref.error()));
+            }
+        }
+        if (!is_nil(type_ctx.write_data.field)) {
+            auto result_field = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.write_data.field);
+            if (!result_field) {
+                return unexpect_error(std::move(result_field.error()));
+            }
+        }
+        if (!is_nil(type_ctx.write_data.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.write_data.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.write_data.data_type)) {
+            auto result_data_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.write_data.data_type);
+            if (!result_data_type) {
+                return unexpect_error(std::move(result_data_type.error()));
+            }
+        }
+        if (auto ptr = type_ctx.write_data.attribute.dynamic_ref()) {
+            if (!is_nil((*ptr))) {
+                auto result_dynamic_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_dynamic_ref) {
+                    return unexpect_error(std::move(result_dynamic_ref.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.write_data.size.ref()) {
+            if (!is_nil((*ptr))) {
+                auto result_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_ref) {
+                    return unexpect_error(std::move(result_ref.error()));
+                }
+            }
+        }
+        if (auto ptr_lowered_statement = type_ctx.write_data.lowered_statement()) {
+        }
+        if (auto ptr = type_ctx.write_data.offset()) {
+            if (!is_nil((*ptr))) {
+                auto result_offset = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_offset) {
+                    return unexpect_error(std::move(result_offset.error()));
+                }
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_RESERVE_DATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52630,7 +52836,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .reserve_data = reserve_data,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_RESERVE_DATA_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52639,7 +52845,7 @@ namespace ebm2rust {
             .reserve_data = reserve_data,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52657,7 +52863,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52667,6 +52873,18 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_RESERVE_DATA(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (auto ptr = type_ctx.reserve_data.size.ref()) {
+            if (!is_nil((*ptr))) {
+                auto result_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_ref) {
+                    return unexpect_error(std::move(result_ref.error()));
+                }
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_IF_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52682,7 +52900,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .if_statement = if_statement,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_IF_STATEMENT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52691,7 +52909,7 @@ namespace ebm2rust {
             .if_statement = if_statement,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52709,7 +52927,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52719,6 +52937,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_IF_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.if_statement.condition.cond)) {
+            auto result_cond = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.if_statement.condition.cond);
+            if (!result_cond) {
+                return unexpect_error(std::move(result_cond.error()));
+            }
+        }
+        if (!is_nil(type_ctx.if_statement.then_block)) {
+            auto result_then_block = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.if_statement.then_block);
+            if (!result_then_block) {
+                return unexpect_error(std::move(result_then_block.error()));
+            }
+        }
+        if (!is_nil(type_ctx.if_statement.else_block)) {
+            auto result_else_block = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.if_statement.else_block);
+            if (!result_else_block) {
+                return unexpect_error(std::move(result_else_block.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_LOOP_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52734,7 +52974,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .loop = loop,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_LOOP_STATEMENT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52743,7 +52983,7 @@ namespace ebm2rust {
             .loop = loop,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52761,7 +53001,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52771,6 +53011,56 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_LOOP_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (auto ptr = type_ctx.loop.collection()) {
+            if (!is_nil((*ptr))) {
+                auto result_collection = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_collection) {
+                    return unexpect_error(std::move(result_collection.error()));
+                }
+            }
+        }
+        if (auto ptr_condition = type_ctx.loop.condition()) {
+            if (!is_nil((*ptr_condition).cond)) {
+                auto result_cond = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr_condition).cond);
+                if (!result_cond) {
+                    return unexpect_error(std::move(result_cond.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.loop.increment()) {
+            if (!is_nil((*ptr))) {
+                auto result_increment = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_increment) {
+                    return unexpect_error(std::move(result_increment.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.loop.init()) {
+            if (!is_nil((*ptr))) {
+                auto result_init = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_init) {
+                    return unexpect_error(std::move(result_init.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.loop.item_var()) {
+            if (!is_nil((*ptr))) {
+                auto result_item_var = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_item_var) {
+                    return unexpect_error(std::move(result_item_var.error()));
+                }
+            }
+        }
+        if (!is_nil(type_ctx.loop.body)) {
+            auto result_body = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.loop.body);
+            if (!result_body) {
+                return unexpect_error(std::move(result_body.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_MATCH_STATEMENT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52786,7 +53076,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .match_statement = match_statement,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_MATCH_STATEMENT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52795,7 +53085,7 @@ namespace ebm2rust {
             .match_statement = match_statement,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52813,7 +53103,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52823,6 +53113,20 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_MATCH_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.match_statement.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.match_statement.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        auto result_branches = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.match_statement.branches);
+        if (!result_branches) {
+            return unexpect_error(std::move(result_branches.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_MATCH_BRANCH(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52838,7 +53142,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .match_branch = match_branch,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_MATCH_BRANCH_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52847,7 +53151,7 @@ namespace ebm2rust {
             .match_branch = match_branch,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52865,7 +53169,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52875,6 +53179,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_MATCH_BRANCH(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.match_branch.condition.cond)) {
+            auto result_cond = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.match_branch.condition.cond);
+            if (!result_cond) {
+                return unexpect_error(std::move(result_cond.error()));
+            }
+        }
+        if (!is_nil(type_ctx.match_branch.body)) {
+            auto result_body = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.match_branch.body);
+            if (!result_body) {
+                return unexpect_error(std::move(result_body.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_BREAK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52890,7 +53210,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .break_ = break_,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_BREAK_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52899,7 +53219,7 @@ namespace ebm2rust {
             .break_ = break_,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52917,7 +53237,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52927,6 +53247,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_BREAK(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_CONTINUE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52942,7 +53266,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .continue_ = continue_,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_CONTINUE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -52951,7 +53275,7 @@ namespace ebm2rust {
             .continue_ = continue_,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -52969,7 +53293,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -52979,6 +53303,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_CONTINUE(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_FUNCTION_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -52994,7 +53322,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .func_decl = func_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_FUNCTION_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53003,7 +53331,7 @@ namespace ebm2rust {
             .func_decl = func_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53021,7 +53349,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53031,6 +53359,26 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_FUNCTION_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.func_decl.return_type)) {
+            auto result_return_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.func_decl.return_type);
+            if (!result_return_type) {
+                return unexpect_error(std::move(result_return_type.error()));
+            }
+        }
+        auto result_params = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.func_decl.params);
+        if (!result_params) {
+            return unexpect_error(std::move(result_params.error()));
+        }
+        if (!is_nil(type_ctx.func_decl.body)) {
+            auto result_body = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.func_decl.body);
+            if (!result_body) {
+                return unexpect_error(std::move(result_body.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_VARIABLE_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53046,7 +53394,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .var_decl = var_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_VARIABLE_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53055,7 +53403,7 @@ namespace ebm2rust {
             .var_decl = var_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53073,7 +53421,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53083,6 +53431,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_VARIABLE_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.var_decl.var_type)) {
+            auto result_var_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.var_decl.var_type);
+            if (!result_var_type) {
+                return unexpect_error(std::move(result_var_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.var_decl.initial_value)) {
+            auto result_initial_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.var_decl.initial_value);
+            if (!result_initial_value) {
+                return unexpect_error(std::move(result_initial_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_PARAMETER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53098,7 +53462,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .param_decl = param_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_PARAMETER_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53107,7 +53471,7 @@ namespace ebm2rust {
             .param_decl = param_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53125,7 +53489,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53135,6 +53499,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PARAMETER_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.param_decl.param_type)) {
+            auto result_param_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.param_decl.param_type);
+            if (!result_param_type) {
+                return unexpect_error(std::move(result_param_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_FIELD_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53150,7 +53524,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .field_decl = field_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_FIELD_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53159,7 +53533,7 @@ namespace ebm2rust {
             .field_decl = field_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53177,7 +53551,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53187,6 +53561,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_FIELD_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.field_decl.field_type)) {
+            auto result_field_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.field_decl.field_type);
+            if (!result_field_type) {
+                return unexpect_error(std::move(result_field_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_COMPOSITE_FIELD_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53202,7 +53586,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .composite_field_decl = composite_field_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_COMPOSITE_FIELD_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53211,7 +53595,7 @@ namespace ebm2rust {
             .composite_field_decl = composite_field_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53229,7 +53613,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53239,6 +53623,20 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_COMPOSITE_FIELD_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_fields = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.composite_field_decl.fields);
+        if (!result_fields) {
+            return unexpect_error(std::move(result_fields.error()));
+        }
+        if (!is_nil(type_ctx.composite_field_decl.composite_type)) {
+            auto result_composite_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.composite_field_decl.composite_type);
+            if (!result_composite_type) {
+                return unexpect_error(std::move(result_composite_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ENUM_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53254,7 +53652,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .enum_decl = enum_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ENUM_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53263,7 +53661,7 @@ namespace ebm2rust {
             .enum_decl = enum_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53281,7 +53679,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53291,6 +53689,20 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ENUM_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.enum_decl.base_type)) {
+            auto result_base_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.enum_decl.base_type);
+            if (!result_base_type) {
+                return unexpect_error(std::move(result_base_type.error()));
+            }
+        }
+        auto result_members = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.enum_decl.members);
+        if (!result_members) {
+            return unexpect_error(std::move(result_members.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ENUM_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53306,7 +53718,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .enum_member_decl = enum_member_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ENUM_MEMBER_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53315,7 +53727,7 @@ namespace ebm2rust {
             .enum_member_decl = enum_member_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53333,7 +53745,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53343,6 +53755,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ENUM_MEMBER_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.enum_member_decl.value)) {
+            auto result_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.enum_member_decl.value);
+            if (!result_value) {
+                return unexpect_error(std::move(result_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_STRUCT_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53358,7 +53780,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .struct_decl = struct_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_STRUCT_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53367,7 +53789,7 @@ namespace ebm2rust {
             .struct_decl = struct_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53385,7 +53807,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53396,6 +53818,60 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_STRUCT_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_fields = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.struct_decl.fields);
+        if (!result_fields) {
+            return unexpect_error(std::move(result_fields.error()));
+        }
+        if (auto ptr = type_ctx.struct_decl.related_variant()) {
+            if (!is_nil((*ptr))) {
+                auto result_related_variant = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_related_variant) {
+                    return unexpect_error(std::move(result_related_variant.error()));
+                }
+            }
+        }
+        if (auto ptr_size = type_ctx.struct_decl.size()) {
+            if (auto ptr = (*ptr_size).ref()) {
+                if (!is_nil((*ptr))) {
+                    auto result_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                    if (!result_ref) {
+                        return unexpect_error(std::move(result_ref.error()));
+                    }
+                }
+            }
+        }
+        if (auto ptr = type_ctx.struct_decl.decode_fn()) {
+            if (!is_nil((*ptr))) {
+                auto result_decode_fn = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_decode_fn) {
+                    return unexpect_error(std::move(result_decode_fn.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.struct_decl.encode_fn()) {
+            if (!is_nil((*ptr))) {
+                auto result_encode_fn = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_encode_fn) {
+                    return unexpect_error(std::move(result_encode_fn.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.struct_decl.methods()) {
+            auto result_methods = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),(*ptr));
+            if (!result_methods) {
+                return unexpect_error(std::move(result_methods.error()));
+            }
+        }
+        if (auto ptr = type_ctx.struct_decl.properties()) {
+            auto result_properties = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),(*ptr));
+            if (!result_properties) {
+                return unexpect_error(std::move(result_properties.error()));
+            }
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_UNION_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto& kind = in.body.kind;
@@ -53405,7 +53881,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_UNION_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53413,7 +53889,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53430,7 +53906,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53441,6 +53917,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_UNION_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto& kind = in.body.kind;
@@ -53450,7 +53930,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_UNION_MEMBER_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53458,7 +53938,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53475,7 +53955,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53485,6 +53965,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_UNION_MEMBER_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_PROGRAM_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53500,7 +53984,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .block = block,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_PROGRAM_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53509,7 +53993,7 @@ namespace ebm2rust {
             .block = block,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53527,7 +54011,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53537,6 +54021,14 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PROGRAM_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_block = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.block);
+        if (!result_block) {
+            return unexpect_error(std::move(result_block.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_PROPERTY_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53552,7 +54044,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .property_decl = property_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_PROPERTY_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53561,7 +54053,7 @@ namespace ebm2rust {
             .property_decl = property_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53579,7 +54071,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53589,6 +54081,38 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PROPERTY_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.property_decl.property_type)) {
+            auto result_property_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.property_decl.property_type);
+            if (!result_property_type) {
+                return unexpect_error(std::move(result_property_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.property_decl.setter_condition)) {
+            auto result_setter_condition = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.property_decl.setter_condition);
+            if (!result_setter_condition) {
+                return unexpect_error(std::move(result_setter_condition.error()));
+            }
+        }
+        if (!is_nil(type_ctx.property_decl.getter_condition)) {
+            auto result_getter_condition = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.property_decl.getter_condition);
+            if (!result_getter_condition) {
+                return unexpect_error(std::move(result_getter_condition.error()));
+            }
+        }
+        auto result_members = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.property_decl.members);
+        if (!result_members) {
+            return unexpect_error(std::move(result_members.error()));
+        }
+        if (auto ptr = type_ctx.property_decl.derived_from()) {
+            auto result_derived_from = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),(*ptr));
+            if (!result_derived_from) {
+                return unexpect_error(std::move(result_derived_from.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53604,7 +54128,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .property_member_decl = property_member_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_PROPERTY_MEMBER_DECL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53613,7 +54137,7 @@ namespace ebm2rust {
             .property_member_decl = property_member_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53631,7 +54155,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53641,6 +54165,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_PROPERTY_MEMBER_DECL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.property_member_decl.setter_condition)) {
+            auto result_setter_condition = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.property_member_decl.setter_condition);
+            if (!result_setter_condition) {
+                return unexpect_error(std::move(result_setter_condition.error()));
+            }
+        }
+        if (!is_nil(type_ctx.property_member_decl.getter_condition)) {
+            auto result_getter_condition = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.property_member_decl.getter_condition);
+            if (!result_getter_condition) {
+                return unexpect_error(std::move(result_getter_condition.error()));
+            }
+        }
+        if (!is_nil(type_ctx.property_member_decl.field)) {
+            auto result_field = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.property_member_decl.field);
+            if (!result_field) {
+                return unexpect_error(std::move(result_field.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_METADATA(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53656,7 +54202,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .metadata = metadata,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_METADATA_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53665,7 +54211,7 @@ namespace ebm2rust {
             .metadata = metadata,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53683,7 +54229,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53693,6 +54239,14 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_METADATA(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_values = dispatch_Expressions_default<Result>(std::forward<UserContext>(ctx),type_ctx.metadata.values);
+        if (!result_values) {
+            return unexpect_error(std::move(result_values.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_IMPORT_MODULE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53708,7 +54262,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .import_decl = import_decl,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_IMPORT_MODULE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53717,7 +54271,7 @@ namespace ebm2rust {
             .import_decl = import_decl,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53735,7 +54289,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53745,6 +54299,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_IMPORT_MODULE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.import_decl.program)) {
+            auto result_program = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.import_decl.program);
+            if (!result_program) {
+                return unexpect_error(std::move(result_program.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_EXPRESSION(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53760,7 +54324,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .expression = expression,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_EXPRESSION_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53769,7 +54333,7 @@ namespace ebm2rust {
             .expression = expression,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53787,7 +54351,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53797,6 +54361,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_EXPRESSION(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.expression)) {
+            auto result_expression = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.expression);
+            if (!result_expression) {
+                return unexpect_error(std::move(result_expression.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_REPORT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53812,7 +54386,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .error_report = error_report,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ERROR_REPORT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53821,7 +54395,7 @@ namespace ebm2rust {
             .error_report = error_report,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53839,7 +54413,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53849,6 +54423,14 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ERROR_REPORT(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_arguments = dispatch_Expressions_default<Result>(std::forward<UserContext>(ctx),type_ctx.error_report.arguments);
+        if (!result_arguments) {
+            return unexpect_error(std::move(result_arguments.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_LOWERED_IO_STATEMENTS(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53864,7 +54446,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .lowered_io_statements = lowered_io_statements,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_LOWERED_IO_STATEMENTS_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53873,7 +54455,7 @@ namespace ebm2rust {
             .lowered_io_statements = lowered_io_statements,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53891,7 +54473,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53901,6 +54483,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_LOWERED_IO_STATEMENTS(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53916,7 +54502,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .sub_byte_range = sub_byte_range,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_SUB_BYTE_RANGE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53925,7 +54511,7 @@ namespace ebm2rust {
             .sub_byte_range = sub_byte_range,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53943,7 +54529,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -53953,6 +54539,46 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_SUB_BYTE_RANGE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (auto ptr = type_ctx.sub_byte_range.expression()) {
+            if (!is_nil((*ptr))) {
+                auto result_expression = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_expression) {
+                    return unexpect_error(std::move(result_expression.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.sub_byte_range.length()) {
+            if (!is_nil((*ptr))) {
+                auto result_length = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_length) {
+                    return unexpect_error(std::move(result_length.error()));
+                }
+            }
+        }
+        if (auto ptr = type_ctx.sub_byte_range.offset()) {
+            if (!is_nil((*ptr))) {
+                auto result_offset = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_offset) {
+                    return unexpect_error(std::move(result_offset.error()));
+                }
+            }
+        }
+        if (!is_nil(type_ctx.sub_byte_range.io_ref)) {
+            auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.sub_byte_range.io_ref);
+            if (!result_io_ref) {
+                return unexpect_error(std::move(result_io_ref.error()));
+            }
+        }
+        if (!is_nil(type_ctx.sub_byte_range.io_statement)) {
+            auto result_io_statement = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.sub_byte_range.io_statement);
+            if (!result_io_statement) {
+                return unexpect_error(std::move(result_io_statement.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_INIT_CHECK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -53968,7 +54594,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .init_check = init_check,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_INIT_CHECK_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53977,7 +54603,7 @@ namespace ebm2rust {
             .init_check = init_check,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -53995,7 +54621,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54005,6 +54631,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_INIT_CHECK(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.init_check.target_field)) {
+            auto result_target_field = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.init_check.target_field);
+            if (!result_target_field) {
+                return unexpect_error(std::move(result_target_field.error()));
+            }
+        }
+        if (!is_nil(type_ctx.init_check.expect_value)) {
+            auto result_expect_value = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.init_check.expect_value);
+            if (!result_expect_value) {
+                return unexpect_error(std::move(result_expect_value.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ENDIAN_VARIABLE(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
@@ -54020,7 +54662,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .endian_variable = endian_variable,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_ENDIAN_VARIABLE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54029,7 +54671,7 @@ namespace ebm2rust {
             .endian_variable = endian_variable,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54047,7 +54689,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54058,6 +54700,18 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ENDIAN_VARIABLE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (auto ptr = type_ctx.endian_variable.dynamic_expr()) {
+            if (!is_nil((*ptr))) {
+                auto result_dynamic_expr = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_dynamic_expr) {
+                    return unexpect_error(std::move(result_dynamic_expr.error()));
+                }
+            }
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto main_logic = [&]() -> expected<Result>{
@@ -54066,7 +54720,7 @@ namespace ebm2rust {
                 .in = in,
                 .alias_ref = alias_ref,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Statement_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54074,7 +54728,7 @@ namespace ebm2rust {
             .alias_ref = alias_ref,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54091,7 +54745,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54102,6 +54756,14 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_in = dispatch_Statement_default<Result>(std::forward<UserContext>(ctx),type_ctx.in,type_ctx.alias_ref);
+        if (!result_in) {
+            return unexpect_error(std::move(result_in.error()));
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Block(Context&& ctx,const ebm::Block& in){
         auto main_logic = [&]() -> expected<Result>{
@@ -54109,14 +54771,14 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .in = in,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Block_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
             .in = in,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54132,7 +54794,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54142,6 +54804,14 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Block(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_in = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),type_ctx.in);
+        if (!result_in) {
+            return unexpect_error(std::move(result_in.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_INT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54159,7 +54829,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .int_value = int_value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_LITERAL_INT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54169,7 +54839,7 @@ namespace ebm2rust {
             .int_value = int_value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54188,7 +54858,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54198,6 +54868,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_INT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_INT64(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54215,7 +54895,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .int64_value = int64_value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_LITERAL_INT64_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54225,7 +54905,7 @@ namespace ebm2rust {
             .int64_value = int64_value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54244,7 +54924,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54254,6 +54934,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_INT64(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_BOOL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54271,7 +54961,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .bool_value = bool_value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_LITERAL_BOOL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54281,7 +54971,7 @@ namespace ebm2rust {
             .bool_value = bool_value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54300,7 +54990,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54310,6 +55000,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_BOOL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_STRING(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54327,7 +55027,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .string_value = string_value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_LITERAL_STRING_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54337,7 +55037,7 @@ namespace ebm2rust {
             .string_value = string_value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54356,7 +55056,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54366,6 +55066,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_STRING(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_TYPE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54383,7 +55093,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .type_ref = type_ref,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_LITERAL_TYPE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54393,7 +55103,7 @@ namespace ebm2rust {
             .type_ref = type_ref,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54412,7 +55122,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54422,6 +55132,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_TYPE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.type_ref)) {
+            auto result_type_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type_ref);
+            if (!result_type_ref) {
+                return unexpect_error(std::move(result_type_ref.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_LITERAL_CHAR(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54439,7 +55165,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .char_value = char_value,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_LITERAL_CHAR_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54449,7 +55175,7 @@ namespace ebm2rust {
             .char_value = char_value,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54468,7 +55194,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54478,6 +55204,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_LITERAL_CHAR(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_IDENTIFIER(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54495,7 +55231,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .id = id,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_IDENTIFIER_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54505,7 +55241,7 @@ namespace ebm2rust {
             .id = id,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54524,7 +55260,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54534,6 +55270,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_IDENTIFIER(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.id)) {
+            auto result_id = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.id);
+            if (!result_id) {
+                return unexpect_error(std::move(result_id.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_BINARY_OP(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54561,7 +55313,7 @@ namespace ebm2rust {
                 .left = left,
                 .right = right,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_BINARY_OP_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54573,7 +55325,7 @@ namespace ebm2rust {
             .right = right,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54594,7 +55346,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54604,6 +55356,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_BINARY_OP(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.left)) {
+            auto result_left = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.left);
+            if (!result_left) {
+                return unexpect_error(std::move(result_left.error()));
+            }
+        }
+        if (!is_nil(type_ctx.right)) {
+            auto result_right = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.right);
+            if (!result_right) {
+                return unexpect_error(std::move(result_right.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_UNARY_OP(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54626,7 +55400,7 @@ namespace ebm2rust {
                 .operand = operand,
                 .uop = uop,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_UNARY_OP_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54637,7 +55411,7 @@ namespace ebm2rust {
             .uop = uop,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54657,7 +55431,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54667,6 +55441,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_UNARY_OP(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.operand)) {
+            auto result_operand = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.operand);
+            if (!result_operand) {
+                return unexpect_error(std::move(result_operand.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_CALL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54684,7 +55474,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .call_desc = call_desc,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_CALL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54694,7 +55484,7 @@ namespace ebm2rust {
             .call_desc = call_desc,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54713,7 +55503,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54723,6 +55513,26 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CALL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.call_desc.callee)) {
+            auto result_callee = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.call_desc.callee);
+            if (!result_callee) {
+                return unexpect_error(std::move(result_callee.error()));
+            }
+        }
+        auto result_arguments = dispatch_Expressions_default<Result>(std::forward<UserContext>(ctx),type_ctx.call_desc.arguments);
+        if (!result_arguments) {
+            return unexpect_error(std::move(result_arguments.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_INDEX_ACCESS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54745,7 +55555,7 @@ namespace ebm2rust {
                 .base = base,
                 .index = index,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_INDEX_ACCESS_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54756,7 +55566,7 @@ namespace ebm2rust {
             .index = index,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54776,7 +55586,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54786,6 +55596,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_INDEX_ACCESS(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.base)) {
+            auto result_base = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.base);
+            if (!result_base) {
+                return unexpect_error(std::move(result_base.error()));
+            }
+        }
+        if (!is_nil(type_ctx.index)) {
+            auto result_index = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.index);
+            if (!result_index) {
+                return unexpect_error(std::move(result_index.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_MEMBER_ACCESS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54808,7 +55640,7 @@ namespace ebm2rust {
                 .base = base,
                 .member = member,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_MEMBER_ACCESS_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54819,7 +55651,7 @@ namespace ebm2rust {
             .member = member,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54839,7 +55671,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54849,6 +55681,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_MEMBER_ACCESS(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.base)) {
+            auto result_base = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.base);
+            if (!result_base) {
+                return unexpect_error(std::move(result_base.error()));
+            }
+        }
+        if (!is_nil(type_ctx.member)) {
+            auto result_member = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.member);
+            if (!result_member) {
+                return unexpect_error(std::move(result_member.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_ENUM_MEMBER(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54871,7 +55725,7 @@ namespace ebm2rust {
                 .enum_decl = enum_decl,
                 .member = member,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_ENUM_MEMBER_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54882,7 +55736,7 @@ namespace ebm2rust {
             .member = member,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54902,7 +55756,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54912,6 +55766,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ENUM_MEMBER(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.enum_decl)) {
+            auto result_enum_decl = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.enum_decl);
+            if (!result_enum_decl) {
+                return unexpect_error(std::move(result_enum_decl.error()));
+            }
+        }
+        if (!is_nil(type_ctx.member)) {
+            auto result_member = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.member);
+            if (!result_member) {
+                return unexpect_error(std::move(result_member.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_TYPE_CAST(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -54939,7 +55815,7 @@ namespace ebm2rust {
                 .from_type = from_type,
                 .source_expr = source_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_TYPE_CAST_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54951,7 +55827,7 @@ namespace ebm2rust {
             .source_expr = source_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -54972,7 +55848,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -54982,6 +55858,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_TYPE_CAST(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.from_type)) {
+            auto result_from_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.from_type);
+            if (!result_from_type) {
+                return unexpect_error(std::move(result_from_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.source_expr)) {
+            auto result_source_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.source_expr);
+            if (!result_source_expr) {
+                return unexpect_error(std::move(result_source_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_RANGE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55004,7 +55902,7 @@ namespace ebm2rust {
                 .end = end,
                 .start = start,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_RANGE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55015,7 +55913,7 @@ namespace ebm2rust {
             .start = start,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55035,7 +55933,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55045,6 +55943,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_RANGE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.end)) {
+            auto result_end = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.end);
+            if (!result_end) {
+                return unexpect_error(std::move(result_end.error()));
+            }
+        }
+        if (!is_nil(type_ctx.start)) {
+            auto result_start = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.start);
+            if (!result_start) {
+                return unexpect_error(std::move(result_start.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_DEFAULT_VALUE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55057,7 +55977,7 @@ namespace ebm2rust {
                 .type = type,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_DEFAULT_VALUE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55066,7 +55986,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55084,7 +56004,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55094,6 +56014,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_DEFAULT_VALUE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_IS_LITTLE_ENDIAN(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55111,7 +56041,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .endian_expr = endian_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_IS_LITTLE_ENDIAN_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55121,7 +56051,7 @@ namespace ebm2rust {
             .endian_expr = endian_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55140,7 +56070,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55150,6 +56080,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_IS_LITTLE_ENDIAN(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.endian_expr)) {
+            auto result_endian_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.endian_expr);
+            if (!result_endian_expr) {
+                return unexpect_error(std::move(result_endian_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55177,7 +56123,7 @@ namespace ebm2rust {
                 .stream_type = stream_type,
                 .unit = unit,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_GET_STREAM_OFFSET_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55189,7 +56135,7 @@ namespace ebm2rust {
             .unit = unit,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55210,7 +56156,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55220,6 +56166,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_GET_STREAM_OFFSET(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.io_ref)) {
+            auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.io_ref);
+            if (!result_io_ref) {
+                return unexpect_error(std::move(result_io_ref.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55242,7 +56204,7 @@ namespace ebm2rust {
                 .io_ref = io_ref,
                 .stream_type = stream_type,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_GET_REMAINING_BYTES_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55253,7 +56215,7 @@ namespace ebm2rust {
             .stream_type = stream_type,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55273,7 +56235,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55283,6 +56245,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_GET_REMAINING_BYTES(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.io_ref)) {
+            auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.io_ref);
+            if (!result_io_ref) {
+                return unexpect_error(std::move(result_io_ref.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_CAN_READ_STREAM(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55310,7 +56288,7 @@ namespace ebm2rust {
                 .num_bytes = num_bytes,
                 .stream_type = stream_type,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_CAN_READ_STREAM_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55322,7 +56300,7 @@ namespace ebm2rust {
             .stream_type = stream_type,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55343,7 +56321,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55353,6 +56331,30 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CAN_READ_STREAM(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.io_ref)) {
+            auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.io_ref);
+            if (!result_io_ref) {
+                return unexpect_error(std::move(result_io_ref.error()));
+            }
+        }
+        if (auto ptr = type_ctx.num_bytes.ref()) {
+            if (!is_nil((*ptr))) {
+                auto result_ref = visit_Object<Result>(std::forward<UserContext>(ctx),(*ptr));
+                if (!result_ref) {
+                    return unexpect_error(std::move(result_ref.error()));
+                }
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_ARRAY_SIZE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55370,7 +56372,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .array_expr = array_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_ARRAY_SIZE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55380,7 +56382,7 @@ namespace ebm2rust {
             .array_expr = array_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55399,7 +56401,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55409,6 +56411,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ARRAY_SIZE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.array_expr)) {
+            auto result_array_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.array_expr);
+            if (!result_array_expr) {
+                return unexpect_error(std::move(result_array_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_ENUM_IS_DEFINED(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55431,7 +56449,7 @@ namespace ebm2rust {
                 .lowered_expr = lowered_expr,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_ENUM_IS_DEFINED_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55442,7 +56460,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55462,7 +56480,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55472,6 +56490,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ENUM_IS_DEFINED(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_IS_ERROR(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55489,7 +56523,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_IS_ERROR_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55499,7 +56533,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55518,7 +56552,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55528,6 +56562,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_IS_ERROR(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_MAX_VALUE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55545,7 +56595,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .lowered_expr = lowered_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_MAX_VALUE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55555,7 +56605,7 @@ namespace ebm2rust {
             .lowered_expr = lowered_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55574,7 +56624,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55584,6 +56634,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_MAX_VALUE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_READ_DATA(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55606,7 +56666,7 @@ namespace ebm2rust {
                 .io_statement = io_statement,
                 .target_stmt = target_stmt,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_READ_DATA_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55617,7 +56677,7 @@ namespace ebm2rust {
             .target_stmt = target_stmt,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55637,7 +56697,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55647,6 +56707,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_READ_DATA(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.io_statement)) {
+            auto result_io_statement = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.io_statement);
+            if (!result_io_statement) {
+                return unexpect_error(std::move(result_io_statement.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_stmt)) {
+            auto result_target_stmt = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_stmt);
+            if (!result_target_stmt) {
+                return unexpect_error(std::move(result_target_stmt.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_WRITE_DATA(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55669,7 +56751,7 @@ namespace ebm2rust {
                 .io_statement = io_statement,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_WRITE_DATA_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55680,7 +56762,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55700,7 +56782,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55710,6 +56792,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_WRITE_DATA(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.io_statement)) {
+            auto result_io_statement = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.io_statement);
+            if (!result_io_statement) {
+                return unexpect_error(std::move(result_io_statement.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_CONDITIONAL_STATEMENT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55732,7 +56836,7 @@ namespace ebm2rust {
                 .conditional_stmt = conditional_stmt,
                 .target_stmt = target_stmt,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_CONDITIONAL_STATEMENT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55743,7 +56847,7 @@ namespace ebm2rust {
             .target_stmt = target_stmt,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55763,7 +56867,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55773,6 +56877,28 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CONDITIONAL_STATEMENT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.conditional_stmt)) {
+            auto result_conditional_stmt = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.conditional_stmt);
+            if (!result_conditional_stmt) {
+                return unexpect_error(std::move(result_conditional_stmt.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_stmt)) {
+            auto result_target_stmt = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_stmt);
+            if (!result_target_stmt) {
+                return unexpect_error(std::move(result_target_stmt.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_CONDITIONAL(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55805,7 +56931,7 @@ namespace ebm2rust {
                 .lowered_expr = lowered_expr,
                 .then = then,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_CONDITIONAL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55818,7 +56944,7 @@ namespace ebm2rust {
             .then = then,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55840,7 +56966,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55850,6 +56976,34 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_CONDITIONAL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.condition)) {
+            auto result_condition = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.condition);
+            if (!result_condition) {
+                return unexpect_error(std::move(result_condition.error()));
+            }
+        }
+        if (!is_nil(type_ctx.else_)) {
+            auto result_else_ = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.else_);
+            if (!result_else_) {
+                return unexpect_error(std::move(result_else_.error()));
+            }
+        }
+        if (!is_nil(type_ctx.then)) {
+            auto result_then = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.then);
+            if (!result_then) {
+                return unexpect_error(std::move(result_then.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_AVAILABLE(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55872,7 +57026,7 @@ namespace ebm2rust {
                 .lowered_expr = lowered_expr,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_AVAILABLE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55883,7 +57037,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55903,7 +57057,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55913,6 +57067,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_AVAILABLE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_SIZEOF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55935,7 +57105,7 @@ namespace ebm2rust {
                 .lowered_expr = lowered_expr,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_SIZEOF_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55946,7 +57116,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -55966,7 +57136,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -55976,6 +57146,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SIZEOF(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_SUB_RANGE_INIT(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -55993,7 +57179,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .sub_range = sub_range,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_SUB_RANGE_INIT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56003,7 +57189,7 @@ namespace ebm2rust {
             .sub_range = sub_range,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56022,7 +57208,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56032,6 +57218,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SUB_RANGE_INIT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.sub_range)) {
+            auto result_sub_range = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.sub_range);
+            if (!result_sub_range) {
+                return unexpect_error(std::move(result_sub_range.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_OR_COND(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -56049,7 +57251,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .or_cond = or_cond,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_OR_COND_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56059,7 +57261,7 @@ namespace ebm2rust {
             .or_cond = or_cond,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56078,7 +57280,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56088,6 +57290,20 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_OR_COND(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        auto result_or_cond = dispatch_Expressions_default<Result>(std::forward<UserContext>(ctx),type_ctx.or_cond);
+        if (!result_or_cond) {
+            return unexpect_error(std::move(result_or_cond.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_ADDRESS_OF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -56105,7 +57321,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_ADDRESS_OF_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56115,7 +57331,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56134,7 +57350,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56144,6 +57360,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_ADDRESS_OF(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_OPTIONAL_OF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -56161,7 +57393,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_OPTIONAL_OF_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56171,7 +57403,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56190,7 +57422,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56200,6 +57432,22 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_OPTIONAL_OF(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_SETTER_STATUS(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -56217,7 +57465,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .setter_status = setter_status,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_SETTER_STATUS_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56227,7 +57475,7 @@ namespace ebm2rust {
             .setter_status = setter_status,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56246,7 +57494,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56256,6 +57504,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SETTER_STATUS(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_SELF(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -56268,7 +57526,7 @@ namespace ebm2rust {
                 .type = type,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_SELF_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56277,7 +57535,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56295,7 +57553,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56305,6 +57563,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_SELF(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression_AS_ARG(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
@@ -56322,7 +57590,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .target_expr = target_expr,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_AS_ARG_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56332,7 +57600,7 @@ namespace ebm2rust {
             .target_expr = target_expr,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56351,7 +57619,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56362,6 +57630,22 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression_AS_ARG(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.type)) {
+            auto result_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type);
+            if (!result_type) {
+                return unexpect_error(std::move(result_type.error()));
+            }
+        }
+        if (!is_nil(type_ctx.target_expr)) {
+            auto result_target_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.target_expr);
+            if (!result_target_expr) {
+                return unexpect_error(std::move(result_target_expr.error()));
+            }
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expression(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
         auto main_logic = [&]() -> expected<Result>{
@@ -56370,7 +57654,7 @@ namespace ebm2rust {
                 .in = in,
                 .alias_ref = alias_ref,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expression_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56378,7 +57662,7 @@ namespace ebm2rust {
             .alias_ref = alias_ref,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56395,7 +57679,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56406,6 +57690,14 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expression(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_in = dispatch_Expression_default<Result>(std::forward<UserContext>(ctx),type_ctx.in,type_ctx.alias_ref);
+        if (!result_in) {
+            return unexpect_error(std::move(result_in.error()));
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expressions(Context&& ctx,const ebm::Expressions& in){
         auto main_logic = [&]() -> expected<Result>{
@@ -56413,14 +57705,14 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .in = in,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Expressions_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
             .in = in,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56436,7 +57728,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56446,6 +57738,14 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Expressions(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_in = dispatch_Expressions_default<Result>(std::forward<UserContext>(ctx),type_ctx.in);
+        if (!result_in) {
+            return unexpect_error(std::move(result_in.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_INT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56461,7 +57761,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .size = size,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_INT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56470,7 +57770,7 @@ namespace ebm2rust {
             .size = size,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56488,7 +57788,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56498,6 +57798,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_INT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_UINT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56513,7 +57817,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .size = size,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_UINT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56522,7 +57826,7 @@ namespace ebm2rust {
             .size = size,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56540,7 +57844,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56551,6 +57855,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_UINT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_USIZE(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -56560,7 +57868,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_USIZE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56568,7 +57876,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56585,7 +57893,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56595,6 +57903,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_USIZE(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_FLOAT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56610,7 +57922,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .size = size,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_FLOAT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56619,7 +57931,7 @@ namespace ebm2rust {
             .size = size,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56637,7 +57949,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56647,6 +57959,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_FLOAT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_STRUCT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56662,7 +57978,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .id = id,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_STRUCT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56671,7 +57987,7 @@ namespace ebm2rust {
             .id = id,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56689,7 +58005,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56699,6 +58015,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_STRUCT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_RECURSIVE_STRUCT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56714,7 +58034,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .id = id,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_RECURSIVE_STRUCT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56723,7 +58043,7 @@ namespace ebm2rust {
             .id = id,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56741,7 +58061,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56752,6 +58072,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_RECURSIVE_STRUCT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_BOOL(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -56761,7 +58085,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_BOOL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56769,7 +58093,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56786,7 +58110,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56797,6 +58121,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_BOOL(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_VOID(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -56806,7 +58134,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_VOID_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56814,7 +58142,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56831,7 +58159,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56842,6 +58170,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_VOID(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_META(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -56851,7 +58183,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_META_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56859,7 +58191,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56876,7 +58208,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56886,6 +58218,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_META(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_ENUM(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56906,7 +58242,7 @@ namespace ebm2rust {
                 .base_type = base_type,
                 .id = id,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_ENUM_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56916,7 +58252,7 @@ namespace ebm2rust {
             .id = id,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -56935,7 +58271,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -56945,6 +58281,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ENUM(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.base_type)) {
+            auto result_base_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.base_type);
+            if (!result_base_type) {
+                return unexpect_error(std::move(result_base_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_ARRAY(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -56970,7 +58316,7 @@ namespace ebm2rust {
                 .element_type = element_type,
                 .length = length,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_ARRAY_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56981,7 +58327,7 @@ namespace ebm2rust {
             .length = length,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57001,7 +58347,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57011,6 +58357,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ARRAY(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.element_type)) {
+            auto result_element_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.element_type);
+            if (!result_element_type) {
+                return unexpect_error(std::move(result_element_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_VECTOR(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -57026,7 +58382,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .element_type = element_type,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_VECTOR_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57035,7 +58391,7 @@ namespace ebm2rust {
             .element_type = element_type,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57053,7 +58409,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57063,6 +58419,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_VECTOR(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.element_type)) {
+            auto result_element_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.element_type);
+            if (!result_element_type) {
+                return unexpect_error(std::move(result_element_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_VARIANT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -57078,7 +58444,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .variant_desc = variant_desc,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_VARIANT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57087,7 +58453,7 @@ namespace ebm2rust {
             .variant_desc = variant_desc,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57105,7 +58471,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57115,6 +58481,20 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_VARIANT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.variant_desc.common_type)) {
+            auto result_common_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.variant_desc.common_type);
+            if (!result_common_type) {
+                return unexpect_error(std::move(result_common_type.error()));
+            }
+        }
+        auto result_members = dispatch_Types_default<Result>(std::forward<UserContext>(ctx),type_ctx.variant_desc.members);
+        if (!result_members) {
+            return unexpect_error(std::move(result_members.error()));
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_RANGE(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -57130,7 +58510,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .base_type = base_type,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_RANGE_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57139,7 +58519,7 @@ namespace ebm2rust {
             .base_type = base_type,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57157,7 +58537,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57168,6 +58548,16 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_RANGE(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.base_type)) {
+            auto result_base_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.base_type);
+            if (!result_base_type) {
+                return unexpect_error(std::move(result_base_type.error()));
+            }
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_ENCODER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -57177,7 +58567,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_ENCODER_RETURN_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57185,7 +58575,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57202,7 +58592,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57213,6 +58603,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ENCODER_RETURN(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_DECODER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -57222,7 +58616,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_DECODER_RETURN_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57230,7 +58624,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57247,7 +58641,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57258,6 +58652,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_DECODER_RETURN(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_ENCODER_INPUT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -57267,7 +58665,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_ENCODER_INPUT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57275,7 +58673,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57292,7 +58690,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57303,6 +58701,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_ENCODER_INPUT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_DECODER_INPUT(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -57312,7 +58714,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_DECODER_INPUT_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57320,7 +58722,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57337,7 +58739,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57348,6 +58750,10 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_DECODER_INPUT(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto& kind = in.body.kind;
@@ -57357,7 +58763,7 @@ namespace ebm2rust {
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_PROPERTY_SETTER_RETURN_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57365,7 +58771,7 @@ namespace ebm2rust {
             .kind = kind,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57382,7 +58788,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57392,6 +58798,10 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_PROPERTY_SETTER_RETURN(UserContext&& ctx,TypeContext&& type_ctx) {
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_OPTIONAL(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -57407,7 +58817,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .inner_type = inner_type,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_OPTIONAL_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57416,7 +58826,7 @@ namespace ebm2rust {
             .inner_type = inner_type,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57434,7 +58844,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57444,6 +58854,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_OPTIONAL(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.inner_type)) {
+            auto result_inner_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.inner_type);
+            if (!result_inner_type) {
+                return unexpect_error(std::move(result_inner_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_PTR(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -57459,7 +58879,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .pointee_type = pointee_type,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_PTR_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57468,7 +58888,7 @@ namespace ebm2rust {
             .pointee_type = pointee_type,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57486,7 +58906,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57496,6 +58916,16 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_PTR(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.pointee_type)) {
+            auto result_pointee_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.pointee_type);
+            if (!result_pointee_type) {
+                return unexpect_error(std::move(result_pointee_type.error()));
+            }
+        }
+        return {};
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type_FUNCTION(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
@@ -57511,7 +58941,7 @@ namespace ebm2rust {
                 .kind = kind,
                 .func_desc = func_desc,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_FUNCTION_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57520,7 +58950,7 @@ namespace ebm2rust {
             .func_desc = func_desc,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57538,7 +58968,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57549,6 +58979,20 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type_FUNCTION(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.func_desc.return_type)) {
+            auto result_return_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.func_desc.return_type);
+            if (!result_return_type) {
+                return unexpect_error(std::move(result_return_type.error()));
+            }
+        }
+        auto result_params = dispatch_Types_default<Result>(std::forward<UserContext>(ctx),type_ctx.func_desc.params);
+        if (!result_params) {
+            return unexpect_error(std::move(result_params.error()));
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Type(Context&& ctx,const ebm::Type& in,ebm::TypeRef alias_ref){
         auto main_logic = [&]() -> expected<Result>{
@@ -57557,7 +59001,7 @@ namespace ebm2rust {
                 .in = in,
                 .alias_ref = alias_ref,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Type_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57565,7 +59009,7 @@ namespace ebm2rust {
             .alias_ref = alias_ref,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57582,7 +59026,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57593,6 +59037,14 @@ namespace ebm2rust {
         }
         return main_result;
     }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Type(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_in = dispatch_Type_default<Result>(std::forward<UserContext>(ctx),type_ctx.in,type_ctx.alias_ref);
+        if (!result_in) {
+            return unexpect_error(std::move(result_in.error()));
+        }
+        return {};
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_Types(Context&& ctx,const ebm::Types& in){
         auto main_logic = [&]() -> expected<Result>{
@@ -57600,14 +59052,14 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .in = in,
             };
-            return get_visitor_from_context(ctx,new_ctx).visit(new_ctx);
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
         Context_Types_before<Result> before_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
             .in = in,
             .main_logic = main_logic,
         };
-        expected<Result> before_result = get_visitor_from_context(ctx,before_ctx).visit(before_ctx);
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
         if (!before_result) {
             if(!ebmcodegen::util::is_pass_error(before_result.error())) {
                 return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
@@ -57623,7 +59075,7 @@ namespace ebm2rust {
             .main_logic = main_logic,
             .result = main_result,
         };
-        expected<Result> after_result = get_visitor_from_context(ctx,after_ctx).visit(after_ctx);
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
         if (!after_result) {
             if(!ebmcodegen::util::is_pass_error(after_result.error())) {
                 return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
@@ -57633,6 +59085,337 @@ namespace ebm2rust {
             return after_result;
         }
         return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Types(UserContext&& ctx,TypeContext&& type_ctx) {
+        auto result_in = dispatch_Types_default<Result>(std::forward<UserContext>(ctx),type_ctx.in);
+        if (!result_in) {
+            return unexpect_error(std::move(result_in.error()));
+        }
+        return {};
+    }
+    template<typename Result, typename UserContext, typename TypeContext>
+    expected<Result> traverse_children(UserContext&& uctx, TypeContext&& type_ctx) {
+        using TypeContextType = std::decay_t<TypeContext>;
+        if constexpr (false) {}
+        else if constexpr (std::is_same_v<TypeContextType,Context_entry> || std::is_same_v<TypeContextType,Context_entry_before<Result>> || std::is_same_v<TypeContextType,Context_entry_after<Result>>) {
+            return traverse_children_entry<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_pre_visitor> || std::is_same_v<TypeContextType,Context_pre_visitor_before<Result>> || std::is_same_v<TypeContextType,Context_pre_visitor_after<Result>>) {
+            return traverse_children_pre_visitor<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_post_entry<Result>> || std::is_same_v<TypeContextType,Context_post_entry_before<Result>> || std::is_same_v<TypeContextType,Context_post_entry_after<Result>>) {
+            return traverse_children_post_entry<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_BLOCK> || std::is_same_v<TypeContextType,Context_Statement_BLOCK_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_BLOCK_after<Result>>) {
+            return traverse_children_Statement_BLOCK<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ASSIGNMENT> || std::is_same_v<TypeContextType,Context_Statement_ASSIGNMENT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ASSIGNMENT_after<Result>>) {
+            return traverse_children_Statement_ASSIGNMENT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_YIELD> || std::is_same_v<TypeContextType,Context_Statement_YIELD_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_YIELD_after<Result>>) {
+            return traverse_children_Statement_YIELD<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_APPEND> || std::is_same_v<TypeContextType,Context_Statement_APPEND_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_APPEND_after<Result>>) {
+            return traverse_children_Statement_APPEND<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_RETURN> || std::is_same_v<TypeContextType,Context_Statement_RETURN_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_RETURN_after<Result>>) {
+            return traverse_children_Statement_RETURN<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ERROR_RETURN> || std::is_same_v<TypeContextType,Context_Statement_ERROR_RETURN_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ERROR_RETURN_after<Result>>) {
+            return traverse_children_Statement_ERROR_RETURN<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ASSERT> || std::is_same_v<TypeContextType,Context_Statement_ASSERT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ASSERT_after<Result>>) {
+            return traverse_children_Statement_ASSERT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_READ_DATA> || std::is_same_v<TypeContextType,Context_Statement_READ_DATA_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_READ_DATA_after<Result>>) {
+            return traverse_children_Statement_READ_DATA<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_WRITE_DATA> || std::is_same_v<TypeContextType,Context_Statement_WRITE_DATA_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_WRITE_DATA_after<Result>>) {
+            return traverse_children_Statement_WRITE_DATA<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_RESERVE_DATA> || std::is_same_v<TypeContextType,Context_Statement_RESERVE_DATA_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_RESERVE_DATA_after<Result>>) {
+            return traverse_children_Statement_RESERVE_DATA<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_IF_STATEMENT> || std::is_same_v<TypeContextType,Context_Statement_IF_STATEMENT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_IF_STATEMENT_after<Result>>) {
+            return traverse_children_Statement_IF_STATEMENT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_LOOP_STATEMENT> || std::is_same_v<TypeContextType,Context_Statement_LOOP_STATEMENT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_LOOP_STATEMENT_after<Result>>) {
+            return traverse_children_Statement_LOOP_STATEMENT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_MATCH_STATEMENT> || std::is_same_v<TypeContextType,Context_Statement_MATCH_STATEMENT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_MATCH_STATEMENT_after<Result>>) {
+            return traverse_children_Statement_MATCH_STATEMENT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_MATCH_BRANCH> || std::is_same_v<TypeContextType,Context_Statement_MATCH_BRANCH_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_MATCH_BRANCH_after<Result>>) {
+            return traverse_children_Statement_MATCH_BRANCH<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_BREAK> || std::is_same_v<TypeContextType,Context_Statement_BREAK_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_BREAK_after<Result>>) {
+            return traverse_children_Statement_BREAK<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_CONTINUE> || std::is_same_v<TypeContextType,Context_Statement_CONTINUE_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_CONTINUE_after<Result>>) {
+            return traverse_children_Statement_CONTINUE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_FUNCTION_DECL> || std::is_same_v<TypeContextType,Context_Statement_FUNCTION_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_FUNCTION_DECL_after<Result>>) {
+            return traverse_children_Statement_FUNCTION_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_VARIABLE_DECL> || std::is_same_v<TypeContextType,Context_Statement_VARIABLE_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_VARIABLE_DECL_after<Result>>) {
+            return traverse_children_Statement_VARIABLE_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_PARAMETER_DECL> || std::is_same_v<TypeContextType,Context_Statement_PARAMETER_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_PARAMETER_DECL_after<Result>>) {
+            return traverse_children_Statement_PARAMETER_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_FIELD_DECL> || std::is_same_v<TypeContextType,Context_Statement_FIELD_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_FIELD_DECL_after<Result>>) {
+            return traverse_children_Statement_FIELD_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_COMPOSITE_FIELD_DECL> || std::is_same_v<TypeContextType,Context_Statement_COMPOSITE_FIELD_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_COMPOSITE_FIELD_DECL_after<Result>>) {
+            return traverse_children_Statement_COMPOSITE_FIELD_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ENUM_DECL> || std::is_same_v<TypeContextType,Context_Statement_ENUM_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ENUM_DECL_after<Result>>) {
+            return traverse_children_Statement_ENUM_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ENUM_MEMBER_DECL> || std::is_same_v<TypeContextType,Context_Statement_ENUM_MEMBER_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ENUM_MEMBER_DECL_after<Result>>) {
+            return traverse_children_Statement_ENUM_MEMBER_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_STRUCT_DECL> || std::is_same_v<TypeContextType,Context_Statement_STRUCT_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_STRUCT_DECL_after<Result>>) {
+            return traverse_children_Statement_STRUCT_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_UNION_DECL> || std::is_same_v<TypeContextType,Context_Statement_UNION_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_UNION_DECL_after<Result>>) {
+            return traverse_children_Statement_UNION_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_UNION_MEMBER_DECL> || std::is_same_v<TypeContextType,Context_Statement_UNION_MEMBER_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_UNION_MEMBER_DECL_after<Result>>) {
+            return traverse_children_Statement_UNION_MEMBER_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_PROGRAM_DECL> || std::is_same_v<TypeContextType,Context_Statement_PROGRAM_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_PROGRAM_DECL_after<Result>>) {
+            return traverse_children_Statement_PROGRAM_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_PROPERTY_DECL> || std::is_same_v<TypeContextType,Context_Statement_PROPERTY_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_PROPERTY_DECL_after<Result>>) {
+            return traverse_children_Statement_PROPERTY_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_PROPERTY_MEMBER_DECL> || std::is_same_v<TypeContextType,Context_Statement_PROPERTY_MEMBER_DECL_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_PROPERTY_MEMBER_DECL_after<Result>>) {
+            return traverse_children_Statement_PROPERTY_MEMBER_DECL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_METADATA> || std::is_same_v<TypeContextType,Context_Statement_METADATA_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_METADATA_after<Result>>) {
+            return traverse_children_Statement_METADATA<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_IMPORT_MODULE> || std::is_same_v<TypeContextType,Context_Statement_IMPORT_MODULE_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_IMPORT_MODULE_after<Result>>) {
+            return traverse_children_Statement_IMPORT_MODULE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_EXPRESSION> || std::is_same_v<TypeContextType,Context_Statement_EXPRESSION_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_EXPRESSION_after<Result>>) {
+            return traverse_children_Statement_EXPRESSION<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ERROR_REPORT> || std::is_same_v<TypeContextType,Context_Statement_ERROR_REPORT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ERROR_REPORT_after<Result>>) {
+            return traverse_children_Statement_ERROR_REPORT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_LOWERED_IO_STATEMENTS> || std::is_same_v<TypeContextType,Context_Statement_LOWERED_IO_STATEMENTS_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_LOWERED_IO_STATEMENTS_after<Result>>) {
+            return traverse_children_Statement_LOWERED_IO_STATEMENTS<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_SUB_BYTE_RANGE> || std::is_same_v<TypeContextType,Context_Statement_SUB_BYTE_RANGE_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_SUB_BYTE_RANGE_after<Result>>) {
+            return traverse_children_Statement_SUB_BYTE_RANGE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_INIT_CHECK> || std::is_same_v<TypeContextType,Context_Statement_INIT_CHECK_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_INIT_CHECK_after<Result>>) {
+            return traverse_children_Statement_INIT_CHECK<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ENDIAN_VARIABLE> || std::is_same_v<TypeContextType,Context_Statement_ENDIAN_VARIABLE_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ENDIAN_VARIABLE_after<Result>>) {
+            return traverse_children_Statement_ENDIAN_VARIABLE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement> || std::is_same_v<TypeContextType,Context_Statement_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_after<Result>>) {
+            return traverse_children_Statement<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Block> || std::is_same_v<TypeContextType,Context_Block_before<Result>> || std::is_same_v<TypeContextType,Context_Block_after<Result>>) {
+            return traverse_children_Block<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_LITERAL_INT> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_INT_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_INT_after<Result>>) {
+            return traverse_children_Expression_LITERAL_INT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_LITERAL_INT64> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_INT64_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_INT64_after<Result>>) {
+            return traverse_children_Expression_LITERAL_INT64<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_LITERAL_BOOL> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_BOOL_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_BOOL_after<Result>>) {
+            return traverse_children_Expression_LITERAL_BOOL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_LITERAL_STRING> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_STRING_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_STRING_after<Result>>) {
+            return traverse_children_Expression_LITERAL_STRING<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_LITERAL_TYPE> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_TYPE_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_TYPE_after<Result>>) {
+            return traverse_children_Expression_LITERAL_TYPE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_LITERAL_CHAR> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_CHAR_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_LITERAL_CHAR_after<Result>>) {
+            return traverse_children_Expression_LITERAL_CHAR<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_IDENTIFIER> || std::is_same_v<TypeContextType,Context_Expression_IDENTIFIER_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_IDENTIFIER_after<Result>>) {
+            return traverse_children_Expression_IDENTIFIER<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_BINARY_OP> || std::is_same_v<TypeContextType,Context_Expression_BINARY_OP_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_BINARY_OP_after<Result>>) {
+            return traverse_children_Expression_BINARY_OP<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_UNARY_OP> || std::is_same_v<TypeContextType,Context_Expression_UNARY_OP_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_UNARY_OP_after<Result>>) {
+            return traverse_children_Expression_UNARY_OP<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_CALL> || std::is_same_v<TypeContextType,Context_Expression_CALL_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_CALL_after<Result>>) {
+            return traverse_children_Expression_CALL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_INDEX_ACCESS> || std::is_same_v<TypeContextType,Context_Expression_INDEX_ACCESS_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_INDEX_ACCESS_after<Result>>) {
+            return traverse_children_Expression_INDEX_ACCESS<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_MEMBER_ACCESS> || std::is_same_v<TypeContextType,Context_Expression_MEMBER_ACCESS_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_MEMBER_ACCESS_after<Result>>) {
+            return traverse_children_Expression_MEMBER_ACCESS<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_ENUM_MEMBER> || std::is_same_v<TypeContextType,Context_Expression_ENUM_MEMBER_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_ENUM_MEMBER_after<Result>>) {
+            return traverse_children_Expression_ENUM_MEMBER<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_TYPE_CAST> || std::is_same_v<TypeContextType,Context_Expression_TYPE_CAST_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_TYPE_CAST_after<Result>>) {
+            return traverse_children_Expression_TYPE_CAST<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_RANGE> || std::is_same_v<TypeContextType,Context_Expression_RANGE_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_RANGE_after<Result>>) {
+            return traverse_children_Expression_RANGE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_DEFAULT_VALUE> || std::is_same_v<TypeContextType,Context_Expression_DEFAULT_VALUE_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_DEFAULT_VALUE_after<Result>>) {
+            return traverse_children_Expression_DEFAULT_VALUE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_IS_LITTLE_ENDIAN> || std::is_same_v<TypeContextType,Context_Expression_IS_LITTLE_ENDIAN_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_IS_LITTLE_ENDIAN_after<Result>>) {
+            return traverse_children_Expression_IS_LITTLE_ENDIAN<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_GET_STREAM_OFFSET> || std::is_same_v<TypeContextType,Context_Expression_GET_STREAM_OFFSET_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_GET_STREAM_OFFSET_after<Result>>) {
+            return traverse_children_Expression_GET_STREAM_OFFSET<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_GET_REMAINING_BYTES> || std::is_same_v<TypeContextType,Context_Expression_GET_REMAINING_BYTES_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_GET_REMAINING_BYTES_after<Result>>) {
+            return traverse_children_Expression_GET_REMAINING_BYTES<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_CAN_READ_STREAM> || std::is_same_v<TypeContextType,Context_Expression_CAN_READ_STREAM_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_CAN_READ_STREAM_after<Result>>) {
+            return traverse_children_Expression_CAN_READ_STREAM<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_ARRAY_SIZE> || std::is_same_v<TypeContextType,Context_Expression_ARRAY_SIZE_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_ARRAY_SIZE_after<Result>>) {
+            return traverse_children_Expression_ARRAY_SIZE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_ENUM_IS_DEFINED> || std::is_same_v<TypeContextType,Context_Expression_ENUM_IS_DEFINED_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_ENUM_IS_DEFINED_after<Result>>) {
+            return traverse_children_Expression_ENUM_IS_DEFINED<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_IS_ERROR> || std::is_same_v<TypeContextType,Context_Expression_IS_ERROR_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_IS_ERROR_after<Result>>) {
+            return traverse_children_Expression_IS_ERROR<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_MAX_VALUE> || std::is_same_v<TypeContextType,Context_Expression_MAX_VALUE_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_MAX_VALUE_after<Result>>) {
+            return traverse_children_Expression_MAX_VALUE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_READ_DATA> || std::is_same_v<TypeContextType,Context_Expression_READ_DATA_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_READ_DATA_after<Result>>) {
+            return traverse_children_Expression_READ_DATA<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_WRITE_DATA> || std::is_same_v<TypeContextType,Context_Expression_WRITE_DATA_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_WRITE_DATA_after<Result>>) {
+            return traverse_children_Expression_WRITE_DATA<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_CONDITIONAL_STATEMENT> || std::is_same_v<TypeContextType,Context_Expression_CONDITIONAL_STATEMENT_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_CONDITIONAL_STATEMENT_after<Result>>) {
+            return traverse_children_Expression_CONDITIONAL_STATEMENT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_CONDITIONAL> || std::is_same_v<TypeContextType,Context_Expression_CONDITIONAL_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_CONDITIONAL_after<Result>>) {
+            return traverse_children_Expression_CONDITIONAL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_AVAILABLE> || std::is_same_v<TypeContextType,Context_Expression_AVAILABLE_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_AVAILABLE_after<Result>>) {
+            return traverse_children_Expression_AVAILABLE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_SIZEOF> || std::is_same_v<TypeContextType,Context_Expression_SIZEOF_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_SIZEOF_after<Result>>) {
+            return traverse_children_Expression_SIZEOF<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_SUB_RANGE_INIT> || std::is_same_v<TypeContextType,Context_Expression_SUB_RANGE_INIT_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_SUB_RANGE_INIT_after<Result>>) {
+            return traverse_children_Expression_SUB_RANGE_INIT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_OR_COND> || std::is_same_v<TypeContextType,Context_Expression_OR_COND_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_OR_COND_after<Result>>) {
+            return traverse_children_Expression_OR_COND<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_ADDRESS_OF> || std::is_same_v<TypeContextType,Context_Expression_ADDRESS_OF_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_ADDRESS_OF_after<Result>>) {
+            return traverse_children_Expression_ADDRESS_OF<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_OPTIONAL_OF> || std::is_same_v<TypeContextType,Context_Expression_OPTIONAL_OF_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_OPTIONAL_OF_after<Result>>) {
+            return traverse_children_Expression_OPTIONAL_OF<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_SETTER_STATUS> || std::is_same_v<TypeContextType,Context_Expression_SETTER_STATUS_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_SETTER_STATUS_after<Result>>) {
+            return traverse_children_Expression_SETTER_STATUS<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_SELF> || std::is_same_v<TypeContextType,Context_Expression_SELF_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_SELF_after<Result>>) {
+            return traverse_children_Expression_SELF<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression_AS_ARG> || std::is_same_v<TypeContextType,Context_Expression_AS_ARG_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_AS_ARG_after<Result>>) {
+            return traverse_children_Expression_AS_ARG<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expression> || std::is_same_v<TypeContextType,Context_Expression_before<Result>> || std::is_same_v<TypeContextType,Context_Expression_after<Result>>) {
+            return traverse_children_Expression<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Expressions> || std::is_same_v<TypeContextType,Context_Expressions_before<Result>> || std::is_same_v<TypeContextType,Context_Expressions_after<Result>>) {
+            return traverse_children_Expressions<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_INT> || std::is_same_v<TypeContextType,Context_Type_INT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_INT_after<Result>>) {
+            return traverse_children_Type_INT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_UINT> || std::is_same_v<TypeContextType,Context_Type_UINT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_UINT_after<Result>>) {
+            return traverse_children_Type_UINT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_USIZE> || std::is_same_v<TypeContextType,Context_Type_USIZE_before<Result>> || std::is_same_v<TypeContextType,Context_Type_USIZE_after<Result>>) {
+            return traverse_children_Type_USIZE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_FLOAT> || std::is_same_v<TypeContextType,Context_Type_FLOAT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_FLOAT_after<Result>>) {
+            return traverse_children_Type_FLOAT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_STRUCT> || std::is_same_v<TypeContextType,Context_Type_STRUCT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_STRUCT_after<Result>>) {
+            return traverse_children_Type_STRUCT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_RECURSIVE_STRUCT> || std::is_same_v<TypeContextType,Context_Type_RECURSIVE_STRUCT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_RECURSIVE_STRUCT_after<Result>>) {
+            return traverse_children_Type_RECURSIVE_STRUCT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_BOOL> || std::is_same_v<TypeContextType,Context_Type_BOOL_before<Result>> || std::is_same_v<TypeContextType,Context_Type_BOOL_after<Result>>) {
+            return traverse_children_Type_BOOL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_VOID> || std::is_same_v<TypeContextType,Context_Type_VOID_before<Result>> || std::is_same_v<TypeContextType,Context_Type_VOID_after<Result>>) {
+            return traverse_children_Type_VOID<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_META> || std::is_same_v<TypeContextType,Context_Type_META_before<Result>> || std::is_same_v<TypeContextType,Context_Type_META_after<Result>>) {
+            return traverse_children_Type_META<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_ENUM> || std::is_same_v<TypeContextType,Context_Type_ENUM_before<Result>> || std::is_same_v<TypeContextType,Context_Type_ENUM_after<Result>>) {
+            return traverse_children_Type_ENUM<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_ARRAY> || std::is_same_v<TypeContextType,Context_Type_ARRAY_before<Result>> || std::is_same_v<TypeContextType,Context_Type_ARRAY_after<Result>>) {
+            return traverse_children_Type_ARRAY<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_VECTOR> || std::is_same_v<TypeContextType,Context_Type_VECTOR_before<Result>> || std::is_same_v<TypeContextType,Context_Type_VECTOR_after<Result>>) {
+            return traverse_children_Type_VECTOR<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_VARIANT> || std::is_same_v<TypeContextType,Context_Type_VARIANT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_VARIANT_after<Result>>) {
+            return traverse_children_Type_VARIANT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_RANGE> || std::is_same_v<TypeContextType,Context_Type_RANGE_before<Result>> || std::is_same_v<TypeContextType,Context_Type_RANGE_after<Result>>) {
+            return traverse_children_Type_RANGE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_ENCODER_RETURN> || std::is_same_v<TypeContextType,Context_Type_ENCODER_RETURN_before<Result>> || std::is_same_v<TypeContextType,Context_Type_ENCODER_RETURN_after<Result>>) {
+            return traverse_children_Type_ENCODER_RETURN<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_DECODER_RETURN> || std::is_same_v<TypeContextType,Context_Type_DECODER_RETURN_before<Result>> || std::is_same_v<TypeContextType,Context_Type_DECODER_RETURN_after<Result>>) {
+            return traverse_children_Type_DECODER_RETURN<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_ENCODER_INPUT> || std::is_same_v<TypeContextType,Context_Type_ENCODER_INPUT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_ENCODER_INPUT_after<Result>>) {
+            return traverse_children_Type_ENCODER_INPUT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_DECODER_INPUT> || std::is_same_v<TypeContextType,Context_Type_DECODER_INPUT_before<Result>> || std::is_same_v<TypeContextType,Context_Type_DECODER_INPUT_after<Result>>) {
+            return traverse_children_Type_DECODER_INPUT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_PROPERTY_SETTER_RETURN> || std::is_same_v<TypeContextType,Context_Type_PROPERTY_SETTER_RETURN_before<Result>> || std::is_same_v<TypeContextType,Context_Type_PROPERTY_SETTER_RETURN_after<Result>>) {
+            return traverse_children_Type_PROPERTY_SETTER_RETURN<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_OPTIONAL> || std::is_same_v<TypeContextType,Context_Type_OPTIONAL_before<Result>> || std::is_same_v<TypeContextType,Context_Type_OPTIONAL_after<Result>>) {
+            return traverse_children_Type_OPTIONAL<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_PTR> || std::is_same_v<TypeContextType,Context_Type_PTR_before<Result>> || std::is_same_v<TypeContextType,Context_Type_PTR_after<Result>>) {
+            return traverse_children_Type_PTR<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type_FUNCTION> || std::is_same_v<TypeContextType,Context_Type_FUNCTION_before<Result>> || std::is_same_v<TypeContextType,Context_Type_FUNCTION_after<Result>>) {
+            return traverse_children_Type_FUNCTION<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Type> || std::is_same_v<TypeContextType,Context_Type_before<Result>> || std::is_same_v<TypeContextType,Context_Type_after<Result>>) {
+            return traverse_children_Type<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Types> || std::is_same_v<TypeContextType,Context_Types_before<Result>> || std::is_same_v<TypeContextType,Context_Types_after<Result>>) {
+            return traverse_children_Types<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else {
+            static_assert(dependent_false<TypeContext>, "traverse_children not implemented for this context type");
+        }
     }
     template <>
     struct Visitor<GeneratorDefaultHook<VisitorTag_entry>> {

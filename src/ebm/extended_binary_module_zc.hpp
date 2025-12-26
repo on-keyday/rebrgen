@@ -4607,7 +4607,7 @@ namespace ebm::zc {
     struct EBM_API VariantDesc{
         TypeRef common_type;
         Types members;
-        StatementRef related_field;
+        WeakStatementRef related_field;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "VariantDesc";

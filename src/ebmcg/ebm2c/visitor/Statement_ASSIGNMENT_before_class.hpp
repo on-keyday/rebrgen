@@ -4,7 +4,7 @@
 /*
   Name: Statement_ASSIGNMENT_before_class
   Available Variables:
-    ctx: Context_Statement_ASSIGNMENT_before
+    ctx: Context_Statement_ASSIGNMENT_before<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
         module_: ebmgen::MappingTable

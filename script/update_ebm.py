@@ -64,14 +64,14 @@ if rewrite_if_needed(
 ):
     something_changed = True
 
-# run python script/ebmtemplate.py update all
-sp.check_call(
-    ["python", "script/ebmtemplate.py", "update", "all"],
-    stdout=sys.stdout,
-    stderr=sys.stderr,
-)
 
 if something_changed:
+    # run python script/ebmtemplate.py update all
+    sp.check_call(
+        ["python", "script/ebmtemplate.py", "update", "all"],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
     # rerun script/build.py to build the tools again
     sp.check_call(["python", "script/build.py"], stdout=sys.stdout, stderr=sys.stderr)
 

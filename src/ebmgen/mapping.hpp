@@ -66,6 +66,7 @@ namespace ebmgen {
         const ebm::StringLiteral* get_string_literal(const ebm::StringRef& ref) const;
         const ebm::Type* get_type(const ebm::TypeRef& ref) const;
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
+        const ebm::Statement* get_statement(const ebm::WeakStatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
         ObjectVariant get_object(const ebm::AnyRef& ref) const;
@@ -106,7 +107,6 @@ namespace ebmgen {
 
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
         const ebm::Identifier* get_identifier(const ebm::WeakStatementRef& ref) const;
-
 
         const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
 

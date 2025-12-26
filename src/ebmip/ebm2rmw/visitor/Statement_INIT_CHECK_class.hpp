@@ -33,7 +33,7 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
             MAYBE(id, type_impl.body.id());
             ebm::Instruction instr;
             instr.op = ebm::OpCode::NEW_STRUCT;
-            instr.struct_id(id);
+            instr.struct_id(from_weak(id));
             ctx.config().env.add_instruction(std::move(instr), std::format("new {}", type_name));
         }
     }

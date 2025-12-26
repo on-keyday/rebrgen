@@ -1111,7 +1111,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
     };
@@ -1127,7 +1127,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1144,7 +1144,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1162,7 +1162,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
     };
@@ -1178,7 +1178,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1195,7 +1195,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4918,7 +4918,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_STRUCT {};
     template<typename VisitorImpl>
@@ -4932,7 +4932,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_STRUCT_before {};
@@ -4947,7 +4947,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -4963,7 +4963,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT {};
     template<typename VisitorImpl>
@@ -4977,7 +4977,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT_before {};
@@ -4992,7 +4992,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -5135,7 +5135,7 @@ namespace ebm2all {
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         const ebm::TypeRef& base_type;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_ENUM {};
     template<typename VisitorImpl>
@@ -5150,7 +5150,7 @@ namespace ebm2all {
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         const ebm::TypeRef& base_type;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_ENUM_before {};
@@ -5166,7 +5166,7 @@ namespace ebm2all {
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         const ebm::TypeRef& base_type;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };

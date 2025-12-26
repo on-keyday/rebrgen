@@ -525,7 +525,7 @@ namespace ebmgen {
 
         if (auto parent_member = node->belong.lock()) {
             EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
-            prop_decl.parent_format = statement_ref;
+            prop_decl.parent_format = to_weak(statement_ref);
         }
 
         MAYBE_VOID(derived, derive_property_type(ctx, prop_decl, union_type));

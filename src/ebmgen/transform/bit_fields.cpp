@@ -132,7 +132,7 @@ namespace ebmgen {
             EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, read_offset, new_size);
             if (write) {  // incremental reserving
                 ebm::ReserveData reserve_data;
-                reserve_data.write_data = flush_buffer_statement;
+                reserve_data.write_data =to_weak(flush_buffer_statement);
                 MAYBE(reserve_size, make_dynamic_size(new_size, ebm::SizeUnit::BYTE_DYNAMIC));
                 reserve_data.size = reserve_size;
                 EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
@@ -304,7 +304,7 @@ namespace ebmgen {
             if (is_single_route) {
                 // reserve upfront for single route
                 ebm::ReserveData reserve_data;
-                reserve_data.write_data = flush_buffer_statement;
+                reserve_data.write_data =to_weak(flush_buffer_statement);
                 MAYBE(reserve_size, make_fixed_size(max_bit_size / 8, ebm::SizeUnit::BYTE_FIXED));
                 reserve_data.size = reserve_size;
                 EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));

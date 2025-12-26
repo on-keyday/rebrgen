@@ -872,7 +872,7 @@ namespace ebm {
             return false;
         }
         if (auto got = j.at("composite_field")) {
-            StatementRef tmp;
+            WeakStatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
@@ -987,7 +987,7 @@ namespace ebm {
             return false;
         }
         if (auto got = j.at("property")) {
-            StatementRef tmp;
+            WeakStatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
@@ -2235,7 +2235,7 @@ namespace ebm {
             }
         }
         if (auto got = j.at("previous_assignment")) {
-            StatementRef tmp;
+            WeakStatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
@@ -2677,7 +2677,7 @@ namespace ebm {
             }
         }
         if (auto got = j.at("id")) {
-            StatementRef tmp;
+            WeakStatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
@@ -2858,6 +2858,18 @@ namespace ebm {
             return false;
         }
         obj = Varint{id};
+        return true;
+    }
+    
+    bool from_json(WeakStatementRef& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("id")) {
+            if(!futils::json::convert_from_json(*got, obj.id)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
         return true;
     }
     

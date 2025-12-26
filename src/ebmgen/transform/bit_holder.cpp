@@ -1,5 +1,4 @@
 /*license*/
-#include "bit_manipulator.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/converter.hpp"
 #include "transform.hpp"
@@ -41,7 +40,7 @@ namespace ebmgen {
             return SizeofResult{size, false, primitive};
         }
         else if (auto id = field_type.body.id()) {
-            MAYBE(stmt, tctx.statement_repository().get(*id));
+            MAYBE(stmt, tctx.statement_repository().get(from_weak(*id)));
             if (auto decl = stmt.body.struct_decl()) {
                 if (auto size = decl->size()) {
                     if (size->unit == ebm::SizeUnit::BIT_FIXED) {
@@ -62,7 +61,7 @@ namespace ebmgen {
         MAYBE(struct_decl, struct_stmt.body.struct_decl());
         ebm::TypeBody body;
         body.kind = struct_decl.is_recursive() ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
-        body.id(stmt_ref);
+        body.id(to_weak(stmt_ref));
         EBMA_ADD_TYPE(self_type_ref, std::move(body));
         EBM_SELF(self_expr, self_type_ref);
         return self_expr;
@@ -79,8 +78,8 @@ namespace ebmgen {
         ebm::FunctionDecl getter_decl, setter_decl;
         getter_decl.name = field_name_ref;
         setter_decl.name = field_name_ref;
-        getter_decl.parent_format = parent_ref;
-        setter_decl.parent_format = parent_ref;
+        getter_decl.parent_format = to_weak(parent_ref);
+        setter_decl.parent_format = to_weak(parent_ref);
         getter_decl.kind = ebm::FunctionKind::COMPOSITE_GETTER;
         setter_decl.kind = ebm::FunctionKind::COMPOSITE_SETTER;
         MAYBE(field_self_id, tctx.context().state().get_self_ref_for_id(field_ref));
@@ -294,7 +293,7 @@ namespace ebmgen {
                             MAYBE(field_stmt, tctx.statement_repository().get(fields[idx.first]));
                             MAYBE(field_decl, field_stmt.body.field_decl());
                             field_decl.inner_composite(true);
-                            field_decl.composite_field(comp_stmt);
+                            field_decl.composite_field(to_weak(comp_stmt));
                             field_decl.composite_getter(ebm::LoweredStatementRef{getter_setter.first});
                             field_decl.composite_setter(ebm::LoweredStatementRef{getter_setter.second});
                         }

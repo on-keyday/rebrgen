@@ -49,7 +49,7 @@ namespace ebmgen {
                 MAYBE(member_type_ref, ctx.get_statement_converter().convert_struct_decl(struct_member, varint_id));
                 ebm::TypeBody body;
                 body.kind = ebm::TypeKind::STRUCT;
-                body.id(member_type_ref);
+                body.id(to_weak(member_type_ref));
                 EBMA_ADD_TYPE(member_type_ref2, std::move(body));
                 append(members, member_type_ref2);
                 ctx.state().cache_type(struct_member, member_type_ref2);
@@ -139,7 +139,7 @@ namespace ebmgen {
                 if (auto locked_enum = n->base.lock()) {
                     const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
                     EBMA_CONVERT_STATEMENT(stmt_ref, locked_enum);  // Convert the enum declaration
-                    body.id(stmt_ref);                              // Use the ID of the enum declaration
+                    body.id(to_weak(stmt_ref));                     // Use the ID of the enum declaration
                     if (locked_enum->base_type) {
                         EBMA_CONVERT_TYPE(base_type_ref, locked_enum->base_type);
                         body.base_type(base_type_ref);
@@ -152,7 +152,7 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructType>>) {
                 body.kind = n->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
                 MAYBE(name_ref, ctx.get_statement_converter().convert_struct_decl(n));
-                body.id(name_ref);
+                body.id(to_weak(name_ref));
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::VoidType>>) {
                 body.kind = ebm::TypeKind::VOID;

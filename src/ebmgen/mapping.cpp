@@ -94,6 +94,10 @@ namespace ebmgen {
         return (it != statement_map_.end()) ? it->second : nullptr;
     }
 
+    const ebm::Statement* MappingTable::get_statement(const ebm::WeakStatementRef& ref) const {
+        return get_statement(from_weak(ref));
+    }
+
     const ebm::Expression* MappingTable::get_expression(const ebm::ExpressionRef& ref) const {
         auto it = expression_map_.find(get_id(ref));
         return (it != expression_map_.end()) ? it->second : nullptr;

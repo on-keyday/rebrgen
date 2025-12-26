@@ -26,7 +26,7 @@ namespace ebmcodegen::util {
             auto* struct_ptr = s.body.struct_decl();
             if (!struct_ptr) continue;
 
-            uint64_t id = ebmgen::get_id(s.id);
+            uint64_t id = get_id(s.id);
             order_of_appearance.push_back(id);
 
             std::vector<std::uint64_t> deps;
@@ -37,12 +37,12 @@ namespace ebmcodegen::util {
                 const ebm::Type* last_type = tree.back();
                 if (last_type->body.kind == ebm::TypeKind::STRUCT) {
                     MAYBE(decl, ebmgen::access_field<"body.id.instance">(module_, last_type));
-                    deps.push_back(ebmgen::get_id(decl.id));
+                    deps.push_back(get_id(decl.id));
                 }
                 else if (last_type->body.kind == ebm::TypeKind::VARIANT) {
                     for (auto& member_ref : last_type->body.variant_desc()->members.container) {
                         MAYBE(member_decl, ebmgen::access_field<"body.id.instance">(module_, member_ref));
-                        deps.push_back(ebmgen::get_id(member_decl.id));
+                        deps.push_back(get_id(member_decl.id));
                     }
                 }
                 return {};

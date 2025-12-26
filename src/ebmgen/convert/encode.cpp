@@ -329,7 +329,7 @@ namespace ebmgen {
         EBM_CAST(casted, value_type, cast_from, from);  // if value_type == cast_from, then this is a no-op
         MAYBE(fixed_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));
         ebm::ReserveData reserve_data;
-        reserve_data.write_data = write_ref;
+        reserve_data.write_data = to_weak(write_ref);
         reserve_data.size = fixed_size;
         EBM_RESERVE_DATA(reserve, std::move(reserve_data));
 

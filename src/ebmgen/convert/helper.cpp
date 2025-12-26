@@ -76,7 +76,7 @@ namespace ebmgen {
         body.kind = ebm::StatementKind::ASSIGNMENT;
         body.target(target);
         body.value(value);
-        body.previous_assignment(previous_assignment);
+        body.previous_assignment(to_weak(previous_assignment));
         return body;
     }
 
@@ -324,13 +324,13 @@ namespace ebmgen {
     ebm::StatementBody make_break(ebm::StatementRef loop_id) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::BREAK;
-        body.break_(ebm::LoopFlowControl{.related_statement = loop_id});
+        body.break_(ebm::LoopFlowControl{.related_statement = to_weak(loop_id)});
         return body;
     }
     ebm::StatementBody make_continue(ebm::StatementRef loop_id) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::CONTINUE;
-        body.continue_(ebm::LoopFlowControl{.related_statement = loop_id});
+        body.continue_(ebm::LoopFlowControl{.related_statement = to_weak(loop_id)});
         return body;
     }
 

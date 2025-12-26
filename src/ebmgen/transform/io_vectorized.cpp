@@ -102,7 +102,7 @@ namespace ebmgen {
                     MAYBE(t, ctx.repository().get_statement(original_field));
                     if (auto field_decl = t.body.field_decl()) {
                         if (auto comp = field_decl->composite_field()) {
-                            original_field = *comp;
+                            original_field = from_weak(*comp);
                         }
                     }
                     auto io_data = make_io_data(std::get<2>(g[0])->io_ref, original_field, {}, data_typ, {}, total_size);

@@ -1251,6 +1251,9 @@ namespace ebmcodegen {
         auto visitor = hook.visitor_instance_name(cls, ns_name);
         auto upper_ns = upper(ns_name);
         auto cls_name = cls.class_name();
+        if (cls.has(ContextClassKind_Generic)) {
+            cls_name += suffixes[suffix_dispatch];  // for backward compatibility
+        }
         w.writeln("#define ", upper_ns, "_", macro_CODEGEN_VISITOR, "_", cls_name, " ", visitor);
         // w.writeln("#define ", upper_ns, "_", macro_CODEGEN_CONTEXT_PARAMETERS, "_", cls_name, " ", cls.type_parameters_body(true));
         w.writeln("#define ", upper_ns, "_", macro_CODEGEN_CONTEXT, "_", cls_name, " ", instance);

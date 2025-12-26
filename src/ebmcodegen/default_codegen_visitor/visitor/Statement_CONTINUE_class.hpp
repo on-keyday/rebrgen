@@ -16,7 +16,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_CONTINUE) {
-    auto loop_ref = ctx.continue_.related_statement;
+    auto loop_ref = from_weak(ctx.continue_.related_statement);
     CodeWriter w;
     while (!is_nil(loop_ref)) {
         MAYBE(loop_stmt, ctx.get(loop_ref));

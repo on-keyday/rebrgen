@@ -312,8 +312,8 @@ namespace ebmcodegen::util {
             }
         }
         if (const ebm::FieldDecl* field = statement.body.field_decl()) {
-            if (!ebmgen::is_nil(field->parent_struct)) {
-                MAYBE(upper_layers, get_identifier_layer(visitor, field->parent_struct, state));
+            if (!is_nil(field->parent_struct)) {
+                MAYBE(upper_layers, get_identifier_layer(visitor, from_weak(field->parent_struct), state));
                 layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
             }
             if (state == LayerState::as_type) {
@@ -321,8 +321,8 @@ namespace ebmcodegen::util {
             }
         }
         if (const ebm::PropertyDecl* prop = statement.body.property_decl()) {
-            if (!ebmgen::is_nil(prop->parent_format)) {
-                MAYBE(upper_layers, get_identifier_layer(visitor, prop->parent_format, state));
+            if (!is_nil(prop->parent_format)) {
+                MAYBE(upper_layers, get_identifier_layer(visitor, from_weak(prop->parent_format), state));
                 layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
             }
             if (state == LayerState::as_type) {
@@ -339,12 +339,12 @@ namespace ebmcodegen::util {
         std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>> result;
         if (type.body.kind == ebm::TypeKind::VARIANT) {
             auto varint_desc = type.body.variant_desc();
-            if (!ebmgen::is_nil(varint_desc->related_field)) {
+            if (!is_nil(varint_desc->related_field)) {
                 auto& members = varint_desc->members;
                 for (auto& mem : members.container) {
                     MAYBE(member_type, module_.get_type(mem));
                     MAYBE(stmt_id, member_type.body.id());
-                    MAYBE(stmt_str, visit_Statement(visitor, stmt_id));
+                    MAYBE(stmt_str, visit_Statement(visitor, from_weak(stmt_id)));
                     result.push_back(std::move(stmt_str));
                 }
             }
@@ -450,7 +450,7 @@ namespace ebmcodegen::util {
         }
         MAYBE(desc, type.body.variant_desc());
         for (size_t i = 0; i < desc.members.container.size(); ++i) {
-            if (ebmgen::get_id(desc.members.container[i]) == ebmgen::get_id(candidate_type)) {
+            if (get_id(desc.members.container[i]) == get_id(candidate_type)) {
                 return i;
             }
         }
@@ -472,7 +472,7 @@ namespace ebmcodegen::util {
         for (auto& member_type_ref : desc.members.container) {
             MAYBE(member_type, module_.get_type(member_type_ref));
             MAYBE(member_stmt_id, member_type.body.id());
-            if (ebmgen::get_id(member_stmt_id) == ebmgen::get_id(field_decl.parent_struct)) {
+            if (get_id(member_stmt_id) == get_id(field_decl.parent_struct)) {
                 return member_type_ref;
             }
         }
@@ -578,6 +578,10 @@ namespace ebmcodegen::util {
             return derived().visitor.module_.get_associated_identifier(stmt);
         }
 
+        decltype(auto) identifier(ebm::WeakStatementRef stmt) const {
+            return derived().visitor.module_.get_associated_identifier(stmt);
+        }
+
         decltype(auto) identifier(ebm::ExpressionRef expr) const {
             return derived().visitor.module_.get_associated_identifier(expr);
         }
@@ -654,6 +658,10 @@ namespace ebmcodegen::util {
         }
 
         decltype(auto) get(ebm::StatementRef stmt_ref) const {
+            return derived().module().get_statement(stmt_ref);
+        }
+
+        decltype(auto) get(ebm::WeakStatementRef stmt_ref) const {
             return derived().module().get_statement(stmt_ref);
         }
 
@@ -772,7 +780,7 @@ namespace ebmcodegen::util {
                 }
                 case ebm::TypeKind::ENUM: {
                     auto base_type_ref = *current_type->body.base_type();
-                    if (ebmgen::is_nil(base_type_ref)) {
+                    if (is_nil(base_type_ref)) {
                         return result;
                     }
                     else {
@@ -804,7 +812,7 @@ namespace ebmcodegen::util {
             MAYBE(variant_desc, variant_type.body.variant_desc());
             MAYBE(parent_field_stmt, module_.get_statement(variant_desc.related_field));
             MAYBE(field_decl, parent_field_stmt.body.field_decl());
-            stmt_ref = field_decl.parent_struct;
+            stmt_ref = from_weak(field_decl.parent_struct);
             MAYBE(parent_struct_stmt, module_.get_statement(stmt_ref));
             p = parent_struct_stmt.body.struct_decl();
         }

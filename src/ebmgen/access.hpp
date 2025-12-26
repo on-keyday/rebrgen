@@ -100,6 +100,11 @@ namespace ebmgen {
         static constexpr auto type_index_type_ref = ebmcodegen::get_type_index<ebm::TypeRef>();
         static constexpr auto type_index_expression_ref = ebmcodegen::get_type_index<ebm::ExpressionRef>();
 
+        // weak refs
+        static constexpr auto type_index_weak_statement_ref = ebmcodegen::get_type_index<ebm::WeakStatementRef>();
+        static constexpr auto type_index_lowered_statement_ref = ebmcodegen::get_type_index<ebm::LoweredStatementRef>();
+        static constexpr auto type_index_lowered_expression_ref = ebmcodegen::get_type_index<ebm::LoweredExpressionRef>();
+
         static constexpr auto field_index_body = ebmcodegen::get_field_index("body");
 
         consteval Name(size_t root_index, FieldNames<N> n) {
@@ -137,13 +142,13 @@ namespace ebmgen {
                             }
                         }
                     };
-                    if (type_index.index == type_index_statement_ref) {
+                    if (type_index.index == type_index_statement_ref || type_index.index == type_index_weak_statement_ref || type_index.index == type_index_lowered_statement_ref) {
                         do_fallback(type_index_statement, type_index_statement_body);
                     }
                     else if (type_index.index == type_index_type_ref) {
                         do_fallback(type_index_type, type_index_type_body);
                     }
-                    else if (type_index.index == type_index_expression_ref) {
+                    else if (type_index.index == type_index_expression_ref || type_index.index == type_index_lowered_expression_ref) {
                         do_fallback(type_index_expression, type_index_expression_body);
                     }
                     if (new_type_index.index == static_cast<size_t>(-1)) {
@@ -188,11 +193,27 @@ namespace ebmgen {
         }                                                                                                                                   \
         return FieldAccessor<N, V, offset, step + 1>::get_field(ctx, *in);                                                                  \
     }
+
+#define WEAK_REF_TO_INSTANCE(RefType)                                                                                 \
+    else if constexpr (std::is_same_v<T, RefType>) {                                                                  \
+        return FieldAccessor<N, V, offset, step + 1>::get_field(ctx, in.id);                                          \
+    }                                                                                                                 \
+    else if constexpr (std::is_same_v<T, RefType*> || std::is_same_v<T, const RefType*>) {                            \
+        if (!in) {                                                                                                    \
+            using ResultT = std::decay_t<decltype(FieldAccessor<N, V, offset, step + 1>::get_field(ctx, RefType{}))>; \
+            return ResultT{};                                                                                         \
+        }                                                                                                             \
+        return FieldAccessor<N, V, offset, step + 1>::get_field(ctx, in->id);                                         \
+    }
+
             if constexpr (false) {
             }
             REF_TO_INSTANCE(ebm::StatementRef, ebm::Statement, statement)
             REF_TO_INSTANCE(ebm::TypeRef, ebm::Type, type)
             REF_TO_INSTANCE(ebm::ExpressionRef, ebm::Expression, expression)
+            WEAK_REF_TO_INSTANCE(ebm::WeakStatementRef)
+            WEAK_REF_TO_INSTANCE(ebm::LoweredStatementRef)
+            WEAK_REF_TO_INSTANCE(ebm::LoweredExpressionRef)
 #undef REF_TO_INSTANCE
             else if constexpr (offset + 1 < V.depth) {
                 if constexpr (V.tags[offset].field_tag.is_array_index) {

@@ -112,6 +112,11 @@ namespace ebmgen {
         { std::integral_constant<bool, sizeof(T) == sizeof(ebm::AnyRef)>{} } -> std::same_as<std::true_type>;
     };
 
+    template <typename T>
+    concept WeakAnyRef = requires(T t) {
+        { t.id } -> AnyRef;
+    };
+
     template <class T, class U>
     concept has_visit = requires(T t, U u) {
         { t.visit(u) };
@@ -195,36 +200,6 @@ namespace ebmgen {
     MAYBE_VOID(out, expr) \
     decltype(auto) out = ::ebmgen::dereference(out##____);
 
-    template <AnyRef T>
-    constexpr bool is_nil(T t) {
-        return t.id.value() == 0;
-    }
-
-    template <AnyRef T>
-    constexpr std::uint64_t get_id(T t) {
-        return t.id.value();
-    }
-
-    template <AnyRef T>
-    constexpr ebm::AnyRef to_any_ref(T t) {
-        return ebm::AnyRef{t.id};
-    }
-
-    template <AnyRef T>
-    constexpr T from_any_ref(const ebm::AnyRef& ref) {
-        T t;
-        t.id = ref.id;
-        return t;
-    }
-
-    constexpr ebm::WeakStatementRef to_weak(ebm::StatementRef ref){
-        return ebm::WeakStatementRef{ref};
-    }
-
-    constexpr ebm::StatementRef from_weak(ebm::WeakStatementRef ref){
-        return ref.id;
-    }
-
     template <class B>
     concept has_body_kind = requires(B b) {
         { b.body.kind };
@@ -232,8 +207,48 @@ namespace ebmgen {
 }  // namespace ebmgen
 
 namespace ebm {
+    template <ebmgen::AnyRef T>
+    constexpr bool is_nil(T t) {
+        return t.id.value() == 0;
+    }
+
+    template <ebmgen::WeakAnyRef T>
+    constexpr bool is_nil(T t) {
+        return is_nil(t.id);
+    }
+
+    template <ebmgen::AnyRef T>
+    constexpr std::uint64_t get_id(T t) {
+        return t.id.value();
+    }
+
+    template <ebmgen::WeakAnyRef T>
+    constexpr std::uint64_t get_id(T t) {
+        return get_id(t.id);
+    }
+
+    template <ebmgen::AnyRef T>
+    constexpr ebm::AnyRef to_any_ref(T t) {
+        return ebm::AnyRef{t.id};
+    }
+
+    template <ebmgen::AnyRef T>
+    constexpr T from_any_ref(const ebm::AnyRef& ref) {
+        T t;
+        t.id = ref.id;
+        return t;
+    }
+
+    constexpr ebm::WeakStatementRef to_weak(ebm::StatementRef ref) {
+        return ebm::WeakStatementRef{ref};
+    }
+
+    constexpr ebm::StatementRef from_weak(ebm::WeakStatementRef ref) {
+        return ref.id;
+    }
+
     constexpr bool operator==(const ebm::AnyRef& lhs, const ebm::AnyRef& rhs) {
-        return ebmgen::get_id(lhs) == ebmgen::get_id(rhs);
+        return get_id(lhs) == get_id(rhs);
     }
 
     constexpr bool operator!=(const ebm::AnyRef& lhs, const ebm::AnyRef& rhs) {
@@ -241,7 +256,7 @@ namespace ebm {
     }
 
     constexpr auto operator<=>(const ebm::AnyRef& lhs, const ebm::AnyRef& rhs) {
-        return ebmgen::get_id(lhs) <=> ebmgen::get_id(rhs);
+        return get_id(lhs) <=> get_id(rhs);
     }
 
 }  // namespace ebm
@@ -250,7 +265,7 @@ namespace std {
     template <>
     struct hash<ebm::AnyRef> {
         size_t operator()(const ebm::AnyRef& ref) const noexcept {
-            return std::hash<std::uint64_t>{}(ebmgen::get_id(ref));
+            return std::hash<std::uint64_t>{}(get_id(ref));
         }
     };
 }  // namespace std

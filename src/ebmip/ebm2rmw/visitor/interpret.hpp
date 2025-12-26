@@ -69,7 +69,7 @@ namespace ebm2rmw {
                 if (ctx.is(ebm::TypeKind::STRUCT, field_body.field_type)) {
                     MAYBE(type_impl, ctx.get(field_body.field_type));
                     MAYBE(struct_, type_impl.body.id());
-                    MAYBE(nested_obj, new_object(ctx, struct_));
+                    MAYBE(nested_obj, new_object(ctx, from_weak(struct_)));
                     c[get_id(field_ref)] = nested_obj;
                 }
                 else {

@@ -366,11 +366,11 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 auto setter = decl->composite_setter();
                 if (getter) {
                     composite_fns.push_back(getter->id);
-                    parents_set.insert(ebmgen::get_id(decl->parent_struct));
+                    parents_set.insert(get_id(decl->parent_struct));
                 }
                 if (setter) {
                     composite_fns.push_back(setter->id);
-                    parents_set.insert(ebmgen::get_id(decl->parent_struct));
+                    parents_set.insert(get_id(decl->parent_struct));
                 }
             }
             return {};
@@ -414,7 +414,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             // first lookup unions used in this struct
             for (auto& f : s.fields) {
                 MAYBE(typ, get_field_type(f.id));
-                if (auto found = c_ctx.unions.find(ebmgen::get_id(typ.second)); found != c_ctx.unions.end()) {
+                if (auto found = c_ctx.unions.find(get_id(typ.second)); found != c_ctx.unions.end()) {
                     MAYBE_VOID(ok, write_union(found->second));
                 }
             }
@@ -561,13 +561,13 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }
             Union u{.id = s.id};
             for (auto member_type_ref : variant_desc->members.container) {
-                auto struct_key = ctx.get_field<"body.id">(member_type_ref);
+                auto struct_key = ctx.get_field<"body.id.id">(member_type_ref);
                 if (!struct_key) {
                     continue;
                 }
                 handle_struct_decl(u.variants, *struct_key, true);
             }
-            c_ctx.unions[ebmgen::get_id(s.id)] = u;
+            c_ctx.unions[get_id(s.id)] = u;
         }
         for (auto& exprs : ctx.module().module().expressions) {
             if (exprs.body.kind == ebm::ExpressionKind::CAN_READ_STREAM) {

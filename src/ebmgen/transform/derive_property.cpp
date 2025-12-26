@@ -16,13 +16,13 @@ namespace ebmgen {
                 ebm::FunctionDecl getter, setter;
                 getter.kind = ebm::FunctionKind::PROPERTY_GETTER;
                 setter.kind = ebm::FunctionKind::PROPERTY_SETTER;
-                setter.property(s.id);
-                getter.property(s.id);
+                setter.property(to_weak(s.id));
+                getter.property(to_weak(s.id));
                 getter.name = prop->name;
                 setter.name = prop->name;
                 getter.parent_format = prop->parent_format;
                 setter.parent_format = prop->parent_format;
-                MAYBE(encdec_ref, ctx.state().get_format_encode_decode(getter.parent_format));
+                MAYBE(encdec_ref, ctx.state().get_format_encode_decode(from_weak(getter.parent_format)));
                 auto copy_state_vars = encdec_ref.state_variables;
                 // getter return value
                 {

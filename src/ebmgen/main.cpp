@@ -538,7 +538,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
         else {
             for (auto obj : result) {
-                cout << ebmgen::get_id(obj) << '\n';
+                cout << get_id(obj) << '\n';
             }
         }
         if (result.empty() && !failures.empty()) {

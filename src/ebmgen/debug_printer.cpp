@@ -57,7 +57,7 @@ namespace ebmgen {
             }
             if (auto id = type->body.id()) {
                 os_ << " ";
-                print_resolved_reference(*id);
+                print_resolved_reference(from_weak(*id));
             }
         }
         else {

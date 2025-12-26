@@ -1131,7 +1131,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
     };
@@ -1147,7 +1147,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1164,7 +1164,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1182,7 +1182,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
     };
@@ -1198,7 +1198,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1215,7 +1215,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
-        const ebm::StatementRef& previous_assignment;
+        const ebm::WeakStatementRef& previous_assignment;
         const ebm::ExpressionRef& target;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4938,7 +4938,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_STRUCT {};
     template<typename VisitorImpl>
@@ -4952,7 +4952,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_STRUCT_before {};
@@ -4967,7 +4967,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -4983,7 +4983,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT {};
     template<typename VisitorImpl>
@@ -4997,7 +4997,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT_before {};
@@ -5012,7 +5012,7 @@ namespace ebm2all {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -5155,7 +5155,7 @@ namespace ebm2all {
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         const ebm::TypeRef& base_type;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Type_ENUM {};
     template<typename VisitorImpl>
@@ -5170,7 +5170,7 @@ namespace ebm2all {
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         const ebm::TypeRef& base_type;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Type_ENUM_before {};
@@ -5186,7 +5186,7 @@ namespace ebm2all {
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
         const ebm::TypeRef& base_type;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
@@ -6050,12 +6050,12 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2all::Context_Statement_ENDIAN_VARIABLE_before
     #define EBM2ALL_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2all::Context_Statement_ENDIAN_VARIABLE_after
-    #define EBM2ALL_CODEGEN_VISITOR_Statement ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Statement ebm2all::Context_Statement
-    #define EBM2ALL_CODEGEN_VISITOR_Statement_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_before>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Statement_before ebm2all::Context_Statement_before
-    #define EBM2ALL_CODEGEN_VISITOR_Statement_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_after>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Statement_after ebm2all::Context_Statement_after
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_dispatch ebm2all::Context_Statement
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_before_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_before_dispatch ebm2all::Context_Statement_before
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_after_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_after_dispatch ebm2all::Context_Statement_after
     #define EBM2ALL_CODEGEN_VISITOR_Block ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block>>
     #define EBM2ALL_CODEGEN_CONTEXT_Block ebm2all::Context_Block
     #define EBM2ALL_CODEGEN_VISITOR_Block_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block_before>>
@@ -6284,12 +6284,12 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2all::Context_Expression_AS_ARG_before
     #define EBM2ALL_CODEGEN_VISITOR_Expression_AS_ARG_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_AS_ARG_after>>
     #define EBM2ALL_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2all::Context_Expression_AS_ARG_after
-    #define EBM2ALL_CODEGEN_VISITOR_Expression ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Expression ebm2all::Context_Expression
-    #define EBM2ALL_CODEGEN_VISITOR_Expression_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_before>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Expression_before ebm2all::Context_Expression_before
-    #define EBM2ALL_CODEGEN_VISITOR_Expression_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_after>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Expression_after ebm2all::Context_Expression_after
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_dispatch ebm2all::Context_Expression
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_before_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_before_dispatch ebm2all::Context_Expression_before
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_after_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_after_dispatch ebm2all::Context_Expression_after
     #define EBM2ALL_CODEGEN_VISITOR_Expressions ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions>>
     #define EBM2ALL_CODEGEN_CONTEXT_Expressions ebm2all::Context_Expressions
     #define EBM2ALL_CODEGEN_VISITOR_Expressions_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions_before>>
@@ -6428,12 +6428,12 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2all::Context_Type_FUNCTION_before
     #define EBM2ALL_CODEGEN_VISITOR_Type_FUNCTION_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_FUNCTION_after>>
     #define EBM2ALL_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2all::Context_Type_FUNCTION_after
-    #define EBM2ALL_CODEGEN_VISITOR_Type ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Type ebm2all::Context_Type
-    #define EBM2ALL_CODEGEN_VISITOR_Type_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_before>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Type_before ebm2all::Context_Type_before
-    #define EBM2ALL_CODEGEN_VISITOR_Type_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_after>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Type_after ebm2all::Context_Type_after
+    #define EBM2ALL_CODEGEN_VISITOR_Type_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_dispatch ebm2all::Context_Type
+    #define EBM2ALL_CODEGEN_VISITOR_Type_before_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_before_dispatch ebm2all::Context_Type_before
+    #define EBM2ALL_CODEGEN_VISITOR_Type_after_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_after_dispatch ebm2all::Context_Type_after
     #define EBM2ALL_CODEGEN_VISITOR_Types ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types>>
     #define EBM2ALL_CODEGEN_CONTEXT_Types ebm2all::Context_Types
     #define EBM2ALL_CODEGEN_VISITOR_Types_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types_before>>

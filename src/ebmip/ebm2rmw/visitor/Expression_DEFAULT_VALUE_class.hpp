@@ -57,7 +57,7 @@ DEFINE_VISITOR(Expression_DEFAULT_VALUE) {
         instr.op = ebm::OpCode::NEW_STRUCT;
         MAYBE(type_impl, ctx.get(ctx.type));
         MAYBE(struct_id, type_impl.body.id());
-        instr.struct_id(struct_id);
+        instr.struct_id(from_weak(struct_id));
         auto ident = ctx.identifier(struct_id);
         auto str_repr = std::format("new {}", ident);
         ctx.config().env.add_instruction(instr, str_repr);

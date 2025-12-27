@@ -150,7 +150,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             MEMCPY((io)->data + (io)->offset, (source).data, (size_value)); \
             (io)->offset += (size_value); \
         } else { \
-            EBM_EMIT_ERROR(field_str ": Not enough space to write bytes"); \    
+            EBM_EMIT_ERROR(field_str ": Not enough space to write bytes"); \
             return -1; \
         } \
     } while(0)

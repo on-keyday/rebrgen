@@ -28,9 +28,7 @@ DEFINE_VISITOR(Statement_ERROR_REPORT) {
     /*here to write the hook*/
     MAYBE(msg, ctx.get(ctx.error_report.message));
     CodeWriter w;
-    if (!ctx.flags().no_detailed_error) {
-        w.writeln("SET_LAST_ERROR(\"", futils::escape::escape_str<std::string>(msg.body.data), "\");");
-    }
+    w.writeln("EBM_EMIT_ERROR(\"", futils::escape::escape_str<std::string>(msg.body.data), "\");");
     w.writeln("return -1;");
     return w;
 }

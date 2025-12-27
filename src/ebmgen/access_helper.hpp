@@ -8364,7 +8364,7 @@ namespace ebmcodegen {
                 return {.index = 56, .is_array = false, .is_ptr = false};
             }
             if (field_index == get_field_index<18>("field")) {
-                return {.index = 56, .is_array = false, .is_ptr = false};
+                return {.index = 55, .is_array = false, .is_ptr = false};
             }
             if (field_index == get_field_index<18>("target")) {
                 return {.index = 58, .is_array = false, .is_ptr = false};

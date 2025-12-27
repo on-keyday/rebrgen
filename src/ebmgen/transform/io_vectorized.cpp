@@ -99,13 +99,13 @@ namespace ebmgen {
                     print_if_verbose("Total size: ", total_size.size()->value(), " ", to_string(total_size.unit), "\n");
                     auto original_field = std::get<2>(g.front())->field;
                     auto& ctx = tctx.context();
-                    MAYBE(t, ctx.repository().get_statement(original_field));
+                    MAYBE(t, ctx.repository().get_statement(from_weak(original_field)));
                     if (auto field_decl = t.body.field_decl()) {
                         if (auto comp = field_decl->composite_field()) {
-                            original_field = from_weak(*comp);
+                            original_field = *comp;
                         }
                     }
-                    auto io_data = make_io_data(std::get<2>(g[0])->io_ref, original_field, {}, data_typ, {}, total_size);
+                    auto io_data = make_io_data(std::get<2>(g[0])->io_ref, from_weak(original_field), {}, data_typ, {}, total_size);
                     ebm::Block original_io;
                     for (auto& ref : g) {
                         append(original_io, std::get<1>(ref));

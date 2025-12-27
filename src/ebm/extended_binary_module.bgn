@@ -561,7 +561,7 @@ format Size:
 
 format IOData:
     io_ref :StatementRef
-    field :StatementRef # mapped FieldDecl 
+    field :WeakStatementRef # mapped FieldDecl 
     target :ExpressionRef # Variable to store read/write data
     data_type :TypeRef # Type of the data to read/write
     attribute :IOAttribute # Endianness for write

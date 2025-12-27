@@ -21,10 +21,16 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+#include <ranges>
 #include "../codegen.hpp"
+#include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_ERROR_RETURN) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     MAYBE(val, ctx.visit(ctx.value));
-    return CODELINE("return ", val.to_writer(), ";");
+    MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(ctx.related_field)));
+    CodeWriter w;
+    w.writeln("EBM_EMIT_ERROR(\"Error on handling field ", field_name, "\");");
+    w.writeln("return ", val.to_writer(), ";");
+    return w;
 }

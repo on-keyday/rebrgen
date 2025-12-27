@@ -3398,7 +3398,7 @@ namespace ebm::zc {
     };
     struct EBM_API IOData{
         StatementRef io_ref;
-        StatementRef field;
+        WeakStatementRef field;
         ExpressionRef target;
         TypeRef data_type;
         IOAttribute attribute;

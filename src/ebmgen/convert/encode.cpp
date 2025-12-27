@@ -26,7 +26,7 @@ namespace ebmgen {
         io_desc.attribute = attr;
         io_desc.size = get_size(*ity->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(io_desc.io_ref, io_desc.field, *ity->bit_size / 8, attr, base_ref, io_desc.data_type));
+            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(io_desc.io_ref, from_weak(io_desc.field), *ity->bit_size / 8, attr, base_ref, io_desc.data_type));
             io_desc.attribute.has_lowered_statement(true);
             io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, multi_byte_int));
         }
@@ -38,7 +38,7 @@ namespace ebmgen {
         io_desc.attribute = attr;
         io_desc.size = get_size(*fty->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(io_desc.io_ref, io_desc.field, *fty->bit_size / 8, attr, base_ref, io_desc.data_type));
+            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(io_desc.io_ref, from_weak(io_desc.field), *fty->bit_size / 8, attr, base_ref, io_desc.data_type));
             io_desc.attribute.has_lowered_statement(true);
             io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::FLOAT_TO_BYTE_ARRAY, multi_byte_int));
         }
@@ -50,7 +50,7 @@ namespace ebmgen {
             if (locked_enum->base_type) {
                 EBMA_CONVERT_TYPE(to_ty, locked_enum->base_type);
                 EBM_CAST(casted, to_ty, io_desc.data_type, base_ref);
-                MAYBE(encode_info, encode_field_type(locked_enum->base_type, casted, nullptr));
+                MAYBE(encode_info, encode_field_type(locked_enum->base_type, casted, nullptr, from_weak(io_desc.field)));
                 EBMA_ADD_STATEMENT(encode_stmt, std::move(encode_info));
                 auto io_data = ctx.repository().get_statement(encode_stmt)->body.write_data();
                 io_desc.attribute = io_data->attribute;
@@ -166,7 +166,7 @@ namespace ebmgen {
         }
         EBM_COUNTER_LOOP_START(counter);
         EBM_INDEX(indexed, element_type, base_ref, counter);
-        MAYBE(encode_info, encode_field_type(aty->element_type, indexed, nullptr));
+        MAYBE(encode_info, encode_field_type(aty->element_type, indexed, nullptr, from_weak(io_desc.field)));
         EBMA_ADD_STATEMENT(encode_stmt, std::move(encode_info));
         EBM_COUNTER_LOOP_END(loop_stmt, counter, length, encode_stmt);
 
@@ -214,7 +214,7 @@ namespace ebmgen {
 
         MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
         io_desc.size = io_size;
-        EBM_WRITE_DATA(write_ref, make_io_data(io_desc.io_ref, io_desc.field, buffer, u8_n_array, io_desc.attribute, io_size));
+        EBM_WRITE_DATA(write_ref, make_io_data(io_desc.io_ref, from_weak(io_desc.field), buffer, u8_n_array, io_desc.attribute, io_size));
 
         ebm::Block block;
         append(block, buffer_def);
@@ -268,7 +268,7 @@ namespace ebmgen {
         EBM_CALL(call_ref, typ_ref, std::move(call_desc));
         EBM_DEFINE_VARIABLE(result, {}, typ_ref, call_ref, ebm::VariableDeclKind::IMMUTABLE, false);
         EBM_IS_ERROR(is_error, result);
-        EBM_ERROR_RETURN(error_return, result, ctx.state().get_current_function_id(), io_desc.field);
+        EBM_ERROR_RETURN(error_return, result, ctx.state().get_current_function_id(), from_weak(io_desc.field));
         EBM_IF_STATEMENT(if_stmt, is_error, error_return, {});
 
         ebm::Block block;
@@ -283,18 +283,11 @@ namespace ebmgen {
         return {};
     }
 
-    expected<ebm::StatementBody> EncoderConverter::encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
+    expected<ebm::StatementBody> EncoderConverter::encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field, ebm::StatementRef field_ref) {
         if (auto ity = ast::as<ast::IdentType>(typ)) {
-            return encode_field_type(ity->base.lock(), base_ref, field);
+            return encode_field_type(ity->base.lock(), base_ref, field, field_ref);
         }
         MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
-
-        ebm::StatementRef field_ref;
-        if (field) {
-            auto _state = ctx.state().set_current_generate_type(GenerateType::Normal);
-            EBMA_CONVERT_STATEMENT(field_stmt, field);
-            field_ref = field_stmt;
-        }
 
         EBMA_CONVERT_TYPE(typ_ref, typ, field);
         ebm::IOData io_desc = make_io_data(cur_encdec.encoder_input_def, field_ref, base_ref, typ_ref, ebm::IOAttribute{}, ebm::Size{});

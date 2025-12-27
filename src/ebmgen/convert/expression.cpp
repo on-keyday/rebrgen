@@ -548,7 +548,7 @@ namespace ebmgen {
                 EBM_DEFAULT_VALUE(default_, type_ref);
                 EBM_DEFINE_ANONYMOUS_VARIABLE(var, type_ref, default_);
                 body.target_stmt(var_def);
-                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(node->expr_type, var, nullptr));
+                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(node->expr_type, var, nullptr, ctx.state().get_current_function_id()));
                 if (node->method == ast::IOMethod::input_peek) {
                     decode_info.read_data()->attribute.is_peek(true);
                 }
@@ -560,7 +560,7 @@ namespace ebmgen {
                 body.kind = ebm::ExpressionKind::WRITE_DATA;
                 EBMA_CONVERT_EXPRESSION(output, node->arguments[0]);
                 body.target_expr(output);
-                MAYBE(encode_info, ctx.get_encoder_converter().encode_field_type(node->arguments[0]->expr_type, output, nullptr));
+                MAYBE(encode_info, ctx.get_encoder_converter().encode_field_type(node->arguments[0]->expr_type, output, nullptr, ctx.state().get_current_function_id()));
                 EBMA_ADD_STATEMENT(io_statement_ref, std::move(encode_info));
                 body.io_statement(io_statement_ref);
                 break;

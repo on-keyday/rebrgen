@@ -15,7 +15,7 @@
       kind: const ebm::StatementKind&
       read_data: const ebm::IOData&
         io_ref: StatementRef
-        field: StatementRef
+        field: WeakStatementRef
         target: ExpressionRef
         data_type: TypeRef
         attribute: IOAttribute

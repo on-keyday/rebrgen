@@ -46,7 +46,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #ifndef VECTOR_APPEND
     #define VECTOR_APPEND(vector, elem) do { \
         if (!input->append) {\
-            SET_LAST_ERROR("EncoderInput append function is not set"); \
+            EBM_EMIT_ERROR("EncoderInput append function is not set"); \
             return -1; \
         } \
         int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),&(elem), sizeof(elem)); \
@@ -64,19 +64,19 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : ((io)->data_end - ((io)->data + (io)->offset)) >= (num_bytes))
     #endif
 
-    #define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value) do { \
+    #define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value,field_str) do { \
         if (DECODER_CAN_READ((io), (size))) { \
             if ((offset_value) == 0) { \
                 (target) = (uint8_t*)((io)->data + (io)->offset); \
             }  \
             (io)->offset += (size); \
         } else { \
-            SET_LAST_ERROR("Not enough data to read array bytes temporary"); \
+            EBM_EMIT_ERROR(field_str ": Not enough data to read array bytes temporary"); \
             return -1; \
         } \
     } while(0)
 
-    #define EBM_READ_BYTES(io, target, size_value, offset_value) do { \
+    #define EBM_READ_BYTES(io, target, size_value, offset_value,field_str) do { \
         if (DECODER_CAN_READ((io), (size_value))) { \
             if ((offset_value) == 0) { \
                 (target).data = (uint8_t*)((io)->data + (io)->offset); \
@@ -85,19 +85,19 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }  \
             (io)->offset += (size_value); \
         } else { \
-            SET_LAST_ERROR("Not enough data to read bytes"); \
+            EBM_EMIT_ERROR(field_str ": Not enough data to read bytes"); \
             return -1; \
         } \
     } while(0)
 
-    #define EBM_READ_ARRAY_BYTES(io, target, size_value, offset_value) do { \
+    #define EBM_READ_ARRAY_BYTES(io, target, size_value, offset_value,field_str) do { \
         if (DECODER_CAN_READ((io), (size_value))) { \
             if ((offset_value) == 0) { \
                 MEMCPY((target), (io)->data + (io)->offset, (size_value)); \
             }  \
             (io)->offset += (size_value); \
         } else { \
-            SET_LAST_ERROR("Not enough data to read array bytes"); \    
+            EBM_EMIT_ERROR(field_str ": Not enough data to read array bytes"); \
             return -1; \
         } \
     } while(0)
@@ -114,19 +114,19 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
 
     void write_encoder_macros(CodeWriter & w) {
         w.write_unformatted(R"a(
-    #define EBM_RESERVE_DATA(io,target, size) do { \
+    #define EBM_RESERVE_DATA(io,target, size, field_str) do { \
         if ((io)->offset + (size) > (size_t)((io)->data_end - (io)->data)) { \
-            SET_LAST_ERROR("Not enough space to reserve data"); \
+            EBM_EMIT_ERROR(field_str ": Not enough space to reserve data"); \
             return -1; \
         } \
         target = (uint8_t*)((io)->data + (io)->offset); \
     } while(0)
 
-    #define EBM_WRITE_ARRAY_BYTES_TEMPORARY(io, source, size_value, offset_value) do { \
+    #define EBM_WRITE_ARRAY_BYTES_TEMPORARY(io, source, size_value, offset_value,field_str) do { \
         if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
             (io)->offset += (size_value); \
         } else { \
-            SET_LAST_ERROR("Not enough space to write array bytes temporary"); \
+            EBM_EMIT_ERROR(field_str ": Not enough space to write array bytes temporary"); \
             return -1; \
         } \
     } while(0)
@@ -135,7 +135,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #define MEMCPY(dest, src, size) __builtin_memcpy((dest), (src), (size))
     #endif
 
-    #define EBM_WRITE_BYTES(io, source, size_value, offset_value) do { \
+    #define EBM_WRITE_BYTES(io, source, size_value, offset_value,field_str) do { \
         if((io)->emit) { \
             int res = (io)->emit((io), &(source), (size_value)); \
             if (res != 0) { \
@@ -144,23 +144,23 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         } \
         else if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
             if((source).size != (size_value)) { \
-                SET_LAST_ERROR("Source size does not match size value in write bytes"); \
+                EBM_EMIT_ERROR(field_str ": Source size does not match size value in write bytes"); \
                 return -1; \
             } \
             MEMCPY((io)->data + (io)->offset, (source).data, (size_value)); \
             (io)->offset += (size_value); \
         } else { \
-            SET_LAST_ERROR("Not enough space to write bytes"); \    
+            EBM_EMIT_ERROR(field_str ": Not enough space to write bytes"); \    
             return -1; \
         } \
     } while(0)
 
-    #define EBM_WRITE_ARRAY_BYTES(io, source, size_value, offset_value) do { \
+    #define EBM_WRITE_ARRAY_BYTES(io, source, size_value, offset_value,field_str) do { \
         if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
             MEMCPY((io)->data + (io)->offset, (source), (size_value)); \
             (io)->offset += (size_value); \
         } else { \
-            SET_LAST_ERROR("Not enough space to write array bytes"); \ 
+            EBM_EMIT_ERROR(field_str ": Not enough space to write array bytes"); \
             return -1; \
         } \
     } while(0)
@@ -267,9 +267,9 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("#endif");
         }
 
-        w.writeln("#ifndef SET_LAST_ERROR");
+        w.writeln("#ifndef EBM_EMIT_ERROR");
         w.write_unformatted(&R"(
-        #define SET_LAST_ERROR(msg) \
+        #define EBM_EMIT_ERROR(msg) \
             input->set_last_error(msg);
         #define LAST_ERROR_HANDLER void(*set_last_error)(const char* msg)
         )"[1]);

@@ -920,11 +920,11 @@ namespace ebmgen {
         ebm::StatementRef sub_range_id = id;
         auto do_io = [&] -> expected<ebm::StatementBody> {
             if (is_enc) {
-                MAYBE(body, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
+                MAYBE(body, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node, def_ref));
                 return body;
             }
             else {
-                MAYBE(body, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
+                MAYBE(body, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node, def_ref));
                 return body;
             }
         };

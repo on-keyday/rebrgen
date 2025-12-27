@@ -262,7 +262,7 @@ namespace ebmgen {
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::StatementRef field, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size) {
         return ebm::IOData{
             .io_ref = io_ref,
-            .field = field,
+            .field = to_weak(field),
             .target = target,
             .data_type = data_type,
             .attribute = attr,

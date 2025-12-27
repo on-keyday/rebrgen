@@ -132,7 +132,7 @@ namespace ebmgen {
             EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, read_offset, new_size);
             if (write) {  // incremental reserving
                 ebm::ReserveData reserve_data;
-                reserve_data.write_data =to_weak(flush_buffer_statement);
+                reserve_data.write_data = to_weak(flush_buffer_statement);
                 MAYBE(reserve_size, make_dynamic_size(new_size, ebm::SizeUnit::BYTE_DYNAMIC));
                 reserve_data.size = reserve_size;
                 EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
@@ -201,7 +201,7 @@ namespace ebmgen {
                         }
                     }
                     if (!write) {
-                        MAYBE(io_cond, do_incremental(io_copy.field, new_size_bit));
+                        MAYBE(io_cond, do_incremental(from_weak(io_copy.field), new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
@@ -223,7 +223,7 @@ namespace ebmgen {
                         append(block, fin);
                     }
                     else {
-                        MAYBE(incremental_reserve, do_incremental(io_copy.field, new_size_bit));
+                        MAYBE(incremental_reserve, do_incremental(from_weak(io_copy.field), new_size_bit));
                         EBM_CAST(casted, unsigned_t, io_copy.data_type, io_copy.target);
                         auto assign = add_endian_specific(
                             ctx, io_copy.attribute,
@@ -241,7 +241,7 @@ namespace ebmgen {
                     }
                     append(block, update_current_bit_offset);
                     if (write && i == r.route.size() - 1) {
-                        MAYBE(flush, flush_buffer(io_copy.field));
+                        MAYBE(flush, flush_buffer(from_weak(io_copy.field)));
                         append(block, flush);
                     }
                     EBM_BLOCK(lowered_bit_operation, std::move(block));
@@ -304,7 +304,7 @@ namespace ebmgen {
             if (is_single_route) {
                 // reserve upfront for single route
                 ebm::ReserveData reserve_data;
-                reserve_data.write_data =to_weak(flush_buffer_statement);
+                reserve_data.write_data = to_weak(flush_buffer_statement);
                 MAYBE(reserve_size, make_fixed_size(max_bit_size / 8, ebm::SizeUnit::BYTE_FIXED));
                 reserve_data.size = reserve_size;
                 EBM_RESERVE_DATA(reserve_stmt, std::move(reserve_data));
@@ -421,7 +421,7 @@ namespace ebmgen {
                         //}
                     }
                     if (!write) {
-                        MAYBE(io_cond, do_incremental(io_copy.field, read_offset, new_size_bit));
+                        MAYBE(io_cond, do_incremental(from_weak(io_copy.field), read_offset, new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
@@ -445,7 +445,7 @@ namespace ebmgen {
                         append(block, fin);
                     }
                     else {
-                        MAYBE(incremental_reserve, do_incremental(io_copy.field, read_offset, new_size_bit));
+                        MAYBE(incremental_reserve, do_incremental(from_weak(io_copy.field), read_offset, new_size_bit));
                         EBM_CAST(casted, unsigned_t, io_copy.data_type, io_copy.target);
                         auto assign = add_endian_specific(
                             ctx, io_copy.attribute,
@@ -463,7 +463,7 @@ namespace ebmgen {
                         }
                         append(block, *assign);
                         if (i == r.route.size() - 1) {
-                            MAYBE(flush, flush_buffer(io_copy.field, new_size_bit));
+                            MAYBE(flush, flush_buffer(from_weak(io_copy.field), new_size_bit));
                             append(block, flush);
                             // if other routes exist and this one is not last one,
                             // need new flush buffer statement id

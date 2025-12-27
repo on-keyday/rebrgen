@@ -52691,12 +52691,6 @@ namespace ebm2c {
                 return unexpect_error(std::move(result_io_ref.error()));
             }
         }
-        if (!is_nil(type_ctx.read_data.field)) {
-            auto result_field = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.read_data.field);
-            if (!result_field) {
-                return unexpect_error(std::move(result_field.error()));
-            }
-        }
         if (!is_nil(type_ctx.read_data.target)) {
             auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.read_data.target);
             if (!result_target) {
@@ -52795,12 +52789,6 @@ namespace ebm2c {
             auto result_io_ref = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.write_data.io_ref);
             if (!result_io_ref) {
                 return unexpect_error(std::move(result_io_ref.error()));
-            }
-        }
-        if (!is_nil(type_ctx.write_data.field)) {
-            auto result_field = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.write_data.field);
-            if (!result_field) {
-                return unexpect_error(std::move(result_field.error()));
             }
         }
         if (!is_nil(type_ctx.write_data.target)) {

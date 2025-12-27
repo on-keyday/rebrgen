@@ -35,9 +35,8 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
             {
                 auto scope = w.indent_scope();
                 MAYBE(field, ctx.get_field<"member.body.id">(ctx.init_check.target_field));
-                MAYBE(layers, get_identifier_layer(ctx, from_weak(field)));
-                auto field_name = join("::", layers | std::views::values);
-                w.writeln("SET_LAST_ERROR(\"Field ", field_name, " not initialized\");");
+                MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(field)));
+                w.writeln("EBM_EMIT_ERROR(\"Field ", field_name, " not initialized\");");
                 w.writeln("return -1;  /* field not initialized */");
             }
             w.writeln("}");
@@ -60,9 +59,8 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
                 {
                     auto scope2 = w.indent_scope();
                     MAYBE(field, ctx.get_field<"member.body.id">(ctx.init_check.target_field));
-                    MAYBE(layers, get_identifier_layer(ctx, from_weak(field)));
-                    auto field_name = join("::", layers | std::views::values);
-                    w.writeln("SET_LAST_ERROR(\"Field ", field_name, " not initialized; allocation failed\");");
+                    MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(field)));
+                    w.writeln("EBM_EMIT_ERROR(\"Field ", field_name, " not initialized; allocation failed\");");
                     w.writeln("return -1;  /* allocation failed */");
                 }
                 w.writeln("}");

@@ -155,8 +155,10 @@ target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
 
 #add_subdirectory("src/ebmgen/test")
+if(NOT "$ENV{CODEGEN_ONLY}" STREQUAL "1")
 add_subdirectory("src/ebmcg")
 add_subdirectory("src/ebmip")
+endif()
 
 target_link_libraries(ebmgen futils ebm)
 

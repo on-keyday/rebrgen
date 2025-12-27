@@ -1,11 +1,16 @@
 # run src/ebm/ebm.py to update the C++ files
+import os
 import subprocess as sp
 import sys
 
 sp.check_call(["python", "src/ebm/ebm.py"], stdout=sys.stdout, stderr=sys.stderr)
 
 # then run script/build.py to build the tools
-sp.check_call(["python", "script/build.py"], stdout=sys.stdout, stderr=sys.stderr)
+current_env = dict(**os.environ)
+current_env["CODEGEN_ONLY"] = "1"
+sp.check_call(
+    ["python", "script/build.py"], stdout=sys.stdout, stderr=sys.stderr, env=current_env
+)
 
 something_changed = False
 

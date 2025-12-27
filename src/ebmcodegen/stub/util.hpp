@@ -280,6 +280,19 @@ namespace ebmcodegen::util {
         return expr.to_string();
     }
 
+    std::string join(auto&& joint, auto&& vec) {
+        std::string result;
+        bool first = true;
+        for (auto&& v : vec) {
+            if (!first) {
+                result += joint;
+            }
+            result += v;
+            first = false;
+        }
+        return result;
+    }
+
     enum class LayerState {
         root,
         as_type,
@@ -333,6 +346,15 @@ namespace ebmcodegen::util {
         return layers;
     }
 
+    ebmgen::expected<std::string> get_identifier_layer_str(auto&& ctx, ebm::StatementRef stmt, std::string_view joint = "::", LayerState state = LayerState::root) {
+        MAYBE(layers, get_identifier_layer(ctx, stmt, state));
+        std::vector<std::string> layer_strs;
+        for (auto& [kind, name] : layers) {
+            layer_strs.push_back(name);
+        }
+        return join(joint, layer_strs);
+    }
+
     auto struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>> {
         const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(variant));
@@ -348,19 +370,6 @@ namespace ebmcodegen::util {
                     result.push_back(std::move(stmt_str));
                 }
             }
-        }
-        return result;
-    }
-
-    std::string join(auto&& joint, auto&& vec) {
-        std::string result;
-        bool first = true;
-        for (auto&& v : vec) {
-            if (!first) {
-                result += joint;
-            }
-            result += v;
-            first = false;
         }
         return result;
     }

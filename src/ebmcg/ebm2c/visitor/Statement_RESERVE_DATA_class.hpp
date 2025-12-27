@@ -30,5 +30,7 @@ DEFINE_VISITOR(Statement_RESERVE_DATA) {
     MAYBE(size_str, get_size_str(ctx, ctx.reserve_data.size));
     auto io_ref = ctx.identifier(write_data.io_ref);
     MAYBE(target, ctx.visit(write_data.target));
-    return CODELINE("EBM_RESERVE_DATA(", io_ref, ", ", target.to_writer(), ", ", size_str, ");");
+    MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(write_data.field)));
+    field_name = "\"" + field_name + "\"";
+    return CODELINE("EBM_RESERVE_DATA(", io_ref, ", ", target.to_writer(), ", ", size_str, ", ", field_name, ");");
 }

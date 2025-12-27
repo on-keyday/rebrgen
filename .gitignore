@@ -7,3 +7,4 @@ node_modules/
 .venv/
 build_config.json
 __pycache__/
+unictest_latest.txt

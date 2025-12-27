@@ -69,7 +69,40 @@ def main():
        4. DecoderInput and EncoderInput structs are defined in generated code.
     */
 
-    
+    void default_set_last_error(const char* msg) {{
+        fprintf(stderr, "EBM Error: %s\\n", msg);
+    }}
+
+    #ifdef LAST_ERROR_HANDLER
+    void* default_allocate(struct DecoderInput* self, size_t size) {{
+        (void)self;
+        return malloc(size);
+    }}
+
+    /* Assumes vector structure matches VECTOR_OF(void) */
+    #ifdef VECTOR_OF
+    typedef struct {{
+        void* data;
+        size_t size;
+        size_t capacity;
+    }} GenericVector;
+
+    int default_append(struct DecoderInput* self, VECTOR_OF(void)* vector_void, const void* elem_data, size_t elem_size) {{
+        (void)self;
+        GenericVector* vector = (GenericVector*)vector_void;
+        if (vector->size >= vector->capacity) {{
+            size_t new_capacity = vector->capacity == 0 ? 4 : vector->capacity * 2;
+            void* new_data = realloc(vector->data, new_capacity * elem_size);
+            if (!new_data) return -1;
+            vector->data = new_data;
+            vector->capacity = new_capacity;
+        }}
+        memcpy((char*)vector->data + (vector->size * elem_size), elem_data, elem_size);
+        vector->size++;
+        return 0;
+    }}
+    #endif
+    #endif
 
     int main(int argc, char *argv[]) {{
 
@@ -150,6 +183,16 @@ def main():
         decoder_input.data_end = input_buffer + input_len;
 
         decoder_input.offset = 0;
+        #ifdef LAST_ERROR_HANDLER
+        decoder_input.set_last_error = default_set_last_error;
+        #endif
+        #ifdef EBM_ALLOCATE
+        decoder_input.allocate = default_allocate;
+        #endif
+        #ifdef VECTOR_OF
+        decoder_input.append = default_append;
+        #endif
+        /* decoder_input.can_read = NULL; */ /* Use default logic */
 
         
 
@@ -217,7 +260,12 @@ def main():
 
         encoder_input.offset = 0;
 
-        encoder_input.emit = NULL; /* Use fixed buffer for now, simplest for test */
+        #ifdef VECTOR_OF
+        /* encoder_input.emit = NULL; */ /* Use fixed buffer for now, simplest for test */
+        #endif
+        #ifdef LAST_ERROR_HANDLER
+        encoder_input.set_last_error = default_set_last_error;
+        #endif
 
     
 

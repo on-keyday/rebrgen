@@ -21,12 +21,8 @@ namespace ebmcodegen::util {
         std::unordered_map<std::uint64_t, Node> struct_graph;
         std::vector<std::uint64_t> order_of_appearance;
 
-        // 1. 全ての構造体をスキャンし、依存関係を一度だけ解析してキャッシュする
-        for (auto& s : module_.module().statements) {
-            auto* struct_ptr = s.body.struct_decl();
-            if (!struct_ptr) continue;
-
-            uint64_t id = get_id(s.id);
+        auto do_handle = [&](ebm::StatementRef stmt_ref, const ebm::StructDecl* struct_ptr) -> ebmgen::expected<void> {
+            uint64_t id = get_id(stmt_ref);
             order_of_appearance.push_back(id);
 
             std::vector<std::uint64_t> deps;
@@ -36,12 +32,12 @@ namespace ebmcodegen::util {
 
                 const ebm::Type* last_type = tree.back();
                 if (last_type->body.kind == ebm::TypeKind::STRUCT) {
-                    MAYBE(decl, ebmgen::access_field<"body.id.instance">(module_, last_type));
+                    MAYBE(decl, ebmgen::access_field<"body.id">(module_, last_type));
                     deps.push_back(get_id(decl.id));
                 }
                 else if (last_type->body.kind == ebm::TypeKind::VARIANT) {
                     for (auto& member_ref : last_type->body.variant_desc()->members.container) {
-                        MAYBE(member_decl, ebmgen::access_field<"body.id.instance">(module_, member_ref));
+                        MAYBE(member_decl, ebmgen::access_field<"body.id">(module_, member_ref));
                         deps.push_back(get_id(member_decl.id));
                     }
                 }
@@ -49,7 +45,27 @@ namespace ebmcodegen::util {
             });
 
             if (!res) return ebmgen::unexpect_error(std::move(res.error()));
-            struct_graph[id] = Node{s.id, std::move(deps)};
+            struct_graph[id] = Node{stmt_ref, std::move(deps)};
+            return {};
+        };
+
+        // 1. 全ての構造体をスキャンし、依存関係を一度だけ解析してキャッシュする
+        for (auto& s : module_.module().statements) {
+            auto* struct_ptr = s.body.struct_decl();
+            if (!struct_ptr) continue;
+            MAYBE_VOID(ok, do_handle(s.id, struct_ptr));
+        }
+        // aliasの場合も
+        for (auto& alias : module_.module().aliases) {
+            if (alias.hint != ebm::AliasHint::STATEMENT) {
+                continue;
+            }
+            auto ref = from_any_ref<ebm::StatementRef>(alias.from);
+            auto struct_decl = ebmgen::access_field<"body.struct_decl">(module_, ref);
+            if (!struct_decl) {
+                continue;
+            }
+            MAYBE_VOID(ok, do_handle(ref, struct_decl));
         }
 
         // 2. トポロジカルソートの実行

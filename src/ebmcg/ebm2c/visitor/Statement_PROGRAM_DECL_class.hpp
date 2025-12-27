@@ -270,7 +270,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         w.writeln("#ifndef EBM_EMIT_ERROR");
         w.write_unformatted(&R"(
         #define EBM_EMIT_ERROR(msg) \
-            input->set_last_error(msg);
+            do { if (input->set_last_error) input->set_last_error(msg); } while(0)
         #define LAST_ERROR_HANDLER void(*set_last_error)(const char* msg)
         )"[1]);
         w.writeln("#endif");
@@ -528,11 +528,11 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }
             Union u{.id = s.id};
             for (auto member_type_ref : variant_desc->members.container) {
-                auto struct_key = ctx.get_field<"body.id.id">(member_type_ref);
+                auto struct_key = ctx.get_field<"body.id">(member_type_ref);
                 if (!struct_key) {
                     continue;
                 }
-                handle_struct_decl(u.variants, *struct_key, true);
+                handle_struct_decl(u.variants, from_weak(*struct_key), true);
             }
             c_ctx.unions[get_id(s.id)] = u;
         }

@@ -19,8 +19,9 @@
         params: Block
           len: Varint
           container: std::vector<StatementRef>
-        parent_format: StatementRef
+        parent_format: WeakStatementRef
         kind: FunctionKind
+        property: *WeakStatementRef
         body: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

@@ -1543,31 +1543,34 @@ namespace ebm2rust {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
+        const ebm::WeakStatementRef& related_function;
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_RETURN {};
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_function = instance_name.related_function;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before<Result>> {
         constexpr static std::string_view context_name = "Statement_RETURN_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
+        const ebm::WeakStatementRef& related_function;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_RETURN_before {};
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after<Result>> {
         constexpr static std::string_view context_name = "Statement_RETURN_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
+        const ebm::WeakStatementRef& related_function;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
@@ -1575,37 +1578,43 @@ namespace ebm2rust {
     struct VisitorTag_Statement_RETURN_after {};
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_RETURN : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN> {
         constexpr static std::string_view context_name = "Statement_ERROR_RETURN";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
+        const ebm::WeakStatementRef& related_field;
+        const ebm::WeakStatementRef& related_function;
         const ebm::ExpressionRef& value;
     };
     struct VisitorTag_Statement_ERROR_RETURN {};
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_field = instance_name.related_field;auto& related_function = instance_name.related_function;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before<Result>> {
         constexpr static std::string_view context_name = "Statement_ERROR_RETURN_before";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
+        const ebm::WeakStatementRef& related_field;
+        const ebm::WeakStatementRef& related_function;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Statement_ERROR_RETURN_before {};
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_field = instance_name.related_field;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after<Result>> {
         constexpr static std::string_view context_name = "Statement_ERROR_RETURN_after";
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
+        const ebm::WeakStatementRef& related_field;
+        const ebm::WeakStatementRef& related_function;
         const ebm::ExpressionRef& value;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
@@ -1613,7 +1622,7 @@ namespace ebm2rust {
     struct VisitorTag_Statement_ERROR_RETURN_after {};
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_field = instance_name.related_field;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSERT : ebmcodegen::util::ContextBase<Context_Statement_ASSERT> {
         constexpr static std::string_view context_name = "Statement_ASSERT";
         BaseVisitor& visitor;

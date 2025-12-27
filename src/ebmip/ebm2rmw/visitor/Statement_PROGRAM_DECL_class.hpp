@@ -37,7 +37,7 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
         return unexpect_error("Entry point not found: {}", entry_str);
     }
     auto entry_stmt_ref = query_result.first[0];
-    MAYBE(entry_stmt, ctx.get(ebmgen::from_any_ref<ebm::StatementRef>(entry_stmt_ref)));
+    MAYBE(entry_stmt, ctx.get(from_any_ref<ebm::StatementRef>(entry_stmt_ref)));
     auto entry_decode_fn = *entry_stmt.body.struct_decl()->decode_fn();
     auto f = ctx.config().env.new_function(entry_decode_fn);
     auto res = ctx.visit(entry_decode_fn);

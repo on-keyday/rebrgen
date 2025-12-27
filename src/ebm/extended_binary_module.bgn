@@ -614,8 +614,11 @@ format StatementBody:
             target :ExpressionRef # Target vector to append to
             value :ExpressionRef # Value to append
         StatementKind.RETURN:
+            related_function :WeakStatementRef # Reference to the function declaration
             value :ExpressionRef # Return value (optional)
         StatementKind.ERROR_RETURN:
+            related_field :WeakStatementRef # Reference to the field that causes the error (maybe null)
+            related_function :WeakStatementRef # Reference to the function declaration
             value :ExpressionRef # Error return value (e.g., ENCODER_RETURN or DECODER_RETURN)
         StatementKind.ASSERT:
             assert_desc :AssertDesc # Assertion description

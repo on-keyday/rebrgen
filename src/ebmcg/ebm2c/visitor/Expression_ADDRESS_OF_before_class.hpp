@@ -27,7 +27,7 @@ DEFINE_VISITOR(Expression_ADDRESS_OF_before) {
         MAYBE(pointee, ctx.get_field<"pointee_type">(ctx.type));
         MAYBE(target, ctx.visit(ctx.target_expr));
         MAYBE(pointee_str, ctx.visit(pointee));
-        return CODE("OPTIONAL_OF(", pointee_str.to_writer(), "){.has_value = true, .value = ", target.to_writer(), "}");
+        return CODE("(OPTIONAL_OF(", pointee_str.to_writer(), ")){.has_value = true, .value = ", target.to_writer(), "}");
     }
     return pass;
 }

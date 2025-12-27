@@ -311,6 +311,7 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::RETURN;
+        body.related_function(to_weak(ctx.state().get_current_function_id()));
         if (node->expr) {
             EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
             body.value(expr_ref);
@@ -587,11 +588,12 @@ namespace ebmgen {
                     if (element->ident->ident == "encode" || element->ident->ident == "decode") {
                         continue;
                     }
-                    MAYBE(func_decl, ctx.get_statement_converter().convert_function_decl(ast::cast_to<ast::Function>(element), GenerateType::Normal, ebm::StatementRef{}));
+                    MAYBE(func_id, ctx.repository().new_statement_id());
+                    MAYBE(func_decl, ctx.get_statement_converter().convert_function_decl(func_id, ast::cast_to<ast::Function>(element), GenerateType::Normal, ebm::StatementRef{}));
                     ebm::StatementBody func_decl_body;
                     func_decl_body.kind = ebm::StatementKind::FUNCTION_DECL;
                     func_decl_body.func_decl(std::move(func_decl));
-                    EBMA_ADD_STATEMENT(func_decl_ref, std::move(func_decl_body));
+                    EBMA_ADD_STATEMENT(func_decl_ref, func_id, std::move(func_decl_body));
                     append(methods_block, func_decl_ref);
                 }
                 else {
@@ -694,7 +696,7 @@ namespace ebmgen {
             const auto _mode = ctx.state().set_current_generate_type(typ);
             ebm::FunctionDecl derived_fn;
             if (fn) {
-                MAYBE(decl, ctx.get_statement_converter().convert_function_decl(fn, typ, coder_input));
+                MAYBE(decl, ctx.get_statement_converter().convert_function_decl(fn_ref, fn, typ, coder_input));
                 for (auto& st : state_vars) {
                     append(decl.params, typ == GenerateType::Encode ? st.enc_var_def : st.dec_var_def);
                 }
@@ -710,13 +712,14 @@ namespace ebmgen {
                 for (auto& st : state_vars) {
                     append(derived_fn.params, typ == GenerateType::Encode ? st.enc_var_def : st.dec_var_def);
                 }
+                const auto _func = ctx.state().set_current_function_id(fn_ref);
                 EBMA_CONVERT_STATEMENT(body, node->body);
                 ebm::Block fn_body_block;
                 fn_body_block.container.reserve(2);
                 append(fn_body_block, body);
                 // tail return
                 EBM_DEFAULT_VALUE(nil_value, coder_return);
-                EBM_RETURN(ret_stmt, nil_value);
+                EBM_RETURN(ret_stmt, nil_value, fn_ref);
                 append(fn_body_block, ret_stmt);
                 EBM_BLOCK(fn_body_ref, std::move(fn_body_block));
                 derived_fn.body = fn_body_ref;
@@ -774,7 +777,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<ebm::FunctionDecl> StatementConverter::convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref) {
+    expected<ebm::FunctionDecl> StatementConverter::convert_function_decl(ebm::StatementRef func_id, const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref) {
         ebm::FunctionDecl func_decl;
         if (auto parent = node->belong.lock()) {
             auto n = ctx.state().set_current_generate_type(GenerateType::Normal);
@@ -809,11 +812,12 @@ namespace ebmgen {
             append(func_decl.params, param_ref_def);
         }
         const auto _mode = ctx.state().set_current_generate_type(typ);
+        const auto _func = ctx.state().set_current_function_id(func_id);
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
         if (typ != GenerateType::Normal) {
             // tail return
             EBM_DEFAULT_VALUE(nil_value, func_decl.return_type);
-            EBM_RETURN(ret_stmt, nil_value);
+            EBM_RETURN(ret_stmt, nil_value, func_id);
             ebm::Block fn_body_block;
             append(fn_body_block, fn_body);
             append(fn_body_block, ret_stmt);
@@ -834,7 +838,7 @@ namespace ebmgen {
             EBM_MEMBER_ACCESS(self_fn_access, fn_type, *self_, name_ref);
             ctx.state().set_self_ref_for_id(id, self_fn_access);
         }
-        MAYBE(decl, convert_function_decl(node, GenerateType::Normal, {}));
+        MAYBE(decl, convert_function_decl(id, node, GenerateType::Normal, {}));
         body.func_decl(std::move(decl));
         return {};
     }

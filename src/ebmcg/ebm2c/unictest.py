@@ -8,10 +8,10 @@ import json
 
 
 def main():
-    TEST_TARGET_FILE = sys.argv[1] # The generated .c file
+    TEST_TARGET_FILE = sys.argv[1]  # The generated .c file
     INPUT_FILE = sys.argv[2]
     OUTPUT_FILE = sys.argv[3]
-    TEST_TARGET_FORMAT = sys.argv[4] # The struct name
+    TEST_TARGET_FORMAT = sys.argv[4]  # The struct name
 
     print(f"Testing {TEST_TARGET_FILE} with {INPUT_FILE} and {OUTPUT_FILE}")
 
@@ -20,7 +20,7 @@ def main():
 
     # Copy generated C code
     generated_c_file = pathlib.Path(TEST_TARGET_FILE)
-    
+
     # We copy the content to a file named 'generated.h' to treat it as a single-header library
     # as per instructions "assume single header".
     generated_h_name = "generated.h"
@@ -34,33 +34,30 @@ def main():
         f.write(f"project(test_runner C)\n\n")
         # We only compile main.c, generated.h is included
         f.write(f"add_executable(test_runner main.c)\n")
-        f.write("target_include_directories(test_runner PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})\n")
+        f.write(
+            "target_include_directories(test_runner PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})\n"
+        )
         # Disable some warnings if necessary, as generated code might trigger them
         if os.name != "nt":
-            f.write("target_compile_options(test_runner PRIVATE -Wall -Wextra -Wno-unused-variable -Wno-unused-function)\n")
+            f.write(
+                "target_compile_options(test_runner PRIVATE -Wall -Wextra -Wno-unused-variable -Wno-unused-function)\n"
+            )
 
         # Create main.c
 
         with open(proj_dir / "main.c", "w") as f:
 
             f.write(
-
                 f"""
-
     #include <stdio.h>
-
     #include <stdlib.h> 
-
     #include <string.h>
-
     #include <stdbool.h>
-
     #include "{generated_h_name}"
 
     
 
     /* 
-
        Assumptions based on ebm2c generation:
 
        1. Struct name is {TEST_TARGET_FORMAT}
@@ -70,7 +67,6 @@ def main():
        3. Encode function: int {TEST_TARGET_FORMAT}_encode({TEST_TARGET_FORMAT}* self, EncoderInput* input);
 
        4. DecoderInput and EncoderInput structs are defined in generated code.
-
     */
 
     
@@ -279,25 +275,21 @@ def main():
 
            This will leak memory in the test runner but OS cleans up on exit. */
 
-    
 
         return 0;
-
     }}
-
     """
-
             )
 
     # Configure and build the C project
     print("\nConfiguring C project with CMake...")
     build_dir = proj_dir / "build"
     os.makedirs(build_dir, exist_ok=True)
-    
+
     cmake_command = ["cmake", ".."]
-    if os.name == "nt": 
+    if os.name == "nt":
         cmake_command.extend(["-G", "Ninja Multi-Config"])
-    
+
     result = subprocess.run(
         cmake_command,
         cwd=build_dir,
@@ -309,16 +301,17 @@ def main():
         print(result.stdout)
         print(result.stderr)
         sys.exit(1)
-    
+
     print("Building C project...")
     build_command = ["cmake", "--build", "."]
     if os.name == "nt":
-         build_command.extend(["--config", "Debug"])
+        build_command.extend(["--config", "Debug"])
 
     result = subprocess.run(
         build_command,
         cwd=build_dir,
-        capture_output=True,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
         text=True,
     )
     if result.returncode != 0:
@@ -328,11 +321,17 @@ def main():
         sys.exit(1)
 
     print("Compilation successful.")
-    
+
     # Run the compiled test executable
-    executable_path = build_dir / "Debug" / "test_runner" if os.name == "nt" else build_dir / "test_runner"
+    executable_path = (
+        build_dir / "Debug" / "test_runner"
+        if os.name == "nt"
+        else build_dir / "test_runner"
+    )
     if os.name == "nt":
         executable_path = executable_path.with_suffix(".exe")
+
+    executable_path = executable_path.resolve()
 
     print("for VSCode debugging")
     print(
@@ -342,7 +341,7 @@ def main():
                 "request": "launch",
                 "cwd": os.getcwd(),
                 "name": f"Debug ebm2c unictest ({TEST_TARGET_FORMAT})",
-                "program": os.path.abspath(executable_path),
+                "program": executable_path.as_posix(),
                 "args": [
                     INPUT_FILE,
                     OUTPUT_FILE,
@@ -352,23 +351,16 @@ def main():
         )
     )
 
-    print(f"\nRunning compiled test: {executable_path}")
+    print(f"\nRunning compiled test: {executable_path.as_posix()}")
     proc = subprocess.run(
         [
-            str(executable_path),
+            executable_path.as_posix(),
             INPUT_FILE,
             OUTPUT_FILE,
         ],
-        capture_output=True,
-        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
-
-    if proc.stdout:
-        print("---" + " stdout ---")
-        print(proc.stdout)
-    if proc.stderr:
-        print("---" + " stderr ---")
-        print(proc.stderr)
 
     if proc.returncode != 0:
         print(f"Test executable failed with exit code {proc.returncode}")

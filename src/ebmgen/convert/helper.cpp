@@ -235,10 +235,12 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::StatementBody make_error_return(ebm::ExpressionRef value) {
+    ebm::StatementBody make_error_return(ebm::ExpressionRef value, ebm::StatementRef related_function, ebm::StatementRef related_field) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::ERROR_RETURN;
         body.value(value);
+        body.related_function(to_weak(related_function));
+        body.related_field(to_weak(related_field));
         return body;
     }
 
@@ -379,10 +381,11 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::StatementBody make_return(ebm::ExpressionRef ret) {
+    ebm::StatementBody make_return(ebm::ExpressionRef ret, ebm::StatementRef related_function) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::RETURN;
         body.value(ret);
+        body.related_function(to_weak(related_function));
         return body;
     }
 

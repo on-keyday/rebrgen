@@ -14,6 +14,8 @@ namespace ebmgen {
                 auto copy = *prop;  // avoid effect of memory relocation of adding object
                 prop = &copy;
                 ebm::FunctionDecl getter, setter;
+                MAYBE(getter_id, ctx.repository().new_statement_id());
+                MAYBE(setter_id, ctx.repository().new_statement_id());
                 getter.kind = ebm::FunctionKind::PROPERTY_GETTER;
                 setter.kind = ebm::FunctionKind::PROPERTY_SETTER;
                 setter.property(to_weak(s.id));
@@ -59,7 +61,7 @@ namespace ebmgen {
                     ebm::MatchStatement m;
                     m.target = prop->getter_condition;
                     EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
-                    EBM_RETURN(default_return, default_);
+                    EBM_RETURN(default_return, default_, getter_id);
                     for (auto& b : prop->members.container) {
                         MAYBE(stmt, ctx.repository().get_statement(b));
                         MAYBE(member_ref, stmt.body.property_member_decl());
@@ -74,7 +76,7 @@ namespace ebmgen {
                             ebm::StatementRef ret;
                             if (prop->merge_mode == ebm::MergeMode::STRICT_TYPE) {
                                 EBM_ADDRESSOF(addr, getter.return_type, self_expr);
-                                EBM_RETURN(ret_, addr);
+                                EBM_RETURN(ret_, addr, getter_id);
                                 ret = ret_;
                             }
                             else {
@@ -82,7 +84,7 @@ namespace ebmgen {
                                 auto expr_type = self_expr_body.body.type;
                                 EBM_CAST(casted, prop->property_type, expr_type, self_expr);
                                 EBM_OPTIONALOF(opt, getter.return_type, casted);
-                                EBM_RETURN(ret_, opt);
+                                EBM_RETURN(ret_, opt, getter_id);
                                 ret = ret_;
                             }
                             MAYBE(field_stmt, ctx.repository().get_statement(member.field));
@@ -121,7 +123,7 @@ namespace ebmgen {
                     ebm::MatchStatement m;
                     m.target = prop->setter_condition;
                     EBM_SETTER_STATUS(default_status, setter.return_type, ebm::SetterStatus::FAILED);
-                    EBM_RETURN(default_return, default_status);
+                    EBM_RETURN(default_return, default_status, setter_id);
                     for (auto& b : prop->members.container) {
                         MAYBE(stmt, ctx.repository().get_statement(b));
                         MAYBE(member_ref, stmt.body.property_member_decl());
@@ -148,7 +150,7 @@ namespace ebmgen {
                             EBM_ASSIGNMENT(assign, self_expr, casted_arg);
                             append(block, assign);
                             EBM_SETTER_STATUS(success_status, setter.return_type, ebm::SetterStatus::SUCCESS);
-                            EBM_RETURN(success_return, success_status);
+                            EBM_RETURN(success_return, success_status, setter_id);
                             append(block, success_return);
                             EBM_BLOCK(b, std::move(block));
                             br.body = b;
@@ -170,9 +172,9 @@ namespace ebmgen {
                 }
                 ebm::StatementBody func{.kind = ebm::StatementKind::FUNCTION_DECL};
                 func.func_decl(std::move(getter));
-                EBMA_ADD_STATEMENT(getter_ref, std::move(func));
+                EBMA_ADD_STATEMENT(getter_ref, getter_id, std::move(func));
                 func.func_decl(std::move(setter));
-                EBMA_ADD_STATEMENT(setter_ref, std::move(func));
+                EBMA_ADD_STATEMENT(setter_ref, setter_id, std::move(func));
                 prop = all_stmts[i].body.property_decl();  // refresh
                 prop->getter_function = ebm::LoweredStatementRef{getter_ref};
                 prop->setter_function = ebm::LoweredStatementRef{setter_ref};

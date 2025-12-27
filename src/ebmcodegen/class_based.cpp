@@ -1152,40 +1152,41 @@ namespace ebmcodegen {
         }
         w.writeln("};");
         w.writeln();
-        // specialization for Result
-        w.writeln("template<>");
-        w.writeln("struct ", list_dispatcher_customization_point_name(cls), "<Result> {");
-        {
-            auto scope = w.indent_scope();
-            if (is_codegen) {
-                w.writeln("CodeWriter result;");
-            }
-            w.writeln("template<typename Context>");
-            w.writeln("expected<void> on_dispatch(Context&& ctx,const ebm::", cls.class_name(), "& in,", result_type, "&& result) {");
+        if (is_codegen) {
+            // specialization for Result
+            w.writeln("template<>");
+            w.writeln("struct ", list_dispatcher_customization_point_name(cls), "<Result> {");
             {
-                auto inner_scope = w.indent_scope();
-                w.writeln("if (!result) {");
+                auto scope = w.indent_scope();
+
+                w.writeln("CodeWriter result;");
+
+                w.writeln("template<typename Context>");
+                w.writeln("expected<void> on_dispatch(Context&& ctx,const ebm::", cls.class_name(), "& in,", result_type, "&& result) {");
                 {
-                    auto if_scope = w.indent_scope();
-                    w.writeln("return unexpect_error(std::move(result.error()));");
+                    auto inner_scope = w.indent_scope();
+                    w.writeln("if (!result) {");
+                    {
+                        auto if_scope = w.indent_scope();
+                        w.writeln("return unexpect_error(std::move(result.error()));");
+                    }
+                    w.writeln("}");
+                    w.writeln("this->result.write(std::move(result->to_writer()));");
+                    w.writeln("return {};");
                 }
                 w.writeln("}");
-                if (is_codegen) {
-                    w.writeln("this->result.write(std::move(result->to_writer()));");
-                }
-                w.writeln("return {};");
-            }
-            w.writeln("}");
 
-            w.writeln("template<typename Context>");
-            w.writeln(result_type, " finalize(Context&& ctx, const ebm::", cls.class_name(), "& in) {");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return std::move(result);");
+                w.writeln("template<typename Context>");
+                w.writeln(result_type, " finalize(Context&& ctx, const ebm::", cls.class_name(), "& in) {");
+                {
+                    auto inner_scope = w.indent_scope();
+
+                    w.writeln("return std::move(result);");
+                }
+                w.writeln("}");
             }
-            w.writeln("}");
+            w.writeln("};");
         }
-        w.writeln("};");
     }
 
     void generate_list_dispatch_default(CodeWriter& hdr, const ContextClass& cls, bool is_codegen, const std::string_view result_type) {

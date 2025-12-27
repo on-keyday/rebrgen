@@ -24,3 +24,4 @@
 /*here to write the hook*/
 
 FILE_EXTENSIONS(".c");
+DEFINE_BOOL_FLAG(no_detailed_error, false, "disable-detailed-error", "Disable detailed error messages in generated code (for smaller code size)");

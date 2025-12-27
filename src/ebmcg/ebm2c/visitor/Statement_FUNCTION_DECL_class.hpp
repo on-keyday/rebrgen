@@ -107,7 +107,7 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
 
     MAYBE(ret_type, ctx.visit(ctx.func_decl.return_type));
 
-    inline_prefix = "inline ";  // TODO: currently, generateing all functions in header
+    inline_prefix = "static inline ";  // TODO: currently, generateing all functions in header
 
     w.write(inline_prefix, ret_type.to_writer(), " ", func_prefix, name, "(", params, ")");
     if (ctx.config().forward_decl) {

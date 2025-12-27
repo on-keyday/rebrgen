@@ -52427,6 +52427,10 @@ namespace ebm2rust {
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto& kind = in.body.kind;
+        if (!in.body.related_function()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::related_function");
+        }
+        auto& related_function = *in.body.related_function();
         if (!in.body.value()) {
             return unexpect_error("Unexpected null pointer for StatementBody::value");
         }
@@ -52436,6 +52440,7 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
+                .related_function = related_function,
                 .value = value,
             };
             return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
@@ -52444,6 +52449,7 @@ namespace ebm2rust {
             .visitor = get_visitor_arg_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
+            .related_function = related_function,
             .value = value,
             .main_logic = main_logic,
         };
@@ -52461,6 +52467,7 @@ namespace ebm2rust {
             .visitor = get_visitor_arg_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
+            .related_function = related_function,
             .value = value,
             .main_logic = main_logic,
             .result = main_result,
@@ -52489,6 +52496,14 @@ namespace ebm2rust {
     template<typename Result,typename Context>
     expected<Result> dispatch_Statement_ERROR_RETURN(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto& kind = in.body.kind;
+        if (!in.body.related_field()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::related_field");
+        }
+        auto& related_field = *in.body.related_field();
+        if (!in.body.related_function()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::related_function");
+        }
+        auto& related_function = *in.body.related_function();
         if (!in.body.value()) {
             return unexpect_error("Unexpected null pointer for StatementBody::value");
         }
@@ -52498,6 +52513,8 @@ namespace ebm2rust {
                 .visitor = get_visitor_arg_from_context(ctx),
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .kind = kind,
+                .related_field = related_field,
+                .related_function = related_function,
                 .value = value,
             };
             return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
@@ -52506,6 +52523,8 @@ namespace ebm2rust {
             .visitor = get_visitor_arg_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
+            .related_field = related_field,
+            .related_function = related_function,
             .value = value,
             .main_logic = main_logic,
         };
@@ -52523,6 +52542,8 @@ namespace ebm2rust {
             .visitor = get_visitor_arg_from_context(ctx),
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .kind = kind,
+            .related_field = related_field,
+            .related_function = related_function,
             .value = value,
             .main_logic = main_logic,
             .result = main_result,

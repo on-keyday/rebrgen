@@ -2270,6 +2270,24 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("related_field")) {
+            WeakStatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.related_field(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("related_function")) {
+            WeakStatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.related_function(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("reserve_data")) {
             ReserveData tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {

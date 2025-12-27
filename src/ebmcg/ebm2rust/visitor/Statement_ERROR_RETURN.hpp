@@ -10,6 +10,8 @@
     generator_default_logic: std::function<expected<Result>()>
     default_logic: std::function<expected<Result>()>
     kind: StatementKind
+    related_field: WeakStatementRef
+    related_function: WeakStatementRef
     value: ExpressionRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

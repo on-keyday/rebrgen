@@ -76,6 +76,8 @@ namespace ebmgen {
         size_t total_size, size_t current_size, size_t offset) {
         auto& ctx = tctx.context();
         ebm::FunctionDecl getter_decl, setter_decl;
+        MAYBE(getter_id, tctx.context().repository().new_statement_id());
+        MAYBE(setter_id, tctx.context().repository().new_statement_id());
         getter_decl.name = field_name_ref;
         setter_decl.name = field_name_ref;
         getter_decl.parent_format = to_weak(parent_ref);
@@ -117,7 +119,7 @@ namespace ebmgen {
         EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, composite_type, composite_expr, shift_right);
         EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, composite_type, shifted, mask);
         EBM_CAST(getter_expr, original_field_type, composite_type, masked);
-        EBM_RETURN(getter_return, getter_expr);
+        EBM_RETURN(getter_return, getter_expr, getter_id);
         getter_decl.body = getter_return;
 
         // setter
@@ -142,17 +144,17 @@ namespace ebmgen {
         ebm::Block setter_block;
         append(setter_block, assigned);
         EBM_SETTER_STATUS(status_ok, setter_return_type, ebm::SetterStatus::SUCCESS);
-        EBM_RETURN(setter_return, status_ok);
+        EBM_RETURN(setter_return, status_ok, setter_id);
         append(setter_block, setter_return);
         EBM_BLOCK(setter_body, std::move(setter_block));
         setter_decl.body = setter_body;
 
         ebm::StatementBody getter_body{.kind = ebm::StatementKind::FUNCTION_DECL};
         getter_body.func_decl(std::move(getter_decl));
-        EBMA_ADD_STATEMENT(getter_stmt, std::move(getter_body));
+        EBMA_ADD_STATEMENT(getter_stmt, getter_id, std::move(getter_body));
         ebm::StatementBody setter_body_{.kind = ebm::StatementKind::FUNCTION_DECL};
         setter_body_.func_decl(std::move(setter_decl));
-        EBMA_ADD_STATEMENT(setter_stmt, std::move(setter_body_));
+        EBMA_ADD_STATEMENT(setter_stmt, setter_id, std::move(setter_body_));
 
         return std::pair{getter_stmt, setter_stmt};
     }

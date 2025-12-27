@@ -701,6 +701,10 @@ namespace ebmcodegen::util {
             return get_kind(ref) == kind;
         }
 
+        bool is(ebm::StatementKind kind, ebm::WeakStatementRef ref) const {
+            return get_kind(from_weak(ref)) == kind;
+        }
+
         bool is(ebm::ExpressionKind kind, ebm::ExpressionRef ref) const {
             return get_kind(ref) == kind;
         }

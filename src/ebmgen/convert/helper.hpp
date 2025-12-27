@@ -298,9 +298,9 @@ namespace ebmgen {
         ref_name = error_check_ref;                                               \
     }
 
-    ebm::StatementBody make_error_return(ebm::ExpressionRef value);
-#define EBM_ERROR_RETURN(ref_name, value) \
-    EBM_AST_STATEMENT(ref_name, make_error_return, value)
+    ebm::StatementBody make_error_return(ebm::ExpressionRef value, ebm::StatementRef related_function, ebm::StatementRef related_field);
+#define EBM_ERROR_RETURN(ref_name, value, related_function, related_field) \
+    EBM_AST_STATEMENT(ref_name, make_error_return, value, related_function, related_field)
 
     ebm::ExpressionBody make_max_value(ebm::TypeRef type, ebm::ExpressionRef lowered_expr);
 
@@ -357,10 +357,10 @@ namespace ebmgen {
 
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::StatementRef field, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
-    ebm::StatementBody make_return(ebm::ExpressionRef ret);
+    ebm::StatementBody make_return(ebm::ExpressionRef ret, ebm::StatementRef related_function);
 
-#define EBM_RETURN(ref_name, value) \
-    EBM_AST_STATEMENT(ref_name, make_return, value)
+#define EBM_RETURN(ref_name, value, related_function) \
+    EBM_AST_STATEMENT(ref_name, make_return, value, related_function)
 
     ebm::ExpressionBody make_addressof(ebm::TypeRef type, ebm::ExpressionRef target);
     ebm::ExpressionBody make_optionalof(ebm::TypeRef type, ebm::ExpressionRef target);

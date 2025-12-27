@@ -38,185 +38,133 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         std::vector<ebm2c::Enum> enums;
         std::set<std::string> optional_used;  // temporary ad-hoc set to track optional usage
         bool has_can_read_stream = false;
+        bool has_recursive_struct = false;
     };
 
     void write_vector_macros(CodeWriter & w) {
-        w.writeln("#ifndef VECTOR_APPEND");
-        w.writeln("#define VECTOR_APPEND(vector, value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if (!input->append) {\\");
-            w.indent_writeln("return -1; \\");
-            w.writeln("} \\");
-            w.writeln("int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),  &(value), sizeof((value))); \\");
-            w.writeln("if (res != 0) { \\");
-            w.indent_writeln("return res; \\");
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("#endif");
-        w.writeln("");
+        w.write_unformatted(R"a(
+    #ifndef VECTOR_APPEND
+    #define VECTOR_APPEND(vector, elem) do { \
+        if (!input->append) {\
+            SET_LAST_ERROR("EncoderInput append function is not set"); \
+            return -1; \
+        } \
+        int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),&(elem), sizeof(elem)); \
+        if (res != 0) { \
+            return res; \
+        } \
+    } while(0)
+    #endif
+)a");
     }
 
     void write_decoder_macros(CodeWriter & w) {
-        w.writeln("#ifndef DECODER_CAN_READ");
-        w.writeln("#define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : ((io)->data_end - ((io)->data + (io)->offset)) >= (num_bytes))");
-        w.writeln("#endif");
-        w.writeln("");
-        w.writeln("#define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if (DECODER_CAN_READ((io), (size))) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("if ((offset_value) == 0) { \\");
-                w.indent_writeln("(target) = (uint8_t*)((io)->data + (io)->offset); \\");
-                w.writeln("}  \\");
-                w.writeln("(io)->offset += (size); \\");
-            }
-            w.writeln("} else { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return -1; \\");
-            }
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
-        w.writeln("#define EBM_READ_BYTES(io, target, size_value, offset_value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if (DECODER_CAN_READ((io), (size_value))) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("if ((offset_value) == 0) { \\");
-                w.writeln("(target).data = (uint8_t*)((io)->data + (io)->offset); \\");
-                w.writeln("(target).size = (size_value); \\");
-                w.writeln("(target).capacity = (target).size; \\");
-                w.writeln("}  \\");
-                w.writeln("(io)->offset += (size_value); \\");
-            }
-            w.writeln("} else { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return -1; \\");
-            }
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
-        w.writeln("#define EBM_READ_ARRAY_BYTES(io, target, size_value, offset_value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if (DECODER_CAN_READ((io), (size_value))) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("if ((offset_value) == 0) { \\");
-                w.indent_writeln("MEMCPY((target), (io)->data + (io)->offset, (size_value)); \\");
-                w.writeln("}  \\");
-                w.writeln("(io)->offset += (size_value); \\");
-            }
-            w.writeln("} else { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return -1; \\");
-            }
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
-        w.writeln("#ifndef EBM_GET_REMAINING_BYTES");
-        w.writeln("#define EBM_GET_REMAINING_BYTES(io) ((size_t)((io)->data_end - ((io)->data + (io)->offset)))");
-        w.writeln("#endif");
-        w.writeln("");
+        w.write_unformatted(R"a(
+    #ifndef DECODER_CAN_READ
+    #define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : ((io)->data_end - ((io)->data + (io)->offset)) >= (num_bytes))
+    #endif
+
+    #define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value) do { \
+        if (DECODER_CAN_READ((io), (size))) { \
+            if ((offset_value) == 0) { \
+                (target) = (uint8_t*)((io)->data + (io)->offset); \
+            }  \
+            (io)->offset += (size); \
+        } else { \
+            SET_LAST_ERROR("Not enough data to read array bytes temporary"); \
+            return -1; \
+        } \
+    } while(0)
+
+    #define EBM_READ_BYTES(io, target, size_value, offset_value) do { \
+        if (DECODER_CAN_READ((io), (size_value))) { \
+            if ((offset_value) == 0) { \
+                (target).data = (uint8_t*)((io)->data + (io)->offset); \
+                (target).size = (size_value); \
+                (target).capacity = (target).size; \
+            }  \
+            (io)->offset += (size_value); \
+        } else { \
+            SET_LAST_ERROR("Not enough data to read bytes"); \
+            return -1; \
+        } \
+    } while(0)
+
+    #define EBM_READ_ARRAY_BYTES(io, target, size_value, offset_value) do { \
+        if (DECODER_CAN_READ((io), (size_value))) { \
+            if ((offset_value) == 0) { \
+                MEMCPY((target), (io)->data + (io)->offset, (size_value)); \
+            }  \
+            (io)->offset += (size_value); \
+        } else { \
+            SET_LAST_ERROR("Not enough data to read array bytes"); \    
+            return -1; \
+        } \
+    } while(0)
+
+    #ifndef EBM_GET_REMAINING_BYTES
+    #define EBM_GET_REMAINING_BYTES(io) ((size_t)((io)->data_end - ((io)->data + (io)->offset)))
+    #endif
+
+    #ifndef EBM_ALLOCATE
+    #define EBM_ALLOCATE(io,type) (type*)(io->allocate ? io->allocate(io, sizeof(type)) : NULL)
+    #endif
+)a");
     }
 
     void write_encoder_macros(CodeWriter & w) {
-        w.writeln("#define EBM_RESERVE_DATA(io,target, size) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if ((io)->offset + (size) > (size_t)((io)->data_end - (io)->data)) { \\");
-            w.indent_writeln("return -1; \\");
-            w.writeln("} \\");
-            w.writeln("target = (uint8_t*)((io)->data + (io)->offset); \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
-        w.writeln("#define EBM_WRITE_ARRAY_BYTES_TEMPORARY(io, source, size_value, offset_value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("(io)->offset += (size_value); \\");
-            }
-            w.writeln("} else { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return -1; \\");
-            }
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
-        w.writeln("#ifndef MEMCPY");
-        w.writeln("#define MEMCPY(dest, src, size) __builtin_memcpy((dest), (src), (size))");
-        w.writeln("#endif");
-        w.writeln("");
-        w.writeln("#define EBM_WRITE_BYTES(io, source, size_value, offset_value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if((io)->emit) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("int res = (io)->emit((io), &(source), (size_value)); \\");
-                w.writeln("if (res != 0) { \\");
-                {
-                    auto inner_inner_scope = w.indent_scope();
-                    w.writeln("return res; \\");
-                }
-                w.writeln("} \\");
-            }
-            w.writeln("} \\");
-            w.writeln("else if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("if((source).size != (size_value)) { \\");
-                {
-                    auto inner_inner_scope = w.indent_scope();
-                    w.writeln("return -1; \\");
-                }
-                w.writeln("} \\");
-                w.writeln("MEMCPY((io)->data + (io)->offset, (source).data, (size_value)); \\");
-                w.writeln("(io)->offset += (size_value); \\");
-            }
-            w.writeln("} else { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return -1; \\");
-            }
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
-        w.writeln("#define EBM_WRITE_ARRAY_BYTES(io, source, size_value, offset_value) do { \\");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("MEMCPY((io)->data + (io)->offset, (source), (size_value)); \\");
-                w.writeln("(io)->offset += (size_value); \\");
-            }
-            w.writeln("} else { \\");
-            {
-                auto inner_scope = w.indent_scope();
-                w.writeln("return -1; \\");
-            }
-            w.writeln("} \\");
-        }
-        w.writeln("} while(0)");
-        w.writeln("");
+        w.write_unformatted(R"a(
+    #define EBM_RESERVE_DATA(io,target, size) do { \
+        if ((io)->offset + (size) > (size_t)((io)->data_end - (io)->data)) { \
+            SET_LAST_ERROR("Not enough space to reserve data"); \
+            return -1; \
+        } \
+        target = (uint8_t*)((io)->data + (io)->offset); \
+    } while(0)
+
+    #define EBM_WRITE_ARRAY_BYTES_TEMPORARY(io, source, size_value, offset_value) do { \
+        if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
+            (io)->offset += (size_value); \
+        } else { \
+            SET_LAST_ERROR("Not enough space to write array bytes temporary"); \
+            return -1; \
+        } \
+    } while(0)
+
+    #ifndef MEMCPY
+    #define MEMCPY(dest, src, size) __builtin_memcpy((dest), (src), (size))
+    #endif
+
+    #define EBM_WRITE_BYTES(io, source, size_value, offset_value) do { \
+        if((io)->emit) { \
+            int res = (io)->emit((io), &(source), (size_value)); \
+            if (res != 0) { \
+                return res; \
+            } \
+        } \
+        else if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
+            if((source).size != (size_value)) { \
+                SET_LAST_ERROR("Source size does not match size value in write bytes"); \
+                return -1; \
+            } \
+            MEMCPY((io)->data + (io)->offset, (source).data, (size_value)); \
+            (io)->offset += (size_value); \
+        } else { \
+            SET_LAST_ERROR("Not enough space to write bytes"); \    
+            return -1; \
+        } \
+    } while(0)
+
+    #define EBM_WRITE_ARRAY_BYTES(io, source, size_value, offset_value) do { \
+        if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
+            MEMCPY((io)->data + (io)->offset, (source), (size_value)); \
+            (io)->offset += (size_value); \
+        } else { \
+            SET_LAST_ERROR("Not enough space to write array bytes"); \ 
+            return -1; \
+        } \
+    } while(0)
+)a");
     }
 
     DEFINE_VISITOR_FUNCTION(Statement_PROGRAM_DECL) {
@@ -319,6 +267,14 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("#endif");
         }
 
+        w.writeln("#ifndef SET_LAST_ERROR");
+        w.write_unformatted(&R"(
+        #define SET_LAST_ERROR(msg) \
+            input->set_last_error(msg);
+        #define LAST_ERROR_HANDLER void(*set_last_error)(const char* msg)
+        )"[1]);
+        w.writeln("#endif");
+
         w.writeln("typedef struct EncoderInput {");
         {
             auto scope = w.indent_scope();
@@ -328,6 +284,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             if (c_ctx.vector_types.size() > 0) {
                 w.writeln("int (*emit)(struct EncoderInput* self, const VECTOR_OF(uint8_t)* data, size_t size);");
             }
+            w.writeln("LAST_ERROR_HANDLER;");
         }
         w.writeln("} EncoderInput;");
         w.writeln("");
@@ -336,20 +293,24 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         w.writeln("typedef struct DecoderInput {");
         {
             auto scope = w.indent_scope();
-            w.writeln("const uint8_t* data;");
-            w.writeln("const uint8_t* data_end;");
-            w.writeln("size_t offset;");
+            w.write_unformatted(&R"a(
+            const uint8_t* data;
+            const uint8_t* data_end;
+            size_t offset;
+        )a"[1]);
             if (c_ctx.vector_types.size() > 0) {
                 w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size);");
             }
-            if (c_ctx.has_can_read_stream) {
-                w.writeln("int (*can_read)(struct DecoderInput* self, size_t num_bytes);");
+            w.writeln("int (*can_read)(struct DecoderInput* self, size_t num_bytes);");
+            if (c_ctx.has_recursive_struct) {
+                w.writeln("void* (*allocate)(struct DecoderInput* self, size_t size);");
             }
+            w.writeln("LAST_ERROR_HANDLER;");
         }
         w.writeln("} DecoderInput;");
-        if (c_ctx.has_can_read_stream) {
-            write_decoder_macros(w);
-        }
+
+        write_decoder_macros(w);
+
         w.writeln("");
         std::vector<ebm::StatementRef> composite_fns;
         std::unordered_set<std::uint64_t> parents_set;
@@ -521,6 +482,10 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 c_ctx.vector_types.push_back(v);
                 continue;
             }
+            if (s.body.kind == ebm::TypeKind::RECURSIVE_STRUCT) {
+                c_ctx.has_recursive_struct = true;
+                continue;
+            }
             if (s.body.kind == ebm::TypeKind::ARRAY) {
                 MAYBE(elem_type, s.body.element_type());
                 MAYBE(length, s.body.length());
@@ -546,7 +511,8 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             if (s.body.kind == ebm::TypeKind::PTR) {
                 if (is_optionalized_pointer_element(ctx, *s.body.pointee_type())) {
                     MAYBE(text_repr, ctx.visit(*s.body.pointee_type()));
-                    auto optional_text = std::format("OPTIONAL_OF({})", text_repr.to_string());
+                    auto optional_text = std::format("OPTIONAL_OF({})",
+                                                     text_repr.to_string());
                     if (c_ctx.optional_used.insert(optional_text).second == false) {
                         continue;
                     }

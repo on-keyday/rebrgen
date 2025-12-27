@@ -34,12 +34,12 @@ namespace ebm2rmw {
         }
 
         bool has_function(ebm::StatementRef func_id) const {
-            return functions.find(ebmgen::get_id(func_id)) != functions.end();
+            return functions.find(get_id(func_id)) != functions.end();
         }
 
         auto new_function(ebm::StatementRef func_id) {
             auto old = instructions;
-            instructions = &functions[ebmgen::get_id(func_id)];
+            instructions = &functions[get_id(func_id)];
             return futils::helper::defer([&, old] {
                 instructions = old;
             });

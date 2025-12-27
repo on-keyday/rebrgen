@@ -4211,9 +4211,12 @@ namespace ebm::zc {
             ExpressionRef value;
         };
         struct EBM_API union_struct_114{
+            WeakStatementRef related_function;
             ExpressionRef value;
         };
         struct EBM_API union_struct_115{
+            WeakStatementRef related_field;
+            WeakStatementRef related_function;
             ExpressionRef value;
         };
         struct EBM_API union_struct_116{
@@ -4404,6 +4407,14 @@ namespace ebm::zc {
         IOData* read_data();
         bool read_data(IOData&& v);
         bool read_data(const IOData& v);
+        const WeakStatementRef* related_field() const;
+        WeakStatementRef* related_field();
+        bool related_field(WeakStatementRef&& v);
+        bool related_field(const WeakStatementRef& v);
+        const WeakStatementRef* related_function() const;
+        WeakStatementRef* related_function();
+        bool related_function(WeakStatementRef&& v);
+        bool related_function(const WeakStatementRef& v);
         const ReserveData* reserve_data() const;
         ReserveData* reserve_data();
         bool reserve_data(ReserveData&& v);
@@ -4464,6 +4475,8 @@ namespace ebm::zc {
             v(v, "property_decl",(*this).property_decl());
             v(v, "property_member_decl",(*this).property_member_decl());
             v(v, "read_data",(*this).read_data());
+            v(v, "related_field",(*this).related_field());
+            v(v, "related_function",(*this).related_function());
             v(v, "reserve_data",(*this).reserve_data());
             v(v, "struct_decl",(*this).struct_decl());
             v(v, "sub_byte_range",(*this).sub_byte_range());
@@ -4500,6 +4513,8 @@ namespace ebm::zc {
             v(v, "property_decl",(*this).property_decl());
             v(v, "property_member_decl",(*this).property_member_decl());
             v(v, "read_data",(*this).read_data());
+            v(v, "related_field",(*this).related_field());
+            v(v, "related_function",(*this).related_function());
             v(v, "reserve_data",(*this).reserve_data());
             v(v, "struct_decl",(*this).struct_decl());
             v(v, "sub_byte_range",(*this).sub_byte_range());
@@ -4541,6 +4556,8 @@ namespace ebm::zc {
             v(v, "property_decl",visitor_tag<decltype(std::declval<StatementBody>().property_decl()),false>{});
             v(v, "property_member_decl",visitor_tag<decltype(std::declval<StatementBody>().property_member_decl()),false>{});
             v(v, "read_data",visitor_tag<decltype(std::declval<StatementBody>().read_data()),false>{});
+            v(v, "related_field",visitor_tag<decltype(std::declval<StatementBody>().related_field()),false>{});
+            v(v, "related_function",visitor_tag<decltype(std::declval<StatementBody>().related_function()),false>{});
             v(v, "reserve_data",visitor_tag<decltype(std::declval<StatementBody>().reserve_data()),false>{});
             v(v, "struct_decl",visitor_tag<decltype(std::declval<StatementBody>().struct_decl()),false>{});
             v(v, "sub_byte_range",visitor_tag<decltype(std::declval<StatementBody>().sub_byte_range()),false>{});

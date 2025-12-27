@@ -256,6 +256,7 @@ namespace ebmgen {
         std::unordered_map<std::uint64_t, ebm::ExpressionRef> self_ref_map;
         std::unordered_map<std::uint64_t, ebm::TypeRef> struct_variant_map;
         bool on_available_check = false;
+        ebm::StatementRef current_function_id;
 
         void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const;
 
@@ -292,6 +293,18 @@ namespace ebmgen {
             current_loop_id = id;
             return futils::helper::defer([this, old]() {
                 current_loop_id = old;
+            });
+        }
+
+        ebm::StatementRef get_current_function_id() const {
+            return current_function_id;
+        }
+
+        [[nodiscard]] auto set_current_function_id(ebm::StatementRef id) {
+            auto old = current_function_id;
+            current_function_id = id;
+            return futils::helper::defer([this, old]() {
+                current_function_id = old;
             });
         }
 
@@ -648,7 +661,7 @@ namespace ebmgen {
 
         expected<ebm::StructDecl> convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node, ebm::TypeRef related_variant = {});
         expected<ebm::StatementRef> convert_statement(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
-        expected<ebm::FunctionDecl> convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref);
+        expected<ebm::FunctionDecl> convert_function_decl(ebm::StatementRef func_id, const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref);
         expected<void> derive_match_lowered_if(ebm::MatchStatement& match_stmt, bool trial_match);
         expected<ebm::StatementRef> convert_struct_decl(const std::shared_ptr<ast::StructType>& node, ebm::TypeRef related_variant = {});
 

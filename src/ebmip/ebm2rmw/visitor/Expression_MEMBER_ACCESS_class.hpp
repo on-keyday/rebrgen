@@ -27,7 +27,8 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS) {
     /*here to write the hook*/
     MAYBE(base, ctx.visit(ctx.base));
     MAYBE(name, ctx.module().get_expression(ctx.member));
-    MAYBE(id, name.body.id());
+    MAYBE(id_, name.body.id());
+    auto id = from_weak(id_);
     // maybe add function
     if (ctx.is(ebm::StatementKind::FUNCTION_DECL, id)) {
         if (!ctx.config().env.has_function(id)) {

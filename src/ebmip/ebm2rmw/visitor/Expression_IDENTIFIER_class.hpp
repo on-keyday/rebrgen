@@ -14,7 +14,8 @@
       item_id: ebm::ExpressionRef
       type: const ebm::TypeRef&
       kind: const ebm::ExpressionKind&
-      id: const ebm::StatementRef&
+      id: const ebm::WeakStatementRef&
+        id: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
@@ -27,14 +28,14 @@ DEFINE_VISITOR(Expression_IDENTIFIER) {
     if (ctx.is(ebm::StatementKind::VARIABLE_DECL, ctx.id)) {
         ebm::Instruction instr;
         instr.op = ebm::OpCode::LOAD_LOCAL;
-        instr.reg(ebm::RegisterIndex{.index = ctx.id});
+        instr.reg(ebm::RegisterIndex{.index = from_weak(ctx.id)});
         ctx.config().env.add_instruction(instr, ident);
         return Result{.str_repr = std::move(ident)};
     }
     if (ctx.is(ebm::StatementKind::PARAMETER_DECL, ctx.id)) {
         ebm::Instruction instr;
         instr.op = ebm::OpCode::LOAD_PARAM;
-        instr.reg(ebm::RegisterIndex{.index = ctx.id});
+        instr.reg(ebm::RegisterIndex{.index = from_weak(ctx.id)});
         ctx.config().env.add_instruction(instr, ident);
         return Result{.str_repr = std::move(ident)};
     }

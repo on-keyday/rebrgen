@@ -27,5 +27,10 @@ DEFINE_VISITOR(Statement_ERROR_REPORT) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     MAYBE(msg, ctx.get(ctx.error_report.message));
-    return CODELINE("return -1; // Error Report: ", futils::escape::escape_str<std::string>(msg.body.data));
+    CodeWriter w;
+    if (!ctx.flags().no_detailed_error) {
+        w.writeln("SET_LAST_ERROR(\"", futils::escape::escape_str<std::string>(msg.body.data), "\");");
+    }
+    w.writeln("return -1;");
+    return w;
 }

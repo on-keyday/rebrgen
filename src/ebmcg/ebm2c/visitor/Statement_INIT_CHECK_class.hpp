@@ -20,11 +20,27 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_INIT_CHECK) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.init_check.init_check_type == ebm::InitCheckType::field_init_encode) {
+        MAYBE(type, ctx.get_field<"body.type.instance">(ctx.init_check.target_field));
+        if (type.body.kind == ebm::TypeKind::RECURSIVE_STRUCT) {
+            MAYBE(target_txt, ctx.visit(ctx.init_check.target_field));
+            CodeWriter w;
+            w.writeln("if (!", target_txt.to_writer(), ") {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("return -1;  /* field not initialized */");
+            }
+            w.writeln("}");
+            return w;
+        }
+    }
+    if (ctx.init_check.init_check_type == ebm::InitCheckType::field_init_decode) {
+        return CODELINE("/* field init check for decode */");
+    }
     /*here to write the hook*/
     return "";
 }
-

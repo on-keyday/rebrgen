@@ -31,12 +31,16 @@
 #include "ebmcodegen/stub/util.hpp"
 
 namespace CODEGEN_NAMESPACE {
-    struct Traversal {
-        TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(Traversal, BaseVisitor);
-        std::string_view func_name;
-        CodeWriter tmp;
-        expected<void> visit(CODEGEN_CONTEXT(Expression_ADDRESS_OF) & ctx) {
-            tmp.write("REACHING Expression_ADDRESS_OF");
+    struct BitFieldPointerGetterMarker {
+        TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(BitFieldPointerGetterMarker, BaseVisitor);
+        bool ptr_to_optional = false;
+        CodeWriter w;
+        expected<void> visit(Context_Expression_ADDRESS_OF& ctx) {
+            auto member = ctx.get_field<"member">(ctx.target_expr);
+            if (auto comp = get_composite_field(ctx, member)) {
+                // make as optional
+                ptr_to_optional = true;
+            }
             return {};
         }
         template <typename Ctx>
@@ -44,18 +48,13 @@ namespace CODEGEN_NAMESPACE {
             if (ctx.is_before_or_after()) {
                 return pass;
             }
-            if (!ctx.context_name.contains("Statement")) {
+            if (ctx.context_name.contains("Type") || ptr_to_optional /*already marked*/) {
                 return {};
             }
-            if (std::string_view(ctx.context_name) == "Statement_MATCH_STATEMENT" &&
-                func_name.contains("HighEdge")) {
-                tmp.writeln("// OK? Visiting ", ctx.context_name);
-            }
-            tmp.writeln("// Visiting ", ctx.context_name);
             return traverse_children<void>(*this, std::forward<Ctx>(ctx));
         }
     };
-    static_assert(HasVisitor<void, Traversal, CODEGEN_CONTEXT(Expression_ADDRESS_OF) &>);
+    static_assert(HasVisitor<void, BitFieldPointerGetterMarker, Context_Expression_ADDRESS_OF&>);
 
 }  // namespace CODEGEN_NAMESPACE
 
@@ -63,7 +62,6 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto name = ctx.identifier();
-    MAYBE(ret_type, ctx.visit(ctx.func_decl.return_type));
     CodeWriter params;
     std::string func_prefix;
     std::string inline_prefix;
@@ -95,15 +93,19 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         }
     }
 
-    // first, traverse body to determine
-    MAYBE(body, ctx.visit(ctx.func_decl.body));
-
-    if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
-        Traversal traversal{ctx.visitor};
-        traversal.func_name = func_prefix;
-        visit_Object<void>(traversal, ctx.func_decl.body);
-        w.write(traversal.tmp);
+    if (ctx.config().forward_decl && ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+        BitFieldPointerGetterMarker traversal{ctx.visitor};
+        MAYBE_VOID(ok, ctx.visit(traversal, ctx.func_decl.body));
+        w.write(traversal.w);
+        if (traversal.ptr_to_optional) {
+            ctx.config().ptr_to_optional_targets.insert(get_id(ctx.item_id));
+        }
     }
+
+    // first, traverse body to detect bitfield pointer getters
+    ctx.config().ptr_to_optional = ctx.config().ptr_to_optional_targets.contains(get_id(ctx.item_id));
+
+    MAYBE(ret_type, ctx.visit(ctx.func_decl.return_type));
 
     inline_prefix = "inline ";  // TODO: currently, generateing all functions in header
 
@@ -115,6 +117,7 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     w.writeln(" ", ctx.config().begin_block);
     {
         auto scope = w.indent_scope();
+        MAYBE(body, ctx.visit(ctx.func_decl.body));
         w.write(body.to_writer());
     }
     w.writeln(ctx.config().end_block);

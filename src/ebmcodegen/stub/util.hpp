@@ -160,7 +160,7 @@ namespace ebmcodegen::util {
     auto as_IDENTIFIER(auto&& visitor, ebm::StatementRef stmt) {
         ebm::Expression expr;
         expr.body.kind = ebm::ExpressionKind::IDENTIFIER;
-        expr.body.id(stmt);
+        expr.body.id(to_weak(stmt));
         return visit_Expression(visitor, expr);
     }
 
@@ -685,6 +685,10 @@ namespace ebmcodegen::util {
             return derived().module().get_statement_kind(stmt_ref);
         }
 
+        decltype(auto) get_kind(ebm::WeakStatementRef stmt_ref) const {
+            return derived().module().get_statement_kind(from_weak(stmt_ref));
+        }
+
         decltype(auto) get_kind(ebm::ExpressionRef expr_ref) const {
             return derived().module().get_expression_kind(expr_ref);
         }
@@ -725,7 +729,9 @@ namespace ebmcodegen::util {
         }
 
         template <ebmgen::FieldNames<> V>
-        decltype(auto) get_field() const {
+        decltype(auto) get_field() const
+            requires has_item_id<D>
+        {
             return ebmgen::access_field<V>(module(), derived().item_id);
         }
 
@@ -740,8 +746,13 @@ namespace ebmcodegen::util {
         }
 
         constexpr bool is_before_or_after() const {
-            constexpr auto name = std::string_view(D::context_name);
+            constexpr std::string_view name = D::context_name;
             return name.ends_with("_before") || name.ends_with("_after");
+        }
+
+        template <class R = void>
+        ebmgen::expected<R> visit(auto&& visitor, auto&& c) {
+            return visit_Object<R>(visitor, std::forward<decltype(c)>(c));
         }
     };
 

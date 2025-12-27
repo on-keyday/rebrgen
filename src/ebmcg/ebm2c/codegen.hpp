@@ -3105,7 +3105,7 @@ namespace ebm2c {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
     };
     struct VisitorTag_Expression_IDENTIFIER {};
     // Deconstruct context fields
@@ -3118,7 +3118,7 @@ namespace ebm2c {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_IDENTIFIER_before {};
@@ -3132,7 +3132,7 @@ namespace ebm2c {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::StatementRef& id;
+        const ebm::WeakStatementRef& id;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };

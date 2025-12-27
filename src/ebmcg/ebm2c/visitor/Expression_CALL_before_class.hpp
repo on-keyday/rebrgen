@@ -29,13 +29,14 @@ DEFINE_VISITOR(Expression_CALL_before) {
     MAYBE(callee, ctx.get_field<"call_desc.callee.instance">());
     if (auto member = callee.body.member()) {
         MAYBE(base, callee.body.base());
-        MAYBE(base_type, ctx.get_field<"type">(base))
+        MAYBE(base_type, ctx.get_field<"type.instance">(base))
         MAYBE(ident, ctx.identifier(*member));
-        MAYBE(base_type_name, ctx.identifier(base_type));
+        MAYBE(base_type_name, ctx.identifier(base_type.id));
         MAYBE(base_str, ctx.visit(base));
         auto func_name = std::format("{}_{}", base_type_name, ident);
         CodeWriter w;
-        w.write(func_name, "(&", base_str.to_writer());
+        std::string address = base_type.body.kind == ebm::TypeKind::RECURSIVE_STRUCT ? "" : "&";
+        w.write(func_name, "(", address, base_str.to_writer());
         for (const auto& arg_ref : ctx.call_desc.arguments.container) {
             MAYBE(arg, ctx.visit(arg_ref));
             w.write(", ", arg.to_writer());

@@ -1011,7 +1011,7 @@ namespace ebmgen {
                 ebm::ExpressionBody ident;
                 ident.kind = ebm::ExpressionKind::IDENTIFIER;
                 ident.type = type_ref;
-                ident.id(id);
+                ident.id(to_weak(id));
                 EBMA_ADD_EXPR(self_expr, self_ref, std::move(ident));
                 ctx.state().set_self_ref_for_id(id, self_expr);
             }

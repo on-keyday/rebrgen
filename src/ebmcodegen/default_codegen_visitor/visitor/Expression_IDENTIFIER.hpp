@@ -11,11 +11,11 @@
     default_logic: std::function<expected<Result>()>
     type: TypeRef
     kind: ExpressionKind
-    id: StatementRef
+    id: WeakStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-MAYBE(layers, get_identifier_layer(*this, id));
+MAYBE(layers, get_identifier_layer(*this, from_weak(id)));
 bool as_type = false;
 if (!layers.empty() &&
     (layers.back().first == ebm::StatementKind::STRUCT_DECL ||

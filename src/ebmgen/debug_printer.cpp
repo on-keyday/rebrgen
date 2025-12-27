@@ -90,7 +90,7 @@ namespace ebmgen {
             os_ << to_string(expr->body.kind);
             if (auto id = expr->body.id()) {
                 os_ << " ";
-                print_resolved_reference(*id);
+                print_resolved_reference(from_weak(*id));
             }
             else if (auto member = expr->body.member()) {
                 if (auto base = expr->body.base()) {

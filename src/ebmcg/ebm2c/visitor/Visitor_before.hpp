@@ -10,3 +10,4 @@
 /*here to write the hook*/
 bool forward_decl = false;
 bool ptr_to_optional = false;
+std::unordered_set<std::uint64_t> ptr_to_optional_targets;

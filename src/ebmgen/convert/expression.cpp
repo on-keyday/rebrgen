@@ -334,7 +334,7 @@ namespace ebmgen {
                     else {
                         return unexpect_error("Invalid generate type for state variable {}", node->ident);
                     }
-                    body.id(id);
+                    body.id(to_weak(id));
                     return {};
                 }
             }
@@ -343,13 +343,13 @@ namespace ebmgen {
         if (ast::as<ast::Binary>(base_locked)) {
             // preserve generate type
             EBMA_CONVERT_STATEMENT(id_ref, base_locked);
-            body.id(id_ref);
+            body.id(to_weak(id_ref));
             id = id_ref;
         }
         else {  // switch to normal generate type
             const auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(id_ref, base_locked);
-            body.id(id_ref);
+            body.id(to_weak(id_ref));
             id = id_ref;
         }
         if (auto self = ctx.state().get_self_ref(); self && has_parent && !is_state_variable) {

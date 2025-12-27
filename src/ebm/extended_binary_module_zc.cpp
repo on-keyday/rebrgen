@@ -2498,7 +2498,7 @@ namespace ebm::zc {
         }
         return false;
     }
-    const StatementRef* ExpressionBody::id() const {
+    const WeakStatementRef* ExpressionBody::id() const {
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
@@ -2525,10 +2525,10 @@ namespace ebm::zc {
         }
         return nullptr;
     }
-    StatementRef* ExpressionBody::id() {
-        return const_cast<StatementRef*>(std::as_const(*this).id());
+    WeakStatementRef* ExpressionBody::id() {
+        return const_cast<WeakStatementRef*>(std::as_const(*this).id());
     }
-    bool ExpressionBody::id(const StatementRef& v) {
+    bool ExpressionBody::id(const WeakStatementRef& v) {
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
             return false;
         }
@@ -2556,7 +2556,7 @@ namespace ebm::zc {
         }
         return false;
     }
-    bool ExpressionBody::id(StatementRef&& v) {
+    bool ExpressionBody::id(WeakStatementRef&& v) {
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
             return false;
         }

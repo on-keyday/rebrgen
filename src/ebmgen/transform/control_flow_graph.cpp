@@ -490,7 +490,7 @@ namespace ebmgen {
                 }
                 if (expr) {
                     if (auto id = expr->body.id()) {
-                        auto found = m.list.find(id->id.value());
+                        auto found = m.list.find(get_id(*id));
                         if (found != m.list.end()) {
                             inter_subgraph_vector.push_back([&, found, cfg] {
                                 w.writeln(std::format("{} -> {} [style=dotted,label=\"call\"];", expr_id[cfg], node_id[found->second.cfg.start]));

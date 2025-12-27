@@ -2725,7 +2725,7 @@ namespace ebm {
             Varint char_value;
         };
         struct EBM_API union_struct_33{
-            StatementRef id;
+            WeakStatementRef id;
         };
         struct EBM_API union_struct_34{
             BinaryOp bop{};
@@ -2891,10 +2891,10 @@ namespace ebm {
         TypeRef* from_type();
         bool from_type(TypeRef&& v);
         bool from_type(const TypeRef& v);
-        const StatementRef* id() const;
-        StatementRef* id();
-        bool id(StatementRef&& v);
-        bool id(const StatementRef& v);
+        const WeakStatementRef* id() const;
+        WeakStatementRef* id();
+        bool id(WeakStatementRef&& v);
+        bool id(const WeakStatementRef& v);
         const ExpressionRef* index() const;
         ExpressionRef* index();
         bool index(ExpressionRef&& v);

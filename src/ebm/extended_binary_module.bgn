@@ -187,7 +187,7 @@ format ExpressionBody:
         ExpressionKind.LITERAL_CHAR:
             char_value :Varint # Unicode code point
         ExpressionKind.IDENTIFIER:
-            id :StatementRef # reference to definition of the identifier 
+            id :WeakStatementRef # reference to definition of the identifier 
         ExpressionKind.BINARY_OP:
             bop :BinaryOp
             left :ExpressionRef

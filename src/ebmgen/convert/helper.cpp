@@ -38,7 +38,7 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::IDENTIFIER;
         body.type = type;
-        body.id(id);
+        body.id(to_weak(id));
         return body;
     }
 

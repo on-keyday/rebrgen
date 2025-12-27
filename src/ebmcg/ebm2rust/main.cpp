@@ -55279,12 +55279,6 @@ namespace ebm2rust {
                 return unexpect_error(std::move(result_type.error()));
             }
         }
-        if (!is_nil(type_ctx.id)) {
-            auto result_id = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.id);
-            if (!result_id) {
-                return unexpect_error(std::move(result_id.error()));
-            }
-        }
         return {};
     }
     template<typename Result,typename Context>

@@ -26,6 +26,7 @@
 #include "ebmcodegen/stub/dependency.hpp"
 #include "ebmgen/common.hpp"
 #include "includes.hpp"
+
 DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     using Context = CODEGEN_CONTEXT(Statement_PROGRAM_DECL);
     struct C_Context {

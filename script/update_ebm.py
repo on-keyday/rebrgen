@@ -73,7 +73,17 @@ if something_changed:
         stderr=sys.stderr,
     )
     sp.check_call(
+        ["python", "script/ebmtemplate_ip.py", "update", "all"],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
+    sp.check_call(
         ["python", "script/ebmcodegen.py", "all"],
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
+    sp.check_call(
+        ["python", "script/ebmcodegen.py", "--mode", "interpret-class", "all"],
         stdout=sys.stdout,
         stderr=sys.stderr,
     )

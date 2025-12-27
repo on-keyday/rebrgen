@@ -434,7 +434,7 @@ namespace ebm {
             }
         }
         if (auto got = j.at("id")) {
-            StatementRef tmp;
+            WeakStatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }

@@ -156,7 +156,7 @@ target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
 #add_subdirectory("src/ebmgen/test")
 add_subdirectory("src/ebmcg")
-#add_subdirectory("src/ebmip")
+add_subdirectory("src/ebmip")
 
 target_link_libraries(ebmgen futils ebm)
 

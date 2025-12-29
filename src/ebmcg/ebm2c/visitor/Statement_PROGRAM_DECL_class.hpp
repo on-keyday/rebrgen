@@ -541,7 +541,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 if (annotation == ebm::ArrayAnnotation::read_temporary || annotation == ebm::ArrayAnnotation::write_temporary) {
                     continue;
                 }
-                ebm2c::ArrayType a{.elem_type = elem_type, .size = length.value()};
+                ebm2c::ArrayType a{.elem_type = elem_type, .size = static_cast<size_t>(length.value())};
                 c_ctx.array_types.push_back(a);
                 continue;
             }

@@ -24,3 +24,4 @@
 /*here to write the hook*/
 
 FILE_EXTENSIONS(".c");
+WEB_UI_NAME("c3");

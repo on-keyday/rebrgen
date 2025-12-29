@@ -32,11 +32,13 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     struct C_Context {
         std::vector<ebm2c::Struct> structs;
         std::unordered_map<std::uint64_t, ebm2c::Union> unions;
+        std::unordered_map<std::uint64_t, ebm2c::Variant> variants;
         std::vector<ebm2c::VectorType> vector_types;
         std::vector<ebm2c::ArrayType> array_types;
         std::vector<ebm2c::OptionalType> optional_types;
         std::vector<ebm2c::Enum> enums;
         std::set<std::string> optional_used;  // temporary ad-hoc set to track optional usage
+        std::unordered_set<std::uint64_t> written_variants;
         bool has_can_read_stream = false;
         bool has_recursive_struct = false;
     };
@@ -105,7 +107,11 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #ifndef EBM_GET_REMAINING_BYTES
     #define EBM_GET_REMAINING_BYTES(io) ((size_t)((io)->data_end - ((io)->data + (io)->offset)))
     #endif
+)a");
+    }
 
+    void write_allocate_macros(CodeWriter & w) {
+        w.write_unformatted(R"a(
     #ifndef EBM_ALLOCATE
     #define EBM_ALLOCATE(io,type) (type*)(io->allocate ? io->allocate(io, sizeof(type)) : NULL)
     #endif
@@ -249,24 +255,6 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("#endif");
         }
 
-        if (c_ctx.optional_types.size() > 0) {
-            w.writeln("// Optional type definitions");
-            w.writeln("#ifndef OPTIONAL_OF");
-            w.writeln("#define OPTIONAL_OF(type) Optional_##type");
-            for (auto& o : c_ctx.optional_types) {
-                MAYBE(elem_type, ctx.visit(o.elem_type));
-                w.writeln("typedef struct {");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("bool has_value;");
-                    w.writeln(elem_type.to_writer(), " value;");
-                }
-                w.writeln("} OPTIONAL_OF(", elem_type.to_writer(), ");");
-                w.writeln("");
-            }
-            w.writeln("#endif");
-        }
-
         w.writeln("#ifndef EBM_EMIT_ERROR");
         w.write_unformatted(&R"(
         #define EBM_EMIT_ERROR(msg) \
@@ -310,6 +298,9 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         w.writeln("} DecoderInput;");
 
         write_decoder_macros(w);
+        if (c_ctx.has_recursive_struct) {
+            write_allocate_macros(w);
+        }
 
         w.writeln("");
         std::vector<ebm::StatementRef> composite_fns;
@@ -338,7 +329,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             return {};
         };
         auto write_union = [&](Union& u) -> expected<void> {
-            auto ident = std::format("Union{}", get_id(u.id));
+            auto ident = std::format("{}{}", ctx.config().variant_prefix, get_id(u.id));
             for (auto& v : u.variants) {
                 for (auto& f : v.fields) {
                     MAYBE_VOID(ok, collect_composite_fn(f.id));
@@ -371,6 +362,32 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.write(union_w);
             return {};
         };
+
+        auto write_variant = [&](Variant& v) -> expected<void> {
+            auto ident = std::format("{}{}", ctx.config().variant_prefix, get_id(v.id));
+            CodeWriter w_var;
+            w_var.writeln("typedef struct {");
+            {
+                auto scope = w_var.indent_scope();
+                w_var.writeln("uint32_t tag;");
+                w_var.writeln("union {");
+                {
+                    auto u_scope = w_var.indent_scope();
+                    size_t idx = 0;
+                    for (auto& m : v.members) {
+                        MAYBE(type, ctx.visit(m));
+                        w_var.writeln(type.to_writer(), " v", std::to_string(idx), ";");
+                        idx++;
+                    }
+                }
+                w_var.writeln("} value;");
+            }
+            w_var.writeln("} ", ident, ";");
+            w_var.writeln("");
+            w.write(w_var);
+            return {};
+        };
+
         for (auto& s : c_ctx.structs) {
             auto ident = ctx.identifier(s.id);
             // first lookup unions used in this struct
@@ -391,6 +408,37 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             scope.execute();
             w.writeln("};");
             w.writeln("");
+
+            for (auto& prop_ref : s.properties) {
+                auto prop = ctx.get_field<"property_decl">(prop_ref);
+                if (!prop) continue;
+                auto typ_ref = prop->property_type;
+                auto typ = ctx.module().get_type(typ_ref);
+                if (typ && typ->body.kind == ebm::TypeKind::VARIANT) {
+                    auto id = get_id(typ->id);
+                    if (auto found = c_ctx.variants.find(id); found != c_ctx.variants.end()) {
+                        MAYBE_VOID(ok, write_variant(found->second));
+                    }
+                }
+            }
+        }
+
+        if (c_ctx.optional_types.size() > 0) {
+            w.writeln("// Optional type definitions");
+            w.writeln("#ifndef OPTIONAL_OF");
+            w.writeln("#define OPTIONAL_OF(type) Optional_##type");
+            for (auto& o : c_ctx.optional_types) {
+                MAYBE(elem_type, ctx.visit(o.elem_type));
+                w.writeln("typedef struct {");
+                {
+                    auto scope = w.indent_scope();
+                    w.writeln("bool has_value;");
+                    w.writeln(elem_type.to_writer(), " value;");
+                }
+                w.writeln("} OPTIONAL_OF(", elem_type.to_writer(), ");");
+                w.writeln("");
+            }
+            w.writeln("#endif");
         }
         auto foreach_function = [&] -> expected<void> {
             for (auto& composite_fn_ref : composite_fns) {
@@ -526,15 +574,24 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             if (!variant_desc) {
                 continue;
             }
-            Union u{.id = s.id};
-            for (auto member_type_ref : variant_desc->members.container) {
-                auto struct_key = ctx.get_field<"body.id">(member_type_ref);
-                if (!struct_key) {
-                    continue;
+            if (is_nil(variant_desc->related_field)) {
+                Variant v{.id = s.id};
+                for (auto member : variant_desc->members.container) {
+                    v.members.push_back(member);
                 }
-                handle_struct_decl(u.variants, from_weak(*struct_key), true);
+                c_ctx.variants[get_id(s.id)] = v;
             }
-            c_ctx.unions[get_id(s.id)] = u;
+            else {
+                Union u{.id = s.id};
+                for (auto member_type_ref : variant_desc->members.container) {
+                    auto struct_key = ctx.get_field<"body.id">(member_type_ref);
+                    if (!struct_key) {
+                        continue;
+                    }
+                    handle_struct_decl(u.variants, from_weak(*struct_key), true);
+                }
+                c_ctx.unions[get_id(s.id)] = u;
+            }
         }
         for (auto& exprs : ctx.module().module().expressions) {
             if (exprs.body.kind == ebm::ExpressionKind::CAN_READ_STREAM) {

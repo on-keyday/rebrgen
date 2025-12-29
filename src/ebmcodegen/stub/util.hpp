@@ -866,4 +866,30 @@ namespace ebmcodegen::util {
         }
         return ebmgen::unexpect_error("cannot find parent format");
     }
+
+    bool variant_candidate_equal(auto&& visitor, ebm::TypeRef candidate, ebm::TypeRef target) {
+        ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+        if (get_id(candidate) == get_id(target)) {
+            return true;
+        }
+        // if candidate is VARIANT, check its members
+        auto maybe_candidate_type = module_.get_type(candidate);
+        if (!maybe_candidate_type) {
+            return false;
+        }
+        auto& candidate_type = *maybe_candidate_type;
+        if (candidate_type.body.kind != ebm::TypeKind::VARIANT) {
+            return false;
+        }
+        auto candidate_desc = candidate_type.body.variant_desc();
+        if (!candidate_desc) {
+            return false;
+        }
+        for (auto& member_ref : candidate_desc->members.container) {
+            if (get_id(member_ref) == get_id(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }  // namespace ebmcodegen::util

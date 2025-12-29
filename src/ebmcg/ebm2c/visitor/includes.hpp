@@ -36,6 +36,11 @@ namespace ebm2c {
         std::vector<Struct> variants;
     };
 
+    struct Variant {
+        ebm::TypeRef id;
+        std::vector<ebm::TypeRef> members;
+    };
+
     struct VectorType {
         ebm::TypeRef elem_type;
     };

@@ -169,6 +169,13 @@ format CallDesc:
     callee :ExpressionRef # Function or method to call
     arguments :Expressions
 
+format TypeCastDesc:
+    from_type :TypeRef
+    to_type :TypeRef
+    cast_kind :CastType
+    if cast_kind == CastType.FUNCTION_CAST:
+        cast_function :WeakStatementRef # Reference to the cast function
+
 format ExpressionBody:
     type :TypeRef # Type of the expression
     kind :ExpressionKind
@@ -207,9 +214,7 @@ format ExpressionBody:
             enum_decl :StatementRef # Reference to the enum declaration
             member :ExpressionRef # Reference to the enum member identifier
         ExpressionKind.TYPE_CAST:
-            from_type :TypeRef
-            source_expr :ExpressionRef
-            cast_kind :CastType # Hint for the backend
+            type_cast_desc :TypeCastDesc
         ExpressionKind.RANGE:
             start :ExpressionRef # Start of the range (maybe null)
             end :ExpressionRef # End of the range (maybe null)
@@ -712,6 +717,7 @@ enum CastType:
     INT_TO_BOOL
     STRUCT_TO_RECURSIVE_STRUCT
     RECURSIVE_STRUCT_TO_STRUCT
+    FUNCTION_CAST # call source's cast function
     OTHER
 
 enum MergeMode:

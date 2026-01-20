@@ -26,6 +26,24 @@
 #include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_INIT_CHECK) {
     using namespace CODEGEN_NAMESPACE;
+    auto get_field_name = [&]() -> expected<std::string> {
+        MAYBE(unwrapped, unwrap_index(ctx, ctx.init_check.target_field));
+        auto field_ = ctx.get_field<"member.body.id">(unwrapped.index_layers.back());
+        if (!field_) {
+            field_ = ctx.get_field<"body.id">(unwrapped.index_layers.back());
+            if (!field_) {
+                return ebmgen::unexpect_error("failed to get target field");
+            }
+        }
+        MAYBE(field, field_);
+        MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(field)));
+        for (size_t i = 0; i < unwrapped.index.size(); ++i) {
+            auto expr = unwrapped.index[unwrapped.index.size() - 1 - i];
+            MAYBE(expr_txt, ctx.visit(expr));
+            field_name += "[" + expr_txt.to_string() + "]";
+        }
+        return field_name;
+    };
     if (ctx.init_check.init_check_type == ebm::InitCheckType::field_init_encode) {
         MAYBE(type, ctx.get_field<"body.type.instance">(ctx.init_check.target_field));
         if (type.body.kind == ebm::TypeKind::RECURSIVE_STRUCT) {
@@ -34,8 +52,7 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
             w.writeln("if (!", target_txt.to_writer(), ") {");
             {
                 auto scope = w.indent_scope();
-                MAYBE(field, ctx.get_field<"member.body.id">(ctx.init_check.target_field));
-                MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(field)));
+                MAYBE(field_name, get_field_name());
                 w.writeln("EBM_EMIT_ERROR(\"Field ", field_name, " not initialized\");");
                 w.writeln("return -1;  /* field not initialized */");
             }
@@ -58,8 +75,7 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
                 w.writeln("if (!tmp) {");
                 {
                     auto scope2 = w.indent_scope();
-                    MAYBE(field, ctx.get_field<"member.body.id">(ctx.init_check.target_field));
-                    MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(field)));
+                    MAYBE(field_name, get_field_name());
                     w.writeln("EBM_EMIT_ERROR(\"Field ", field_name, " not initialized; allocation failed\");");
                     w.writeln("return -1;  /* allocation failed */");
                 }

@@ -480,6 +480,7 @@ namespace ebmgen {
         std::vector<ebm::StringRef> file_names;
 
         friend struct TransformContext;
+        friend struct TestRepositoryAccessor;  // For test use only
 
        public:
         EBMRepository() = default;

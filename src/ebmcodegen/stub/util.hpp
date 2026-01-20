@@ -222,7 +222,8 @@ namespace ebmcodegen::util {
         MAYBE(type, module_.get_type(ref));
         switch (type.body.kind) {
             case ebm::TypeKind::INT:
-            case ebm::TypeKind::UINT: {
+            case ebm::TypeKind::UINT:
+            case ebm::TypeKind::FLOAT: {
                 ebm::Expression int_literal;
                 int_literal.body.kind = ebm::ExpressionKind::LITERAL_INT;
                 int_literal.body.int_value(*ebmgen::varint(0));
@@ -891,5 +892,33 @@ namespace ebmcodegen::util {
             }
         }
         return false;
+    }
+
+    struct UnwrapIndexResult {
+        std::vector<ebm::ExpressionRef> index_layers;  // first element is the most outer, last element is the most inner
+        std::vector<ebm::ExpressionRef> index;         // first element is the most outer, last element is the most inner
+        ebm::ExpressionRef base_expression;
+    };
+
+    // first element is the most outer, last element is the most inner
+    ebmgen::expected<UnwrapIndexResult> unwrap_index(auto&& visitor, ebm::ExpressionRef expr_ref) {
+        UnwrapIndexResult result;
+        result.base_expression = expr_ref;
+        auto do_unwrap = [&](auto&& self, ebm::ExpressionRef ref) -> ebmgen::expected<void> {
+            result.index_layers.push_back(ref);
+            ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+            MAYBE(expr, module_.get_expression(ref));
+            if (expr.body.kind == ebm::ExpressionKind::INDEX_ACCESS) {
+                MAYBE(base_expr_ref, expr.body.base());
+                MAYBE(index, expr.body.index());
+                result.index.push_back(index);
+                return self(self, base_expr_ref);
+            }
+            else {
+                return {};
+            }
+        };
+        MAYBE_VOID(_, do_unwrap(do_unwrap, expr_ref));
+        return result;
     }
 }  // namespace ebmcodegen::util

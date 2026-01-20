@@ -143,14 +143,11 @@
       //"symbolSearchPath": "lib\\"
     },
     {
-      "name": "Debug ebm2python",
+      "name": "Debug ebm2c",
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebm2c",
-      "args": [
-        "-i",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-33865ea71b/r-a8b0c728e2/runner_input.ebm"
-      ],
+      "args": ["-i", "${workspaceRoot}/save/objproto.ebm"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

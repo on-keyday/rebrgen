@@ -161,4 +161,82 @@ namespace ebmgen {
         }
         return decode_json_ebm(futils::view::rvec(view));
     }
+
+    expected<void> load_ebm_to_repository(EBMRepository& repo, ebm::ExtendedBinaryModule&& ebm) {
+        TestRepositoryAccessor accessor(repo);
+
+        // Set max_id
+        accessor.set_max_id(get_id(ebm.max_id));
+
+        // Load identifiers
+        for (auto& item : ebm.identifiers) {
+            auto result = accessor.add_identifier_with_id(item.id, std::move(item.body));
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+        }
+
+        // Load strings
+        for (auto& item : ebm.strings) {
+            auto result = accessor.add_string_with_id(item.id, std::move(item.body));
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+        }
+
+        // Load types
+        for (auto& item : ebm.types) {
+            auto result = accessor.add_type_with_id(item.id, std::move(item.body));
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+        }
+
+        // Load statements
+        for (auto& item : ebm.statements) {
+            auto result = accessor.add_statement_with_id(item.id, std::move(item.body));
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+        }
+
+        // Load expressions
+        for (auto& item : ebm.expressions) {
+            auto result = accessor.add_expression_with_id(item.id, std::move(item.body));
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+        }
+
+        // Load aliases
+        accessor.load_aliases(std::move(ebm.aliases));
+
+        // Load debug info
+        accessor.load_debug_info(std::move(ebm.debug_info.files), std::move(ebm.debug_info.locs));
+
+        // Recalculate internal caches
+        accessor.recalculate_caches();
+
+        return {};
+    }
+
+    expected<void> TestContextLoader::load_json_ebm_file(std::string_view file_path) {
+        MAYBE(ebm, load_json_ebm(file_path));
+        return load_ebm(std::move(ebm));
+    }
+
+    expected<void> TestContextLoader::load_json_ebm_string(std::string_view json_str) {
+        MAYBE(ebm, decode_json_ebm(futils::view::rvec(json_str.data(), json_str.size())));
+        return load_ebm(std::move(ebm));
+    }
+
+    expected<void> TestContextLoader::load_ebm(ebm::ExtendedBinaryModule&& ebm) {
+        return load_ebm_to_repository(ctx_.repository(), std::move(ebm));
+    }
+
+    expected<ebm::ExtendedBinaryModule> TestContextLoader::finalize(bool verify_uniqueness) {
+        ebm::ExtendedBinaryModule result;
+        MAYBE_VOID(f, ctx_.repository().finalize(result, verify_uniqueness));
+        return result;
+    }
 }  // namespace ebmgen

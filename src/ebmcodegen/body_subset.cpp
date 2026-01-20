@@ -68,7 +68,6 @@ namespace ebmcodegen {
             body.bool_value({});
             body.bop({});
             body.call_desc({});
-            body.cast_kind({});
             body.char_value({});
             body.condition({});
             body.conditional_stmt({});
@@ -76,7 +75,6 @@ namespace ebmcodegen {
             body.end({});
             body.endian_expr({});
             body.enum_decl({});
-            body.from_type({});
             body.id({});
             body.index({});
             body.int64_value({});
@@ -91,7 +89,6 @@ namespace ebmcodegen {
             body.or_cond({});
             body.right({});
             body.setter_status({});
-            body.source_expr({});
             body.start({});
             body.stream_type({});
             body.string_value({});
@@ -99,6 +96,7 @@ namespace ebmcodegen {
             body.target_expr({});
             body.target_stmt({});
             body.then({});
+            body.type_cast_desc({});
             body.type_ref({});
             body.unit({});
             body.uop({});

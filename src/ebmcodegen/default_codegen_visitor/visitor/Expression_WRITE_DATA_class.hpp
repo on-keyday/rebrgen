@@ -19,4 +19,8 @@
 // We can use variables like `this` (for Visitor) and function parameters directly.
 // This code is included within the visit_Expression_WRITE_DATA function.
 // We can use variables like `this` (for Visitor) and function parameters directly.
-MAYBE(expr, visit_Statement(*this, io_statement));
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_WRITE_DATA) {
+    MAYBE(expr, ctx.visit(ctx.io_statement));
+    return expr;
+}

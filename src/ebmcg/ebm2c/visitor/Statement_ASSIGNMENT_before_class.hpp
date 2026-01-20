@@ -22,6 +22,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 #include "includes.hpp"
 DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
     using namespace CODEGEN_NAMESPACE;
@@ -46,6 +47,20 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
             parent_ident,
             member_ident);
         w.writeln(setter_func_name, "(&", base_, ", ", value.to_writer(), ");");
+        return w;
+    }
+    // array assignment to memcpy
+    if (auto target_type = ctx.get_field<"type.instance">(ctx.target);
+        target_type && target_type->body.kind == ebm::TypeKind::ARRAY) {
+        auto annot = target_type->body.array_annotation();
+        if (annot && *annot != ebm::ArrayAnnotation::none) {
+            return pass;
+        }
+        // use memcpy for array assignment
+        MAYBE(target_str, ctx.visit(ctx.target));
+        MAYBE(value_str, ctx.visit(ctx.value));
+        CodeWriter w;
+        w.writeln("MEMCPY(", target_str.to_writer(), ", ", value_str.to_writer(), ", sizeof(", target_str.to_writer(), "));");
         return w;
     }
     /*here to write the hook*/

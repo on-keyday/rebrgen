@@ -24,8 +24,13 @@
 #include "ebm/extended_binary_module.hpp"
 #include "ebmcg/ebm2c/codegen.hpp"
 #include "ebmcodegen/stub/dependency.hpp"
+#include "ebmcodegen/stub/util.hpp"
 #include "ebmgen/common.hpp"
 #include "includes.hpp"
+
+namespace ebm2c {
+
+}
 
 DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     using Context = CODEGEN_CONTEXT(Statement_PROGRAM_DECL);
@@ -170,6 +175,13 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             return -1; \
         } \
     } while(0)
+
+    #define EBM_FREE_VECTOR(vector, elem_size) do { \
+        if(input->free) \
+        { \
+            input->free(input, (VECTOR_OF(void)*)(void*)&(vector), elem_size); \
+        } \
+    } while(0)
 )a");
     }
 
@@ -262,6 +274,14 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         #define LAST_ERROR_HANDLER void(*set_last_error)(const char* msg)
         )"[1]);
         w.writeln("#endif");
+        w.write_unformatted(&R"(
+        #ifndef EBM_FUNCTION_PROLOGUE
+        #define EBM_FUNCTION_PROLOGUE() do {} while(0)
+        #endif
+        #ifndef EBM_FUNCTION_EPILOGUE
+        #define EBM_FUNCTION_EPILOGUE() do {} while(0)
+        #endif
+        )"[1]);
 
         w.writeln("typedef struct EncoderInput {");
         {
@@ -296,6 +316,16 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             w.writeln("LAST_ERROR_HANDLER;");
         }
         w.writeln("} DecoderInput;");
+
+        w.writeln("typedef struct FreeFunctionInput {");
+        {
+            auto scope = w.indent_scope();
+            if (c_ctx.vector_types.size() > 0) {
+                w.writeln("void (*free)(struct FreeFunctionInput* self, VECTOR_OF(void)* vector, size_t elem_size);");
+            }
+            w.writeln("LAST_ERROR_HANDLER;");
+        }
+        w.writeln("} FreeFunctionInput;");
 
         write_decoder_macros(w);
         if (c_ctx.has_recursive_struct) {
@@ -457,6 +487,12 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 if (s.encode_function) {
                     MAYBE(func, ctx.visit(*s.encode_function));
                     w.writeln(func.to_writer());
+                    ctx.config().on_destructor_generation = true;
+                    ctx.config().encoder_input_type = "FreeFunctionInput*";
+                    MAYBE(free_func, ctx.visit(*s.encode_function));
+                    w.writeln(free_func.to_writer());
+                    ctx.config().on_destructor_generation = false;
+                    ctx.config().encoder_input_type = "EncoderInput*";
                 }
                 if (s.decode_function) {
                     MAYBE(func, ctx.visit(*s.decode_function));

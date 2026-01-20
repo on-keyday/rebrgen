@@ -48,6 +48,12 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
     }
     if (auto cand = is_bytes_type(ctx, ctx.write_data.data_type)) {
         MAYBE(target, ctx.visit(ctx.write_data.target));
+        if (ctx.config().on_destructor_generation) {
+            if (cand == BytesType::vector) {
+                return CODELINE("EBM_FREE_VECTOR(", target.to_writer(), ",1);");
+            }
+            return {};  // no need to free for array in free function
+        }
         MAYBE(size_str, get_size_str(ctx, ctx.write_data.size));
         auto io_ = ctx.identifier(ctx.write_data.io_ref);
         auto offset_val = CODE("0");
@@ -67,6 +73,11 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
         return CODELINE("EBM_WRITE_ARRAY_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ", ", layer_str, ");");
     }
     if (auto lw = ctx.write_data.lowered_statement()) {
+        if (ctx.config().on_destructor_generation &&
+            lw->lowering_type != ebm::LoweringIOType::STRUCT_CALL &&
+            lw->lowering_type != ebm::LoweringIOType::ARRAY_FOR_EACH) {
+            return CODELINE("// WRITE_DATA skipped in free function generation");
+        }
         return ctx.visit(lw->io_statement.id);
     }
     return CODELINE("// WRITE_DATA not implemented in ebm2c");

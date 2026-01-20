@@ -14,9 +14,11 @@
       item_id: ebm::ExpressionRef
       type: const ebm::TypeRef&
       kind: const ebm::ExpressionKind&
-      cast_kind: const ebm::CastType&
-      from_type: const ebm::TypeRef&
-      source_expr: const ebm::ExpressionRef&
+      type_cast_desc: const ebm::TypeCastDesc&
+        source_expr: ExpressionRef
+        from_type: TypeRef
+        cast_kind: CastType
+        cast_function: *WeakStatementRef
       main_logic: ebmcodegen::util::MainLogicWrapper<Result>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
@@ -33,12 +35,12 @@ DEFINE_VISITOR(Expression_TYPE_CAST_before) {
         if (variant_desc && is_nil(variant_desc->related_field) && is_nil(variant_desc->common_type)) {
             // This is a pure variant (Union in our C gen)
             size_t idx = 0;
-            auto from_id = get_id(ctx.from_type);
+            auto from_id = get_id(ctx.type_cast_desc.from_type);
             for (auto& member_ref : variant_desc->members.container) {
-                if (variant_candidate_equal(ctx, member_ref, ctx.from_type)) {
+                if (variant_candidate_equal(ctx, member_ref, ctx.type_cast_desc.from_type)) {
                     // Match found!
                     MAYBE(target_type_str, ctx.visit(ctx.type));
-                    MAYBE(source_expr_str, ctx.visit(ctx.source_expr));
+                    MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
                     // Initialize .tag and .value.vN
                     return CODE("(", target_type_str.to_writer(), "){ .tag = ", std::to_string(idx), ", .value = { .v", std::to_string(idx), " = ", source_expr_str.to_writer(), " } }");
                 }

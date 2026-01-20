@@ -15,4 +15,5 @@ namespace ebmgen {
     expected<void> merge_bit_field(TransformContext& tctx);
     expected<void> derive_property_setter_getter(TransformContext& tctx);
     expected<void> flatten_io_expression(TransformContext& tctx);
+    expected<void> add_cast_func(TransformContext& tctx);
 }  // namespace ebmgen

@@ -46,9 +46,11 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::TYPE_CAST;
         body.type = to_typ;
-        body.from_type(from_typ);
-        body.source_expr(expr);
-        body.cast_kind(cast_kind);
+        ebm::TypeCastDesc type_cast;
+        type_cast.source_expr = expr;
+        type_cast.from_type = from_typ;
+        type_cast.cast_kind = cast_kind;
+        body.type_cast_desc(type_cast);
         return body;
     }
 

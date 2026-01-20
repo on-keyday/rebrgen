@@ -352,15 +352,6 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("cast_kind")) {
-            CastType tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.cast_kind(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("char_value")) {
             Varint tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -421,15 +412,6 @@ namespace ebm {
                 return false;
             }
             if(!obj.enum_decl(std::move(tmp))) {
-                return false;
-            }
-        }
-        if (auto got = j.at("from_type")) {
-            TypeRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.from_type(std::move(tmp))) {
                 return false;
             }
         }
@@ -559,15 +541,6 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("source_expr")) {
-            ExpressionRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.source_expr(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("start")) {
             ExpressionRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -628,6 +601,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.then(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("type_cast_desc")) {
+            TypeCastDesc tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.type_cast_desc(std::move(tmp))) {
                 return false;
             }
         }
@@ -2751,6 +2733,43 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(TypeCastDesc& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("source_expr")) {
+            if(!futils::json::convert_from_json(*got, obj.source_expr)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("from_type")) {
+            if(!futils::json::convert_from_json(*got, obj.from_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("cast_kind")) {
+            if(!futils::json::convert_from_json(*got, obj.cast_kind)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("cast_function")) {
+            WeakStatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.cast_function(std::move(tmp))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     bool from_json(TypeRef& obj, const futils::json::JSON& j) {
         std::uint64_t id;
         if(!futils::json::convert_from_json(j, id)) {
@@ -3096,6 +3115,10 @@ namespace ebm {
             }
             if (s == "RECURSIVE_STRUCT_TO_STRUCT") {
                 obj = CastType::RECURSIVE_STRUCT_TO_STRUCT;
+                return true;
+            }
+            if (s == "FUNCTION_CAST") {
+                obj = CastType::FUNCTION_CAST;
                 return true;
             }
             if (s == "OTHER") {

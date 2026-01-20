@@ -25,11 +25,12 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
     using namespace CODEGEN_NAMESPACE;
     auto io_name = ctx.identifier(ctx.sub_byte_range.io_ref);
+    auto io_name_base = io_name + "_base";
+
     auto parent_io_name = ctx.identifier(ctx.sub_byte_range.parent_io_ref);
     std::string type_name = ctx.sub_byte_range.stream_type == ebm::StreamType::OUTPUT ? ctx.config().encoder_input_type : ctx.config().decoder_input_type;
     // remove * from type name if it is pointer type, because we declare variable here
@@ -38,16 +39,23 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
     }
 
     CodeWriter w;
-    w.write(type_name, " ", io_name, " = *", parent_io_name, ";");
+    if (ctx.config().on_destructor_generation) {
+        // simply point to parent io
+        w.write(type_name, "* ", io_name, " = ", parent_io_name, ";");
+        return w;
+    }
+
+    w.write(type_name, " ", io_name_base, " = *", parent_io_name, ";");
+    w.write(type_name, "* ", io_name, " = &", io_name_base, ";");
     w.writeln("");
-    
+
     if (ctx.sub_byte_range.range_type == ebm::SubByteRangeType::bytes) {
         MAYBE(len, ctx.visit(*ctx.sub_byte_range.length()));
-        w.write(io_name, ".data = ", parent_io_name, "->data + ", parent_io_name, "->offset;");
+        w.write(io_name_base, ".data = ", parent_io_name, "->data + ", parent_io_name, "->offset;");
         w.writeln("");
-        w.write(io_name, ".data_end = ", io_name, ".data + ", len.to_writer(), ";");
+        w.write(io_name_base, ".data_end = ", io_name_base, ".data + ", len.to_writer(), ";");
         w.writeln("");
-        w.write(io_name, ".offset = 0;");
+        w.write(io_name_base, ".offset = 0;");
         w.writeln("");
         // Advance parent
         w.write(parent_io_name, "->offset += ", len.to_writer(), ";");
@@ -56,14 +64,16 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
     else if (ctx.sub_byte_range.range_type == ebm::SubByteRangeType::seek_bytes) {
         MAYBE(len, ctx.visit(*ctx.sub_byte_range.length()));
         MAYBE(off, ctx.visit(*ctx.sub_byte_range.offset()));
-        w.write(io_name, ".data = ", parent_io_name, "->data + ", off.to_writer(), ";");
+        w.write(io_name_base, ".data = ", parent_io_name, "->data + ", off.to_writer(), ";");
         w.writeln("");
-        w.write(io_name, ".data_end = ", io_name, ".data + ", len.to_writer(), ";");
+        w.write(io_name_base, ".data_end = ", io_name_base, ".data + ", len.to_writer(), ";");
         w.writeln("");
-        w.write(io_name, ".offset = 0;");
+        w.write(io_name_base, ".offset = 0;");
         w.writeln("");
     }
-    
+
+    MAYBE(io_stmt, ctx.visit(ctx.sub_byte_range.io_statement));
+    w.write(io_stmt.to_writer());
+
     return w;
 }
-

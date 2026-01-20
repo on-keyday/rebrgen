@@ -45,6 +45,10 @@ namespace ebmgen {
         if (timer) {
             timer("derive property setter/getter");
         }
+        MAYBE_VOID(add_cast, add_cast_func(ctx));
+        if (timer) {
+            timer("add cast function");
+        }
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx, timer));
             ctx.recalculate_id_index_map();

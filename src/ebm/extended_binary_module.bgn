@@ -170,8 +170,8 @@ format CallDesc:
     arguments :Expressions
 
 format TypeCastDesc:
+    source_expr :ExpressionRef # Expression to be casted
     from_type :TypeRef
-    to_type :TypeRef
     cast_kind :CastType
     if cast_kind == CastType.FUNCTION_CAST:
         cast_function :WeakStatementRef # Reference to the cast function

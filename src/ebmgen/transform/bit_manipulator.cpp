@@ -472,7 +472,7 @@ namespace ebmgen {
             result = shifted;
         }
         // 1バイトまるごとではない場合,bit_orする
-        if (bit_to_read != 8 && !(byte_offset == 0 && bit_offset == 0)) {
+        if (bit_to_read != 8 && bit_offset != 0) {
             EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, u8_type, byte_val, result);
             result = or_;
         }

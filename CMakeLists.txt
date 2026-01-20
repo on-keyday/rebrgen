@@ -130,6 +130,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/transform/bit_holder.cpp"
     "src/ebmgen/transform/derive_property.cpp"
     "src/ebmgen/transform/flatten_io_expression.cpp"
+    "src/ebmgen/transform/add_cast_func.cpp"
 )
 
 target_link_libraries(ebm_mapping ebm futils)

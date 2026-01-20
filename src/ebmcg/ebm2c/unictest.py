@@ -53,6 +53,15 @@ def main():
     #include <stdlib.h> 
     #include <string.h>
     #include <stdbool.h>
+
+    #define EBM_FUNCTION_PROLOGUE() do {{\\
+      printf("Function prologue %s %llx\\n",__func__,input->offset);\\
+    }} while(0)
+
+    #define EBM_FUNCTION_EPILOGUE() do {{\\
+        printf("Function epilogue %s %llx\\n",__func__,input->offset);\\
+    }} while(0)
+
     #include "{generated_h_name}"
 
     
@@ -334,14 +343,25 @@ def main():
     build_dir = proj_dir / "build"
     os.makedirs(build_dir, exist_ok=True)
 
-    cmake_command = ["cmake", ".."]
-    if os.name == "nt":
-        cmake_command.extend(["-G", "Ninja Multi-Config"])
+    cmake_command = [
+        "cmake",
+        "-S",
+        "..",
+        "-B",
+        ".",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DCMAKE_C_COMPILER=clang",
+    ]
+    if os.name != "nt":
+        cmake_command.append("-DCMAKE_C_FLAGS=-fsanitize=address")
 
     result = subprocess.run(
         cmake_command,
         cwd=build_dir,
-        capture_output=True,
+        stderr=sys.stderr,
+        stdout=sys.stdout,
         text=True,
     )
     if result.returncode != 0:
@@ -351,15 +371,13 @@ def main():
         sys.exit(1)
 
     print("Building C project...")
-    build_command = ["cmake", "--build", "."]
-    if os.name == "nt":
-        build_command.extend(["--config", "Debug"])
+    build_command = ["cmake", "--build", ".", "--config", "Debug"]
 
     result = subprocess.run(
         build_command,
         cwd=build_dir,
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
+        stderr=sys.stderr,
+        stdout=sys.stdout,
         text=True,
     )
     if result.returncode != 0:
@@ -371,13 +389,8 @@ def main():
     print("Compilation successful.")
 
     # Run the compiled test executable
-    executable_path = (
-        build_dir / "Debug" / "test_runner"
-        if os.name == "nt"
-        else build_dir / "test_runner"
-    )
-    if os.name == "nt":
-        executable_path = executable_path.with_suffix(".exe")
+    executable_name = "test_runner.exe" if os.name == "nt" else "test_runner"
+    executable_path = build_dir / executable_name
 
     executable_path = executable_path.resolve()
 
@@ -394,6 +407,7 @@ def main():
                     INPUT_FILE,
                     OUTPUT_FILE,
                 ],
+                "stopAtEntry": True,
             },
             indent=4,
         )
@@ -406,8 +420,8 @@ def main():
             INPUT_FILE,
             OUTPUT_FILE,
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
     )
 
     if proc.returncode != 0:

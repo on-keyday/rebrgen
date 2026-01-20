@@ -14,9 +14,11 @@
       item_id: ebm::ExpressionRef
       type: const ebm::TypeRef&
       kind: const ebm::ExpressionKind&
-      cast_kind: const ebm::CastType&
-      from_type: const ebm::TypeRef&
-      source_expr: const ebm::ExpressionRef&
+      type_cast_desc: const ebm::TypeCastDesc&
+        source_expr: ExpressionRef
+        from_type: TypeRef
+        cast_kind: CastType
+        cast_function: *WeakStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
@@ -24,5 +26,5 @@
 DEFINE_VISITOR(Expression_TYPE_CAST) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    return ctx.visit(ctx.source_expr);
+    return ctx.visit(ctx.type_cast_desc.source_expr);
 }

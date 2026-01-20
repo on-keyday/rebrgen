@@ -121,7 +121,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "${workspaceRoot}/src/test/simple_case.bgn", "-Iv"],
+      "args": ["-i", "${workspaceRoot}/src/test/test_capture.bgn", "-Iv"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
@@ -147,7 +147,10 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebm2c",
-      "args": ["-i", "${workspaceRoot}/save/out.ebm"],
+      "args": [
+        "-i",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-33865ea71b/r-a8b0c728e2/runner_input.ebm"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
@@ -191,15 +194,16 @@
       ]
     },
     {
-      "type": "debugpy",
+      "type": "cppvsdbg",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f7f2fbb37d\\r-88a6960f32\\t-3292a09255",
-      "name": "Debug ebm2python unictest (TestVarint)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-f7f2fbb37d\\r-88a6960f32\\t-3292a09255\\test_script.py",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-3d26ba2d1c\\r-0e515b6525\\t-fc4017e12f",
+      "name": "Debug ebm2c unictest (TestPacket)",
+      "program": "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-3d26ba2d1c/r-0e515b6525/t-fc4017e12f/c_proj/build/test_runner.exe",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f7f2fbb37d/r-88a6960f32/t-3292a09255/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-f7f2fbb37d/r-88a6960f32/t-3292a09255/output.bin"
-      ]
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-3d26ba2d1c/r-0e515b6525/t-fc4017e12f/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-3d26ba2d1c/r-0e515b6525/t-fc4017e12f/output.bin"
+      ],
+      "stopAtEntry": true
     }
   ]
 }

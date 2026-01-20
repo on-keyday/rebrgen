@@ -117,6 +117,8 @@ namespace ebm {
     
     bool from_json(TypeBody& obj, const futils::json::JSON& j);
     
+    bool from_json(TypeCastDesc& obj, const futils::json::JSON& j);
+    
     bool from_json(TypeRef& obj, const futils::json::JSON& j);
     
     bool from_json(Types& obj, const futils::json::JSON& j);

@@ -14,9 +14,11 @@
       item_id: ebm::ExpressionRef
       type: const ebm::TypeRef&
       kind: const ebm::ExpressionKind&
-      cast_kind: const ebm::CastType&
-      from_type: const ebm::TypeRef&
-      source_expr: const ebm::ExpressionRef&
+      type_cast_desc: const ebm::TypeCastDesc&
+        source_expr: ExpressionRef
+        from_type: TypeRef
+        cast_kind: CastType
+        cast_function: *WeakStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 #include "../codegen.hpp"
@@ -24,7 +26,7 @@ DEFINE_VISITOR(Expression_TYPE_CAST) {
     using namespace CODEGEN_NAMESPACE;
     CodeWriter w;
 
-    MAYBE(source_expr_str, ctx.visit(ctx.source_expr));
+    MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
     MAYBE(target_type_str, ctx.visit(ctx.type));
     if (ctx.config().func_style_cast) {
         w.write(target_type_str.to_writer(), "(", source_expr_str.to_writer(), ")");

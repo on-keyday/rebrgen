@@ -62,6 +62,9 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto name = ctx.identifier();
+    if (ctx.config().on_destructor_generation && name == "encode") {
+        name = "free";
+    }
     CodeWriter params;
     std::string func_prefix;
     std::string inline_prefix;
@@ -117,6 +120,11 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     w.writeln(" ", ctx.config().begin_block);
     {
         auto scope = w.indent_scope();
+        ctx.config().is_on_encode_decode = !ctx.config().on_destructor_generation &&
+                                           (ctx.func_decl.kind == ebm::FunctionKind::ENCODE || ctx.func_decl.kind == ebm::FunctionKind::DECODE);
+        if (ctx.config().is_on_encode_decode) {
+            w.writeln("EBM_FUNCTION_PROLOGUE();");
+        }
         MAYBE(body, ctx.visit(ctx.func_decl.body));
         w.write(body.to_writer());
     }

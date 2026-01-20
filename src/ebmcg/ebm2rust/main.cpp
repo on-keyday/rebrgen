@@ -55796,27 +55796,17 @@ namespace ebm2rust {
     expected<Result> dispatch_Expression_TYPE_CAST(Context&& ctx,const ebm::Expression& in,ebm::ExpressionRef alias_ref){
         auto& type = in.body.type;
         auto& kind = in.body.kind;
-        if (!in.body.cast_kind()) {
-            return unexpect_error("Unexpected null pointer for ExpressionBody::cast_kind");
+        if (!in.body.type_cast_desc()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::type_cast_desc");
         }
-        auto& cast_kind = *in.body.cast_kind();
-        if (!in.body.from_type()) {
-            return unexpect_error("Unexpected null pointer for ExpressionBody::from_type");
-        }
-        auto& from_type = *in.body.from_type();
-        if (!in.body.source_expr()) {
-            return unexpect_error("Unexpected null pointer for ExpressionBody::source_expr");
-        }
-        auto& source_expr = *in.body.source_expr();
+        auto& type_cast_desc = *in.body.type_cast_desc();
         auto main_logic = [&]() -> expected<Result>{
             Context_Expression_TYPE_CAST new_ctx{
                 .visitor = get_visitor_arg_from_context(ctx),
                 .item_id = is_nil(alias_ref) ? in.id : alias_ref,
                 .type = type,
                 .kind = kind,
-                .cast_kind = cast_kind,
-                .from_type = from_type,
-                .source_expr = source_expr,
+                .type_cast_desc = type_cast_desc,
             };
             return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
         };
@@ -55825,9 +55815,7 @@ namespace ebm2rust {
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .type = type,
             .kind = kind,
-            .cast_kind = cast_kind,
-            .from_type = from_type,
-            .source_expr = source_expr,
+            .type_cast_desc = type_cast_desc,
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
@@ -55845,9 +55833,7 @@ namespace ebm2rust {
             .item_id = is_nil(alias_ref) ? in.id : alias_ref,
             .type = type,
             .kind = kind,
-            .cast_kind = cast_kind,
-            .from_type = from_type,
-            .source_expr = source_expr,
+            .type_cast_desc = type_cast_desc,
             .main_logic = main_logic,
             .result = main_result,
         };
@@ -55870,16 +55856,16 @@ namespace ebm2rust {
                 return unexpect_error(std::move(result_type.error()));
             }
         }
-        if (!is_nil(type_ctx.from_type)) {
-            auto result_from_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.from_type);
-            if (!result_from_type) {
-                return unexpect_error(std::move(result_from_type.error()));
-            }
-        }
-        if (!is_nil(type_ctx.source_expr)) {
-            auto result_source_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.source_expr);
+        if (!is_nil(type_ctx.type_cast_desc.source_expr)) {
+            auto result_source_expr = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type_cast_desc.source_expr);
             if (!result_source_expr) {
                 return unexpect_error(std::move(result_source_expr.error()));
+            }
+        }
+        if (!is_nil(type_ctx.type_cast_desc.from_type)) {
+            auto result_from_type = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.type_cast_desc.from_type);
+            if (!result_from_type) {
+                return unexpect_error(std::move(result_from_type.error()));
             }
         }
         return {};

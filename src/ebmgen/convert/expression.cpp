@@ -516,10 +516,16 @@ namespace ebmgen {
         body.kind = ebm::ExpressionKind::TYPE_CAST;
         EBMA_CONVERT_EXPRESSION(source_expr_ref, node->arguments[0]);
         EBMA_CONVERT_TYPE(source_expr_type_ref, node->arguments[0]->expr_type);
-        body.source_expr(source_expr_ref);
-        body.from_type(source_expr_type_ref);
+        ebm::TypeCastDesc type_cast;
+        type_cast.source_expr = source_expr_ref;
+        type_cast.from_type = source_expr_type_ref;
         MAYBE(cast_kind, ctx.get_type_converter().get_cast_type(body.type, source_expr_type_ref));
-        body.cast_kind(cast_kind);
+        type_cast.cast_kind = cast_kind;
+        if (cast_kind == ebm::CastType::FUNCTION_CAST) {
+            // find cast function
+            type_cast.cast_function({});  // at post transform phase, fill this field
+        }
+        body.type_cast_desc(type_cast);
         return {};
     }
 

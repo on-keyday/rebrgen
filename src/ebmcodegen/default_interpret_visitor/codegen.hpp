@@ -3357,14 +3357,12 @@ namespace ebm2all {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::CastType& cast_kind;
-        const ebm::TypeRef& from_type;
-        const ebm::ExpressionRef& source_expr;
+        const ebm::TypeCastDesc& type_cast_desc;
     };
     struct VisitorTag_Expression_TYPE_CAST {};
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_cast_desc = instance_name.type_cast_desc;
     template <typename Result>
     struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before<Result>> {
         constexpr static std::string_view context_name = "Expression_TYPE_CAST_before";
@@ -3372,15 +3370,13 @@ namespace ebm2all {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::CastType& cast_kind;
-        const ebm::TypeRef& from_type;
-        const ebm::ExpressionRef& source_expr;
+        const ebm::TypeCastDesc& type_cast_desc;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_TYPE_CAST_before {};
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_cast_desc = instance_name.type_cast_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after<Result>> {
         constexpr static std::string_view context_name = "Expression_TYPE_CAST_after";
@@ -3388,16 +3384,14 @@ namespace ebm2all {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::CastType& cast_kind;
-        const ebm::TypeRef& from_type;
-        const ebm::ExpressionRef& source_expr;
+        const ebm::TypeCastDesc& type_cast_desc;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
     struct VisitorTag_Expression_TYPE_CAST_after {};
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
-    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_cast_desc = instance_name.type_cast_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_RANGE : ebmcodegen::util::ContextBase<Context_Expression_RANGE> {
         constexpr static std::string_view context_name = "Expression_RANGE";
         BaseVisitor& visitor;

@@ -22,6 +22,9 @@
 DEFINE_VISITOR(Type_UINT) {
     using namespace CODEGEN_NAMESPACE;
     auto bit_size = ctx.size.value();
+    if (ctx.config().make_uint_type) {
+        return ctx.config().make_uint_type(bit_size);
+    }
     if (!ctx.config().byte_aligned_int) {
         return CODE(ctx.config().uint_prefix, std::to_string(bit_size), ctx.config().uint_suffix);
     }

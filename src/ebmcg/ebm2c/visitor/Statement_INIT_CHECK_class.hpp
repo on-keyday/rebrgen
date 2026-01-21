@@ -70,7 +70,7 @@ DEFINE_VISITOR(Statement_INIT_CHECK) {
             {
                 auto scope = w.indent_scope();
                 auto without_ptr = type_txt.to_string();
-                without_ptr.pop_back();  // remove *
+                without_ptr = without_ptr.substr(0, without_ptr.size() - 4);  // remove _ptr
                 w.writeln(type_txt.to_string(), " tmp = EBM_ALLOCATE(input,", without_ptr, ");");
                 w.writeln("if (!tmp) {");
                 {

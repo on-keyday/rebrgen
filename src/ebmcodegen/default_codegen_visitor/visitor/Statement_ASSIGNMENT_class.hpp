@@ -16,9 +16,15 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 /*license*/
-CodeWriter w;
-MAYBE(result_target, visit_Expression(*this, target));
-MAYBE(result_value, visit_Expression(*this, value));
-
-w.writeln(result_target.to_writer(), " = ", tidy_condition_brace(result_value.to_string()), visitor.endof_statement);
-return w;
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_ASSIGNMENT) {
+    using namespace CODEGEN_NAMESPACE;
+    CodeWriter w;
+    MAYBE(result_target, ctx.visit(ctx.target));
+    auto add = ctx.add_writer();
+    MAYBE(got, ctx.get_writer());
+    MAYBE(result_value, ctx.visit(ctx.value));
+    w.write(std::move(got));
+    w.writeln(result_target.to_writer(), " = ", tidy_condition_brace(result_value.to_string()), ctx.config().endof_statement);
+    return w;
+}

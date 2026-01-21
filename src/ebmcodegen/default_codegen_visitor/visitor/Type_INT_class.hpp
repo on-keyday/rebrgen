@@ -22,6 +22,9 @@ DEFINE_VISITOR(Type_INT) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto bit_size = ctx.size.value();
+    if (ctx.config().make_int_type) {
+        return ctx.config().make_int_type(bit_size);
+    }
     if (!ctx.config().byte_aligned_int) {
         return CODE(ctx.config().int_prefix, std::to_string(bit_size), ctx.config().int_suffix);
     }

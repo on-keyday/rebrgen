@@ -30,6 +30,25 @@ DEFINE_VISITOR(Expression_TYPE_CAST_before) {
     auto target_type = ctx.module().get_type(ctx.type);
     if (!target_type) return pass;
 
+    if (ctx.type_cast_desc.cast_kind == ebm::CastType::INT_TO_FLOAT_BIT ||
+        ctx.type_cast_desc.cast_kind == ebm::CastType::FLOAT_TO_INT_BIT) {
+        // should use temporary variable to avoid multiple evaluation
+        auto result_var = "tmpf" + std::to_string(get_id(ctx.item_id));
+        if (ctx.config().float_cast_map.insert(get_id(ctx.item_id)).second) {
+            MAYBE(got, ctx.get_writer());
+            MAYBE(target_type_str, ctx.visit(ctx.type));
+
+            MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
+            // src expr may not be a single variable
+            MAYBE(source_type_str, ctx.visit(ctx.type_cast_desc.from_type));
+            auto tmp_var = "tmpi" + std::to_string(get_id(ctx.item_id));
+            got.writeln(source_type_str.to_writer(), " ", tmp_var, " = ", source_expr_str.to_writer(), ";");
+            got.writeln(target_type_str.to_writer(), " ", result_var, ";");
+            got.writeln("MEMCPY(&", result_var, ", &", tmp_var, ", sizeof(", source_type_str.to_writer(), "));");
+        }
+        return CODE(result_var);
+    }
+
     if (target_type->body.kind == ebm::TypeKind::VARIANT) {
         auto variant_desc = target_type->body.variant_desc();
         if (variant_desc && is_nil(variant_desc->related_field) && is_nil(variant_desc->common_type)) {
@@ -43,6 +62,26 @@ DEFINE_VISITOR(Expression_TYPE_CAST_before) {
                     MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
                     // Initialize .tag and .value.vN
                     return CODE("(", target_type_str.to_writer(), "){ .tag = ", std::to_string(idx), ", .value = { .v", std::to_string(idx), " = ", source_expr_str.to_writer(), " } }");
+                }
+                idx++;
+            }
+        }
+    }
+
+    auto src_type = ctx.module().get_type(ctx.type_cast_desc.from_type);
+    if (!src_type) return pass;
+    if (src_type->body.kind == ebm::TypeKind::VARIANT) {
+        auto variant_desc = src_type->body.variant_desc();
+        if (variant_desc && is_nil(variant_desc->related_field) && is_nil(variant_desc->common_type)) {
+            // This is a pure variant (Union in our C gen)
+            size_t idx = 0;
+            for (auto& member_ref : variant_desc->members.container) {
+                if (variant_candidate_equal(ctx, member_ref, ctx.type)) {
+                    // Match found!
+                    MAYBE(target_type_str, ctx.visit(ctx.type));
+                    MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
+                    // Extract .value.vN
+                    return CODE("(", target_type_str.to_writer(), ")", source_expr_str.to_writer(), ".value.v", std::to_string(idx));
                 }
                 idx++;
             }

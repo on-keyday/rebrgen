@@ -51,12 +51,12 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     void write_vector_macros(CodeWriter & w) {
         w.write_unformatted(R"a(
     #ifndef VECTOR_APPEND
-    #define VECTOR_APPEND(vector, elem) do { \
+    #define VECTOR_APPEND(vector, elem,typ_str) do { \
         if (!input->append) {\
             EBM_EMIT_ERROR("EncoderInput append function is not set"); \
             return -1; \
         } \
-        int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),&(elem), sizeof(elem)); \
+        int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),&(elem), sizeof(elem), typ_str); \
         if (res != 0) { \
             return res; \
         } \
@@ -213,6 +213,10 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         for (auto& s : c_ctx.structs) {
             auto ident = ctx.identifier(s.id);
             w.writeln("typedef struct ", ident, " ", ident, ";");
+            // for recursive struct, add _ptr typedef
+            if (s.is_recursive) {
+                w.writeln("typedef ", ident, "* ", ident, "_ptr;");
+            }
         }
 
         // enums first
@@ -307,7 +311,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             size_t offset;
         )a"[1]);
             if (c_ctx.vector_types.size() > 0) {
-                w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size);");
+                w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size,const char* type_str);");
             }
             w.writeln("int (*can_read)(struct DecoderInput* self, size_t num_bytes);");
             if (c_ctx.has_recursive_struct) {
@@ -519,6 +523,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }
             Struct s;
             s.id = stmt_ref;
+            s.is_recursive = struct_->is_recursive();
             for (auto& decl_ref : struct_->fields.container) {
                 auto composite = ctx.get_field<"composite_field_decl">(decl_ref);
                 if (composite && composite->kind != ebm::CompositeFieldKind::BULK_PRIMITIVE) {

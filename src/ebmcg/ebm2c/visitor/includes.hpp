@@ -21,6 +21,7 @@ namespace ebm2c {
 
     struct Struct {
         ebm::StatementRef id;
+        bool is_recursive = false;
         std::vector<Field> fields;
         std::vector<ebm::StatementRef> properties;
         std::optional<ebm::StatementRef> encode_function;

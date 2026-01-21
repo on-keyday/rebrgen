@@ -609,6 +609,14 @@ namespace ebmcodegen::util {
             return derived().visitor;
         }
 
+        auto get_writer() {
+            return derived().visitor.wm.get_writer();
+        }
+
+        auto add_writer() {
+            return derived().visitor.wm.add_writer();
+        }
+
         decltype(auto) get_entry_point() const {
             return derived().visitor.module_.get_entry_point();
         }

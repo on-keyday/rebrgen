@@ -30,7 +30,7 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().array_type_wrapper = [&](Result elem_type, size_t size, ebm::ArrayAnnotation anot) -> expected<Result> {
         if (anot == ebm::ArrayAnnotation::read_temporary) {
             // directly reference to original input buffer
-            return CODE("const ",elem_type.to_writer(), "*");
+            return CODE("const ", elem_type.to_writer(), "*");
         }
         if (anot == ebm::ArrayAnnotation::write_temporary) {
             // writable temporary array
@@ -47,6 +47,16 @@ DEFINE_VISITOR(entry_before) {
             return CODE(typ.to_writer(), "*");  // In C, parameters are passed as pointers
         }
         return typ;
+    };
+    // TODO: use floatN_t types if available
+    ctx.config().make_float_type = [&](size_t bit_size) -> expected<Result> {
+        if (bit_size <= 32) {
+            return CODE("float");
+        }
+        if (bit_size <= 64) {
+            return CODE("double");
+        }
+        return unexpect_error("unsupported float size: {}", bit_size);
     };
     ctx.config().forward_type_in_function_decl = true;
     ctx.config().function_define_keyword = "";
@@ -74,7 +84,7 @@ DEFINE_VISITOR(entry_before) {
         return CODE("OPTIONAL_OF(", elem_type.to_writer(), ")");
     };
     ctx.config().recursive_struct_type_wrapper = [&](Result elem_type) -> expected<Result> {
-        return CODE(elem_type.to_writer(), "*");
+        return CODE(elem_type.to_writer(), "_ptr");
     };
     ctx.config().make_pointer_wrapper = [&](Result elem_type) -> expected<Result> {
         return CODE("(&", elem_type.to_writer(), ")");

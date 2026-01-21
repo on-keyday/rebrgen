@@ -96,7 +96,7 @@ def main():
         size_t capacity;
     }} GenericVector;
 
-    int default_append(struct DecoderInput* self, VECTOR_OF(void)* vector_void, const void* elem_data, size_t elem_size) {{
+    int default_append(struct DecoderInput* self, VECTOR_OF(void)* vector_void, const void* elem_data, size_t elem_size,const char* type_str) {{
         (void)self;
         GenericVector* vector = (GenericVector*)vector_void;
         if (vector->size >= vector->capacity) {{

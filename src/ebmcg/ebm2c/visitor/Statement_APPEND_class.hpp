@@ -24,5 +24,7 @@ DEFINE_VISITOR(Statement_APPEND) {
     /*here to write the hook*/
     MAYBE(base, ctx.visit(ctx.target));
     MAYBE(val, ctx.visit(ctx.value));
-    return CODELINE("VECTOR_APPEND(", base.to_writer(), ", ", val.to_writer(), ");");
+    MAYBE(typ, ctx.get_field<"type">(ctx.value));
+    MAYBE(typ_str, ctx.visit(typ));
+    return CODELINE("VECTOR_APPEND(", base.to_writer(), ", ", val.to_writer(), ",\"", typ_str.to_writer(), "\");");
 }

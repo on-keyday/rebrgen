@@ -31,25 +31,22 @@
 DEFINE_VISITOR(Statement_FIELD_DECL_before) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    MAYBE(members, struct_union_members(ctx, ctx.field_decl.field_type));
-    if (members.size()) {
-        for (auto& member : members) {
+    MAYBE(struct_members, struct_union_members(ctx, ctx.field_decl.field_type));
+    if (struct_members.size() > 0) {
+        auto variant_name = "Variant" + std::format("{}", get_id(ctx.field_decl.field_type));
+
+        for (auto& member : struct_members) {
             ctx.config().decl_toplevel.push_back(member.second.to_writer());
+            auto name = ctx.identifier(member.first);
+            ctx.config().decl_toplevel.push_back(CODE("func (v *", name, ") is", variant_name, "(){}"));
         }
-        auto enum_name = std::format("Variant{}", get_id(ctx.field_decl.field_type));
+
         CodeWriter w;
-        w.writeln("header_union ", enum_name, " {");
-        {
-            auto scope = w.indent_scope();
-            MAYBE(members, ctx.get_field<"variant_desc.members">(ctx.field_decl.field_type));
-            for (auto& member_type_ref : members.container) {
-                MAYBE(type, ctx.visit(member_type_ref));
-                auto tmp_field_name = std::format("union{}", get_id(member_type_ref));
-                w.writeln(type.to_writer(), " ", tmp_field_name, ";");
-            }
-        }
+        w.writeln("type ", variant_name, " interface {");
+        w.indent_writeln("is", variant_name, "()");
         w.writeln("}");
         ctx.config().decl_toplevel.push_back(std::move(w));
     }
+
     return pass;
 }

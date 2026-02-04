@@ -15,7 +15,16 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-MAYBE(target_str, visit_Expression(*this, target));
-MAYBE(value_str, visit_Expression(*this, value));
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_APPEND) {
+    using namespace CODEGEN_NAMESPACE;
+    /*here to write the hook*/
+    if (ctx.config().append_visitor) {
+        MAYBE(res, ctx.config().append_visitor(ctx));
+        return res;
+    }
+    MAYBE(target_str, ctx.visit(ctx.target));
+    MAYBE(value_str, ctx.visit(ctx.value));
 
-return CODELINE(target_str.to_writer(), ".", visitor.append_function, "(", value_str.to_writer(), ")", visitor.endof_statement);
+    return CODELINE(target_str.to_writer(), ".", ctx.config().append_function, "(", value_str.to_writer(), ")", ctx.config().endof_statement);
+}

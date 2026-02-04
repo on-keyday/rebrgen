@@ -39,7 +39,9 @@ std::string enum_member_accessor = ".";
 std::string array_size_get_function = "len";
 bool surrounded_array_size = false; /*true: len(x) false: x.len()*/
 std::string append_function = "append";
+std::function<expected<Result>(Context_Statement_APPEND& ctx)> append_visitor;
 std::string infinity_loop_keyword = "";
+std::string conditional_loop_keyword = "while";
 bool field_name_prior_to_type = false;
 bool variable_name_prior_to_type = true;
 std::string usize_type_name = "usize";
@@ -82,11 +84,17 @@ bool on_assign = false;  // useful for expression generation
 
 std::function<expected<Result>(Context_Statement_WRITE_DATA& ctx)> write_data_visitor;
 std::function<expected<Result>(Context_Statement_READ_DATA& ctx)> read_data_visitor;
+std::function<expected<Result>(Context_Expression_CAN_READ_STREAM& ctx)> can_read_stream_visitor;
 
 std::function<expected<Result>(Context_Statement_COMPOSITE_FIELD_DECL& ctx)> composite_field_decl_visitor;
+
 std::function<expected<Result>(Context_Expression_IS_ERROR& ctx)> is_error_visitor;
 std::function<expected<Result>(Context_Statement_ERROR_RETURN& ctx)> error_return_visitor;
+std::function<expected<Result>(Context_Statement_ERROR_REPORT& ctx)> error_report_visitor;
 
 std::function<expected<Result>(Context_Statement_ENUM_DECL& ctx)> enum_decl_visitor;
 std::function<expected<Result>(Context_Statement_ENUM_MEMBER_DECL& ctx)> enum_member_decl_visitor;
 std::function<expected<Result>(Context_Statement_INIT_CHECK& ctx)> init_check_visitor;
+
+// if this returns `pass` using default logic
+std::function<expected<Result>(Context_Expression_DEFAULT_VALUE& ctx)> default_value_custom;

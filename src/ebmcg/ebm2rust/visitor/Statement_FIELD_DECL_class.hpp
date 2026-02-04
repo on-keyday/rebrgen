@@ -37,7 +37,7 @@ DEFINE_VISITOR(Statement_FIELD_DECL) {
 
     if (struct_members.size() > 0) {
         for (auto& member : struct_members) {
-            ctx.config().custom_types.push_back(member.to_writer());
+            ctx.config().custom_types.push_back(member.second.to_writer());
         }
         auto enum_name = "Variant" + std::format("{}", get_id(ctx.field_decl.field_type));
 

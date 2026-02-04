@@ -28,5 +28,5 @@ MAYBE(struct_members, struct_union_members(*this, field_decl.field_type));
 MAYBE(type_str_val, visit_Type(*this, field_decl.field_type));  // Correctly extract the string value
                                                                 // Use forward reference for structs
 
-return CODELINE(SEPARATED(CODELINE(), struct_members.size(), [&](size_t n) { return std::move(struct_members[n].to_writer()); }),
+return CODELINE(SEPARATED(CODELINE(), struct_members.size(), [&](size_t n) { return std::move(struct_members[n].second.to_writer()); }),
                 name, ": \"", type_str_val.to_writer(), "\"");

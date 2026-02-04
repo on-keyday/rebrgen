@@ -41,6 +41,9 @@ DEFINE_VISITOR(pre_visitor) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     for (auto& ident : ctx.ebm.identifiers) {
+        if (ident.body.data.contains('.')) {  // metadata or special identifier
+            continue;
+        }
         ident.body.data = to_camel_case(ident.body.data);
         ident.body.data[0] = std::toupper(ident.body.data[0]);
     }

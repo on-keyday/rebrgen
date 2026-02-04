@@ -25,3 +25,5 @@
 
 FILE_EXTENSIONS(".go");
 WEB_UI_NAME("go3");
+DEFINE_STRING_FLAG(package_name, "", "package", "Package name for generated Go code", "NAME");
+CONFIG_MAP("config.go.package", package_name);

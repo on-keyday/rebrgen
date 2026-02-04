@@ -1229,6 +1229,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                         w.writeln("WEB_LSP_NAME(lsp_name)");
                         w.writeln("WEB_WORKER_NAME(worker_name)");
                         w.writeln("FILE_EXTENSIONS(file_ext...)");
+                        w.writeln("CONFIG_MAP(config_name,flag_name)");
                     }
                 }
                 if (result->visitor_location == suffixes[suffix_pre_validate] ||

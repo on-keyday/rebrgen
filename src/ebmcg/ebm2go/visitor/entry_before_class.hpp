@@ -15,9 +15,11 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+#include <cctype>
 #include <string>
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "escape/escape.h"
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
     ctx.config().array_type_wrapper = [](Result r, size_t size, ebm::ArrayAnnotation) -> expected<Result> {
@@ -44,12 +46,17 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().decoder_input_type = "[]byte";
     ctx.config().function_definition_start_wrapper = [&](Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& fctx) -> expected<Result> {
         CodeWriter w;
+        std::string_view name_prefix;
+        if (is_setter_func(fctx.func_decl.kind)) {
+            name_prefix = "Set";
+        }
         if (!is_nil(fctx.func_decl.parent_format)) {
             auto struct_name = ctx.identifier(fctx.func_decl.parent_format);
-            w.writeln(ctx.config().function_define_keyword, " (this *", struct_name, ") ", name, "(", params, ") ", ctx.config().function_return_type_separator, " ", return_type.to_writer(), " ", ctx.config().begin_block);
+            ctx.config().self_value = std::string(1, std::tolower(struct_name[0]));
+            w.writeln(ctx.config().function_define_keyword, " (", ctx.config().self_value, " *", struct_name, ") ", name_prefix, name, "(", params, ") ", ctx.config().function_return_type_separator, " ", return_type.to_writer(), " ", ctx.config().begin_block);
         }
         else {
-            w.writeln(ctx.config().function_define_keyword, " ", name, "(", params, ") ", ctx.config().function_return_type_separator, return_type.to_writer(), " ", ctx.config().begin_block);
+            w.writeln(ctx.config().function_define_keyword, " ", name_prefix, name, "(", params, ") ", ctx.config().function_return_type_separator, return_type.to_writer(), " ", ctx.config().begin_block);
         }
         return w;
     };
@@ -58,7 +65,22 @@ DEFINE_VISITOR(entry_before) {
             cctx.composite_field_decl.kind == ebm::CompositeFieldKind::PREFIXED_UNION_PRIMITIVE) {
             auto ident = cctx.identifier();
             MAYBE(typ, ctx.visit(cctx.composite_field_decl.composite_type));
-            return CODELINE(ident, " ", typ.to_writer());
+            auto res = CODELINE(ident, " ", typ.to_writer());
+            // for each field, generate getter and setter
+            for (auto& field : cctx.composite_field_decl.fields.container) {
+                MAYBE(field_decl, cctx.get_field<"field_decl">(field));
+                auto getter = field_decl.composite_getter();
+                auto setter = field_decl.composite_setter();
+                if (getter) {
+                    MAYBE(getter, ctx.visit(getter->id));
+                    ctx.config().decl_toplevel.push_back(getter.to_writer());
+                }
+                if (setter) {
+                    MAYBE(setter, ctx.visit(setter->id));
+                    ctx.config().decl_toplevel.push_back(setter.to_writer());
+                }
+            }
+            return res;
         }
         return cctx.visit(cctx.composite_field_decl.fields);
     };
@@ -128,6 +150,14 @@ DEFINE_VISITOR(entry_before) {
         MAYBE(err_expr, ctx.visit(rctx.value));
         return CODELINE("return ", err_expr.to_writer());
     };
+    ctx.config().error_report_visitor = [&](Context_Statement_ERROR_REPORT& rptctx) -> expected<Result> {
+        MAYBE(err_expr, ctx.get(rptctx.error_report.message));
+        auto escaped_msg = futils::escape::escape_str<std::string>(err_expr.body.data);
+        CodeWriter w;
+        rptctx.config().imports.insert("errors");
+        w.writeln("return errors.New(\"", escaped_msg, "\")");
+        return w;
+    };
     ctx.config().variable_type_separator = "";
     ctx.config().variable_with_type = false;
     ctx.config().variable_initializer = ":=";
@@ -141,7 +171,7 @@ DEFINE_VISITOR(entry_before) {
             auto scope = w.indent_scope();
             for (auto& member_ref : ectx.enum_decl.members.container) {
                 MAYBE(member, ectx.visit(member_ref));
-                w.writeln(member.to_writer());
+                w.write(member.to_writer());
             }
         }
         w.writeln(")");
@@ -155,9 +185,45 @@ DEFINE_VISITOR(entry_before) {
     };
     ctx.config().enum_member_accessor = "_";
     ctx.config().init_check_visitor = [&](Context_Statement_INIT_CHECK& ictx) -> expected<Result> {
-        MAYBE(target, ctx.visit(ictx.init_check.target_field));
-        MAYBE(expect, ctx.visit(ictx.init_check.expect_value));
+        return "";
     };
+    ctx.config().default_value_custom = [&](Context_Expression_DEFAULT_VALUE& dctx) -> expected<Result> {
+        MAYBE(type, dctx.get(dctx.type));
+        if (type.body.kind == ebm::TypeKind::ARRAY || type.body.kind == ebm::TypeKind::VECTOR ||
+            type.body.kind == ebm::TypeKind::STRUCT || type.body.kind == ebm::TypeKind::RECURSIVE_STRUCT) {
+            MAYBE(typ_txt, dctx.visit(dctx.type));
+            return CODE(typ_txt.to_string(), "{}");
+        }
+        // integers and floats default to 0 with type
+        if (type.body.kind == ebm::TypeKind::INT || type.body.kind == ebm::TypeKind::UINT ||
+            type.body.kind == ebm::TypeKind::FLOAT || type.body.kind == ebm::TypeKind::ENUM) {
+            MAYBE(typ_txt, dctx.visit(dctx.type));
+            return CODE(typ_txt.to_string(), "(0)");
+        }
+        return pass;
+    };
+    ctx.config().append_visitor = [&](Context_Statement_APPEND& actx) -> expected<Result> {
+        MAYBE(target, actx.visit(actx.target));
+        MAYBE(value, actx.visit(actx.value));
+        return CODELINE(target.to_writer(), " = append(", target.to_writer(), ", ", value.to_writer(), ")");
+    };
+    ctx.config().can_read_stream_visitor = [&](Context_Expression_CAN_READ_STREAM& cctx) -> expected<Result> {
+        auto stream = cctx.identifier(cctx.io_ref);
+        MAYBE(size_str, get_size_str(cctx, cctx.num_bytes));
+        return CODE("len(", stream, ") >= ", size_str);
+    };
+    ctx.config();
+    ctx.config().default_value_option.decoder_return_init = "nil";
+    ctx.config().default_value_option.encoder_return_init = "nil";
+    ctx.config().conditional_loop_keyword = "for";
+    ctx.config().infinity_loop_keyword = "for";
+
+    ctx.config().append_function = "append";
+    ctx.config().usize_type_name = "int";
+    ctx.config().surrounded_array_size = true;
+    ctx.config().use_brace_for_condition = false;
+
+    ctx.config().alt_unary_op[ebm::UnaryOp::bit_not] = "^";
 
     return pass;
 }

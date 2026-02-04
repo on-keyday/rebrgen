@@ -14,6 +14,7 @@
 #include "ebmgen/mapping.hpp"
 #include "comb2/composite/range.h"
 #include <unordered_set>
+#include <vector>
 
 namespace ebmcodegen::util {
     using CodeWriter = futils::code::LocWriter<std::string, std::vector, ebm::AnyRef>;
@@ -356,10 +357,10 @@ namespace ebmcodegen::util {
         return join(joint, layer_strs);
     }
 
-    auto struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>> {
+    auto struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<std::pair<ebm::StatementRef, std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>>> {
         const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(variant));
-        std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>> result;
+        std::vector<std::pair<ebm::StatementRef, std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>> result;
         if (type.body.kind == ebm::TypeKind::VARIANT) {
             auto varint_desc = type.body.variant_desc();
             if (!is_nil(varint_desc->related_field)) {
@@ -368,7 +369,7 @@ namespace ebmcodegen::util {
                     MAYBE(member_type, module_.get_type(mem));
                     MAYBE(stmt_id, member_type.body.id());
                     MAYBE(stmt_str, visit_Statement(visitor, from_weak(stmt_id)));
-                    result.push_back(std::move(stmt_str));
+                    result.push_back({stmt_id.id, std::move(stmt_str)});
                 }
             }
         }
@@ -928,5 +929,100 @@ namespace ebmcodegen::util {
         };
         MAYBE_VOID(_, do_unwrap(do_unwrap, expr_ref));
         return result;
+    }
+
+    struct Metadata {
+        const std::string_view name;
+        const ebm::Metadata* const data;
+
+        ebmgen::expected<std::string_view> get_string(auto&& visitor, size_t index) const {
+            ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+            if (!data->values.container.size()) {
+                return ebmgen::unexpect_error("metadata {} has no values", name);
+            }
+            auto expr = module_.get_expression(data->values.container[index]);
+            if (!expr) {
+                return ebmgen::unexpect_error("metadata {} value expression not found", name);
+            }
+            auto str_value = expr->body.string_value();
+            if (!str_value) {
+                return ebmgen::unexpect_error("metadata {} value is not string literal", name);
+            }
+            MAYBE(string_lit, module_.get_string_literal(*str_value));
+            return string_lit.body.data;
+        }
+    };
+
+    struct MetadataSet {
+        std::unordered_map<std::string_view, std::vector<Metadata>> items;
+
+        const std::vector<Metadata>* get(std::string_view name) const {
+            auto it = items.find(name);
+            if (it != items.end()) {
+                return &it->second;
+            }
+            return nullptr;
+        }
+
+        const Metadata* get_first(std::string_view name) const {
+            auto it = items.find(name);
+            if (it != items.end() && !it->second.empty()) {
+                return &it->second[0];
+            }
+            return nullptr;
+        }
+    };
+
+    ebmgen::expected<MetadataSet> get_metadata(auto&& visitor, ebm::StatementRef stmt_ref) {
+        ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+        MAYBE(statement, module_.get_statement(stmt_ref));
+        MAYBE(block, statement.body.block());
+        std::unordered_map<std::string_view, std::vector<Metadata>> result;
+        for (auto& meta_ref : block.container) {
+            MAYBE(meta_stmt, module_.get_statement(meta_ref));
+            auto meta_decl = meta_stmt.body.metadata();
+            if (!meta_decl) {
+                continue;
+            }
+            MAYBE(key_str, module_.get_identifier(meta_decl->name));
+            result[key_str.body.data].push_back(Metadata{key_str.body.data, meta_decl});
+        }
+        return MetadataSet{.items = std::move(result)};
+    }
+
+    ebmgen::expected<MetadataSet> get_global_metadata(auto&& visitor) {
+        ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+        MAYBE(entry_point, module_.get_entry_point());
+        return get_metadata(visitor, entry_point.id);
+    }
+
+    constexpr bool is_composite_func(ebm::FunctionKind kind) {
+        switch (kind) {
+            case ebm::FunctionKind::COMPOSITE_GETTER:
+            case ebm::FunctionKind::COMPOSITE_SETTER:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    constexpr bool is_property_func(ebm::FunctionKind kind) {
+        switch (kind) {
+            case ebm::FunctionKind::PROPERTY_GETTER:
+            case ebm::FunctionKind::PROPERTY_SETTER:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    constexpr bool is_setter_func(ebm::FunctionKind kind) {
+        switch (kind) {
+            case ebm::FunctionKind::PROPERTY_SETTER:
+            case ebm::FunctionKind::COMPOSITE_SETTER:
+                return true;
+            default:
+                return false;
+        }
     }
 }  // namespace ebmcodegen::util

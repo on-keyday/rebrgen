@@ -1047,6 +1047,11 @@ namespace ebmcodegen {
                 w.write("ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + \"}\",std::move(map__)); }");
             }
             w.writeln();
+            w.write("#define CONFIG_MAP(config_name,name)");
+            if (!on_define) {
+                w.write(ensure_c_ident, "config_map[config_name] = &name;");
+            }
+            w.writeln();
 
             user_config_include(w, includes_info.user_include.flags, includes_info);
             w.writeln("#undef DEFINE_FLAG");
@@ -1061,6 +1066,7 @@ namespace ebmcodegen {
             w.writeln("#undef WEB_LSP_NAME");
             w.writeln("#undef WEB_WORKER_NAME");
             w.writeln("#undef FILE_EXTENSIONS");
+            w.writeln("#undef CONFIG_MAP");
         };
 
         w.writeln("struct Flags : ebmcodegen::Flags {");

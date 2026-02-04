@@ -93,6 +93,7 @@ namespace ebm2c {
         #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)static_assert(ebmcodegen::util::internal::is_c_ident(#name),"name must be a valid C identifier");MappedType name = default_;
         #define MAP_FLAG_ITEM(key,value) 
         #define END_MAP_FLAG() 
+        #define CONFIG_MAP(config_name,name)
         #if __has_include("visitor/Flags_before.hpp")
         #include "visitor/Flags_before.hpp"
         #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
@@ -126,6 +127,7 @@ namespace ebm2c {
         #undef WEB_LSP_NAME
         #undef WEB_WORKER_NAME
         #undef FILE_EXTENSIONS
+        #undef CONFIG_MAP
         #if __has_include("visitor/Flags_struct_before.hpp")
         #include "visitor/Flags_struct_before.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_before_dsl.hpp")
@@ -167,6 +169,7 @@ namespace ebm2c {
             #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc){ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = "{"; 
             #define MAP_FLAG_ITEM(key,value) map__[key] = value;if (!arg_desc__.empty() && arg_desc__.back() != '{') { arg_desc__ += ","; }arg_desc__ += key;
             #define END_MAP_FLAG() ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + "}",std::move(map__)); }
+            #define CONFIG_MAP(config_name,name)static_assert(ebmcodegen::util::internal::is_c_ident(#name),"name must be a valid C identifier");config_map[config_name] = &name;
             #if __has_include("visitor/Flags_before.hpp")
             #include "visitor/Flags_before.hpp"
             #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
@@ -200,6 +203,7 @@ namespace ebm2c {
             #undef WEB_LSP_NAME
             #undef WEB_WORKER_NAME
             #undef FILE_EXTENSIONS
+            #undef CONFIG_MAP
             #if __has_include("visitor/Flags_bind_before.hpp")
             #include "visitor/Flags_bind_before.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_before_dsl.hpp")

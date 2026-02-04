@@ -41,6 +41,16 @@ namespace ebmcodegen {
 
         std::set<std::string_view> web_filtered;
 
+        std::unordered_map<std::string_view, std::string_view*> config_map;
+
+        std::string_view get_config(std::string_view name) {
+            auto it = config_map.find(name);
+            if (it != config_map.end()) {
+                return *(it->second);
+            }
+            return "";
+        }
+
         void bind(futils::cmdline::option::Context& ctx) {
             bind_help(ctx);
             ctx.VarString<true>(&input, "input,i", "input EBM file", "FILE");

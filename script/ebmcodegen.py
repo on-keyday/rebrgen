@@ -132,6 +132,9 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
             f.write("#!/usr/bin/env python3\n")
             f.write("# Test logic for ebm2" + lang_name + "\n")
             f.write("import sys\n")
+            f.write("import os\n")
+            f.write("import json\n")
+            f.write("import pathlib as pl\n\n")
             f.write("def main():\n")
             f.write("    TEST_TARGET_FILE = sys.argv[1]\n")
             f.write("    INPUT_FILE = sys.argv[2]\n")
@@ -152,6 +155,29 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
             f.write("    with open(OUTPUT_FILE, 'wb') as f:\n")
             f.write("        f.write(data)\n")
             f.write("    print('Test logic is not implemented yet.')\n")
+            f.write("    print(\"for VSCode debugging\")\n")
+            f.write("    executable_path = pl.Path(\"/path/to/executable\")\n")
+            f.write("    print(")
+            f.write(
+                f"""
+                json.dumps(
+                    {{
+                        "type": "cppvsdbg" if os.name == "nt" else "cppdbg",
+                        "request": "launch",
+                        "cwd": os.getcwd(),
+                        "name": f"Debug ebm2{lang_name} unictest ({{TEST_TARGET_FORMAT}})",
+                        "program": executable_path.as_posix(),
+                        "args": [
+                            INPUT_FILE,
+                            OUTPUT_FILE,
+                        ],
+                        "stopAtEntry": True,
+                    }},
+                    indent=4,
+                )
+"""
+            )
+            f.write("    )\n")
             f.write("    exit(1)\n")
             f.write("if __name__ == '__main__':\n")
             f.write("    main()\n")

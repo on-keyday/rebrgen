@@ -23,6 +23,10 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_ENUM_MEMBER_DECL) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().enum_member_decl_visitor) {
+        MAYBE(res, ctx.config().enum_member_decl_visitor(ctx));
+        return res;
+    }
     auto name = ctx.identifier();
 
     CodeWriter w;

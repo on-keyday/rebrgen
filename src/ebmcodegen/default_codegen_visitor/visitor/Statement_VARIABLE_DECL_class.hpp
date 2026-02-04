@@ -66,7 +66,7 @@ DEFINE_VISITOR(Statement_VARIABLE_DECL) {
         w.write(name);
     }
     if (initial_value) {
-        w.write(" = ", tidy_condition_brace(initial_value->to_string()));
+        w.write(" ", ctx.config().variable_initializer, " ", tidy_condition_brace(initial_value->to_string()));
     }
 
     w.writeln(ctx.config().endof_statement);

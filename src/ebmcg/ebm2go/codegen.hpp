@@ -36,7 +36,7 @@
 #elif __has_include("ebmcodegen/default_codegen_visitor/visitor/includes_after.hpp")
 #include "ebmcodegen/default_codegen_visitor/visitor/includes_after.hpp"
 #endif
-namespace ebm2python {
+namespace ebm2go {
     struct MergedVisitor;
     using namespace ebmgen;
     using namespace ebmcodegen::util;
@@ -148,11 +148,11 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/visitor/Flags_struct_after.hpp"
         #endif
         void bind(futils::cmdline::option::Context& ctx) {
-            lang_name = "python";
+            lang_name = "go";
             ui_lang_name = lang_name;
             lsp_name = lang_name;
-            webworker_name = "ebm2python";
-            file_extensions = {".python"};
+            webworker_name = "ebm2go";
+            file_extensions = {".go"};
             ebmcodegen::Flags::bind(ctx); // bind basis
             #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
                 ctx.flag_func(&name,flag_name,__VA_ARGS__)
@@ -1346,7 +1346,7 @@ namespace ebm2python {
     struct Context_Types;
     struct BaseVisitor {
         BaseVisitor(MergedVisitor* __legacy_compat_ptr,ebmgen::EBMProxy module_,Flags& flags,Output& output,futils::binary::writer& wm) :__legacy_compat_ptr(__legacy_compat_ptr),module_(module_, ebmgen::lazy_init),flags(flags),output(output),wm(wm){}
-        static constexpr const char* program_name = "ebm2python";
+        static constexpr const char* program_name = "ebm2go";
         MergedVisitor* const __legacy_compat_ptr;
         ebmgen::MappingTable module_;
         Flags& flags;
@@ -1387,7 +1387,7 @@ namespace ebm2python {
     };
     struct VisitorTag_entry {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_ENTRY(instance_name) \
+    #define EBM2GO_DECONSTRUCT_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;
     template <typename Result>
     struct Context_entry_before : ebmcodegen::util::ContextBase<Context_entry_before<Result>> {
@@ -1397,7 +1397,7 @@ namespace ebm2python {
     };
     struct VisitorTag_entry_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_ENTRY_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_entry_after : ebmcodegen::util::ContextBase<Context_entry_after<Result>> {
@@ -1408,7 +1408,7 @@ namespace ebm2python {
     };
     struct VisitorTag_entry_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_ENTRY_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_pre_visitor : ebmcodegen::util::ContextBase<Context_pre_visitor> {
         constexpr static std::string_view context_name = "pre_visitor";
@@ -1417,7 +1417,7 @@ namespace ebm2python {
     };
     struct VisitorTag_pre_visitor {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_PRE_VISITOR(instance_name) \
+    #define EBM2GO_DECONSTRUCT_PRE_VISITOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;
     template <typename Result>
     struct Context_pre_visitor_before : ebmcodegen::util::ContextBase<Context_pre_visitor_before<Result>> {
@@ -1428,7 +1428,7 @@ namespace ebm2python {
     };
     struct VisitorTag_pre_visitor_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_PRE_VISITOR_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_PRE_VISITOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_pre_visitor_after : ebmcodegen::util::ContextBase<Context_pre_visitor_after<Result>> {
@@ -1440,7 +1440,7 @@ namespace ebm2python {
     };
     struct VisitorTag_pre_visitor_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     template <typename Result>
     struct Context_post_entry : ebmcodegen::util::ContextBase<Context_post_entry<Result>> {
@@ -1450,7 +1450,7 @@ namespace ebm2python {
     };
     struct VisitorTag_post_entry {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_POST_ENTRY(instance_name) \
+    #define EBM2GO_DECONSTRUCT_POST_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;
     template <typename Result>
     struct Context_post_entry_before : ebmcodegen::util::ContextBase<Context_post_entry_before<Result>> {
@@ -1461,7 +1461,7 @@ namespace ebm2python {
     };
     struct VisitorTag_post_entry_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_post_entry_after : ebmcodegen::util::ContextBase<Context_post_entry_after<Result>> {
@@ -1473,7 +1473,7 @@ namespace ebm2python {
     };
     struct VisitorTag_post_entry_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BLOCK : ebmcodegen::util::ContextBase<Context_Statement_BLOCK> {
         constexpr static std::string_view context_name = "Statement_BLOCK";
@@ -1484,7 +1484,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_BLOCK {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BLOCK(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
     template <typename Result>
     struct Context_Statement_BLOCK_before : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_before<Result>> {
@@ -1497,7 +1497,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_BLOCK_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_BLOCK_after : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_after<Result>> {
@@ -1511,7 +1511,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_BLOCK_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSIGNMENT : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT> {
         constexpr static std::string_view context_name = "Statement_ASSIGNMENT";
@@ -1524,7 +1524,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ASSIGNMENT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSIGNMENT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ASSIGNMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_ASSIGNMENT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_before<Result>> {
@@ -1539,7 +1539,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ASSIGNMENT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ASSIGNMENT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_after<Result>> {
@@ -1555,7 +1555,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ASSIGNMENT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_YIELD : ebmcodegen::util::ContextBase<Context_Statement_YIELD> {
         constexpr static std::string_view context_name = "Statement_YIELD";
@@ -1568,7 +1568,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_YIELD {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_YIELD(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_YIELD(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_YIELD_before : ebmcodegen::util::ContextBase<Context_Statement_YIELD_before<Result>> {
@@ -1583,7 +1583,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_YIELD_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_YIELD_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_YIELD_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_YIELD_after : ebmcodegen::util::ContextBase<Context_Statement_YIELD_after<Result>> {
@@ -1599,7 +1599,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_YIELD_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_APPEND : ebmcodegen::util::ContextBase<Context_Statement_APPEND> {
         constexpr static std::string_view context_name = "Statement_APPEND";
@@ -1611,7 +1611,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_APPEND {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_APPEND(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_APPEND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_APPEND_before : ebmcodegen::util::ContextBase<Context_Statement_APPEND_before<Result>> {
@@ -1625,7 +1625,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_APPEND_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_APPEND_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_APPEND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_APPEND_after : ebmcodegen::util::ContextBase<Context_Statement_APPEND_after<Result>> {
@@ -1640,7 +1640,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_APPEND_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_RETURN : ebmcodegen::util::ContextBase<Context_Statement_RETURN> {
         constexpr static std::string_view context_name = "Statement_RETURN";
@@ -1652,7 +1652,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_RETURN {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_function = instance_name.related_function;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before<Result>> {
@@ -1666,7 +1666,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_RETURN_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after<Result>> {
@@ -1681,7 +1681,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_RETURN_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_RETURN : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN> {
         constexpr static std::string_view context_name = "Statement_ERROR_RETURN";
@@ -1694,7 +1694,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ERROR_RETURN {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_field = instance_name.related_field;auto& related_function = instance_name.related_function;auto& value = instance_name.value;
     template <typename Result>
     struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before<Result>> {
@@ -1709,7 +1709,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ERROR_RETURN_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_field = instance_name.related_field;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after<Result>> {
@@ -1725,7 +1725,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ERROR_RETURN_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& related_field = instance_name.related_field;auto& related_function = instance_name.related_function;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ASSERT : ebmcodegen::util::ContextBase<Context_Statement_ASSERT> {
         constexpr static std::string_view context_name = "Statement_ASSERT";
@@ -1736,7 +1736,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ASSERT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSERT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ASSERT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;
     template <typename Result>
     struct Context_Statement_ASSERT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_before<Result>> {
@@ -1749,7 +1749,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ASSERT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ASSERT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_after<Result>> {
@@ -1763,7 +1763,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ASSERT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_READ_DATA : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA> {
         constexpr static std::string_view context_name = "Statement_READ_DATA";
@@ -1774,7 +1774,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_READ_DATA {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_READ_DATA(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;
     template <typename Result>
     struct Context_Statement_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_before<Result>> {
@@ -1787,7 +1787,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_READ_DATA_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_after<Result>> {
@@ -1801,7 +1801,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_READ_DATA_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA> {
         constexpr static std::string_view context_name = "Statement_WRITE_DATA";
@@ -1812,7 +1812,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_WRITE_DATA {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_WRITE_DATA(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;
     template <typename Result>
     struct Context_Statement_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_before<Result>> {
@@ -1825,7 +1825,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_WRITE_DATA_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_after<Result>> {
@@ -1839,7 +1839,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_WRITE_DATA_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_RESERVE_DATA : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA> {
         constexpr static std::string_view context_name = "Statement_RESERVE_DATA";
@@ -1850,7 +1850,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_RESERVE_DATA {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RESERVE_DATA(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_RESERVE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;
     template <typename Result>
     struct Context_Statement_RESERVE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_before<Result>> {
@@ -1863,7 +1863,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_RESERVE_DATA_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_RESERVE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_RESERVE_DATA_after<Result>> {
@@ -1877,7 +1877,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_RESERVE_DATA_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& reserve_data = instance_name.reserve_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IF_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT> {
         constexpr static std::string_view context_name = "Statement_IF_STATEMENT";
@@ -1888,7 +1888,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_IF_STATEMENT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IF_STATEMENT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_IF_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;
     template <typename Result>
     struct Context_Statement_IF_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_before<Result>> {
@@ -1901,7 +1901,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_IF_STATEMENT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_IF_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_after<Result>> {
@@ -1915,7 +1915,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_IF_STATEMENT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_LOOP_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT> {
         constexpr static std::string_view context_name = "Statement_LOOP_STATEMENT";
@@ -1926,7 +1926,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_LOOP_STATEMENT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;
     template <typename Result>
     struct Context_Statement_LOOP_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_before<Result>> {
@@ -1939,7 +1939,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_LOOP_STATEMENT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_LOOP_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_after<Result>> {
@@ -1953,7 +1953,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_LOOP_STATEMENT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_MATCH_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT> {
         constexpr static std::string_view context_name = "Statement_MATCH_STATEMENT";
@@ -1964,7 +1964,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_MATCH_STATEMENT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;
     template <typename Result>
     struct Context_Statement_MATCH_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_before<Result>> {
@@ -1977,7 +1977,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_MATCH_STATEMENT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_MATCH_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_after<Result>> {
@@ -1991,7 +1991,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_MATCH_STATEMENT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_MATCH_BRANCH : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH> {
         constexpr static std::string_view context_name = "Statement_MATCH_BRANCH";
@@ -2002,7 +2002,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_MATCH_BRANCH {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_BRANCH(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_MATCH_BRANCH(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;
     template <typename Result>
     struct Context_Statement_MATCH_BRANCH_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_before<Result>> {
@@ -2015,7 +2015,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_MATCH_BRANCH_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_MATCH_BRANCH_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_after<Result>> {
@@ -2029,7 +2029,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_MATCH_BRANCH_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BREAK : ebmcodegen::util::ContextBase<Context_Statement_BREAK> {
         constexpr static std::string_view context_name = "Statement_BREAK";
@@ -2040,7 +2040,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_BREAK {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BREAK(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BREAK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;
     template <typename Result>
     struct Context_Statement_BREAK_before : ebmcodegen::util::ContextBase<Context_Statement_BREAK_before<Result>> {
@@ -2053,7 +2053,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_BREAK_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BREAK_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BREAK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_BREAK_after : ebmcodegen::util::ContextBase<Context_Statement_BREAK_after<Result>> {
@@ -2067,7 +2067,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_BREAK_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_CONTINUE : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE> {
         constexpr static std::string_view context_name = "Statement_CONTINUE";
@@ -2078,7 +2078,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_CONTINUE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_CONTINUE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_CONTINUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;
     template <typename Result>
     struct Context_Statement_CONTINUE_before : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_before<Result>> {
@@ -2091,7 +2091,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_CONTINUE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_CONTINUE_after : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_after<Result>> {
@@ -2105,7 +2105,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_CONTINUE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_FUNCTION_DECL : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL> {
         constexpr static std::string_view context_name = "Statement_FUNCTION_DECL";
@@ -2116,7 +2116,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_FUNCTION_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FUNCTION_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_FUNCTION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;
     template <typename Result>
     struct Context_Statement_FUNCTION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_before<Result>> {
@@ -2129,7 +2129,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_FUNCTION_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_FUNCTION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_after<Result>> {
@@ -2143,7 +2143,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_FUNCTION_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_VARIABLE_DECL : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL> {
         constexpr static std::string_view context_name = "Statement_VARIABLE_DECL";
@@ -2154,7 +2154,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_VARIABLE_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_VARIABLE_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_VARIABLE_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;
     template <typename Result>
     struct Context_Statement_VARIABLE_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_before<Result>> {
@@ -2167,7 +2167,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_VARIABLE_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_VARIABLE_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_after<Result>> {
@@ -2181,7 +2181,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_VARIABLE_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PARAMETER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL> {
         constexpr static std::string_view context_name = "Statement_PARAMETER_DECL";
@@ -2192,7 +2192,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PARAMETER_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PARAMETER_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PARAMETER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;
     template <typename Result>
     struct Context_Statement_PARAMETER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_before<Result>> {
@@ -2205,7 +2205,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PARAMETER_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PARAMETER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_after<Result>> {
@@ -2219,7 +2219,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PARAMETER_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL> {
         constexpr static std::string_view context_name = "Statement_FIELD_DECL";
@@ -2230,7 +2230,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_FIELD_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FIELD_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;
     template <typename Result>
     struct Context_Statement_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_before<Result>> {
@@ -2243,7 +2243,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_FIELD_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_after<Result>> {
@@ -2257,7 +2257,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_FIELD_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_COMPOSITE_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL> {
         constexpr static std::string_view context_name = "Statement_COMPOSITE_FIELD_DECL";
@@ -2268,7 +2268,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_COMPOSITE_FIELD_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;
     template <typename Result>
     struct Context_Statement_COMPOSITE_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_before<Result>> {
@@ -2281,7 +2281,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_COMPOSITE_FIELD_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_COMPOSITE_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_after<Result>> {
@@ -2295,7 +2295,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_COMPOSITE_FIELD_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENUM_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL> {
         constexpr static std::string_view context_name = "Statement_ENUM_DECL";
@@ -2306,7 +2306,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENUM_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENUM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;
     template <typename Result>
     struct Context_Statement_ENUM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_before<Result>> {
@@ -2319,7 +2319,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENUM_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ENUM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_after<Result>> {
@@ -2333,7 +2333,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENUM_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENUM_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL> {
         constexpr static std::string_view context_name = "Statement_ENUM_MEMBER_DECL";
@@ -2344,7 +2344,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENUM_MEMBER_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;
     template <typename Result>
     struct Context_Statement_ENUM_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_before<Result>> {
@@ -2357,7 +2357,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENUM_MEMBER_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ENUM_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_after<Result>> {
@@ -2371,7 +2371,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENUM_MEMBER_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_STRUCT_DECL : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL> {
         constexpr static std::string_view context_name = "Statement_STRUCT_DECL";
@@ -2382,7 +2382,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_STRUCT_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_STRUCT_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_STRUCT_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;
     template <typename Result>
     struct Context_Statement_STRUCT_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_before<Result>> {
@@ -2395,7 +2395,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_STRUCT_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_STRUCT_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_after<Result>> {
@@ -2409,7 +2409,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_STRUCT_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_UNION_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL> {
         constexpr static std::string_view context_name = "Statement_UNION_DECL";
@@ -2419,7 +2419,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_UNION_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_UNION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Statement_UNION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_before<Result>> {
@@ -2431,7 +2431,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_UNION_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_UNION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_after<Result>> {
@@ -2444,7 +2444,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_UNION_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_UNION_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL> {
         constexpr static std::string_view context_name = "Statement_UNION_MEMBER_DECL";
@@ -2454,7 +2454,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_UNION_MEMBER_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Statement_UNION_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_before<Result>> {
@@ -2466,7 +2466,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_UNION_MEMBER_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_UNION_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_after<Result>> {
@@ -2479,7 +2479,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_UNION_MEMBER_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROGRAM_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL> {
         constexpr static std::string_view context_name = "Statement_PROGRAM_DECL";
@@ -2490,7 +2490,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROGRAM_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROGRAM_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROGRAM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
     template <typename Result>
     struct Context_Statement_PROGRAM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_before<Result>> {
@@ -2503,7 +2503,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROGRAM_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PROGRAM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_after<Result>> {
@@ -2517,7 +2517,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROGRAM_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROPERTY_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL> {
         constexpr static std::string_view context_name = "Statement_PROPERTY_DECL";
@@ -2528,7 +2528,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROPERTY_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROPERTY_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;
     template <typename Result>
     struct Context_Statement_PROPERTY_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_before<Result>> {
@@ -2541,7 +2541,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROPERTY_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PROPERTY_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_after<Result>> {
@@ -2555,7 +2555,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROPERTY_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_PROPERTY_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL> {
         constexpr static std::string_view context_name = "Statement_PROPERTY_MEMBER_DECL";
@@ -2566,7 +2566,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROPERTY_MEMBER_DECL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;
     template <typename Result>
     struct Context_Statement_PROPERTY_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_before<Result>> {
@@ -2579,7 +2579,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROPERTY_MEMBER_DECL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_PROPERTY_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_after<Result>> {
@@ -2593,7 +2593,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_PROPERTY_MEMBER_DECL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_METADATA : ebmcodegen::util::ContextBase<Context_Statement_METADATA> {
         constexpr static std::string_view context_name = "Statement_METADATA";
@@ -2604,7 +2604,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_METADATA {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_METADATA(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_METADATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;
     template <typename Result>
     struct Context_Statement_METADATA_before : ebmcodegen::util::ContextBase<Context_Statement_METADATA_before<Result>> {
@@ -2617,7 +2617,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_METADATA_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_METADATA_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_METADATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_METADATA_after : ebmcodegen::util::ContextBase<Context_Statement_METADATA_after<Result>> {
@@ -2631,7 +2631,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_METADATA_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_IMPORT_MODULE : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE> {
         constexpr static std::string_view context_name = "Statement_IMPORT_MODULE";
@@ -2642,7 +2642,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_IMPORT_MODULE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IMPORT_MODULE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_IMPORT_MODULE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;
     template <typename Result>
     struct Context_Statement_IMPORT_MODULE_before : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_before<Result>> {
@@ -2655,7 +2655,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_IMPORT_MODULE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_IMPORT_MODULE_after : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_after<Result>> {
@@ -2669,7 +2669,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_IMPORT_MODULE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_EXPRESSION : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION> {
         constexpr static std::string_view context_name = "Statement_EXPRESSION";
@@ -2680,7 +2680,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_EXPRESSION {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_EXPRESSION(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;
     template <typename Result>
     struct Context_Statement_EXPRESSION_before : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_before<Result>> {
@@ -2693,7 +2693,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_EXPRESSION_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_EXPRESSION_after : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_after<Result>> {
@@ -2707,7 +2707,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_EXPRESSION_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ERROR_REPORT : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT> {
         constexpr static std::string_view context_name = "Statement_ERROR_REPORT";
@@ -2718,7 +2718,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ERROR_REPORT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_REPORT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ERROR_REPORT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;
     template <typename Result>
     struct Context_Statement_ERROR_REPORT_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_before<Result>> {
@@ -2731,7 +2731,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ERROR_REPORT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ERROR_REPORT_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_after<Result>> {
@@ -2745,7 +2745,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ERROR_REPORT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_LOWERED_IO_STATEMENTS : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS> {
         constexpr static std::string_view context_name = "Statement_LOWERED_IO_STATEMENTS";
@@ -2756,7 +2756,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_LOWERED_IO_STATEMENTS {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;
     template <typename Result>
     struct Context_Statement_LOWERED_IO_STATEMENTS_before : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_before<Result>> {
@@ -2769,7 +2769,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_LOWERED_IO_STATEMENTS_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_LOWERED_IO_STATEMENTS_after : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_after<Result>> {
@@ -2783,7 +2783,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_LOWERED_IO_STATEMENTS_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_SUB_BYTE_RANGE : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE> {
         constexpr static std::string_view context_name = "Statement_SUB_BYTE_RANGE";
@@ -2794,7 +2794,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_SUB_BYTE_RANGE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;
     template <typename Result>
     struct Context_Statement_SUB_BYTE_RANGE_before : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_before<Result>> {
@@ -2807,7 +2807,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_SUB_BYTE_RANGE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_SUB_BYTE_RANGE_after : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_after<Result>> {
@@ -2821,7 +2821,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_SUB_BYTE_RANGE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_INIT_CHECK : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK> {
         constexpr static std::string_view context_name = "Statement_INIT_CHECK";
@@ -2832,7 +2832,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_INIT_CHECK {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_INIT_CHECK(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_INIT_CHECK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;
     template <typename Result>
     struct Context_Statement_INIT_CHECK_before : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_before<Result>> {
@@ -2845,7 +2845,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_INIT_CHECK_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_INIT_CHECK_after : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_after<Result>> {
@@ -2859,7 +2859,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_INIT_CHECK_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_ENDIAN_VARIABLE : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE> {
         constexpr static std::string_view context_name = "Statement_ENDIAN_VARIABLE";
@@ -2870,7 +2870,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENDIAN_VARIABLE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;
     template <typename Result>
     struct Context_Statement_ENDIAN_VARIABLE_before : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_before<Result>> {
@@ -2883,7 +2883,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENDIAN_VARIABLE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_ENDIAN_VARIABLE_after : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_after<Result>> {
@@ -2897,7 +2897,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_ENDIAN_VARIABLE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement : ebmcodegen::util::ContextBase<Context_Statement> {
         constexpr static std::string_view context_name = "Statement";
@@ -2907,7 +2907,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     template <typename Result>
     struct Context_Statement_before : ebmcodegen::util::ContextBase<Context_Statement_before<Result>> {
@@ -2919,7 +2919,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Statement_after : ebmcodegen::util::ContextBase<Context_Statement_after<Result>> {
@@ -2932,7 +2932,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Statement_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Block : ebmcodegen::util::ContextBase<Context_Block> {
         constexpr static std::string_view context_name = "Block";
@@ -2941,7 +2941,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Block {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_BLOCK(instance_name) \
+    #define EBM2GO_DECONSTRUCT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     template <typename Result>
     struct Context_Block_before : ebmcodegen::util::ContextBase<Context_Block_before<Result>> {
@@ -2952,7 +2952,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Block_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_BLOCK_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Block_after : ebmcodegen::util::ContextBase<Context_Block_after<Result>> {
@@ -2964,7 +2964,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Block_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_BLOCK_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_INT : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT> {
         constexpr static std::string_view context_name = "Expression_LITERAL_INT";
@@ -2976,7 +2976,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_INT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;
     template <typename Result>
     struct Context_Expression_LITERAL_INT_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_before<Result>> {
@@ -2990,7 +2990,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_INT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_INT_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_after<Result>> {
@@ -3005,7 +3005,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_INT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_INT64 : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64> {
         constexpr static std::string_view context_name = "Expression_LITERAL_INT64";
@@ -3017,7 +3017,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_INT64 {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT64(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_INT64(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;
     template <typename Result>
     struct Context_Expression_LITERAL_INT64_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_before<Result>> {
@@ -3031,7 +3031,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_INT64_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_INT64_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_after<Result>> {
@@ -3046,7 +3046,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_INT64_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_BOOL : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL> {
         constexpr static std::string_view context_name = "Expression_LITERAL_BOOL";
@@ -3058,7 +3058,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_BOOL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;
     template <typename Result>
     struct Context_Expression_LITERAL_BOOL_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_before<Result>> {
@@ -3072,7 +3072,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_BOOL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_BOOL_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_after<Result>> {
@@ -3087,7 +3087,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_BOOL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_STRING : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING> {
         constexpr static std::string_view context_name = "Expression_LITERAL_STRING";
@@ -3099,7 +3099,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_STRING {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_STRING(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_STRING(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;
     template <typename Result>
     struct Context_Expression_LITERAL_STRING_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_before<Result>> {
@@ -3113,7 +3113,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_STRING_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_STRING_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_after<Result>> {
@@ -3128,7 +3128,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_STRING_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_TYPE : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE> {
         constexpr static std::string_view context_name = "Expression_LITERAL_TYPE";
@@ -3140,7 +3140,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_TYPE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;
     template <typename Result>
     struct Context_Expression_LITERAL_TYPE_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_before<Result>> {
@@ -3154,7 +3154,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_TYPE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_TYPE_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_after<Result>> {
@@ -3169,7 +3169,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_TYPE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_LITERAL_CHAR : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR> {
         constexpr static std::string_view context_name = "Expression_LITERAL_CHAR";
@@ -3181,7 +3181,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_CHAR {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;
     template <typename Result>
     struct Context_Expression_LITERAL_CHAR_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_before<Result>> {
@@ -3195,7 +3195,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_CHAR_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_LITERAL_CHAR_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_after<Result>> {
@@ -3210,7 +3210,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_LITERAL_CHAR_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IDENTIFIER : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER> {
         constexpr static std::string_view context_name = "Expression_IDENTIFIER";
@@ -3222,7 +3222,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IDENTIFIER {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IDENTIFIER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IDENTIFIER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Expression_IDENTIFIER_before : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_before<Result>> {
@@ -3236,7 +3236,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IDENTIFIER_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_IDENTIFIER_after : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_after<Result>> {
@@ -3251,7 +3251,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IDENTIFIER_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_BINARY_OP : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP> {
         constexpr static std::string_view context_name = "Expression_BINARY_OP";
@@ -3265,7 +3265,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_BINARY_OP {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_BINARY_OP(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_BINARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;
     template <typename Result>
     struct Context_Expression_BINARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_before<Result>> {
@@ -3281,7 +3281,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_BINARY_OP_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_BINARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_after<Result>> {
@@ -3298,7 +3298,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_BINARY_OP_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_UNARY_OP : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP> {
         constexpr static std::string_view context_name = "Expression_UNARY_OP";
@@ -3311,7 +3311,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_UNARY_OP {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_UNARY_OP(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_UNARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;
     template <typename Result>
     struct Context_Expression_UNARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_before<Result>> {
@@ -3326,7 +3326,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_UNARY_OP_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_UNARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_after<Result>> {
@@ -3342,7 +3342,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_UNARY_OP_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CALL : ebmcodegen::util::ContextBase<Context_Expression_CALL> {
         constexpr static std::string_view context_name = "Expression_CALL";
@@ -3354,7 +3354,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CALL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CALL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CALL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;
     template <typename Result>
     struct Context_Expression_CALL_before : ebmcodegen::util::ContextBase<Context_Expression_CALL_before<Result>> {
@@ -3368,7 +3368,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CALL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CALL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CALL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CALL_after : ebmcodegen::util::ContextBase<Context_Expression_CALL_after<Result>> {
@@ -3383,7 +3383,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CALL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_INDEX_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS> {
         constexpr static std::string_view context_name = "Expression_INDEX_ACCESS";
@@ -3396,7 +3396,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_INDEX_ACCESS {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;
     template <typename Result>
     struct Context_Expression_INDEX_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_before<Result>> {
@@ -3411,7 +3411,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_INDEX_ACCESS_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_INDEX_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_after<Result>> {
@@ -3427,7 +3427,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_INDEX_ACCESS_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_MEMBER_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS> {
         constexpr static std::string_view context_name = "Expression_MEMBER_ACCESS";
@@ -3440,7 +3440,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_MEMBER_ACCESS {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;
     template <typename Result>
     struct Context_Expression_MEMBER_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_before<Result>> {
@@ -3455,7 +3455,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_MEMBER_ACCESS_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_MEMBER_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_after<Result>> {
@@ -3471,7 +3471,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_MEMBER_ACCESS_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ENUM_MEMBER : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER> {
         constexpr static std::string_view context_name = "Expression_ENUM_MEMBER";
@@ -3484,7 +3484,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ENUM_MEMBER {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;
     template <typename Result>
     struct Context_Expression_ENUM_MEMBER_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_before<Result>> {
@@ -3499,7 +3499,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ENUM_MEMBER_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ENUM_MEMBER_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_after<Result>> {
@@ -3515,7 +3515,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ENUM_MEMBER_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_TYPE_CAST : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST> {
         constexpr static std::string_view context_name = "Expression_TYPE_CAST";
@@ -3527,7 +3527,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_TYPE_CAST {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_cast_desc = instance_name.type_cast_desc;
     template <typename Result>
     struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before<Result>> {
@@ -3541,7 +3541,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_TYPE_CAST_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_cast_desc = instance_name.type_cast_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after<Result>> {
@@ -3556,7 +3556,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_TYPE_CAST_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_cast_desc = instance_name.type_cast_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_RANGE : ebmcodegen::util::ContextBase<Context_Expression_RANGE> {
         constexpr static std::string_view context_name = "Expression_RANGE";
@@ -3569,7 +3569,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_RANGE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_RANGE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;
     template <typename Result>
     struct Context_Expression_RANGE_before : ebmcodegen::util::ContextBase<Context_Expression_RANGE_before<Result>> {
@@ -3584,7 +3584,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_RANGE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_RANGE_after : ebmcodegen::util::ContextBase<Context_Expression_RANGE_after<Result>> {
@@ -3600,7 +3600,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_RANGE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_DEFAULT_VALUE : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE> {
         constexpr static std::string_view context_name = "Expression_DEFAULT_VALUE";
@@ -3611,7 +3611,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_DEFAULT_VALUE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Expression_DEFAULT_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_before<Result>> {
@@ -3624,7 +3624,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_DEFAULT_VALUE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_DEFAULT_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_after<Result>> {
@@ -3638,7 +3638,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_DEFAULT_VALUE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IS_LITTLE_ENDIAN : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN> {
         constexpr static std::string_view context_name = "Expression_IS_LITTLE_ENDIAN";
@@ -3650,7 +3650,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IS_LITTLE_ENDIAN {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;
     template <typename Result>
     struct Context_Expression_IS_LITTLE_ENDIAN_before : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_before<Result>> {
@@ -3664,7 +3664,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IS_LITTLE_ENDIAN_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_IS_LITTLE_ENDIAN_after : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_after<Result>> {
@@ -3679,7 +3679,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IS_LITTLE_ENDIAN_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_STREAM_OFFSET : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET> {
         constexpr static std::string_view context_name = "Expression_GET_STREAM_OFFSET";
@@ -3693,7 +3693,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_GET_STREAM_OFFSET {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
     template <typename Result>
     struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before<Result>> {
@@ -3709,7 +3709,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_GET_STREAM_OFFSET_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after<Result>> {
@@ -3726,7 +3726,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_GET_STREAM_OFFSET_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_GET_REMAINING_BYTES : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES> {
         constexpr static std::string_view context_name = "Expression_GET_REMAINING_BYTES";
@@ -3739,7 +3739,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;
     template <typename Result>
     struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before<Result>> {
@@ -3754,7 +3754,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after<Result>> {
@@ -3770,7 +3770,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_GET_REMAINING_BYTES_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CAN_READ_STREAM : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM> {
         constexpr static std::string_view context_name = "Expression_CAN_READ_STREAM";
@@ -3784,7 +3784,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CAN_READ_STREAM {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;
     template <typename Result>
     struct Context_Expression_CAN_READ_STREAM_before : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_before<Result>> {
@@ -3800,7 +3800,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CAN_READ_STREAM_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CAN_READ_STREAM_after : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_after<Result>> {
@@ -3817,7 +3817,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CAN_READ_STREAM_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ARRAY_SIZE : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE> {
         constexpr static std::string_view context_name = "Expression_ARRAY_SIZE";
@@ -3829,7 +3829,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ARRAY_SIZE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;
     template <typename Result>
     struct Context_Expression_ARRAY_SIZE_before : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_before<Result>> {
@@ -3843,7 +3843,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ARRAY_SIZE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ARRAY_SIZE_after : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_after<Result>> {
@@ -3858,7 +3858,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ARRAY_SIZE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ENUM_IS_DEFINED : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED> {
         constexpr static std::string_view context_name = "Expression_ENUM_IS_DEFINED";
@@ -3871,7 +3871,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ENUM_IS_DEFINED {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_ENUM_IS_DEFINED_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_before<Result>> {
@@ -3886,7 +3886,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ENUM_IS_DEFINED_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ENUM_IS_DEFINED_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_after<Result>> {
@@ -3902,7 +3902,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ENUM_IS_DEFINED_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_IS_ERROR : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR> {
         constexpr static std::string_view context_name = "Expression_IS_ERROR";
@@ -3914,7 +3914,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IS_ERROR {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_ERROR(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IS_ERROR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_IS_ERROR_before : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_before<Result>> {
@@ -3928,7 +3928,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IS_ERROR_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_IS_ERROR_after : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_after<Result>> {
@@ -3943,7 +3943,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_IS_ERROR_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_MAX_VALUE : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE> {
         constexpr static std::string_view context_name = "Expression_MAX_VALUE";
@@ -3955,7 +3955,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_MAX_VALUE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MAX_VALUE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_MAX_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;
     template <typename Result>
     struct Context_Expression_MAX_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_before<Result>> {
@@ -3969,7 +3969,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_MAX_VALUE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_MAX_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_after<Result>> {
@@ -3984,7 +3984,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_MAX_VALUE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_READ_DATA : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA> {
         constexpr static std::string_view context_name = "Expression_READ_DATA";
@@ -3997,7 +3997,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_READ_DATA {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_READ_DATA(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;
     template <typename Result>
     struct Context_Expression_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_before<Result>> {
@@ -4012,7 +4012,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_READ_DATA_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_after<Result>> {
@@ -4028,7 +4028,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_READ_DATA_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA> {
         constexpr static std::string_view context_name = "Expression_WRITE_DATA";
@@ -4041,7 +4041,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_WRITE_DATA {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_WRITE_DATA(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_before<Result>> {
@@ -4056,7 +4056,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_WRITE_DATA_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_after<Result>> {
@@ -4072,7 +4072,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_WRITE_DATA_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CONDITIONAL_STATEMENT : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT> {
         constexpr static std::string_view context_name = "Expression_CONDITIONAL_STATEMENT";
@@ -4085,7 +4085,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CONDITIONAL_STATEMENT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_before<Result>> {
@@ -4100,7 +4100,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CONDITIONAL_STATEMENT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_after<Result>> {
@@ -4116,7 +4116,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CONDITIONAL_STATEMENT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_CONDITIONAL : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL> {
         constexpr static std::string_view context_name = "Expression_CONDITIONAL";
@@ -4131,7 +4131,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CONDITIONAL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CONDITIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_before<Result>> {
@@ -4148,7 +4148,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CONDITIONAL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_CONDITIONAL_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_after<Result>> {
@@ -4166,7 +4166,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_CONDITIONAL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_AVAILABLE : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE> {
         constexpr static std::string_view context_name = "Expression_AVAILABLE";
@@ -4179,7 +4179,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_AVAILABLE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AVAILABLE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AVAILABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_AVAILABLE_before : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_before<Result>> {
@@ -4194,7 +4194,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_AVAILABLE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_AVAILABLE_after : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_after<Result>> {
@@ -4210,7 +4210,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_AVAILABLE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SIZEOF : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF> {
         constexpr static std::string_view context_name = "Expression_SIZEOF";
@@ -4223,7 +4223,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SIZEOF {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SIZEOF(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SIZEOF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_SIZEOF_before : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_before<Result>> {
@@ -4238,7 +4238,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SIZEOF_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SIZEOF_after : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_after<Result>> {
@@ -4254,7 +4254,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SIZEOF_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SUB_RANGE_INIT : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT> {
         constexpr static std::string_view context_name = "Expression_SUB_RANGE_INIT";
@@ -4266,7 +4266,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;
     template <typename Result>
     struct Context_Expression_SUB_RANGE_INIT_before : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_before<Result>> {
@@ -4280,7 +4280,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SUB_RANGE_INIT_after : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_after<Result>> {
@@ -4295,7 +4295,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_OR_COND : ebmcodegen::util::ContextBase<Context_Expression_OR_COND> {
         constexpr static std::string_view context_name = "Expression_OR_COND";
@@ -4307,7 +4307,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_OR_COND {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OR_COND(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_OR_COND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;
     template <typename Result>
     struct Context_Expression_OR_COND_before : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_before<Result>> {
@@ -4321,7 +4321,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_OR_COND_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_OR_COND_after : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_after<Result>> {
@@ -4336,7 +4336,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_OR_COND_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_ADDRESS_OF : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF> {
         constexpr static std::string_view context_name = "Expression_ADDRESS_OF";
@@ -4348,7 +4348,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ADDRESS_OF {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ADDRESS_OF(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ADDRESS_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_ADDRESS_OF_before : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_before<Result>> {
@@ -4362,7 +4362,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ADDRESS_OF_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_ADDRESS_OF_after : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_after<Result>> {
@@ -4377,7 +4377,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_ADDRESS_OF_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_OPTIONAL_OF : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF> {
         constexpr static std::string_view context_name = "Expression_OPTIONAL_OF";
@@ -4389,7 +4389,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_OPTIONAL_OF {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_OPTIONAL_OF_before : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_before<Result>> {
@@ -4403,7 +4403,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_OPTIONAL_OF_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_OPTIONAL_OF_after : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_after<Result>> {
@@ -4418,7 +4418,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_OPTIONAL_OF_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SETTER_STATUS : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS> {
         constexpr static std::string_view context_name = "Expression_SETTER_STATUS";
@@ -4430,7 +4430,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SETTER_STATUS {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SETTER_STATUS(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SETTER_STATUS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;
     template <typename Result>
     struct Context_Expression_SETTER_STATUS_before : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_before<Result>> {
@@ -4444,7 +4444,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SETTER_STATUS_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SETTER_STATUS_after : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_after<Result>> {
@@ -4459,7 +4459,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SETTER_STATUS_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_SELF : ebmcodegen::util::ContextBase<Context_Expression_SELF> {
         constexpr static std::string_view context_name = "Expression_SELF";
@@ -4470,7 +4470,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SELF {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SELF(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SELF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Expression_SELF_before : ebmcodegen::util::ContextBase<Context_Expression_SELF_before<Result>> {
@@ -4483,7 +4483,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SELF_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SELF_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SELF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_SELF_after : ebmcodegen::util::ContextBase<Context_Expression_SELF_after<Result>> {
@@ -4497,7 +4497,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_SELF_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression_AS_ARG : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG> {
         constexpr static std::string_view context_name = "Expression_AS_ARG";
@@ -4509,7 +4509,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_AS_ARG {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AS_ARG(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AS_ARG(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
     template <typename Result>
     struct Context_Expression_AS_ARG_before : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_before<Result>> {
@@ -4523,7 +4523,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_AS_ARG_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_AS_ARG_after : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_after<Result>> {
@@ -4538,7 +4538,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_AS_ARG_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expression : ebmcodegen::util::ContextBase<Context_Expression> {
         constexpr static std::string_view context_name = "Expression";
@@ -4548,7 +4548,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     template <typename Result>
     struct Context_Expression_before : ebmcodegen::util::ContextBase<Context_Expression_before<Result>> {
@@ -4560,7 +4560,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expression_after : ebmcodegen::util::ContextBase<Context_Expression_after<Result>> {
@@ -4573,7 +4573,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expression_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Expressions : ebmcodegen::util::ContextBase<Context_Expressions> {
         constexpr static std::string_view context_name = "Expressions";
@@ -4582,7 +4582,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expressions {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSIONS(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSIONS(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     template <typename Result>
     struct Context_Expressions_before : ebmcodegen::util::ContextBase<Context_Expressions_before<Result>> {
@@ -4593,7 +4593,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expressions_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSIONS_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSIONS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Expressions_after : ebmcodegen::util::ContextBase<Context_Expressions_after<Result>> {
@@ -4605,7 +4605,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Expressions_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_INT : ebmcodegen::util::ContextBase<Context_Type_INT> {
         constexpr static std::string_view context_name = "Type_INT";
@@ -4616,7 +4616,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_INT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_INT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     template <typename Result>
     struct Context_Type_INT_before : ebmcodegen::util::ContextBase<Context_Type_INT_before<Result>> {
@@ -4629,7 +4629,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_INT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_INT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_INT_after : ebmcodegen::util::ContextBase<Context_Type_INT_after<Result>> {
@@ -4643,7 +4643,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_INT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_UINT : ebmcodegen::util::ContextBase<Context_Type_UINT> {
         constexpr static std::string_view context_name = "Type_UINT";
@@ -4654,7 +4654,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_UINT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_UINT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_UINT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     template <typename Result>
     struct Context_Type_UINT_before : ebmcodegen::util::ContextBase<Context_Type_UINT_before<Result>> {
@@ -4667,7 +4667,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_UINT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_UINT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_UINT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_UINT_after : ebmcodegen::util::ContextBase<Context_Type_UINT_after<Result>> {
@@ -4681,7 +4681,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_UINT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_USIZE : ebmcodegen::util::ContextBase<Context_Type_USIZE> {
         constexpr static std::string_view context_name = "Type_USIZE";
@@ -4691,7 +4691,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_USIZE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_USIZE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_USIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_USIZE_before : ebmcodegen::util::ContextBase<Context_Type_USIZE_before<Result>> {
@@ -4703,7 +4703,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_USIZE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_USIZE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_USIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_USIZE_after : ebmcodegen::util::ContextBase<Context_Type_USIZE_after<Result>> {
@@ -4716,7 +4716,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_USIZE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_FLOAT : ebmcodegen::util::ContextBase<Context_Type_FLOAT> {
         constexpr static std::string_view context_name = "Type_FLOAT";
@@ -4727,7 +4727,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_FLOAT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_FLOAT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_FLOAT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
     template <typename Result>
     struct Context_Type_FLOAT_before : ebmcodegen::util::ContextBase<Context_Type_FLOAT_before<Result>> {
@@ -4740,7 +4740,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_FLOAT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_FLOAT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_FLOAT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_FLOAT_after : ebmcodegen::util::ContextBase<Context_Type_FLOAT_after<Result>> {
@@ -4754,7 +4754,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_FLOAT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_STRUCT : ebmcodegen::util::ContextBase<Context_Type_STRUCT> {
         constexpr static std::string_view context_name = "Type_STRUCT";
@@ -4765,7 +4765,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_STRUCT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_STRUCT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Type_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_STRUCT_before<Result>> {
@@ -4778,7 +4778,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_STRUCT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_STRUCT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_STRUCT_after<Result>> {
@@ -4792,7 +4792,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_STRUCT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RECURSIVE_STRUCT : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT> {
         constexpr static std::string_view context_name = "Type_RECURSIVE_STRUCT";
@@ -4803,7 +4803,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Type_RECURSIVE_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_before<Result>> {
@@ -4816,7 +4816,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_RECURSIVE_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_after<Result>> {
@@ -4830,7 +4830,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_RECURSIVE_STRUCT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_BOOL : ebmcodegen::util::ContextBase<Context_Type_BOOL> {
         constexpr static std::string_view context_name = "Type_BOOL";
@@ -4840,7 +4840,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_BOOL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_BOOL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_BOOL_before : ebmcodegen::util::ContextBase<Context_Type_BOOL_before<Result>> {
@@ -4852,7 +4852,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_BOOL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_BOOL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_BOOL_after : ebmcodegen::util::ContextBase<Context_Type_BOOL_after<Result>> {
@@ -4865,7 +4865,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_BOOL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VOID : ebmcodegen::util::ContextBase<Context_Type_VOID> {
         constexpr static std::string_view context_name = "Type_VOID";
@@ -4875,7 +4875,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VOID {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VOID(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VOID(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_VOID_before : ebmcodegen::util::ContextBase<Context_Type_VOID_before<Result>> {
@@ -4887,7 +4887,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VOID_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VOID_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VOID_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_VOID_after : ebmcodegen::util::ContextBase<Context_Type_VOID_after<Result>> {
@@ -4900,7 +4900,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VOID_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_META : ebmcodegen::util::ContextBase<Context_Type_META> {
         constexpr static std::string_view context_name = "Type_META";
@@ -4910,7 +4910,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_META {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_META(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_META(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_META_before : ebmcodegen::util::ContextBase<Context_Type_META_before<Result>> {
@@ -4922,7 +4922,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_META_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_META_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_META_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_META_after : ebmcodegen::util::ContextBase<Context_Type_META_after<Result>> {
@@ -4935,7 +4935,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_META_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENUM : ebmcodegen::util::ContextBase<Context_Type_ENUM> {
         constexpr static std::string_view context_name = "Type_ENUM";
@@ -4947,7 +4947,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENUM {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENUM(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENUM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;
     template <typename Result>
     struct Context_Type_ENUM_before : ebmcodegen::util::ContextBase<Context_Type_ENUM_before<Result>> {
@@ -4961,7 +4961,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENUM_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENUM_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENUM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ENUM_after : ebmcodegen::util::ContextBase<Context_Type_ENUM_after<Result>> {
@@ -4976,7 +4976,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENUM_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ARRAY : ebmcodegen::util::ContextBase<Context_Type_ARRAY> {
         constexpr static std::string_view context_name = "Type_ARRAY";
@@ -4989,7 +4989,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ARRAY {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ARRAY(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ARRAY(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
     template <typename Result>
     struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before<Result>> {
@@ -5004,7 +5004,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ARRAY_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after<Result>> {
@@ -5020,7 +5020,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ARRAY_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& array_annotation = instance_name.array_annotation;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VECTOR : ebmcodegen::util::ContextBase<Context_Type_VECTOR> {
         constexpr static std::string_view context_name = "Type_VECTOR";
@@ -5031,7 +5031,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VECTOR {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VECTOR(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VECTOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;
     template <typename Result>
     struct Context_Type_VECTOR_before : ebmcodegen::util::ContextBase<Context_Type_VECTOR_before<Result>> {
@@ -5044,7 +5044,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VECTOR_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VECTOR_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VECTOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_VECTOR_after : ebmcodegen::util::ContextBase<Context_Type_VECTOR_after<Result>> {
@@ -5058,7 +5058,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VECTOR_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_VARIANT : ebmcodegen::util::ContextBase<Context_Type_VARIANT> {
         constexpr static std::string_view context_name = "Type_VARIANT";
@@ -5069,7 +5069,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VARIANT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VARIANT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VARIANT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;
     template <typename Result>
     struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before<Result>> {
@@ -5082,7 +5082,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VARIANT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after<Result>> {
@@ -5096,7 +5096,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_VARIANT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& variant_desc = instance_name.variant_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_RANGE : ebmcodegen::util::ContextBase<Context_Type_RANGE> {
         constexpr static std::string_view context_name = "Type_RANGE";
@@ -5107,7 +5107,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_RANGE {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_RANGE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;
     template <typename Result>
     struct Context_Type_RANGE_before : ebmcodegen::util::ContextBase<Context_Type_RANGE_before<Result>> {
@@ -5120,7 +5120,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_RANGE_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_RANGE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_RANGE_after : ebmcodegen::util::ContextBase<Context_Type_RANGE_after<Result>> {
@@ -5134,7 +5134,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_RANGE_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENCODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN> {
         constexpr static std::string_view context_name = "Type_ENCODER_RETURN";
@@ -5144,7 +5144,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENCODER_RETURN {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_RETURN(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENCODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_ENCODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_before<Result>> {
@@ -5156,7 +5156,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENCODER_RETURN_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ENCODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_after<Result>> {
@@ -5169,7 +5169,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENCODER_RETURN_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_DECODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN> {
         constexpr static std::string_view context_name = "Type_DECODER_RETURN";
@@ -5179,7 +5179,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_DECODER_RETURN {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_RETURN(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_DECODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_DECODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_before<Result>> {
@@ -5191,7 +5191,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_DECODER_RETURN_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_DECODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_after<Result>> {
@@ -5204,7 +5204,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_DECODER_RETURN_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_ENCODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT> {
         constexpr static std::string_view context_name = "Type_ENCODER_INPUT";
@@ -5214,7 +5214,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENCODER_INPUT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_INPUT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENCODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_ENCODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_before<Result>> {
@@ -5226,7 +5226,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENCODER_INPUT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_ENCODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_after<Result>> {
@@ -5239,7 +5239,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_ENCODER_INPUT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_DECODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT> {
         constexpr static std::string_view context_name = "Type_DECODER_INPUT";
@@ -5249,7 +5249,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_DECODER_INPUT {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_INPUT(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_DECODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_DECODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_before<Result>> {
@@ -5261,7 +5261,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_DECODER_INPUT_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_DECODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_after<Result>> {
@@ -5274,7 +5274,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_DECODER_INPUT_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_PROPERTY_SETTER_RETURN : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN> {
         constexpr static std::string_view context_name = "Type_PROPERTY_SETTER_RETURN";
@@ -5284,7 +5284,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_PROPERTY_SETTER_RETURN {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
     template <typename Result>
     struct Context_Type_PROPERTY_SETTER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_before<Result>> {
@@ -5296,7 +5296,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_PROPERTY_SETTER_RETURN_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_PROPERTY_SETTER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_after<Result>> {
@@ -5309,7 +5309,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_PROPERTY_SETTER_RETURN_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_OPTIONAL : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL> {
         constexpr static std::string_view context_name = "Type_OPTIONAL";
@@ -5320,7 +5320,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_OPTIONAL {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_OPTIONAL(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_OPTIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;
     template <typename Result>
     struct Context_Type_OPTIONAL_before : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_before<Result>> {
@@ -5333,7 +5333,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_OPTIONAL_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_OPTIONAL_after : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_after<Result>> {
@@ -5347,7 +5347,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_OPTIONAL_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_PTR : ebmcodegen::util::ContextBase<Context_Type_PTR> {
         constexpr static std::string_view context_name = "Type_PTR";
@@ -5358,7 +5358,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_PTR {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_PTR(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_PTR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;
     template <typename Result>
     struct Context_Type_PTR_before : ebmcodegen::util::ContextBase<Context_Type_PTR_before<Result>> {
@@ -5371,7 +5371,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_PTR_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_PTR_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_PTR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_PTR_after : ebmcodegen::util::ContextBase<Context_Type_PTR_after<Result>> {
@@ -5385,7 +5385,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_PTR_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type_FUNCTION : ebmcodegen::util::ContextBase<Context_Type_FUNCTION> {
         constexpr static std::string_view context_name = "Type_FUNCTION";
@@ -5396,7 +5396,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_FUNCTION {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;
     template <typename Result>
     struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before<Result>> {
@@ -5409,7 +5409,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_FUNCTION_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after<Result>> {
@@ -5423,7 +5423,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_FUNCTION_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_desc = instance_name.func_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Type : ebmcodegen::util::ContextBase<Context_Type> {
         constexpr static std::string_view context_name = "Type";
@@ -5433,7 +5433,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
     template <typename Result>
     struct Context_Type_before : ebmcodegen::util::ContextBase<Context_Type_before<Result>> {
@@ -5445,7 +5445,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Type_after : ebmcodegen::util::ContextBase<Context_Type_after<Result>> {
@@ -5458,7 +5458,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Type_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPE_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Types : ebmcodegen::util::ContextBase<Context_Types> {
         constexpr static std::string_view context_name = "Types";
@@ -5467,7 +5467,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Types {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPES(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPES(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
     template <typename Result>
     struct Context_Types_before : ebmcodegen::util::ContextBase<Context_Types_before<Result>> {
@@ -5478,7 +5478,7 @@ namespace ebm2python {
     };
     struct VisitorTag_Types_before {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPES_BEFORE(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
     template <typename Result>
     struct Context_Types_after : ebmcodegen::util::ContextBase<Context_Types_after<Result>> {
@@ -5490,643 +5490,643 @@ namespace ebm2python {
     };
     struct VisitorTag_Types_after {};
     // Deconstruct context fields
-    #define EBM2PYTHON_DECONSTRUCT_TYPES_AFTER(instance_name) \
+    #define EBM2GO_DECONSTRUCT_TYPES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    #define EBM2PYTHON_CODEGEN_VISITOR_entry ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_entry>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_entry ebm2python::Context_entry
-    #define EBM2PYTHON_CODEGEN_VISITOR_entry_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_entry_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_entry_before ebm2python::Context_entry_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_entry_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_entry_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_entry_after ebm2python::Context_entry_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_pre_visitor ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_pre_visitor>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_pre_visitor ebm2python::Context_pre_visitor
-    #define EBM2PYTHON_CODEGEN_VISITOR_pre_visitor_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_pre_visitor_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_pre_visitor_before ebm2python::Context_pre_visitor_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_pre_visitor_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_pre_visitor_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_pre_visitor_after ebm2python::Context_pre_visitor_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_post_entry ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_post_entry ebm2python::Context_post_entry<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_post_entry_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_post_entry_before ebm2python::Context_post_entry_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_post_entry_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_post_entry_after ebm2python::Context_post_entry_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_BLOCK ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BLOCK>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_BLOCK ebm2python::Context_Statement_BLOCK
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_BLOCK_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BLOCK_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_BLOCK_before ebm2python::Context_Statement_BLOCK_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_BLOCK_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BLOCK_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_BLOCK_after ebm2python::Context_Statement_BLOCK_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ASSIGNMENT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ASSIGNMENT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ASSIGNMENT ebm2python::Context_Statement_ASSIGNMENT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ASSIGNMENT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ASSIGNMENT_before ebm2python::Context_Statement_ASSIGNMENT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ASSIGNMENT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ASSIGNMENT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ASSIGNMENT_after ebm2python::Context_Statement_ASSIGNMENT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_YIELD ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_YIELD>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_YIELD ebm2python::Context_Statement_YIELD
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_YIELD_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_YIELD_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_YIELD_before ebm2python::Context_Statement_YIELD_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_YIELD_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_YIELD_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_YIELD_after ebm2python::Context_Statement_YIELD_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_APPEND ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_APPEND>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_APPEND ebm2python::Context_Statement_APPEND
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_APPEND_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_APPEND_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_APPEND_before ebm2python::Context_Statement_APPEND_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_APPEND_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_APPEND_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_APPEND_after ebm2python::Context_Statement_APPEND_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_RETURN ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_RETURN>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_RETURN ebm2python::Context_Statement_RETURN
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_RETURN_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_RETURN_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_RETURN_before ebm2python::Context_Statement_RETURN_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_RETURN_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_RETURN_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_RETURN_after ebm2python::Context_Statement_RETURN_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ERROR_RETURN ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ERROR_RETURN>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ERROR_RETURN ebm2python::Context_Statement_ERROR_RETURN
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ERROR_RETURN_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ERROR_RETURN_before ebm2python::Context_Statement_ERROR_RETURN_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ERROR_RETURN_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ERROR_RETURN_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ERROR_RETURN_after ebm2python::Context_Statement_ERROR_RETURN_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ASSERT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ASSERT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ASSERT ebm2python::Context_Statement_ASSERT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ASSERT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ASSERT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ASSERT_before ebm2python::Context_Statement_ASSERT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ASSERT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ASSERT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ASSERT_after ebm2python::Context_Statement_ASSERT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_READ_DATA ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_READ_DATA>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_READ_DATA ebm2python::Context_Statement_READ_DATA
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_READ_DATA_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_READ_DATA_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_READ_DATA_before ebm2python::Context_Statement_READ_DATA_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_READ_DATA_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_READ_DATA_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_READ_DATA_after ebm2python::Context_Statement_READ_DATA_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_WRITE_DATA ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_WRITE_DATA>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_WRITE_DATA ebm2python::Context_Statement_WRITE_DATA
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_WRITE_DATA_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_WRITE_DATA_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2python::Context_Statement_WRITE_DATA_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_WRITE_DATA_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_WRITE_DATA_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2python::Context_Statement_WRITE_DATA_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_RESERVE_DATA ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_RESERVE_DATA>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_RESERVE_DATA ebm2python::Context_Statement_RESERVE_DATA
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_RESERVE_DATA_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_RESERVE_DATA_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_RESERVE_DATA_before ebm2python::Context_Statement_RESERVE_DATA_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_RESERVE_DATA_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_RESERVE_DATA_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_RESERVE_DATA_after ebm2python::Context_Statement_RESERVE_DATA_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_IF_STATEMENT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_IF_STATEMENT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_IF_STATEMENT ebm2python::Context_Statement_IF_STATEMENT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_IF_STATEMENT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_IF_STATEMENT_before ebm2python::Context_Statement_IF_STATEMENT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_IF_STATEMENT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_IF_STATEMENT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_IF_STATEMENT_after ebm2python::Context_Statement_IF_STATEMENT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_LOOP_STATEMENT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT ebm2python::Context_Statement_LOOP_STATEMENT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_before ebm2python::Context_Statement_LOOP_STATEMENT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_LOOP_STATEMENT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_after ebm2python::Context_Statement_LOOP_STATEMENT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_MATCH_STATEMENT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT ebm2python::Context_Statement_MATCH_STATEMENT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_before ebm2python::Context_Statement_MATCH_STATEMENT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_MATCH_STATEMENT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_after ebm2python::Context_Statement_MATCH_STATEMENT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_MATCH_BRANCH ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_MATCH_BRANCH ebm2python::Context_Statement_MATCH_BRANCH
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_MATCH_BRANCH_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_before ebm2python::Context_Statement_MATCH_BRANCH_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_MATCH_BRANCH_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_MATCH_BRANCH_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_after ebm2python::Context_Statement_MATCH_BRANCH_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_BREAK ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BREAK>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_BREAK ebm2python::Context_Statement_BREAK
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_BREAK_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BREAK_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_BREAK_before ebm2python::Context_Statement_BREAK_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_BREAK_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BREAK_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_BREAK_after ebm2python::Context_Statement_BREAK_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_CONTINUE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_CONTINUE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_CONTINUE ebm2python::Context_Statement_CONTINUE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_CONTINUE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_CONTINUE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_CONTINUE_before ebm2python::Context_Statement_CONTINUE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_CONTINUE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_CONTINUE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_CONTINUE_after ebm2python::Context_Statement_CONTINUE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_FUNCTION_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_FUNCTION_DECL ebm2python::Context_Statement_FUNCTION_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_FUNCTION_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_before ebm2python::Context_Statement_FUNCTION_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_FUNCTION_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_FUNCTION_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_after ebm2python::Context_Statement_FUNCTION_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_VARIABLE_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_VARIABLE_DECL ebm2python::Context_Statement_VARIABLE_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_VARIABLE_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_before ebm2python::Context_Statement_VARIABLE_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_VARIABLE_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_VARIABLE_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_after ebm2python::Context_Statement_VARIABLE_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PARAMETER_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PARAMETER_DECL ebm2python::Context_Statement_PARAMETER_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PARAMETER_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_before ebm2python::Context_Statement_PARAMETER_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PARAMETER_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PARAMETER_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_after ebm2python::Context_Statement_PARAMETER_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_FIELD_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_FIELD_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_FIELD_DECL ebm2python::Context_Statement_FIELD_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_FIELD_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_FIELD_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_FIELD_DECL_before ebm2python::Context_Statement_FIELD_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_FIELD_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_FIELD_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_FIELD_DECL_after ebm2python::Context_Statement_FIELD_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL ebm2python::Context_Statement_COMPOSITE_FIELD_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_before ebm2python::Context_Statement_COMPOSITE_FIELD_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_after ebm2python::Context_Statement_COMPOSITE_FIELD_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENUM_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENUM_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENUM_DECL ebm2python::Context_Statement_ENUM_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENUM_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENUM_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENUM_DECL_before ebm2python::Context_Statement_ENUM_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENUM_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENUM_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENUM_DECL_after ebm2python::Context_Statement_ENUM_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL ebm2python::Context_Statement_ENUM_MEMBER_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_before ebm2python::Context_Statement_ENUM_MEMBER_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENUM_MEMBER_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_after ebm2python::Context_Statement_ENUM_MEMBER_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_STRUCT_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_STRUCT_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_STRUCT_DECL ebm2python::Context_Statement_STRUCT_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_STRUCT_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_STRUCT_DECL_before ebm2python::Context_Statement_STRUCT_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_STRUCT_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_STRUCT_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_STRUCT_DECL_after ebm2python::Context_Statement_STRUCT_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_UNION_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_UNION_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_UNION_DECL ebm2python::Context_Statement_UNION_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_UNION_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_UNION_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_UNION_DECL_before ebm2python::Context_Statement_UNION_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_UNION_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_UNION_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_UNION_DECL_after ebm2python::Context_Statement_UNION_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL ebm2python::Context_Statement_UNION_MEMBER_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_before ebm2python::Context_Statement_UNION_MEMBER_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_UNION_MEMBER_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_after ebm2python::Context_Statement_UNION_MEMBER_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROGRAM_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROGRAM_DECL ebm2python::Context_Statement_PROGRAM_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROGRAM_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_before ebm2python::Context_Statement_PROGRAM_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROGRAM_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROGRAM_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_after ebm2python::Context_Statement_PROGRAM_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROPERTY_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROPERTY_DECL ebm2python::Context_Statement_PROPERTY_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROPERTY_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_before ebm2python::Context_Statement_PROPERTY_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROPERTY_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROPERTY_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_after ebm2python::Context_Statement_PROPERTY_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL ebm2python::Context_Statement_PROPERTY_MEMBER_DECL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_before ebm2python::Context_Statement_PROPERTY_MEMBER_DECL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_after ebm2python::Context_Statement_PROPERTY_MEMBER_DECL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_METADATA ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_METADATA>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_METADATA ebm2python::Context_Statement_METADATA
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_METADATA_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_METADATA_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_METADATA_before ebm2python::Context_Statement_METADATA_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_METADATA_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_METADATA_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_METADATA_after ebm2python::Context_Statement_METADATA_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_IMPORT_MODULE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_IMPORT_MODULE ebm2python::Context_Statement_IMPORT_MODULE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_IMPORT_MODULE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_before ebm2python::Context_Statement_IMPORT_MODULE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_IMPORT_MODULE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_IMPORT_MODULE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_after ebm2python::Context_Statement_IMPORT_MODULE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_EXPRESSION ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_EXPRESSION>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_EXPRESSION ebm2python::Context_Statement_EXPRESSION
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_EXPRESSION_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_EXPRESSION_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_EXPRESSION_before ebm2python::Context_Statement_EXPRESSION_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_EXPRESSION_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_EXPRESSION_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_EXPRESSION_after ebm2python::Context_Statement_EXPRESSION_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ERROR_REPORT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ERROR_REPORT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ERROR_REPORT ebm2python::Context_Statement_ERROR_REPORT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ERROR_REPORT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ERROR_REPORT_before ebm2python::Context_Statement_ERROR_REPORT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ERROR_REPORT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ERROR_REPORT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ERROR_REPORT_after ebm2python::Context_Statement_ERROR_REPORT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS ebm2python::Context_Statement_LOWERED_IO_STATEMENTS
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_before ebm2python::Context_Statement_LOWERED_IO_STATEMENTS_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_after ebm2python::Context_Statement_LOWERED_IO_STATEMENTS_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE ebm2python::Context_Statement_SUB_BYTE_RANGE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_before ebm2python::Context_Statement_SUB_BYTE_RANGE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_SUB_BYTE_RANGE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_after ebm2python::Context_Statement_SUB_BYTE_RANGE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_INIT_CHECK ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_INIT_CHECK>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_INIT_CHECK ebm2python::Context_Statement_INIT_CHECK
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_INIT_CHECK_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_INIT_CHECK_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_INIT_CHECK_before ebm2python::Context_Statement_INIT_CHECK_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_INIT_CHECK_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_INIT_CHECK_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_INIT_CHECK_after ebm2python::Context_Statement_INIT_CHECK_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE ebm2python::Context_Statement_ENDIAN_VARIABLE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2python::Context_Statement_ENDIAN_VARIABLE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2python::Context_Statement_ENDIAN_VARIABLE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_dispatch ebm2python::Context_Statement
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_before_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_before_dispatch ebm2python::Context_Statement_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Statement_after_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Statement_after_dispatch ebm2python::Context_Statement_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Block ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Block>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Block ebm2python::Context_Block
-    #define EBM2PYTHON_CODEGEN_VISITOR_Block_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Block_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Block_before ebm2python::Context_Block_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Block_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Block_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Block_after ebm2python::Context_Block_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_INT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_INT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_INT ebm2python::Context_Expression_LITERAL_INT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_INT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_INT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_INT_before ebm2python::Context_Expression_LITERAL_INT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_INT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_INT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_INT_after ebm2python::Context_Expression_LITERAL_INT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_INT64 ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_INT64>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_INT64 ebm2python::Context_Expression_LITERAL_INT64
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_INT64_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_INT64_before ebm2python::Context_Expression_LITERAL_INT64_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_INT64_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_INT64_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_INT64_after ebm2python::Context_Expression_LITERAL_INT64_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_BOOL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_BOOL ebm2python::Context_Expression_LITERAL_BOOL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_BOOL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_before ebm2python::Context_Expression_LITERAL_BOOL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_BOOL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_BOOL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_after ebm2python::Context_Expression_LITERAL_BOOL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_STRING ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_STRING>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_STRING ebm2python::Context_Expression_LITERAL_STRING
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_STRING_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_STRING_before ebm2python::Context_Expression_LITERAL_STRING_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_STRING_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_STRING_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_STRING_after ebm2python::Context_Expression_LITERAL_STRING_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_TYPE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_TYPE ebm2python::Context_Expression_LITERAL_TYPE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_TYPE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_before ebm2python::Context_Expression_LITERAL_TYPE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_TYPE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_TYPE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_after ebm2python::Context_Expression_LITERAL_TYPE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_CHAR ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_CHAR ebm2python::Context_Expression_LITERAL_CHAR
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_CHAR_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_before ebm2python::Context_Expression_LITERAL_CHAR_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_LITERAL_CHAR_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_LITERAL_CHAR_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_after ebm2python::Context_Expression_LITERAL_CHAR_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IDENTIFIER ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IDENTIFIER>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IDENTIFIER ebm2python::Context_Expression_IDENTIFIER
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IDENTIFIER_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IDENTIFIER_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IDENTIFIER_before ebm2python::Context_Expression_IDENTIFIER_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IDENTIFIER_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IDENTIFIER_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IDENTIFIER_after ebm2python::Context_Expression_IDENTIFIER_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_BINARY_OP ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_BINARY_OP>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_BINARY_OP ebm2python::Context_Expression_BINARY_OP
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_BINARY_OP_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_BINARY_OP_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_BINARY_OP_before ebm2python::Context_Expression_BINARY_OP_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_BINARY_OP_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_BINARY_OP_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_BINARY_OP_after ebm2python::Context_Expression_BINARY_OP_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_UNARY_OP ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_UNARY_OP>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_UNARY_OP ebm2python::Context_Expression_UNARY_OP
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_UNARY_OP_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_UNARY_OP_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_UNARY_OP_before ebm2python::Context_Expression_UNARY_OP_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_UNARY_OP_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_UNARY_OP_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_UNARY_OP_after ebm2python::Context_Expression_UNARY_OP_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CALL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CALL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CALL ebm2python::Context_Expression_CALL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CALL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CALL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CALL_before ebm2python::Context_Expression_CALL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CALL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CALL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CALL_after ebm2python::Context_Expression_CALL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_INDEX_ACCESS ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_INDEX_ACCESS ebm2python::Context_Expression_INDEX_ACCESS
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_INDEX_ACCESS_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_before ebm2python::Context_Expression_INDEX_ACCESS_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_INDEX_ACCESS_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_INDEX_ACCESS_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_after ebm2python::Context_Expression_INDEX_ACCESS_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_MEMBER_ACCESS ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS ebm2python::Context_Expression_MEMBER_ACCESS
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_before ebm2python::Context_Expression_MEMBER_ACCESS_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_MEMBER_ACCESS_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_after ebm2python::Context_Expression_MEMBER_ACCESS_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ENUM_MEMBER ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ENUM_MEMBER ebm2python::Context_Expression_ENUM_MEMBER
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ENUM_MEMBER_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_before ebm2python::Context_Expression_ENUM_MEMBER_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ENUM_MEMBER_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ENUM_MEMBER_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_after ebm2python::Context_Expression_ENUM_MEMBER_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_TYPE_CAST ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_TYPE_CAST>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_TYPE_CAST ebm2python::Context_Expression_TYPE_CAST
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_TYPE_CAST_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_TYPE_CAST_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_TYPE_CAST_before ebm2python::Context_Expression_TYPE_CAST_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_TYPE_CAST_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_TYPE_CAST_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_TYPE_CAST_after ebm2python::Context_Expression_TYPE_CAST_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_RANGE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_RANGE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_RANGE ebm2python::Context_Expression_RANGE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_RANGE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_RANGE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_RANGE_before ebm2python::Context_Expression_RANGE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_RANGE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_RANGE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_RANGE_after ebm2python::Context_Expression_RANGE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_DEFAULT_VALUE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE ebm2python::Context_Expression_DEFAULT_VALUE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_before ebm2python::Context_Expression_DEFAULT_VALUE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_DEFAULT_VALUE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_after ebm2python::Context_Expression_DEFAULT_VALUE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN ebm2python::Context_Expression_IS_LITTLE_ENDIAN
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_before ebm2python::Context_Expression_IS_LITTLE_ENDIAN_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_after ebm2python::Context_Expression_IS_LITTLE_ENDIAN_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET ebm2python::Context_Expression_GET_STREAM_OFFSET
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_before ebm2python::Context_Expression_GET_STREAM_OFFSET_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_GET_STREAM_OFFSET_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_after ebm2python::Context_Expression_GET_STREAM_OFFSET_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES ebm2python::Context_Expression_GET_REMAINING_BYTES
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_before ebm2python::Context_Expression_GET_REMAINING_BYTES_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_GET_REMAINING_BYTES_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_after ebm2python::Context_Expression_GET_REMAINING_BYTES_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CAN_READ_STREAM ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM ebm2python::Context_Expression_CAN_READ_STREAM
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_before ebm2python::Context_Expression_CAN_READ_STREAM_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CAN_READ_STREAM_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_after ebm2python::Context_Expression_CAN_READ_STREAM_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ARRAY_SIZE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ARRAY_SIZE ebm2python::Context_Expression_ARRAY_SIZE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ARRAY_SIZE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_before ebm2python::Context_Expression_ARRAY_SIZE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ARRAY_SIZE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ARRAY_SIZE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_after ebm2python::Context_Expression_ARRAY_SIZE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED ebm2python::Context_Expression_ENUM_IS_DEFINED
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_before ebm2python::Context_Expression_ENUM_IS_DEFINED_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ENUM_IS_DEFINED_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_after ebm2python::Context_Expression_ENUM_IS_DEFINED_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IS_ERROR ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IS_ERROR>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IS_ERROR ebm2python::Context_Expression_IS_ERROR
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IS_ERROR_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IS_ERROR_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IS_ERROR_before ebm2python::Context_Expression_IS_ERROR_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_IS_ERROR_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_IS_ERROR_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_IS_ERROR_after ebm2python::Context_Expression_IS_ERROR_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_MAX_VALUE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_MAX_VALUE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_MAX_VALUE ebm2python::Context_Expression_MAX_VALUE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_MAX_VALUE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_MAX_VALUE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_MAX_VALUE_before ebm2python::Context_Expression_MAX_VALUE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_MAX_VALUE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_MAX_VALUE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_MAX_VALUE_after ebm2python::Context_Expression_MAX_VALUE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_READ_DATA ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_READ_DATA>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_READ_DATA ebm2python::Context_Expression_READ_DATA
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_READ_DATA_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_READ_DATA_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_READ_DATA_before ebm2python::Context_Expression_READ_DATA_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_READ_DATA_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_READ_DATA_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_READ_DATA_after ebm2python::Context_Expression_READ_DATA_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_WRITE_DATA ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_WRITE_DATA>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_WRITE_DATA ebm2python::Context_Expression_WRITE_DATA
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_WRITE_DATA_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_WRITE_DATA_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_WRITE_DATA_before ebm2python::Context_Expression_WRITE_DATA_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_WRITE_DATA_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_WRITE_DATA_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_WRITE_DATA_after ebm2python::Context_Expression_WRITE_DATA_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT ebm2python::Context_Expression_CONDITIONAL_STATEMENT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_before ebm2python::Context_Expression_CONDITIONAL_STATEMENT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_after ebm2python::Context_Expression_CONDITIONAL_STATEMENT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CONDITIONAL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CONDITIONAL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CONDITIONAL ebm2python::Context_Expression_CONDITIONAL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CONDITIONAL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CONDITIONAL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CONDITIONAL_before ebm2python::Context_Expression_CONDITIONAL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_CONDITIONAL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_CONDITIONAL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_CONDITIONAL_after ebm2python::Context_Expression_CONDITIONAL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_AVAILABLE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_AVAILABLE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_AVAILABLE ebm2python::Context_Expression_AVAILABLE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_AVAILABLE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_AVAILABLE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_AVAILABLE_before ebm2python::Context_Expression_AVAILABLE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_AVAILABLE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_AVAILABLE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_AVAILABLE_after ebm2python::Context_Expression_AVAILABLE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SIZEOF ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SIZEOF>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SIZEOF ebm2python::Context_Expression_SIZEOF
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SIZEOF_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SIZEOF_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SIZEOF_before ebm2python::Context_Expression_SIZEOF_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SIZEOF_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SIZEOF_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SIZEOF_after ebm2python::Context_Expression_SIZEOF_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT ebm2python::Context_Expression_SUB_RANGE_INIT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_before ebm2python::Context_Expression_SUB_RANGE_INIT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SUB_RANGE_INIT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_after ebm2python::Context_Expression_SUB_RANGE_INIT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_OR_COND ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_OR_COND>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_OR_COND ebm2python::Context_Expression_OR_COND
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_OR_COND_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_OR_COND_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_OR_COND_before ebm2python::Context_Expression_OR_COND_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_OR_COND_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_OR_COND_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_OR_COND_after ebm2python::Context_Expression_OR_COND_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ADDRESS_OF ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ADDRESS_OF>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ADDRESS_OF ebm2python::Context_Expression_ADDRESS_OF
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ADDRESS_OF_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ADDRESS_OF_before ebm2python::Context_Expression_ADDRESS_OF_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_ADDRESS_OF_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_ADDRESS_OF_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_ADDRESS_OF_after ebm2python::Context_Expression_ADDRESS_OF_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_OPTIONAL_OF ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_OPTIONAL_OF ebm2python::Context_Expression_OPTIONAL_OF
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_OPTIONAL_OF_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_before ebm2python::Context_Expression_OPTIONAL_OF_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_OPTIONAL_OF_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_OPTIONAL_OF_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_after ebm2python::Context_Expression_OPTIONAL_OF_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SETTER_STATUS ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SETTER_STATUS>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SETTER_STATUS ebm2python::Context_Expression_SETTER_STATUS
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SETTER_STATUS_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SETTER_STATUS_before ebm2python::Context_Expression_SETTER_STATUS_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SETTER_STATUS_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SETTER_STATUS_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SETTER_STATUS_after ebm2python::Context_Expression_SETTER_STATUS_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SELF ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SELF>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SELF ebm2python::Context_Expression_SELF
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SELF_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SELF_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SELF_before ebm2python::Context_Expression_SELF_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_SELF_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_SELF_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_SELF_after ebm2python::Context_Expression_SELF_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_AS_ARG ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_AS_ARG>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_AS_ARG ebm2python::Context_Expression_AS_ARG
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_AS_ARG_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_AS_ARG_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2python::Context_Expression_AS_ARG_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_AS_ARG_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_AS_ARG_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2python::Context_Expression_AS_ARG_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_dispatch ebm2python::Context_Expression
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_before_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_before_dispatch ebm2python::Context_Expression_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expression_after_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expression_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expression_after_dispatch ebm2python::Context_Expression_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expressions ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expressions>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expressions ebm2python::Context_Expressions
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expressions_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expressions_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expressions_before ebm2python::Context_Expressions_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Expressions_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Expressions_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Expressions_after ebm2python::Context_Expressions_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_INT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_INT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_INT ebm2python::Context_Type_INT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_INT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_INT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_INT_before ebm2python::Context_Type_INT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_INT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_INT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_INT_after ebm2python::Context_Type_INT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_UINT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_UINT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_UINT ebm2python::Context_Type_UINT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_UINT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_UINT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_UINT_before ebm2python::Context_Type_UINT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_UINT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_UINT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_UINT_after ebm2python::Context_Type_UINT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_USIZE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_USIZE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_USIZE ebm2python::Context_Type_USIZE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_USIZE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_USIZE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_USIZE_before ebm2python::Context_Type_USIZE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_USIZE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_USIZE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_USIZE_after ebm2python::Context_Type_USIZE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_FLOAT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_FLOAT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_FLOAT ebm2python::Context_Type_FLOAT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_FLOAT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_FLOAT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_FLOAT_before ebm2python::Context_Type_FLOAT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_FLOAT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_FLOAT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_FLOAT_after ebm2python::Context_Type_FLOAT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_STRUCT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_STRUCT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_STRUCT ebm2python::Context_Type_STRUCT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_STRUCT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_STRUCT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_STRUCT_before ebm2python::Context_Type_STRUCT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_STRUCT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_STRUCT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_STRUCT_after ebm2python::Context_Type_STRUCT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT ebm2python::Context_Type_RECURSIVE_STRUCT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_before ebm2python::Context_Type_RECURSIVE_STRUCT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_RECURSIVE_STRUCT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_after ebm2python::Context_Type_RECURSIVE_STRUCT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_BOOL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_BOOL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_BOOL ebm2python::Context_Type_BOOL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_BOOL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_BOOL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_BOOL_before ebm2python::Context_Type_BOOL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_BOOL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_BOOL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_BOOL_after ebm2python::Context_Type_BOOL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VOID ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VOID>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VOID ebm2python::Context_Type_VOID
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VOID_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VOID_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VOID_before ebm2python::Context_Type_VOID_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VOID_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VOID_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VOID_after ebm2python::Context_Type_VOID_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_META ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_META>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_META ebm2python::Context_Type_META
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_META_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_META_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_META_before ebm2python::Context_Type_META_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_META_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_META_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_META_after ebm2python::Context_Type_META_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENUM ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENUM>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENUM ebm2python::Context_Type_ENUM
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENUM_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENUM_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENUM_before ebm2python::Context_Type_ENUM_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENUM_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENUM_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENUM_after ebm2python::Context_Type_ENUM_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ARRAY ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ARRAY>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ARRAY ebm2python::Context_Type_ARRAY
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ARRAY_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ARRAY_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ARRAY_before ebm2python::Context_Type_ARRAY_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ARRAY_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ARRAY_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ARRAY_after ebm2python::Context_Type_ARRAY_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VECTOR ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VECTOR>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VECTOR ebm2python::Context_Type_VECTOR
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VECTOR_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VECTOR_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VECTOR_before ebm2python::Context_Type_VECTOR_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VECTOR_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VECTOR_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VECTOR_after ebm2python::Context_Type_VECTOR_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VARIANT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VARIANT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VARIANT ebm2python::Context_Type_VARIANT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VARIANT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VARIANT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VARIANT_before ebm2python::Context_Type_VARIANT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_VARIANT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_VARIANT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_VARIANT_after ebm2python::Context_Type_VARIANT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_RANGE ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_RANGE>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_RANGE ebm2python::Context_Type_RANGE
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_RANGE_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_RANGE_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_RANGE_before ebm2python::Context_Type_RANGE_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_RANGE_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_RANGE_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_RANGE_after ebm2python::Context_Type_RANGE_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENCODER_RETURN ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENCODER_RETURN>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENCODER_RETURN ebm2python::Context_Type_ENCODER_RETURN
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENCODER_RETURN_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENCODER_RETURN_before ebm2python::Context_Type_ENCODER_RETURN_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENCODER_RETURN_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENCODER_RETURN_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENCODER_RETURN_after ebm2python::Context_Type_ENCODER_RETURN_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_DECODER_RETURN ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_DECODER_RETURN>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_DECODER_RETURN ebm2python::Context_Type_DECODER_RETURN
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_DECODER_RETURN_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_DECODER_RETURN_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_DECODER_RETURN_before ebm2python::Context_Type_DECODER_RETURN_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_DECODER_RETURN_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_DECODER_RETURN_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_DECODER_RETURN_after ebm2python::Context_Type_DECODER_RETURN_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENCODER_INPUT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENCODER_INPUT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENCODER_INPUT ebm2python::Context_Type_ENCODER_INPUT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENCODER_INPUT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENCODER_INPUT_before ebm2python::Context_Type_ENCODER_INPUT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_ENCODER_INPUT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_ENCODER_INPUT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_ENCODER_INPUT_after ebm2python::Context_Type_ENCODER_INPUT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_DECODER_INPUT ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_DECODER_INPUT>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_DECODER_INPUT ebm2python::Context_Type_DECODER_INPUT
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_DECODER_INPUT_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_DECODER_INPUT_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_DECODER_INPUT_before ebm2python::Context_Type_DECODER_INPUT_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_DECODER_INPUT_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_DECODER_INPUT_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_DECODER_INPUT_after ebm2python::Context_Type_DECODER_INPUT_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN ebm2python::Context_Type_PROPERTY_SETTER_RETURN
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_before ebm2python::Context_Type_PROPERTY_SETTER_RETURN_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_after ebm2python::Context_Type_PROPERTY_SETTER_RETURN_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_OPTIONAL ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_OPTIONAL>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_OPTIONAL ebm2python::Context_Type_OPTIONAL
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_OPTIONAL_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_OPTIONAL_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_OPTIONAL_before ebm2python::Context_Type_OPTIONAL_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_OPTIONAL_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_OPTIONAL_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_OPTIONAL_after ebm2python::Context_Type_OPTIONAL_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_PTR ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_PTR>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_PTR ebm2python::Context_Type_PTR
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_PTR_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_PTR_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_PTR_before ebm2python::Context_Type_PTR_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_PTR_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_PTR_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_PTR_after ebm2python::Context_Type_PTR_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_FUNCTION ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_FUNCTION>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_FUNCTION ebm2python::Context_Type_FUNCTION
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_FUNCTION_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_FUNCTION_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2python::Context_Type_FUNCTION_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_FUNCTION_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_FUNCTION_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2python::Context_Type_FUNCTION_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_dispatch ebm2python::Context_Type
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_before_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_before_dispatch ebm2python::Context_Type_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Type_after_dispatch ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Type_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Type_after_dispatch ebm2python::Context_Type_after<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Types ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Types>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Types ebm2python::Context_Types
-    #define EBM2PYTHON_CODEGEN_VISITOR_Types_before ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Types_before>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Types_before ebm2python::Context_Types_before<Result>
-    #define EBM2PYTHON_CODEGEN_VISITOR_Types_after ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Types_after>>
-    #define EBM2PYTHON_CODEGEN_CONTEXT_Types_after ebm2python::Context_Types_after<Result>
-    #define CODEGEN_NAMESPACE ebm2python
-    #define CODEGEN_VISITOR(name) EBM2PYTHON_CODEGEN_VISITOR_##name
-    #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2PYTHON_CODEGEN_CONTEXT_PARAMETERS_##name
-    #define CODEGEN_CONTEXT(name) EBM2PYTHON_CODEGEN_CONTEXT_##name
-}  // namespace ebm2python
+    #define EBM2GO_CODEGEN_VISITOR_entry ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_entry>>
+    #define EBM2GO_CODEGEN_CONTEXT_entry ebm2go::Context_entry
+    #define EBM2GO_CODEGEN_VISITOR_entry_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_entry_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_entry_before ebm2go::Context_entry_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_entry_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_entry_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_entry_after ebm2go::Context_entry_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_pre_visitor ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_pre_visitor>>
+    #define EBM2GO_CODEGEN_CONTEXT_pre_visitor ebm2go::Context_pre_visitor
+    #define EBM2GO_CODEGEN_VISITOR_pre_visitor_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_pre_visitor_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_pre_visitor_before ebm2go::Context_pre_visitor_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_pre_visitor_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_pre_visitor_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_pre_visitor_after ebm2go::Context_pre_visitor_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_post_entry ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_post_entry>>
+    #define EBM2GO_CODEGEN_CONTEXT_post_entry ebm2go::Context_post_entry<Result>
+    #define EBM2GO_CODEGEN_VISITOR_post_entry_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_post_entry_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_post_entry_before ebm2go::Context_post_entry_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_post_entry_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_post_entry_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_post_entry_after ebm2go::Context_post_entry_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_BLOCK ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_BLOCK>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_BLOCK ebm2go::Context_Statement_BLOCK
+    #define EBM2GO_CODEGEN_VISITOR_Statement_BLOCK_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_BLOCK_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_BLOCK_before ebm2go::Context_Statement_BLOCK_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_BLOCK_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_BLOCK_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_BLOCK_after ebm2go::Context_Statement_BLOCK_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ASSIGNMENT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ASSIGNMENT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ASSIGNMENT ebm2go::Context_Statement_ASSIGNMENT
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ASSIGNMENT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ASSIGNMENT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ASSIGNMENT_before ebm2go::Context_Statement_ASSIGNMENT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ASSIGNMENT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ASSIGNMENT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ASSIGNMENT_after ebm2go::Context_Statement_ASSIGNMENT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_YIELD ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_YIELD>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_YIELD ebm2go::Context_Statement_YIELD
+    #define EBM2GO_CODEGEN_VISITOR_Statement_YIELD_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_YIELD_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_YIELD_before ebm2go::Context_Statement_YIELD_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_YIELD_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_YIELD_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_YIELD_after ebm2go::Context_Statement_YIELD_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_APPEND ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_APPEND>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_APPEND ebm2go::Context_Statement_APPEND
+    #define EBM2GO_CODEGEN_VISITOR_Statement_APPEND_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_APPEND_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_APPEND_before ebm2go::Context_Statement_APPEND_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_APPEND_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_APPEND_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_APPEND_after ebm2go::Context_Statement_APPEND_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_RETURN ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_RETURN>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_RETURN ebm2go::Context_Statement_RETURN
+    #define EBM2GO_CODEGEN_VISITOR_Statement_RETURN_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_RETURN_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_RETURN_before ebm2go::Context_Statement_RETURN_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_RETURN_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_RETURN_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_RETURN_after ebm2go::Context_Statement_RETURN_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ERROR_RETURN ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ERROR_RETURN>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ERROR_RETURN ebm2go::Context_Statement_ERROR_RETURN
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ERROR_RETURN_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ERROR_RETURN_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ERROR_RETURN_before ebm2go::Context_Statement_ERROR_RETURN_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ERROR_RETURN_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ERROR_RETURN_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ERROR_RETURN_after ebm2go::Context_Statement_ERROR_RETURN_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ASSERT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ASSERT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ASSERT ebm2go::Context_Statement_ASSERT
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ASSERT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ASSERT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ASSERT_before ebm2go::Context_Statement_ASSERT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ASSERT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ASSERT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ASSERT_after ebm2go::Context_Statement_ASSERT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_READ_DATA ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_READ_DATA>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_READ_DATA ebm2go::Context_Statement_READ_DATA
+    #define EBM2GO_CODEGEN_VISITOR_Statement_READ_DATA_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_READ_DATA_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_READ_DATA_before ebm2go::Context_Statement_READ_DATA_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_READ_DATA_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_READ_DATA_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_READ_DATA_after ebm2go::Context_Statement_READ_DATA_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_WRITE_DATA ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_WRITE_DATA>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_WRITE_DATA ebm2go::Context_Statement_WRITE_DATA
+    #define EBM2GO_CODEGEN_VISITOR_Statement_WRITE_DATA_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_WRITE_DATA_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_WRITE_DATA_before ebm2go::Context_Statement_WRITE_DATA_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_WRITE_DATA_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_WRITE_DATA_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_WRITE_DATA_after ebm2go::Context_Statement_WRITE_DATA_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_RESERVE_DATA ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_RESERVE_DATA>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_RESERVE_DATA ebm2go::Context_Statement_RESERVE_DATA
+    #define EBM2GO_CODEGEN_VISITOR_Statement_RESERVE_DATA_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_RESERVE_DATA_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_RESERVE_DATA_before ebm2go::Context_Statement_RESERVE_DATA_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_RESERVE_DATA_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_RESERVE_DATA_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_RESERVE_DATA_after ebm2go::Context_Statement_RESERVE_DATA_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_IF_STATEMENT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_IF_STATEMENT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_IF_STATEMENT ebm2go::Context_Statement_IF_STATEMENT
+    #define EBM2GO_CODEGEN_VISITOR_Statement_IF_STATEMENT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_IF_STATEMENT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_IF_STATEMENT_before ebm2go::Context_Statement_IF_STATEMENT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_IF_STATEMENT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_IF_STATEMENT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_IF_STATEMENT_after ebm2go::Context_Statement_IF_STATEMENT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_LOOP_STATEMENT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LOOP_STATEMENT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT ebm2go::Context_Statement_LOOP_STATEMENT
+    #define EBM2GO_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LOOP_STATEMENT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_before ebm2go::Context_Statement_LOOP_STATEMENT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_LOOP_STATEMENT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LOOP_STATEMENT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_LOOP_STATEMENT_after ebm2go::Context_Statement_LOOP_STATEMENT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_MATCH_STATEMENT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_MATCH_STATEMENT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT ebm2go::Context_Statement_MATCH_STATEMENT
+    #define EBM2GO_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_MATCH_STATEMENT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_before ebm2go::Context_Statement_MATCH_STATEMENT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_MATCH_STATEMENT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_MATCH_STATEMENT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_MATCH_STATEMENT_after ebm2go::Context_Statement_MATCH_STATEMENT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_MATCH_BRANCH ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_MATCH_BRANCH>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_MATCH_BRANCH ebm2go::Context_Statement_MATCH_BRANCH
+    #define EBM2GO_CODEGEN_VISITOR_Statement_MATCH_BRANCH_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_MATCH_BRANCH_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_before ebm2go::Context_Statement_MATCH_BRANCH_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_MATCH_BRANCH_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_MATCH_BRANCH_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_MATCH_BRANCH_after ebm2go::Context_Statement_MATCH_BRANCH_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_BREAK ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_BREAK>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_BREAK ebm2go::Context_Statement_BREAK
+    #define EBM2GO_CODEGEN_VISITOR_Statement_BREAK_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_BREAK_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_BREAK_before ebm2go::Context_Statement_BREAK_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_BREAK_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_BREAK_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_BREAK_after ebm2go::Context_Statement_BREAK_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_CONTINUE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_CONTINUE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_CONTINUE ebm2go::Context_Statement_CONTINUE
+    #define EBM2GO_CODEGEN_VISITOR_Statement_CONTINUE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_CONTINUE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_CONTINUE_before ebm2go::Context_Statement_CONTINUE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_CONTINUE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_CONTINUE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_CONTINUE_after ebm2go::Context_Statement_CONTINUE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_FUNCTION_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_FUNCTION_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_FUNCTION_DECL ebm2go::Context_Statement_FUNCTION_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_FUNCTION_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_FUNCTION_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_before ebm2go::Context_Statement_FUNCTION_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_FUNCTION_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_FUNCTION_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_FUNCTION_DECL_after ebm2go::Context_Statement_FUNCTION_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_VARIABLE_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_VARIABLE_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_VARIABLE_DECL ebm2go::Context_Statement_VARIABLE_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_VARIABLE_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_VARIABLE_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_before ebm2go::Context_Statement_VARIABLE_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_VARIABLE_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_VARIABLE_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_VARIABLE_DECL_after ebm2go::Context_Statement_VARIABLE_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PARAMETER_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PARAMETER_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PARAMETER_DECL ebm2go::Context_Statement_PARAMETER_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PARAMETER_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PARAMETER_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_before ebm2go::Context_Statement_PARAMETER_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PARAMETER_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PARAMETER_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PARAMETER_DECL_after ebm2go::Context_Statement_PARAMETER_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_FIELD_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_FIELD_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_FIELD_DECL ebm2go::Context_Statement_FIELD_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_FIELD_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_FIELD_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_FIELD_DECL_before ebm2go::Context_Statement_FIELD_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_FIELD_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_FIELD_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_FIELD_DECL_after ebm2go::Context_Statement_FIELD_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_COMPOSITE_FIELD_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL ebm2go::Context_Statement_COMPOSITE_FIELD_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_COMPOSITE_FIELD_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_before ebm2go::Context_Statement_COMPOSITE_FIELD_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_COMPOSITE_FIELD_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_COMPOSITE_FIELD_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_COMPOSITE_FIELD_DECL_after ebm2go::Context_Statement_COMPOSITE_FIELD_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENUM_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENUM_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENUM_DECL ebm2go::Context_Statement_ENUM_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENUM_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENUM_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENUM_DECL_before ebm2go::Context_Statement_ENUM_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENUM_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENUM_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENUM_DECL_after ebm2go::Context_Statement_ENUM_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENUM_MEMBER_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL ebm2go::Context_Statement_ENUM_MEMBER_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENUM_MEMBER_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_before ebm2go::Context_Statement_ENUM_MEMBER_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENUM_MEMBER_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENUM_MEMBER_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENUM_MEMBER_DECL_after ebm2go::Context_Statement_ENUM_MEMBER_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_STRUCT_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_STRUCT_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_STRUCT_DECL ebm2go::Context_Statement_STRUCT_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_STRUCT_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_STRUCT_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_STRUCT_DECL_before ebm2go::Context_Statement_STRUCT_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_STRUCT_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_STRUCT_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_STRUCT_DECL_after ebm2go::Context_Statement_STRUCT_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_UNION_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_UNION_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_UNION_DECL ebm2go::Context_Statement_UNION_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_UNION_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_UNION_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_UNION_DECL_before ebm2go::Context_Statement_UNION_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_UNION_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_UNION_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_UNION_DECL_after ebm2go::Context_Statement_UNION_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_UNION_MEMBER_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL ebm2go::Context_Statement_UNION_MEMBER_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_UNION_MEMBER_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_before ebm2go::Context_Statement_UNION_MEMBER_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_UNION_MEMBER_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_UNION_MEMBER_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_UNION_MEMBER_DECL_after ebm2go::Context_Statement_UNION_MEMBER_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROGRAM_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROGRAM_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROGRAM_DECL ebm2go::Context_Statement_PROGRAM_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROGRAM_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROGRAM_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_before ebm2go::Context_Statement_PROGRAM_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROGRAM_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROGRAM_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROGRAM_DECL_after ebm2go::Context_Statement_PROGRAM_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROPERTY_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROPERTY_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROPERTY_DECL ebm2go::Context_Statement_PROPERTY_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROPERTY_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROPERTY_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_before ebm2go::Context_Statement_PROPERTY_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROPERTY_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROPERTY_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROPERTY_DECL_after ebm2go::Context_Statement_PROPERTY_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROPERTY_MEMBER_DECL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL ebm2go::Context_Statement_PROPERTY_MEMBER_DECL
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROPERTY_MEMBER_DECL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_before ebm2go::Context_Statement_PROPERTY_MEMBER_DECL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_PROPERTY_MEMBER_DECL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_PROPERTY_MEMBER_DECL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_PROPERTY_MEMBER_DECL_after ebm2go::Context_Statement_PROPERTY_MEMBER_DECL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_METADATA ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_METADATA>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_METADATA ebm2go::Context_Statement_METADATA
+    #define EBM2GO_CODEGEN_VISITOR_Statement_METADATA_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_METADATA_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_METADATA_before ebm2go::Context_Statement_METADATA_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_METADATA_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_METADATA_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_METADATA_after ebm2go::Context_Statement_METADATA_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_IMPORT_MODULE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_IMPORT_MODULE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_IMPORT_MODULE ebm2go::Context_Statement_IMPORT_MODULE
+    #define EBM2GO_CODEGEN_VISITOR_Statement_IMPORT_MODULE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_IMPORT_MODULE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_before ebm2go::Context_Statement_IMPORT_MODULE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_IMPORT_MODULE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_IMPORT_MODULE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_IMPORT_MODULE_after ebm2go::Context_Statement_IMPORT_MODULE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_EXPRESSION ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_EXPRESSION>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_EXPRESSION ebm2go::Context_Statement_EXPRESSION
+    #define EBM2GO_CODEGEN_VISITOR_Statement_EXPRESSION_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_EXPRESSION_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_EXPRESSION_before ebm2go::Context_Statement_EXPRESSION_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_EXPRESSION_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_EXPRESSION_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_EXPRESSION_after ebm2go::Context_Statement_EXPRESSION_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ERROR_REPORT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ERROR_REPORT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ERROR_REPORT ebm2go::Context_Statement_ERROR_REPORT
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ERROR_REPORT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ERROR_REPORT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ERROR_REPORT_before ebm2go::Context_Statement_ERROR_REPORT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ERROR_REPORT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ERROR_REPORT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ERROR_REPORT_after ebm2go::Context_Statement_ERROR_REPORT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LOWERED_IO_STATEMENTS>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS ebm2go::Context_Statement_LOWERED_IO_STATEMENTS
+    #define EBM2GO_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LOWERED_IO_STATEMENTS_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_before ebm2go::Context_Statement_LOWERED_IO_STATEMENTS_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_LOWERED_IO_STATEMENTS_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LOWERED_IO_STATEMENTS_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_LOWERED_IO_STATEMENTS_after ebm2go::Context_Statement_LOWERED_IO_STATEMENTS_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_SUB_BYTE_RANGE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE ebm2go::Context_Statement_SUB_BYTE_RANGE
+    #define EBM2GO_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_SUB_BYTE_RANGE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_before ebm2go::Context_Statement_SUB_BYTE_RANGE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_SUB_BYTE_RANGE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_SUB_BYTE_RANGE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_SUB_BYTE_RANGE_after ebm2go::Context_Statement_SUB_BYTE_RANGE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_INIT_CHECK ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_INIT_CHECK>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_INIT_CHECK ebm2go::Context_Statement_INIT_CHECK
+    #define EBM2GO_CODEGEN_VISITOR_Statement_INIT_CHECK_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_INIT_CHECK_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_INIT_CHECK_before ebm2go::Context_Statement_INIT_CHECK_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_INIT_CHECK_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_INIT_CHECK_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_INIT_CHECK_after ebm2go::Context_Statement_INIT_CHECK_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENDIAN_VARIABLE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE ebm2go::Context_Statement_ENDIAN_VARIABLE
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENDIAN_VARIABLE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2go::Context_Statement_ENDIAN_VARIABLE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2go::Context_Statement_ENDIAN_VARIABLE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_dispatch ebm2go::Context_Statement
+    #define EBM2GO_CODEGEN_VISITOR_Statement_before_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_before_dispatch ebm2go::Context_Statement_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Statement_after_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Statement_after_dispatch ebm2go::Context_Statement_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Block ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Block>>
+    #define EBM2GO_CODEGEN_CONTEXT_Block ebm2go::Context_Block
+    #define EBM2GO_CODEGEN_VISITOR_Block_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Block_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Block_before ebm2go::Context_Block_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Block_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Block_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Block_after ebm2go::Context_Block_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_INT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_INT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_INT ebm2go::Context_Expression_LITERAL_INT
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_INT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_INT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_INT_before ebm2go::Context_Expression_LITERAL_INT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_INT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_INT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_INT_after ebm2go::Context_Expression_LITERAL_INT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_INT64 ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_INT64>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_INT64 ebm2go::Context_Expression_LITERAL_INT64
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_INT64_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_INT64_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_INT64_before ebm2go::Context_Expression_LITERAL_INT64_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_INT64_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_INT64_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_INT64_after ebm2go::Context_Expression_LITERAL_INT64_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_BOOL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_BOOL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_BOOL ebm2go::Context_Expression_LITERAL_BOOL
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_BOOL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_BOOL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_before ebm2go::Context_Expression_LITERAL_BOOL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_BOOL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_BOOL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_BOOL_after ebm2go::Context_Expression_LITERAL_BOOL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_STRING ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_STRING>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_STRING ebm2go::Context_Expression_LITERAL_STRING
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_STRING_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_STRING_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_STRING_before ebm2go::Context_Expression_LITERAL_STRING_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_STRING_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_STRING_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_STRING_after ebm2go::Context_Expression_LITERAL_STRING_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_TYPE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_TYPE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_TYPE ebm2go::Context_Expression_LITERAL_TYPE
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_TYPE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_TYPE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_before ebm2go::Context_Expression_LITERAL_TYPE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_TYPE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_TYPE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_TYPE_after ebm2go::Context_Expression_LITERAL_TYPE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_CHAR ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_CHAR>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_CHAR ebm2go::Context_Expression_LITERAL_CHAR
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_CHAR_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_CHAR_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_before ebm2go::Context_Expression_LITERAL_CHAR_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_LITERAL_CHAR_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_LITERAL_CHAR_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_LITERAL_CHAR_after ebm2go::Context_Expression_LITERAL_CHAR_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IDENTIFIER ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IDENTIFIER>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IDENTIFIER ebm2go::Context_Expression_IDENTIFIER
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IDENTIFIER_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IDENTIFIER_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IDENTIFIER_before ebm2go::Context_Expression_IDENTIFIER_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IDENTIFIER_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IDENTIFIER_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IDENTIFIER_after ebm2go::Context_Expression_IDENTIFIER_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_BINARY_OP ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_BINARY_OP>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_BINARY_OP ebm2go::Context_Expression_BINARY_OP
+    #define EBM2GO_CODEGEN_VISITOR_Expression_BINARY_OP_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_BINARY_OP_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_BINARY_OP_before ebm2go::Context_Expression_BINARY_OP_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_BINARY_OP_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_BINARY_OP_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_BINARY_OP_after ebm2go::Context_Expression_BINARY_OP_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_UNARY_OP ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_UNARY_OP>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_UNARY_OP ebm2go::Context_Expression_UNARY_OP
+    #define EBM2GO_CODEGEN_VISITOR_Expression_UNARY_OP_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_UNARY_OP_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_UNARY_OP_before ebm2go::Context_Expression_UNARY_OP_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_UNARY_OP_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_UNARY_OP_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_UNARY_OP_after ebm2go::Context_Expression_UNARY_OP_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CALL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CALL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CALL ebm2go::Context_Expression_CALL
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CALL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CALL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CALL_before ebm2go::Context_Expression_CALL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CALL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CALL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CALL_after ebm2go::Context_Expression_CALL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_INDEX_ACCESS ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_INDEX_ACCESS>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_INDEX_ACCESS ebm2go::Context_Expression_INDEX_ACCESS
+    #define EBM2GO_CODEGEN_VISITOR_Expression_INDEX_ACCESS_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_INDEX_ACCESS_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_before ebm2go::Context_Expression_INDEX_ACCESS_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_INDEX_ACCESS_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_INDEX_ACCESS_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_INDEX_ACCESS_after ebm2go::Context_Expression_INDEX_ACCESS_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_MEMBER_ACCESS ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_MEMBER_ACCESS>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS ebm2go::Context_Expression_MEMBER_ACCESS
+    #define EBM2GO_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_MEMBER_ACCESS_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_before ebm2go::Context_Expression_MEMBER_ACCESS_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_MEMBER_ACCESS_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_MEMBER_ACCESS_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_MEMBER_ACCESS_after ebm2go::Context_Expression_MEMBER_ACCESS_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ENUM_MEMBER ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ENUM_MEMBER>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ENUM_MEMBER ebm2go::Context_Expression_ENUM_MEMBER
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ENUM_MEMBER_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ENUM_MEMBER_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_before ebm2go::Context_Expression_ENUM_MEMBER_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ENUM_MEMBER_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ENUM_MEMBER_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ENUM_MEMBER_after ebm2go::Context_Expression_ENUM_MEMBER_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_TYPE_CAST ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_TYPE_CAST>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_TYPE_CAST ebm2go::Context_Expression_TYPE_CAST
+    #define EBM2GO_CODEGEN_VISITOR_Expression_TYPE_CAST_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_TYPE_CAST_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_TYPE_CAST_before ebm2go::Context_Expression_TYPE_CAST_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_TYPE_CAST_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_TYPE_CAST_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_TYPE_CAST_after ebm2go::Context_Expression_TYPE_CAST_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_RANGE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_RANGE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_RANGE ebm2go::Context_Expression_RANGE
+    #define EBM2GO_CODEGEN_VISITOR_Expression_RANGE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_RANGE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_RANGE_before ebm2go::Context_Expression_RANGE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_RANGE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_RANGE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_RANGE_after ebm2go::Context_Expression_RANGE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_DEFAULT_VALUE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_DEFAULT_VALUE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE ebm2go::Context_Expression_DEFAULT_VALUE
+    #define EBM2GO_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_DEFAULT_VALUE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_before ebm2go::Context_Expression_DEFAULT_VALUE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_DEFAULT_VALUE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_DEFAULT_VALUE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_DEFAULT_VALUE_after ebm2go::Context_Expression_DEFAULT_VALUE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IS_LITTLE_ENDIAN>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN ebm2go::Context_Expression_IS_LITTLE_ENDIAN
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IS_LITTLE_ENDIAN_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_before ebm2go::Context_Expression_IS_LITTLE_ENDIAN_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IS_LITTLE_ENDIAN_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IS_LITTLE_ENDIAN_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IS_LITTLE_ENDIAN_after ebm2go::Context_Expression_IS_LITTLE_ENDIAN_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_GET_STREAM_OFFSET>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET ebm2go::Context_Expression_GET_STREAM_OFFSET
+    #define EBM2GO_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_GET_STREAM_OFFSET_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_before ebm2go::Context_Expression_GET_STREAM_OFFSET_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_GET_STREAM_OFFSET_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_GET_STREAM_OFFSET_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_GET_STREAM_OFFSET_after ebm2go::Context_Expression_GET_STREAM_OFFSET_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_GET_REMAINING_BYTES>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES ebm2go::Context_Expression_GET_REMAINING_BYTES
+    #define EBM2GO_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_GET_REMAINING_BYTES_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_before ebm2go::Context_Expression_GET_REMAINING_BYTES_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_GET_REMAINING_BYTES_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_GET_REMAINING_BYTES_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_GET_REMAINING_BYTES_after ebm2go::Context_Expression_GET_REMAINING_BYTES_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CAN_READ_STREAM ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CAN_READ_STREAM>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM ebm2go::Context_Expression_CAN_READ_STREAM
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CAN_READ_STREAM_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_before ebm2go::Context_Expression_CAN_READ_STREAM_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CAN_READ_STREAM_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CAN_READ_STREAM_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CAN_READ_STREAM_after ebm2go::Context_Expression_CAN_READ_STREAM_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ARRAY_SIZE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ARRAY_SIZE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ARRAY_SIZE ebm2go::Context_Expression_ARRAY_SIZE
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ARRAY_SIZE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ARRAY_SIZE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_before ebm2go::Context_Expression_ARRAY_SIZE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ARRAY_SIZE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ARRAY_SIZE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ARRAY_SIZE_after ebm2go::Context_Expression_ARRAY_SIZE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ENUM_IS_DEFINED>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED ebm2go::Context_Expression_ENUM_IS_DEFINED
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ENUM_IS_DEFINED_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_before ebm2go::Context_Expression_ENUM_IS_DEFINED_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ENUM_IS_DEFINED_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ENUM_IS_DEFINED_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ENUM_IS_DEFINED_after ebm2go::Context_Expression_ENUM_IS_DEFINED_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IS_ERROR ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IS_ERROR>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IS_ERROR ebm2go::Context_Expression_IS_ERROR
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IS_ERROR_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IS_ERROR_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IS_ERROR_before ebm2go::Context_Expression_IS_ERROR_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_IS_ERROR_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_IS_ERROR_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_IS_ERROR_after ebm2go::Context_Expression_IS_ERROR_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_MAX_VALUE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_MAX_VALUE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_MAX_VALUE ebm2go::Context_Expression_MAX_VALUE
+    #define EBM2GO_CODEGEN_VISITOR_Expression_MAX_VALUE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_MAX_VALUE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_MAX_VALUE_before ebm2go::Context_Expression_MAX_VALUE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_MAX_VALUE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_MAX_VALUE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_MAX_VALUE_after ebm2go::Context_Expression_MAX_VALUE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_READ_DATA ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_READ_DATA>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_READ_DATA ebm2go::Context_Expression_READ_DATA
+    #define EBM2GO_CODEGEN_VISITOR_Expression_READ_DATA_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_READ_DATA_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_READ_DATA_before ebm2go::Context_Expression_READ_DATA_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_READ_DATA_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_READ_DATA_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_READ_DATA_after ebm2go::Context_Expression_READ_DATA_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_WRITE_DATA ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_WRITE_DATA>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_WRITE_DATA ebm2go::Context_Expression_WRITE_DATA
+    #define EBM2GO_CODEGEN_VISITOR_Expression_WRITE_DATA_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_WRITE_DATA_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_WRITE_DATA_before ebm2go::Context_Expression_WRITE_DATA_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_WRITE_DATA_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_WRITE_DATA_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_WRITE_DATA_after ebm2go::Context_Expression_WRITE_DATA_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CONDITIONAL_STATEMENT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT ebm2go::Context_Expression_CONDITIONAL_STATEMENT
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CONDITIONAL_STATEMENT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_before ebm2go::Context_Expression_CONDITIONAL_STATEMENT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CONDITIONAL_STATEMENT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CONDITIONAL_STATEMENT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CONDITIONAL_STATEMENT_after ebm2go::Context_Expression_CONDITIONAL_STATEMENT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CONDITIONAL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CONDITIONAL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CONDITIONAL ebm2go::Context_Expression_CONDITIONAL
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CONDITIONAL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CONDITIONAL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CONDITIONAL_before ebm2go::Context_Expression_CONDITIONAL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_CONDITIONAL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_CONDITIONAL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_CONDITIONAL_after ebm2go::Context_Expression_CONDITIONAL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_AVAILABLE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_AVAILABLE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_AVAILABLE ebm2go::Context_Expression_AVAILABLE
+    #define EBM2GO_CODEGEN_VISITOR_Expression_AVAILABLE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_AVAILABLE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_AVAILABLE_before ebm2go::Context_Expression_AVAILABLE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_AVAILABLE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_AVAILABLE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_AVAILABLE_after ebm2go::Context_Expression_AVAILABLE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SIZEOF ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SIZEOF>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SIZEOF ebm2go::Context_Expression_SIZEOF
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SIZEOF_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SIZEOF_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SIZEOF_before ebm2go::Context_Expression_SIZEOF_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SIZEOF_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SIZEOF_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SIZEOF_after ebm2go::Context_Expression_SIZEOF_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SUB_RANGE_INIT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT ebm2go::Context_Expression_SUB_RANGE_INIT
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SUB_RANGE_INIT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_before ebm2go::Context_Expression_SUB_RANGE_INIT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SUB_RANGE_INIT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SUB_RANGE_INIT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SUB_RANGE_INIT_after ebm2go::Context_Expression_SUB_RANGE_INIT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_OR_COND ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_OR_COND>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_OR_COND ebm2go::Context_Expression_OR_COND
+    #define EBM2GO_CODEGEN_VISITOR_Expression_OR_COND_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_OR_COND_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_OR_COND_before ebm2go::Context_Expression_OR_COND_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_OR_COND_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_OR_COND_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_OR_COND_after ebm2go::Context_Expression_OR_COND_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ADDRESS_OF ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ADDRESS_OF>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ADDRESS_OF ebm2go::Context_Expression_ADDRESS_OF
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ADDRESS_OF_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ADDRESS_OF_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ADDRESS_OF_before ebm2go::Context_Expression_ADDRESS_OF_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_ADDRESS_OF_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_ADDRESS_OF_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_ADDRESS_OF_after ebm2go::Context_Expression_ADDRESS_OF_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_OPTIONAL_OF ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_OPTIONAL_OF>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_OPTIONAL_OF ebm2go::Context_Expression_OPTIONAL_OF
+    #define EBM2GO_CODEGEN_VISITOR_Expression_OPTIONAL_OF_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_OPTIONAL_OF_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_before ebm2go::Context_Expression_OPTIONAL_OF_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_OPTIONAL_OF_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_OPTIONAL_OF_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_OPTIONAL_OF_after ebm2go::Context_Expression_OPTIONAL_OF_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SETTER_STATUS ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SETTER_STATUS>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SETTER_STATUS ebm2go::Context_Expression_SETTER_STATUS
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SETTER_STATUS_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SETTER_STATUS_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SETTER_STATUS_before ebm2go::Context_Expression_SETTER_STATUS_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SETTER_STATUS_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SETTER_STATUS_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SETTER_STATUS_after ebm2go::Context_Expression_SETTER_STATUS_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SELF ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SELF>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SELF ebm2go::Context_Expression_SELF
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SELF_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SELF_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SELF_before ebm2go::Context_Expression_SELF_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_SELF_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_SELF_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_SELF_after ebm2go::Context_Expression_SELF_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_AS_ARG ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_AS_ARG>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_AS_ARG ebm2go::Context_Expression_AS_ARG
+    #define EBM2GO_CODEGEN_VISITOR_Expression_AS_ARG_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_AS_ARG_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_AS_ARG_before ebm2go::Context_Expression_AS_ARG_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_AS_ARG_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_AS_ARG_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2go::Context_Expression_AS_ARG_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_dispatch ebm2go::Context_Expression
+    #define EBM2GO_CODEGEN_VISITOR_Expression_before_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_before_dispatch ebm2go::Context_Expression_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expression_after_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expression_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expression_after_dispatch ebm2go::Context_Expression_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expressions ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expressions>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expressions ebm2go::Context_Expressions
+    #define EBM2GO_CODEGEN_VISITOR_Expressions_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expressions_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expressions_before ebm2go::Context_Expressions_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Expressions_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Expressions_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Expressions_after ebm2go::Context_Expressions_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_INT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_INT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_INT ebm2go::Context_Type_INT
+    #define EBM2GO_CODEGEN_VISITOR_Type_INT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_INT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_INT_before ebm2go::Context_Type_INT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_INT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_INT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_INT_after ebm2go::Context_Type_INT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_UINT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_UINT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_UINT ebm2go::Context_Type_UINT
+    #define EBM2GO_CODEGEN_VISITOR_Type_UINT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_UINT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_UINT_before ebm2go::Context_Type_UINT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_UINT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_UINT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_UINT_after ebm2go::Context_Type_UINT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_USIZE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_USIZE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_USIZE ebm2go::Context_Type_USIZE
+    #define EBM2GO_CODEGEN_VISITOR_Type_USIZE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_USIZE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_USIZE_before ebm2go::Context_Type_USIZE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_USIZE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_USIZE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_USIZE_after ebm2go::Context_Type_USIZE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_FLOAT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_FLOAT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_FLOAT ebm2go::Context_Type_FLOAT
+    #define EBM2GO_CODEGEN_VISITOR_Type_FLOAT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_FLOAT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_FLOAT_before ebm2go::Context_Type_FLOAT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_FLOAT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_FLOAT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_FLOAT_after ebm2go::Context_Type_FLOAT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_STRUCT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_STRUCT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_STRUCT ebm2go::Context_Type_STRUCT
+    #define EBM2GO_CODEGEN_VISITOR_Type_STRUCT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_STRUCT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_STRUCT_before ebm2go::Context_Type_STRUCT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_STRUCT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_STRUCT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_STRUCT_after ebm2go::Context_Type_STRUCT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_RECURSIVE_STRUCT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT ebm2go::Context_Type_RECURSIVE_STRUCT
+    #define EBM2GO_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_RECURSIVE_STRUCT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_before ebm2go::Context_Type_RECURSIVE_STRUCT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_RECURSIVE_STRUCT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_RECURSIVE_STRUCT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_RECURSIVE_STRUCT_after ebm2go::Context_Type_RECURSIVE_STRUCT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_BOOL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_BOOL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_BOOL ebm2go::Context_Type_BOOL
+    #define EBM2GO_CODEGEN_VISITOR_Type_BOOL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_BOOL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_BOOL_before ebm2go::Context_Type_BOOL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_BOOL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_BOOL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_BOOL_after ebm2go::Context_Type_BOOL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_VOID ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VOID>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VOID ebm2go::Context_Type_VOID
+    #define EBM2GO_CODEGEN_VISITOR_Type_VOID_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VOID_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VOID_before ebm2go::Context_Type_VOID_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_VOID_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VOID_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VOID_after ebm2go::Context_Type_VOID_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_META ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_META>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_META ebm2go::Context_Type_META
+    #define EBM2GO_CODEGEN_VISITOR_Type_META_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_META_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_META_before ebm2go::Context_Type_META_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_META_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_META_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_META_after ebm2go::Context_Type_META_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENUM ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENUM>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENUM ebm2go::Context_Type_ENUM
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENUM_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENUM_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENUM_before ebm2go::Context_Type_ENUM_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENUM_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENUM_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENUM_after ebm2go::Context_Type_ENUM_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ARRAY ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ARRAY>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ARRAY ebm2go::Context_Type_ARRAY
+    #define EBM2GO_CODEGEN_VISITOR_Type_ARRAY_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ARRAY_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ARRAY_before ebm2go::Context_Type_ARRAY_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ARRAY_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ARRAY_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ARRAY_after ebm2go::Context_Type_ARRAY_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_VECTOR ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VECTOR>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VECTOR ebm2go::Context_Type_VECTOR
+    #define EBM2GO_CODEGEN_VISITOR_Type_VECTOR_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VECTOR_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VECTOR_before ebm2go::Context_Type_VECTOR_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_VECTOR_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VECTOR_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VECTOR_after ebm2go::Context_Type_VECTOR_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_VARIANT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VARIANT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VARIANT ebm2go::Context_Type_VARIANT
+    #define EBM2GO_CODEGEN_VISITOR_Type_VARIANT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VARIANT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VARIANT_before ebm2go::Context_Type_VARIANT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_VARIANT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_VARIANT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_VARIANT_after ebm2go::Context_Type_VARIANT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_RANGE ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_RANGE>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_RANGE ebm2go::Context_Type_RANGE
+    #define EBM2GO_CODEGEN_VISITOR_Type_RANGE_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_RANGE_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_RANGE_before ebm2go::Context_Type_RANGE_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_RANGE_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_RANGE_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_RANGE_after ebm2go::Context_Type_RANGE_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENCODER_RETURN ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENCODER_RETURN>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENCODER_RETURN ebm2go::Context_Type_ENCODER_RETURN
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENCODER_RETURN_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENCODER_RETURN_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENCODER_RETURN_before ebm2go::Context_Type_ENCODER_RETURN_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENCODER_RETURN_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENCODER_RETURN_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENCODER_RETURN_after ebm2go::Context_Type_ENCODER_RETURN_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_DECODER_RETURN ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_DECODER_RETURN>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_DECODER_RETURN ebm2go::Context_Type_DECODER_RETURN
+    #define EBM2GO_CODEGEN_VISITOR_Type_DECODER_RETURN_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_DECODER_RETURN_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_DECODER_RETURN_before ebm2go::Context_Type_DECODER_RETURN_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_DECODER_RETURN_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_DECODER_RETURN_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_DECODER_RETURN_after ebm2go::Context_Type_DECODER_RETURN_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENCODER_INPUT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENCODER_INPUT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENCODER_INPUT ebm2go::Context_Type_ENCODER_INPUT
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENCODER_INPUT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENCODER_INPUT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENCODER_INPUT_before ebm2go::Context_Type_ENCODER_INPUT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_ENCODER_INPUT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_ENCODER_INPUT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_ENCODER_INPUT_after ebm2go::Context_Type_ENCODER_INPUT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_DECODER_INPUT ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_DECODER_INPUT>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_DECODER_INPUT ebm2go::Context_Type_DECODER_INPUT
+    #define EBM2GO_CODEGEN_VISITOR_Type_DECODER_INPUT_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_DECODER_INPUT_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_DECODER_INPUT_before ebm2go::Context_Type_DECODER_INPUT_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_DECODER_INPUT_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_DECODER_INPUT_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_DECODER_INPUT_after ebm2go::Context_Type_DECODER_INPUT_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_PROPERTY_SETTER_RETURN>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN ebm2go::Context_Type_PROPERTY_SETTER_RETURN
+    #define EBM2GO_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_PROPERTY_SETTER_RETURN_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_before ebm2go::Context_Type_PROPERTY_SETTER_RETURN_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_PROPERTY_SETTER_RETURN_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_PROPERTY_SETTER_RETURN_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_PROPERTY_SETTER_RETURN_after ebm2go::Context_Type_PROPERTY_SETTER_RETURN_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_OPTIONAL ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_OPTIONAL>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_OPTIONAL ebm2go::Context_Type_OPTIONAL
+    #define EBM2GO_CODEGEN_VISITOR_Type_OPTIONAL_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_OPTIONAL_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_OPTIONAL_before ebm2go::Context_Type_OPTIONAL_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_OPTIONAL_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_OPTIONAL_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_OPTIONAL_after ebm2go::Context_Type_OPTIONAL_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_PTR ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_PTR>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_PTR ebm2go::Context_Type_PTR
+    #define EBM2GO_CODEGEN_VISITOR_Type_PTR_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_PTR_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_PTR_before ebm2go::Context_Type_PTR_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_PTR_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_PTR_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_PTR_after ebm2go::Context_Type_PTR_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_FUNCTION ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_FUNCTION>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_FUNCTION ebm2go::Context_Type_FUNCTION
+    #define EBM2GO_CODEGEN_VISITOR_Type_FUNCTION_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_FUNCTION_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_FUNCTION_before ebm2go::Context_Type_FUNCTION_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_FUNCTION_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_FUNCTION_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2go::Context_Type_FUNCTION_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_dispatch ebm2go::Context_Type
+    #define EBM2GO_CODEGEN_VISITOR_Type_before_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_before_dispatch ebm2go::Context_Type_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Type_after_dispatch ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Type_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Type_after_dispatch ebm2go::Context_Type_after<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Types ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Types>>
+    #define EBM2GO_CODEGEN_CONTEXT_Types ebm2go::Context_Types
+    #define EBM2GO_CODEGEN_VISITOR_Types_before ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Types_before>>
+    #define EBM2GO_CODEGEN_CONTEXT_Types_before ebm2go::Context_Types_before<Result>
+    #define EBM2GO_CODEGEN_VISITOR_Types_after ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Types_after>>
+    #define EBM2GO_CODEGEN_CONTEXT_Types_after ebm2go::Context_Types_after<Result>
+    #define CODEGEN_NAMESPACE ebm2go
+    #define CODEGEN_VISITOR(name) EBM2GO_CODEGEN_VISITOR_##name
+    #define CODEGEN_CONTEXT_PARAMETERS(name) EBM2GO_CODEGEN_CONTEXT_PARAMETERS_##name
+    #define CODEGEN_CONTEXT(name) EBM2GO_CODEGEN_CONTEXT_##name
+}  // namespace ebm2go
 #if __has_include("visitor/post_includes_before.hpp")
 #include "visitor/post_includes_before.hpp"
 #elif __has_include("visitor/dsl/post_includes_before_dsl.hpp")

@@ -45,11 +45,16 @@
 DEFINE_VISITOR(Statement_STRUCT_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    auto name = ctx.identifier();
 
     CodeWriter w;
-
-    w.writeln(ctx.config().struct_keyword, " ", name, " ", ctx.config().begin_block);
+    if (ctx.config().struct_definition_start_wrapper) {
+        MAYBE(start, ctx.config().struct_definition_start_wrapper(ctx));
+        w.write(start.to_writer());
+    }
+    else {
+        auto name = ctx.identifier();
+        w.writeln(ctx.config().struct_keyword, " ", name, " ", ctx.config().begin_block);
+    }
     {
         auto scope = w.indent_scope();
         MAYBE(block, ctx.visit(ctx.struct_decl.fields));

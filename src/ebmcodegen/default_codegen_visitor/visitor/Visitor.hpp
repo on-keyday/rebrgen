@@ -13,6 +13,8 @@ std::string bool_false = "false";
 std::string setter_status_ok = "";
 std::string setter_status_failure = "";
 std::string struct_keyword = "struct";
+std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx)> struct_definition_start_wrapper;
+std::string variable_initializer = "=";
 std::string begin_block = "{";
 std::string end_block = "}";
 std::string empty_block_marker = "";
@@ -52,6 +54,7 @@ std::string int_suffix = "";
 std::string float_prefix = "f";
 std::string float_suffix = "";
 std::string function_define_keyword = "fn";
+std::function<expected<Result>(Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& ctx)> function_definition_start_wrapper;
 std::string encoder_return_type = "EncoderReturn";
 std::string decoder_return_type = "DecoderReturn";
 std::string encoder_input_type = "EncoderInput";
@@ -76,3 +79,14 @@ bool func_style_cast = true;
 
 std::vector<CodeWriter> decl_toplevel;
 bool on_assign = false;  // useful for expression generation
+
+std::function<expected<Result>(Context_Statement_WRITE_DATA& ctx)> write_data_visitor;
+std::function<expected<Result>(Context_Statement_READ_DATA& ctx)> read_data_visitor;
+
+std::function<expected<Result>(Context_Statement_COMPOSITE_FIELD_DECL& ctx)> composite_field_decl_visitor;
+std::function<expected<Result>(Context_Expression_IS_ERROR& ctx)> is_error_visitor;
+std::function<expected<Result>(Context_Statement_ERROR_RETURN& ctx)> error_return_visitor;
+
+std::function<expected<Result>(Context_Statement_ENUM_DECL& ctx)> enum_decl_visitor;
+std::function<expected<Result>(Context_Statement_ENUM_MEMBER_DECL& ctx)> enum_member_decl_visitor;
+std::function<expected<Result>(Context_Statement_INIT_CHECK& ctx)> init_check_visitor;

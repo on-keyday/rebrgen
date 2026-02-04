@@ -911,6 +911,17 @@ namespace ebmcodegen {
         return utility_classes;
     }
 
+    void generate_Contexts_forward_declaration(CodeWriter& w, const std::vector<ContextClasses>& context_classes) {
+        for (auto& cls_group : context_classes) {
+            for (auto& cls : cls_group.classes) {
+                if (cls.type_params.size()) {
+                    continue;
+                }
+                w.writeln("struct ", context_name(cls), ";");
+            }
+        }
+    }
+
     void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info, const UtilityClass& base_visitor) {
         w.writeln("struct BaseVisitor {");
         {
@@ -1853,6 +1864,7 @@ namespace ebmcodegen {
         generate_generic_traversal_children(hdr, src, context_classes, result_type);
         generate_user_interface(hdr, context_classes, result_type);
         generate_impl_getter_header(hdr);
+        generate_Contexts_forward_declaration(hdr, context_classes);
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);
         generate_initial_context(hdr);
 

@@ -36,9 +36,7 @@ if (then_block.to_writer().empty()) {
 else {
     w.write(then_block.to_writer());
 }
-if (get_id(if_statement.else_block) == 4688) {
-    ;
-}
+
 then_scope.execute();
 w.write(visitor.end_block);
 auto els_block = if_statement.else_block;

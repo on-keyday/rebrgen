@@ -41,7 +41,11 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         params.write(param.to_writer());
     }
     CodeWriter w;
-    if (ctx.config().forward_type_in_function_decl) {
+    if (ctx.config().function_definition_start_wrapper) {
+        MAYBE(func_start, ctx.config().function_definition_start_wrapper(ret_type, name, params, ctx));
+        w.write(func_start.to_writer());
+    }
+    else if (ctx.config().forward_type_in_function_decl) {
         w.writeln(ret_type.to_writer(), " ", name, "(", params, ") ", ctx.config().begin_block);
     }
     else {

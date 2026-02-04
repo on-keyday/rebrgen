@@ -26,7 +26,7 @@
 #include "../codegen.hpp"
 
 DEFINE_VISITOR(Type_VARIANT) {
-    if (!is_nil(ctx.variant_desc.common_type)) {
+    if (!is_nil(ctx.variant_desc.common_type) && is_nil(ctx.variant_desc.related_field)) {
         return ctx.visit(ctx.variant_desc.common_type);
     }
     auto enum_name = "Variant" + std::format("{}", get_id(ctx.item_id));

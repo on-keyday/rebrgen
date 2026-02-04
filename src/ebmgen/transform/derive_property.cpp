@@ -92,7 +92,7 @@ namespace ebmgen {
                                 ebm::TypeBody body{.kind = ebm::TypeKind::STRUCT};
                                 body.id(field_decl->parent_struct);
                                 EBMA_ADD_TYPE(struct_type_ref, std::move(body));
-                                MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_get));
+                                MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_get, getter_id));
                                 ebm::Block block;
                                 append(block, handle_union->first);
                                 append(block, ret);
@@ -140,7 +140,7 @@ namespace ebmgen {
                                 ebm::TypeBody body{.kind = ebm::TypeKind::STRUCT};
                                 body.id(field_decl->parent_struct);
                                 EBMA_ADD_TYPE(struct_type_ref, std::move(body));
-                                MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_set));
+                                MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_set, setter_id));
                                 append(block, handle_union->first);
                             }
                             MAYBE(self_expr, ctx.state().get_self_ref_for_id(member.field));

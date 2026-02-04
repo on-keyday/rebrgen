@@ -592,6 +592,7 @@ format InitCheck:
     init_check_type :InitCheckType
     target_field :ExpressionRef
     expect_value :ExpressionRef
+    related_function :WeakStatementRef # Reference to the related function declaration
 
 format ImportDecl:
     name :IdentifierRef # Name of the imported module

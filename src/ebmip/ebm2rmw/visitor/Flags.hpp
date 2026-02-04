@@ -18,6 +18,7 @@
     WEB_LSP_NAME(lsp_name)
     WEB_WORKER_NAME(worker_name)
     FILE_EXTENSIONS(file_ext...)
+    CONFIG_MAP(config_name,flag_name)
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

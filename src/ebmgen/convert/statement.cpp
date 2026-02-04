@@ -431,7 +431,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ) {
+    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ, ebm::StatementRef related_function) {
         MAYBE(struct_type, ctx.repository().get_type(alt_type));
         MAYBE(base_struct_id, struct_type.body.id());
         auto related_variant_ref = ctx.state().get_struct_variant_for_id(base_struct_id.id);
@@ -444,6 +444,7 @@ namespace ebmgen {
         ebm::InitCheck check;
         check.init_check_type = typ;
         check.target_field = self_ref;
+        check.related_function = to_weak(related_function);
         EBM_DEFAULT_VALUE(default_, alt_type);
         check.expect_value = default_;
         ebm::StatementBody init_check;
@@ -461,7 +462,8 @@ namespace ebmgen {
         if (is_nil(alt_type)) {
             return std::nullopt;
         }
-        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::union_init_encode : ebm::InitCheckType::union_init_decode);
+        auto func = ctx.state().get_current_function_id();
+        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::union_init_encode : ebm::InitCheckType::union_init_decode, func);
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {

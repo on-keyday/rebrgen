@@ -280,7 +280,7 @@ namespace ebmgen {
         return type_ref;
     }
 
-    expected<ebm::StatementRef> make_field_init_check(ConverterContext& ctx, ebm::ExpressionRef base_ref, bool encode) {
+    expected<ebm::StatementRef> make_field_init_check(ConverterContext& ctx, ebm::ExpressionRef base_ref, bool encode, ebm::StatementRef related_function) {
         ebm::InitCheck init_check;
         init_check.init_check_type = encode ? ebm::InitCheckType::field_init_encode : ebm::InitCheckType::field_init_decode;
         init_check.target_field = base_ref;

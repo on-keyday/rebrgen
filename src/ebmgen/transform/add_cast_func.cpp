@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/converter.hpp"

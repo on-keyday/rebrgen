@@ -45,6 +45,7 @@ namespace ebmgen {
             ebm::VariantDesc desc;
             desc.related_field = to_weak(related_field);
             ebm::Types members;
+            std::optional<size_t> max_bit_size;
             for (auto& struct_member : n->structs) {
                 MAYBE(member_type_ref, ctx.get_statement_converter().convert_struct_decl(struct_member, varint_id));
                 ebm::TypeBody body;
@@ -53,8 +54,33 @@ namespace ebmgen {
                 EBMA_ADD_TYPE(member_type_ref2, std::move(body));
                 append(members, member_type_ref2);
                 ctx.state().cache_type(struct_member, member_type_ref2);
+                // try get struct size
+                MAYBE(struct_stmt, ctx.repository().get_statement(member_type_ref));
+                MAYBE(struct_decl, struct_stmt.body.struct_decl());
+                if (auto size = struct_decl.size()) {
+                    std::uint64_t bit_size = 0;
+                    if (size->unit == ebm::SizeUnit::BIT_FIXED) {
+                        bit_size = size->size()->value();
+                    }
+                    else if (size->unit == ebm::SizeUnit::BYTE_FIXED) {
+                        bit_size = size->size()->value() * 8;
+                    }
+                    if (max_bit_size) {
+                        max_bit_size = (std::max)(*max_bit_size, bit_size);
+                    }
+                    else {
+                        max_bit_size = bit_size;
+                    }
+                }
+                else {
+                    max_bit_size = std::nullopt;  // not fixed
+                }
             }
             desc.members = std::move(members);
+            if (max_bit_size) {
+                EBMU_UINT_TYPE(variant_common, *max_bit_size);
+                desc.common_type = variant_common;
+            }
             body.variant_desc(std::move(desc));
             EBMA_ADD_TYPE(type_ref, varint_id, std::move(body));
             return type_ref;

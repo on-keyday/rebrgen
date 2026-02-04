@@ -397,7 +397,8 @@ namespace ebmgen {
         }
 
         // TODO: add arguments
-        MAYBE(init_field, make_field_init_check(ctx, base_ref, false));
+        auto func = ctx.state().get_current_function_id();
+        MAYBE(init_field, make_field_init_check(ctx, base_ref, false, func));
         MAYBE(typ_ref, get_decoder_return_type(ctx));
         EBM_CALL(call_ref, typ_ref, std::move(call_desc));
         EBM_DEFINE_VARIABLE(result, {}, typ_ref, call_ref, ebm::VariableDeclKind::IMMUTABLE, false);

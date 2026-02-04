@@ -784,8 +784,8 @@ namespace ebmgen {
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
     expected<std::optional<ebm::TypeRef>> get_common_type(ConverterContext& ctx, ebm::TypeRef a, ebm::TypeRef b);
     expected<ebm::ExpressionBody> make_conditional(ConverterContext& ctx, ebm::TypeRef type, ebm::ExpressionRef cond, ebm::ExpressionRef then, ebm::ExpressionRef els);
-    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ);
-    expected<ebm::StatementRef> make_field_init_check(ConverterContext& ctx, ebm::ExpressionRef base_ref, bool encode);
+    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ, ebm::StatementRef related_function);
+    expected<ebm::StatementRef> make_field_init_check(ConverterContext& ctx, ebm::ExpressionRef base_ref, bool encode, ebm::StatementRef function_ref);
 
     struct TransformContext {
        private:

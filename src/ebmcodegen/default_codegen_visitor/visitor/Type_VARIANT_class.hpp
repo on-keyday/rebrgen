@@ -26,7 +26,7 @@
 DEFINE_VISITOR(Type_VARIANT) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    if (!is_nil(ctx.variant_desc.common_type)) {
+    if (!is_nil(ctx.variant_desc.common_type) && is_nil(ctx.variant_desc.related_field)) {
         return ctx.visit(ctx.variant_desc.common_type);
     }
     auto enum_name = ctx.config().variant_prefix + std::format("{}", get_id(ctx.item_id));

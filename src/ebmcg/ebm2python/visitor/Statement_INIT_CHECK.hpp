@@ -14,6 +14,7 @@
       init_check_type: InitCheckType
       target_field: ExpressionRef
       expect_value: ExpressionRef
+      related_function: WeakStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

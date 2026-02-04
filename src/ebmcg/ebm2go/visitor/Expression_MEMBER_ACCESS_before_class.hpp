@@ -45,5 +45,11 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
             return CODE(base_, ".", member_ident, "(", args.empty() ? "" : ", ", args, ")");
         }
     }
+    MAYBE(member, ctx.get_field<"body.id">(ctx.member));
+    if (auto type_ref = get_variant_member_from_field(ctx, from_weak(member))) {
+        auto variant_hold = std::format("tmp{}", get_id(*type_ref));
+        MAYBE(member, ctx.visit(ctx.member));
+        return CODE(variant_hold, ".", member.to_writer());
+    }
     return pass;
 }

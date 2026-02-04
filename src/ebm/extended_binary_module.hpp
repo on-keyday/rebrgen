@@ -1926,7 +1926,6 @@ namespace ebm {
     struct LoweredIOStatement;
     struct LoopFlowControl;
     struct Condition;
-    struct InitCheck;
     struct AnyRef;
     struct RefAlias;
     struct JumpOffset;
@@ -1961,6 +1960,7 @@ namespace ebm {
     struct ImportDecl;
     struct ErrorReport;
     struct SubByteRange;
+    struct InitCheck;
     struct StatementBody;
     struct Statement;
     struct Types;
@@ -2411,38 +2411,6 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "cond",visitor_tag<decltype(std::declval<Condition>().cond),false>{});
-        }
-    };
-    struct EBM_API InitCheck{
-        InitCheckType init_check_type{};
-        ExpressionRef target_field;
-        ExpressionRef expect_value;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-        constexpr static const char* visitor_name = "InitCheck";
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) {
-            v(v, "init_check_type",(*this).init_check_type);
-            v(v, "target_field",(*this).target_field);
-            v(v, "expect_value",(*this).expect_value);
-        }
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) const {
-            v(v, "init_check_type",(*this).init_check_type);
-            v(v, "target_field",(*this).target_field);
-            v(v, "expect_value",(*this).expect_value);
-        }
-        template<typename T,bool rvalue = false>
-        struct visitor_tag {
-            using type = T;
-            static constexpr bool is_rvalue = rvalue;
-        };
-        template<typename Visitor>
-        static constexpr void visit_static(Visitor&& v) {
-            v(v, "init_check_type",visitor_tag<decltype(std::declval<InitCheck>().init_check_type),false>{});
-            v(v, "target_field",visitor_tag<decltype(std::declval<InitCheck>().target_field),false>{});
-            v(v, "expect_value",visitor_tag<decltype(std::declval<InitCheck>().expect_value),false>{});
         }
     };
     struct EBM_API AnyRef{
@@ -4221,6 +4189,42 @@ namespace ebm {
             v(v, "io_ref",visitor_tag<decltype(std::declval<SubByteRange>().io_ref),false>{});
             v(v, "parent_io_ref",visitor_tag<decltype(std::declval<SubByteRange>().parent_io_ref),false>{});
             v(v, "io_statement",visitor_tag<decltype(std::declval<SubByteRange>().io_statement),false>{});
+        }
+    };
+    struct EBM_API InitCheck{
+        InitCheckType init_check_type{};
+        ExpressionRef target_field;
+        ExpressionRef expect_value;
+        WeakStatementRef related_function;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "InitCheck";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "init_check_type",(*this).init_check_type);
+            v(v, "target_field",(*this).target_field);
+            v(v, "expect_value",(*this).expect_value);
+            v(v, "related_function",(*this).related_function);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "init_check_type",(*this).init_check_type);
+            v(v, "target_field",(*this).target_field);
+            v(v, "expect_value",(*this).expect_value);
+            v(v, "related_function",(*this).related_function);
+        }
+        template<typename T,bool rvalue = false>
+        struct visitor_tag {
+            using type = T;
+            static constexpr bool is_rvalue = rvalue;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "init_check_type",visitor_tag<decltype(std::declval<InitCheck>().init_check_type),false>{});
+            v(v, "target_field",visitor_tag<decltype(std::declval<InitCheck>().target_field),false>{});
+            v(v, "expect_value",visitor_tag<decltype(std::declval<InitCheck>().expect_value),false>{});
+            v(v, "related_function",visitor_tag<decltype(std::declval<InitCheck>().related_function),false>{});
         }
     };
     struct EBM_API StatementBody{

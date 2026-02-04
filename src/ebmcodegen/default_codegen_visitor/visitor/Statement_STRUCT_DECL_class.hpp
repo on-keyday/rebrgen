@@ -61,6 +61,12 @@ DEFINE_VISITOR(Statement_STRUCT_DECL) {
         w.write(block.to_writer());
     }
     w.writeln(ctx.config().end_block, ctx.config().endof_struct_definition);
+    if (auto props = ctx.struct_decl.properties()) {
+        for (const auto& prop_ref : props->container) {
+            MAYBE(prop, ctx.visit(prop_ref));
+            w.writeln(prop.to_writer());
+        }
+    }
 
     if (auto enc = ctx.struct_decl.encode_fn()) {
         MAYBE(encode_fn, ctx.visit(*enc));

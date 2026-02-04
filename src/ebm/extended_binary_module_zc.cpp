@@ -17023,33 +17023,6 @@ namespace ebm::zc {
         }
         return ::futils::error::Error<>();
     }
-    ::futils::error::Error<> InitCheck::encode(::futils::binary::writer& w) const {
-        auto tmp_196_ = static_cast<std::uint8_t>((*this).init_check_type);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_196_) ,true)) {
-            return ::futils::error::Error<>("encode: InitCheck::init_check_type: write std::uint8_t failed",::futils::error::Category::lib);
-        }
-        if (auto err = (*this).target_field.encode(w)) {
-            return err;
-        }
-        if (auto err = (*this).expect_value.encode(w)) {
-            return err;
-        }
-        return ::futils::error::Error<>();
-    }
-    ::futils::error::Error<> InitCheck::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_197_ = 0;
-        if (!::futils::binary::read_num(r,tmp_197_ ,true)) {
-            return ::futils::error::Error<>("decode: InitCheck::init_check_type: read int failed",::futils::error::Category::lib);
-        }
-        (*this).init_check_type = static_cast<InitCheckType>(tmp_197_);
-        if (auto err = (*this).target_field.decode(r)) {
-            return err;
-        }
-        if (auto err = (*this).expect_value.decode(r)) {
-            return err;
-        }
-        return ::futils::error::Error<>();
-    }
     ::futils::error::Error<> AnyRef::encode(::futils::binary::writer& w) const {
         if (auto err = (*this).id.encode(w)) {
             return err;
@@ -17063,8 +17036,8 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> RefAlias::encode(::futils::binary::writer& w) const {
-        auto tmp_198_ = static_cast<std::uint8_t>((*this).hint);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_198_) ,true)) {
+        auto tmp_196_ = static_cast<std::uint8_t>((*this).hint);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_196_) ,true)) {
             return ::futils::error::Error<>("encode: RefAlias::hint: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (auto err = (*this).from.encode(w)) {
@@ -17076,11 +17049,11 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> RefAlias::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_199_ = 0;
-        if (!::futils::binary::read_num(r,tmp_199_ ,true)) {
+        std::uint8_t tmp_197_ = 0;
+        if (!::futils::binary::read_num(r,tmp_197_ ,true)) {
             return ::futils::error::Error<>("decode: RefAlias::hint: read int failed",::futils::error::Category::lib);
         }
-        (*this).hint = static_cast<AliasHint>(tmp_199_);
+        (*this).hint = static_cast<AliasHint>(tmp_197_);
         if (auto err = (*this).from.decode(r)) {
             return err;
         }
@@ -17151,12 +17124,12 @@ namespace ebm::zc {
         if (auto err = (*this).len.encode(w)) {
             return err;
         }
-        auto tmp_200_ = (*this).len.value();
-        if (tmp_200_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: Expressions::container: dynamic length is not compatible with its length; tmp_200_!=(*this).container.size()",::futils::error::Category::lib);
+        auto tmp_198_ = (*this).len.value();
+        if (tmp_198_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: Expressions::container: dynamic length is not compatible with its length; tmp_198_!=(*this).container.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_201_ : (*this).container) {
-            if (auto err = tmp_201_.encode(w)) {
+        for (auto& tmp_199_ : (*this).container) {
+            if (auto err = tmp_199_.encode(w)) {
                 return err;
             }
         }
@@ -17166,14 +17139,14 @@ namespace ebm::zc {
         if (auto err = (*this).len.decode(r)) {
             return err;
         }
-        auto tmp_202_ = (*this).len.value();
+        auto tmp_200_ = (*this).len.value();
         (*this).container.clear();
-        for (size_t  tmp_204_= 0; tmp_204_<tmp_202_; ++tmp_204_ ) {
-            ExpressionRef tmp_203_;
-            if (auto err = tmp_203_.decode(r)) {
+        for (size_t  tmp_202_= 0; tmp_202_<tmp_200_; ++tmp_202_ ) {
+            ExpressionRef tmp_201_;
+            if (auto err = tmp_201_.decode(r)) {
                 return err;
             }
-            (*this).container.push_back(std::move(tmp_203_));
+            (*this).container.push_back(std::move(tmp_201_));
         }
         return ::futils::error::Error<>();
     }
@@ -17202,8 +17175,8 @@ namespace ebm::zc {
         if (auto err = (*this).from_type.encode(w)) {
             return err;
         }
-        auto tmp_205_ = static_cast<std::uint8_t>((*this).cast_kind);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_205_) ,true)) {
+        auto tmp_203_ = static_cast<std::uint8_t>((*this).cast_kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_203_) ,true)) {
             return ::futils::error::Error<>("encode: TypeCastDesc::cast_kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if ((*this).cast_kind == CastType::FUNCTION_CAST) {
@@ -17223,11 +17196,11 @@ namespace ebm::zc {
         if (auto err = (*this).from_type.decode(r)) {
             return err;
         }
-        std::uint8_t tmp_206_ = 0;
-        if (!::futils::binary::read_num(r,tmp_206_ ,true)) {
+        std::uint8_t tmp_204_ = 0;
+        if (!::futils::binary::read_num(r,tmp_204_ ,true)) {
             return ::futils::error::Error<>("decode: TypeCastDesc::cast_kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).cast_kind = static_cast<CastType>(tmp_206_);
+        (*this).cast_kind = static_cast<CastType>(tmp_204_);
         if ((*this).cast_kind == CastType::FUNCTION_CAST) {
             if(!std::holds_alternative<union_struct_18>(union_variant_17)) {
                 union_variant_17 = union_struct_18();
@@ -17239,8 +17212,8 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> Size::encode(::futils::binary::writer& w) const {
-        auto tmp_207_ = static_cast<std::uint8_t>((*this).unit);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_207_) ,true)) {
+        auto tmp_205_ = static_cast<std::uint8_t>((*this).unit);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_205_) ,true)) {
             return ::futils::error::Error<>("encode: Size::unit: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (SizeUnit::UNKNOWN==(*this).unit) {
@@ -17296,11 +17269,11 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> Size::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_208_ = 0;
-        if (!::futils::binary::read_num(r,tmp_208_ ,true)) {
+        std::uint8_t tmp_206_ = 0;
+        if (!::futils::binary::read_num(r,tmp_206_ ,true)) {
             return ::futils::error::Error<>("decode: Size::unit: read int failed",::futils::error::Category::lib);
         }
-        (*this).unit = static_cast<SizeUnit>(tmp_208_);
+        (*this).unit = static_cast<SizeUnit>(tmp_206_);
         if (SizeUnit::UNKNOWN==(*this).unit) {
             if(!std::holds_alternative<union_struct_21>(union_variant_20)) {
                 union_variant_20 = union_struct_21();
@@ -17360,8 +17333,8 @@ namespace ebm::zc {
         if (auto err = (*this).type.encode(w)) {
             return err;
         }
-        auto tmp_209_ = static_cast<std::uint8_t>((*this).kind);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_209_) ,true)) {
+        auto tmp_207_ = static_cast<std::uint8_t>((*this).kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_207_) ,true)) {
             return ::futils::error::Error<>("encode: ExpressionBody::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
@@ -17427,8 +17400,8 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_37>(union_variant_29)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_29 variant alternative union_struct_37 is not set",::futils::error::Category::lib);
             }
-            auto tmp_210_ = static_cast<std::uint8_t>(std::get<8>((*this).union_variant_29).bop);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_210_) ,true)) {
+            auto tmp_208_ = static_cast<std::uint8_t>(std::get<8>((*this).union_variant_29).bop);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_208_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::bop: write std::uint8_t failed",::futils::error::Category::lib);
             }
             if (auto err = std::get<8>((*this).union_variant_29).left.encode(w)) {
@@ -17442,8 +17415,8 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_38>(union_variant_29)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_29 variant alternative union_struct_38 is not set",::futils::error::Category::lib);
             }
-            auto tmp_211_ = static_cast<std::uint8_t>(std::get<9>((*this).union_variant_29).uop);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_211_) ,true)) {
+            auto tmp_209_ = static_cast<std::uint8_t>(std::get<9>((*this).union_variant_29).uop);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_209_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::uop: write std::uint8_t failed",::futils::error::Category::lib);
             }
             if (auto err = std::get<9>((*this).union_variant_29).operand.encode(w)) {
@@ -17522,12 +17495,12 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_46>(union_variant_29)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_29 variant alternative union_struct_46 is not set",::futils::error::Category::lib);
             }
-            auto tmp_212_ = static_cast<std::uint8_t>(std::get<17>((*this).union_variant_29).stream_type);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_212_) ,true)) {
+            auto tmp_210_ = static_cast<std::uint8_t>(std::get<17>((*this).union_variant_29).stream_type);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_210_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
             }
-            auto tmp_213_ = static_cast<std::uint8_t>(std::get<17>((*this).union_variant_29).unit);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_213_) ,true)) {
+            auto tmp_211_ = static_cast<std::uint8_t>(std::get<17>((*this).union_variant_29).unit);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_211_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::unit: write std::uint8_t failed",::futils::error::Category::lib);
             }
             if (!((std::get<17>((*this).union_variant_29).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_29).unit == SizeUnit::BYTE_FIXED))) {
@@ -17541,8 +17514,8 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_47>(union_variant_29)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_29 variant alternative union_struct_47 is not set",::futils::error::Category::lib);
             }
-            auto tmp_214_ = static_cast<std::uint8_t>(std::get<18>((*this).union_variant_29).stream_type);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_214_) ,true)) {
+            auto tmp_212_ = static_cast<std::uint8_t>(std::get<18>((*this).union_variant_29).stream_type);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_212_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
             }
             if (auto err = std::get<18>((*this).union_variant_29).io_ref.encode(w)) {
@@ -17553,8 +17526,8 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_48>(union_variant_29)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_29 variant alternative union_struct_48 is not set",::futils::error::Category::lib);
             }
-            auto tmp_215_ = static_cast<std::uint8_t>(std::get<19>((*this).union_variant_29).stream_type);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_215_) ,true)) {
+            auto tmp_213_ = static_cast<std::uint8_t>(std::get<19>((*this).union_variant_29).stream_type);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_213_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
             }
             if (auto err = std::get<19>((*this).union_variant_29).num_bytes.encode(w)) {
@@ -17707,8 +17680,8 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_63>(union_variant_29)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_29 variant alternative union_struct_63 is not set",::futils::error::Category::lib);
             }
-            auto tmp_216_ = static_cast<std::uint8_t>(std::get<34>((*this).union_variant_29).setter_status);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_216_) ,true)) {
+            auto tmp_214_ = static_cast<std::uint8_t>(std::get<34>((*this).union_variant_29).setter_status);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_214_) ,true)) {
                 return ::futils::error::Error<>("encode: ExpressionBody::setter_status: write std::uint8_t failed",::futils::error::Category::lib);
             }
         }
@@ -17726,11 +17699,11 @@ namespace ebm::zc {
         if (auto err = (*this).type.decode(r)) {
             return err;
         }
-        std::uint8_t tmp_217_ = 0;
-        if (!::futils::binary::read_num(r,tmp_217_ ,true)) {
+        std::uint8_t tmp_215_ = 0;
+        if (!::futils::binary::read_num(r,tmp_215_ ,true)) {
             return ::futils::error::Error<>("decode: ExpressionBody::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).kind = static_cast<ExpressionKind>(tmp_217_);
+        (*this).kind = static_cast<ExpressionKind>(tmp_215_);
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_29)) {
                 union_variant_29 = union_struct_30();
@@ -17794,11 +17767,11 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_37>(union_variant_29)) {
                 union_variant_29 = union_struct_37();
             }
-            std::uint8_t tmp_218_ = 0;
-            if (!::futils::binary::read_num(r,tmp_218_ ,true)) {
+            std::uint8_t tmp_216_ = 0;
+            if (!::futils::binary::read_num(r,tmp_216_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::bop: read int failed",::futils::error::Category::lib);
             }
-            std::get<8>((*this).union_variant_29).bop = static_cast<BinaryOp>(tmp_218_);
+            std::get<8>((*this).union_variant_29).bop = static_cast<BinaryOp>(tmp_216_);
             if (auto err = std::get<8>((*this).union_variant_29).left.decode(r)) {
                 return err;
             }
@@ -17810,11 +17783,11 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_38>(union_variant_29)) {
                 union_variant_29 = union_struct_38();
             }
-            std::uint8_t tmp_219_ = 0;
-            if (!::futils::binary::read_num(r,tmp_219_ ,true)) {
+            std::uint8_t tmp_217_ = 0;
+            if (!::futils::binary::read_num(r,tmp_217_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::uop: read int failed",::futils::error::Category::lib);
             }
-            std::get<9>((*this).union_variant_29).uop = static_cast<UnaryOp>(tmp_219_);
+            std::get<9>((*this).union_variant_29).uop = static_cast<UnaryOp>(tmp_217_);
             if (auto err = std::get<9>((*this).union_variant_29).operand.decode(r)) {
                 return err;
             }
@@ -17891,16 +17864,16 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_46>(union_variant_29)) {
                 union_variant_29 = union_struct_46();
             }
-            std::uint8_t tmp_220_ = 0;
-            if (!::futils::binary::read_num(r,tmp_220_ ,true)) {
+            std::uint8_t tmp_218_ = 0;
+            if (!::futils::binary::read_num(r,tmp_218_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::stream_type: read int failed",::futils::error::Category::lib);
             }
-            std::get<17>((*this).union_variant_29).stream_type = static_cast<StreamType>(tmp_220_);
-            std::uint8_t tmp_221_ = 0;
-            if (!::futils::binary::read_num(r,tmp_221_ ,true)) {
+            std::get<17>((*this).union_variant_29).stream_type = static_cast<StreamType>(tmp_218_);
+            std::uint8_t tmp_219_ = 0;
+            if (!::futils::binary::read_num(r,tmp_219_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::unit: read int failed",::futils::error::Category::lib);
             }
-            std::get<17>((*this).union_variant_29).unit = static_cast<SizeUnit>(tmp_221_);
+            std::get<17>((*this).union_variant_29).unit = static_cast<SizeUnit>(tmp_219_);
             if (!((std::get<17>((*this).union_variant_29).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_29).unit == SizeUnit::BYTE_FIXED))) {
                 return ::futils::error::Error<>("decode: ExpressionBody: assertion failed; (std::get<17>((*this).union_variant_29).unit == SizeUnit::BIT_FIXED) || (std::get<17>((*this).union_variant_29).unit == SizeUnit::BYTE_FIXED)",::futils::error::Category::lib);
             }
@@ -17912,11 +17885,11 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_47>(union_variant_29)) {
                 union_variant_29 = union_struct_47();
             }
-            std::uint8_t tmp_222_ = 0;
-            if (!::futils::binary::read_num(r,tmp_222_ ,true)) {
+            std::uint8_t tmp_220_ = 0;
+            if (!::futils::binary::read_num(r,tmp_220_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::stream_type: read int failed",::futils::error::Category::lib);
             }
-            std::get<18>((*this).union_variant_29).stream_type = static_cast<StreamType>(tmp_222_);
+            std::get<18>((*this).union_variant_29).stream_type = static_cast<StreamType>(tmp_220_);
             if (auto err = std::get<18>((*this).union_variant_29).io_ref.decode(r)) {
                 return err;
             }
@@ -17925,11 +17898,11 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_48>(union_variant_29)) {
                 union_variant_29 = union_struct_48();
             }
-            std::uint8_t tmp_223_ = 0;
-            if (!::futils::binary::read_num(r,tmp_223_ ,true)) {
+            std::uint8_t tmp_221_ = 0;
+            if (!::futils::binary::read_num(r,tmp_221_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::stream_type: read int failed",::futils::error::Category::lib);
             }
-            std::get<19>((*this).union_variant_29).stream_type = static_cast<StreamType>(tmp_223_);
+            std::get<19>((*this).union_variant_29).stream_type = static_cast<StreamType>(tmp_221_);
             if (auto err = std::get<19>((*this).union_variant_29).num_bytes.decode(r)) {
                 return err;
             }
@@ -18080,11 +18053,11 @@ namespace ebm::zc {
             if(!std::holds_alternative<union_struct_63>(union_variant_29)) {
                 union_variant_29 = union_struct_63();
             }
-            std::uint8_t tmp_224_ = 0;
-            if (!::futils::binary::read_num(r,tmp_224_ ,true)) {
+            std::uint8_t tmp_222_ = 0;
+            if (!::futils::binary::read_num(r,tmp_222_ ,true)) {
                 return ::futils::error::Error<>("decode: ExpressionBody::setter_status: read int failed",::futils::error::Category::lib);
             }
-            std::get<34>((*this).union_variant_29).setter_status = static_cast<SetterStatus>(tmp_224_);
+            std::get<34>((*this).union_variant_29).setter_status = static_cast<SetterStatus>(tmp_222_);
         }
         else if (ExpressionKind::AS_ARG==(*this).kind) {
             if(!std::holds_alternative<union_struct_64>(union_variant_29)) {
@@ -18190,12 +18163,12 @@ namespace ebm::zc {
         if (auto err = (*this).len.encode(w)) {
             return err;
         }
-        auto tmp_225_ = (*this).len.value();
-        if (tmp_225_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: Block::container: dynamic length is not compatible with its length; tmp_225_!=(*this).container.size()",::futils::error::Category::lib);
+        auto tmp_223_ = (*this).len.value();
+        if (tmp_223_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: Block::container: dynamic length is not compatible with its length; tmp_223_!=(*this).container.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_226_ : (*this).container) {
-            if (auto err = tmp_226_.encode(w)) {
+        for (auto& tmp_224_ : (*this).container) {
+            if (auto err = tmp_224_.encode(w)) {
                 return err;
             }
         }
@@ -18205,14 +18178,14 @@ namespace ebm::zc {
         if (auto err = (*this).len.decode(r)) {
             return err;
         }
-        auto tmp_227_ = (*this).len.value();
+        auto tmp_225_ = (*this).len.value();
         (*this).container.clear();
-        for (size_t  tmp_229_= 0; tmp_229_<tmp_227_; ++tmp_229_ ) {
-            StatementRef tmp_228_;
-            if (auto err = tmp_228_.decode(r)) {
+        for (size_t  tmp_227_= 0; tmp_227_<tmp_225_; ++tmp_227_ ) {
+            StatementRef tmp_226_;
+            if (auto err = tmp_226_.decode(r)) {
                 return err;
             }
-            (*this).container.push_back(std::move(tmp_228_));
+            (*this).container.push_back(std::move(tmp_226_));
         }
         return ::futils::error::Error<>();
     }
@@ -18223,8 +18196,8 @@ namespace ebm::zc {
         if (auto err = (*this).composite_type.encode(w)) {
             return err;
         }
-        auto tmp_230_ = static_cast<std::uint8_t>((*this).kind);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_230_) ,true)) {
+        auto tmp_228_ = static_cast<std::uint8_t>((*this).kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_228_) ,true)) {
             return ::futils::error::Error<>("encode: CompositeFieldDecl::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
@@ -18236,11 +18209,11 @@ namespace ebm::zc {
         if (auto err = (*this).composite_type.decode(r)) {
             return err;
         }
-        std::uint8_t tmp_231_ = 0;
-        if (!::futils::binary::read_num(r,tmp_231_ ,true)) {
+        std::uint8_t tmp_229_ = 0;
+        if (!::futils::binary::read_num(r,tmp_229_ ,true)) {
             return ::futils::error::Error<>("decode: CompositeFieldDecl::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).kind = static_cast<CompositeFieldKind>(tmp_231_);
+        (*this).kind = static_cast<CompositeFieldKind>(tmp_229_);
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> Metadata::encode(::futils::binary::writer& w) const {
@@ -18265,12 +18238,12 @@ namespace ebm::zc {
         if (auto err = (*this).len.encode(w)) {
             return err;
         }
-        auto tmp_232_ = (*this).len.value();
-        if (tmp_232_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: LoweredIOStatements::container: dynamic length is not compatible with its length; tmp_232_!=(*this).container.size()",::futils::error::Category::lib);
+        auto tmp_230_ = (*this).len.value();
+        if (tmp_230_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: LoweredIOStatements::container: dynamic length is not compatible with its length; tmp_230_!=(*this).container.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_233_ : (*this).container) {
-            if (auto err = tmp_233_.encode(w)) {
+        for (auto& tmp_231_ : (*this).container) {
+            if (auto err = tmp_231_.encode(w)) {
                 return err;
             }
         }
@@ -18280,14 +18253,14 @@ namespace ebm::zc {
         if (auto err = (*this).len.decode(r)) {
             return err;
         }
-        auto tmp_234_ = (*this).len.value();
+        auto tmp_232_ = (*this).len.value();
         (*this).container.clear();
-        for (size_t  tmp_236_= 0; tmp_236_<tmp_234_; ++tmp_236_ ) {
-            LoweredIOStatement tmp_235_;
-            if (auto err = tmp_235_.decode(r)) {
+        for (size_t  tmp_234_= 0; tmp_234_<tmp_232_; ++tmp_234_ ) {
+            LoweredIOStatement tmp_233_;
+            if (auto err = tmp_233_.decode(r)) {
                 return err;
             }
-            (*this).container.push_back(std::move(tmp_235_));
+            (*this).container.push_back(std::move(tmp_233_));
         }
         return ::futils::error::Error<>();
     }
@@ -18402,8 +18375,8 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> LoopStatement::encode(::futils::binary::writer& w) const {
-        auto tmp_237_ = static_cast<std::uint8_t>((*this).loop_type);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_237_) ,true)) {
+        auto tmp_235_ = static_cast<std::uint8_t>((*this).loop_type);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_235_) ,true)) {
             return ::futils::error::Error<>("encode: LoopStatement::loop_type: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (LoopType::INFINITE==(*this).loop_type) {
@@ -18453,11 +18426,11 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> LoopStatement::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_238_ = 0;
-        if (!::futils::binary::read_num(r,tmp_238_ ,true)) {
+        std::uint8_t tmp_236_ = 0;
+        if (!::futils::binary::read_num(r,tmp_236_ ,true)) {
             return ::futils::error::Error<>("decode: LoopStatement::loop_type: read int failed",::futils::error::Category::lib);
         }
-        (*this).loop_type = static_cast<LoopType>(tmp_238_);
+        (*this).loop_type = static_cast<LoopType>(tmp_236_);
         if (LoopType::INFINITE==(*this).loop_type) {
             if(!std::holds_alternative<union_struct_74>(union_variant_73)) {
                 union_variant_73 = union_struct_74();
@@ -18568,8 +18541,8 @@ namespace ebm::zc {
         if (auto err = (*this).parent_format.encode(w)) {
             return err;
         }
-        auto tmp_239_ = static_cast<std::uint8_t>((*this).kind);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_239_) ,true)) {
+        auto tmp_237_ = static_cast<std::uint8_t>((*this).kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_237_) ,true)) {
             return ::futils::error::Error<>("encode: FunctionDecl::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (((*this).kind == FunctionKind::PROPERTY_GETTER) || ((*this).kind == FunctionKind::PROPERTY_SETTER)) {
@@ -18598,11 +18571,11 @@ namespace ebm::zc {
         if (auto err = (*this).parent_format.decode(r)) {
             return err;
         }
-        std::uint8_t tmp_240_ = 0;
-        if (!::futils::binary::read_num(r,tmp_240_ ,true)) {
+        std::uint8_t tmp_238_ = 0;
+        if (!::futils::binary::read_num(r,tmp_238_ ,true)) {
             return ::futils::error::Error<>("decode: FunctionDecl::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).kind = static_cast<FunctionKind>(tmp_240_);
+        (*this).kind = static_cast<FunctionKind>(tmp_238_);
         if (((*this).kind == FunctionKind::PROPERTY_GETTER) || ((*this).kind == FunctionKind::PROPERTY_SETTER)) {
             if(!std::holds_alternative<union_struct_81>(union_variant_80)) {
                 union_variant_80 = union_struct_81();
@@ -18878,8 +18851,8 @@ namespace ebm::zc {
         if (auto err = (*this).property_type.encode(w)) {
             return err;
         }
-        auto tmp_241_ = static_cast<std::uint8_t>((*this).merge_mode);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_241_) ,true)) {
+        auto tmp_239_ = static_cast<std::uint8_t>((*this).merge_mode);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_239_) ,true)) {
             return ::futils::error::Error<>("encode: PropertyDecl::merge_mode: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (auto err = (*this).setter_condition.encode(w)) {
@@ -18917,11 +18890,11 @@ namespace ebm::zc {
         if (auto err = (*this).property_type.decode(r)) {
             return err;
         }
-        std::uint8_t tmp_242_ = 0;
-        if (!::futils::binary::read_num(r,tmp_242_ ,true)) {
+        std::uint8_t tmp_240_ = 0;
+        if (!::futils::binary::read_num(r,tmp_240_ ,true)) {
             return ::futils::error::Error<>("decode: PropertyDecl::merge_mode: read int failed",::futils::error::Category::lib);
         }
-        (*this).merge_mode = static_cast<MergeMode>(tmp_242_);
+        (*this).merge_mode = static_cast<MergeMode>(tmp_240_);
         if (auto err = (*this).setter_condition.decode(r)) {
             return err;
         }
@@ -18990,12 +18963,12 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> SubByteRange::encode(::futils::binary::writer& w) const {
-        auto tmp_243_ = static_cast<std::uint8_t>((*this).stream_type);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_243_) ,true)) {
+        auto tmp_241_ = static_cast<std::uint8_t>((*this).stream_type);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_241_) ,true)) {
             return ::futils::error::Error<>("encode: SubByteRange::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
         }
-        auto tmp_244_ = static_cast<std::uint8_t>((*this).range_type);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_244_) ,true)) {
+        auto tmp_242_ = static_cast<std::uint8_t>((*this).range_type);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_242_) ,true)) {
             return ::futils::error::Error<>("encode: SubByteRange::range_type: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (SubByteRangeType::bytes==(*this).range_type) {
@@ -19037,16 +19010,16 @@ namespace ebm::zc {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> SubByteRange::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_245_ = 0;
-        if (!::futils::binary::read_num(r,tmp_245_ ,true)) {
+        std::uint8_t tmp_243_ = 0;
+        if (!::futils::binary::read_num(r,tmp_243_ ,true)) {
             return ::futils::error::Error<>("decode: SubByteRange::stream_type: read int failed",::futils::error::Category::lib);
         }
-        (*this).stream_type = static_cast<StreamType>(tmp_245_);
-        std::uint8_t tmp_246_ = 0;
-        if (!::futils::binary::read_num(r,tmp_246_ ,true)) {
+        (*this).stream_type = static_cast<StreamType>(tmp_243_);
+        std::uint8_t tmp_244_ = 0;
+        if (!::futils::binary::read_num(r,tmp_244_ ,true)) {
             return ::futils::error::Error<>("decode: SubByteRange::range_type: read int failed",::futils::error::Category::lib);
         }
-        (*this).range_type = static_cast<SubByteRangeType>(tmp_246_);
+        (*this).range_type = static_cast<SubByteRangeType>(tmp_244_);
         if (SubByteRangeType::bytes==(*this).range_type) {
             if(!std::holds_alternative<union_struct_108>(union_variant_107)) {
                 union_variant_107 = union_struct_108();
@@ -19081,6 +19054,39 @@ namespace ebm::zc {
             return err;
         }
         if (auto err = (*this).io_statement.decode(r)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> InitCheck::encode(::futils::binary::writer& w) const {
+        auto tmp_245_ = static_cast<std::uint8_t>((*this).init_check_type);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_245_) ,true)) {
+            return ::futils::error::Error<>("encode: InitCheck::init_check_type: write std::uint8_t failed",::futils::error::Category::lib);
+        }
+        if (auto err = (*this).target_field.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).expect_value.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).related_function.encode(w)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> InitCheck::decode(::futils::binary::reader& r) {
+        std::uint8_t tmp_246_ = 0;
+        if (!::futils::binary::read_num(r,tmp_246_ ,true)) {
+            return ::futils::error::Error<>("decode: InitCheck::init_check_type: read int failed",::futils::error::Category::lib);
+        }
+        (*this).init_check_type = static_cast<InitCheckType>(tmp_246_);
+        if (auto err = (*this).target_field.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).expect_value.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).related_function.decode(r)) {
             return err;
         }
         return ::futils::error::Error<>();

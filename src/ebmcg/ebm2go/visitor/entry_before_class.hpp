@@ -19,6 +19,7 @@
 #include <string>
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/util.hpp"
 #include "escape/escape.h"
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
@@ -49,6 +50,25 @@ DEFINE_VISITOR(entry_before) {
         std::string_view name_prefix;
         if (is_setter_func(fctx.func_decl.kind)) {
             name_prefix = "Set";
+        }
+        if (is_composite_func(fctx.func_decl.kind)) {
+            // may change return type or params
+
+            if (fctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_GETTER) {
+                auto got = ctx.get_field<"variant_desc">(fctx.func_decl.return_type);
+                if (got && !is_nil(got->common_type)) {
+                    MAYBE(typ, ctx.visit(got->common_type));
+                    return_type = typ;
+                }
+            }
+            else {
+                auto got = ctx.get_field<"param_decl.param_type.variant_desc">(fctx.func_decl.params.container[0]);
+                if (got && !is_nil(got->common_type)) {
+                    MAYBE(typ, ctx.visit(got->common_type));
+                    auto param_name = ctx.identifier(fctx.func_decl.params.container[0]);
+                    params = CODE(param_name, " ", typ.to_writer());
+                }
+            }
         }
         if (!is_nil(fctx.func_decl.parent_format)) {
             auto struct_name = ctx.identifier(fctx.func_decl.parent_format);
@@ -185,6 +205,39 @@ DEFINE_VISITOR(entry_before) {
     };
     ctx.config().enum_member_accessor = "_";
     ctx.config().init_check_visitor = [&](Context_Statement_INIT_CHECK& ictx) -> expected<Result> {
+        if (ictx.init_check.init_check_type == ebm::InitCheckType::union_init_encode ||
+            ictx.init_check.init_check_type == ebm::InitCheckType::union_init_decode ||
+            ictx.init_check.init_check_type == ebm::InitCheckType::union_get ||
+            ictx.init_check.init_check_type == ebm::InitCheckType::union_set) {
+            if (get_composite_field(ctx, ctx.get_field<"member">(ictx.init_check.target_field))) {
+                return "";
+            }
+            MAYBE(field_txt, ictx.visit(ictx.init_check.target_field));
+            MAYBE(type, ictx.get_field<"type">(ictx.init_check.expect_value));
+            auto tmpname = std::format("tmp{}", get_id(type));
+            MAYBE(type_txt, ictx.visit(type));
+            // tmp,ok := field_txt.(*type_txt)
+            CodeWriter w;
+            w.writeln(tmpname, ", ok := ", field_txt.to_writer(), ".(*", type_txt.to_writer(), ")");
+            w.writeln("if !ok {");
+            {
+                auto scope = w.indent_scope();
+                if (ictx.init_check.init_check_type == ebm::InitCheckType::union_init_encode) {
+                    w.writeln("return errors.New(\"invalid union type for encoding\")");
+                }
+                else if (ictx.init_check.init_check_type == ebm::InitCheckType::union_get) {
+                    MAYBE(func_decl, ictx.get_field<"id.func_decl">(ictx.init_check.related_function));
+                    MAYBE(default_, as_DEFAULT_VALUE(ctx, func_decl.return_type));
+                    w.writeln("return ", default_.to_writer());
+                }
+                else {
+                    w.writeln(tmpname, " = &", type_txt.to_writer(), "{}");
+                    w.writeln(field_txt.to_writer(), " = ", tmpname);
+                }
+            }
+            w.writeln("}");
+            return w;
+        }
         return "";
     };
     ctx.config().default_value_custom = [&](Context_Expression_DEFAULT_VALUE& dctx) -> expected<Result> {
@@ -200,6 +253,17 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(typ_txt, dctx.visit(dctx.type));
             return CODE(typ_txt.to_string(), "(0)");
         }
+        if (type.body.kind == ebm::TypeKind::VARIANT) {
+            if (auto memb = type.body.variant_desc(); memb && !is_nil(memb->common_type)) {
+                return as_DEFAULT_VALUE(dctx, memb->common_type);
+            }
+            return CODE("nil");
+        }
+        // currently, optional uses inner type default
+        if (type.body.kind == ebm::TypeKind::OPTIONAL) {
+            MAYBE(inner_type, type.body.inner_type());
+            return as_DEFAULT_VALUE(dctx, inner_type);
+        }
         return pass;
     };
     ctx.config().append_visitor = [&](Context_Statement_APPEND& actx) -> expected<Result> {
@@ -212,7 +276,13 @@ DEFINE_VISITOR(entry_before) {
         MAYBE(size_str, get_size_str(cctx, cctx.num_bytes));
         return CODE("len(", stream, ") >= ", size_str);
     };
-    ctx.config();
+    ctx.config().pointer_type_wrapper = [](Result r) -> expected<Result> {
+        return CODE("*", r.to_writer());
+    };
+    ctx.config().make_pointer_wrapper = [](Result r) -> expected<Result> {
+        return CODE("&", r.to_writer());
+    };
+    ctx.config().default_value_option.pointer_init = "nil";
     ctx.config().default_value_option.decoder_return_init = "nil";
     ctx.config().default_value_option.encoder_return_init = "nil";
     ctx.config().conditional_loop_keyword = "for";

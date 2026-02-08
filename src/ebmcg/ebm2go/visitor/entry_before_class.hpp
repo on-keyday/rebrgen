@@ -50,6 +50,9 @@ DEFINE_VISITOR(entry_before) {
         std::string_view name_prefix;
         if (is_setter_func(fctx.func_decl.kind)) {
             name_prefix = "Set";
+            if (is_nil(fctx.func_decl.name)) {
+                name_prefix = "set";  // unexported
+            }
         }
         if (is_composite_func(fctx.func_decl.kind)) {
             // may change return type or params

@@ -59,11 +59,13 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
             MAYBE(base, ctx.get_field<"base.base">(ctx.target));
             MAYBE(base_str, ctx.visit(base));
             MAYBE(value, ctx.visit(ctx.value));
-            MAYBE(comp_field, (ctx.get_field<11, physical_field>(*type_ref)));
-            MAYBE(comp_field_type, ctx.get_field<"id.composite_field_decl">(comp_field));
+            MAYBE(comp_field, (ctx.get_field<physical_field>(*type_ref)));
+            MAYBE(setter, comp_field.composite_setter());
+            auto setter_func_name = std::format("set{}", ctx.identifier(setter.id));
+            MAYBE(comp_field_type, ctx.get_field<"composite_field_decl">(comp_field.composite_field()));
             MAYBE(cast_str, ctx.visit(comp_field_type.composite_type));
             CodeWriter w;
-            w.writeln(base_str.to_writer(), ".", ctx.identifier(from_weak(comp_field)), " = ", cast_str.to_writer(), "(", value.to_writer(), ")");
+            w.writeln(base_str.to_writer(), ".", setter_func_name, "(", cast_str.to_writer(), "(", value.to_writer(), "))");
             return w;
         }
     }

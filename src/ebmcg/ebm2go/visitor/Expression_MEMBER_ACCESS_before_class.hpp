@@ -70,13 +70,15 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
         if (got != ctx.config().bulk_primitive.end()) {
             // self.x -> self.
             MAYBE(base, ctx.get_field<"body.base">(ctx.base));
-            MAYBE(comp_field, (ctx.get_field<11, physical_field>(*type_ref)));
+            MAYBE(field, (ctx.get_field<physical_field>(*type_ref)));
+            MAYBE(getter, field.composite_getter());
+            auto getter_name = ctx.identifier(getter.id);
             MAYBE(base_str, ctx.visit(base));
             // TODO: cast to original field type
             MAYBE(original_type, ctx.get_field<"type">(ctx.member));
             MAYBE(type_str, ctx.visit(original_type));
             // currently, type_str must be integer type
-            return CODE(type_str.to_writer(), " (", base_str.to_writer(), ".", ctx.identifier(from_weak(comp_field)), ")");
+            return CODE(type_str.to_writer(), " (", base_str.to_writer(), ".", getter_name, "())");
         }
         auto variant_hold = std::format("tmp{}", get_id(*type_ref));
         MAYBE(member, ctx.visit(ctx.member));

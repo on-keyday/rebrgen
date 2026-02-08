@@ -25,5 +25,8 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_RESERVE_DATA) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().reserve_data_visitor) {
+        return ctx.config().reserve_data_visitor(ctx);
+    }
     return "";  // nothing to do by default
 }

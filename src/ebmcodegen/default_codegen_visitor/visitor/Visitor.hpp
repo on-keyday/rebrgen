@@ -86,6 +86,7 @@ bool on_assign = false;  // useful for expression generation
 std::function<expected<Result>(Context_Statement_WRITE_DATA& ctx)> write_data_visitor;
 std::function<expected<Result>(Context_Statement_READ_DATA& ctx)> read_data_visitor;
 std::function<expected<Result>(Context_Expression_CAN_READ_STREAM& ctx)> can_read_stream_visitor;
+std::function<expected<Result>(Context_Statement_RESERVE_DATA& ctx)> reserve_data_visitor;
 
 std::function<expected<Result>(Context_Statement_COMPOSITE_FIELD_DECL& ctx)> composite_field_decl_visitor;
 

@@ -12,3 +12,4 @@ std::unordered_set<std::string_view> imports;
 std::unordered_set<std::uint64_t> bulk_primitive;
 std::unordered_set<std::uint64_t> any_variant;
 std::unordered_map<std::uint64_t, std::uint64_t> any_cast_counter;
+std::unordered_set<std::uint64_t> bool_mapped_func;

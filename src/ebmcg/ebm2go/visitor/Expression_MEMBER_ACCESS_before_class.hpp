@@ -37,6 +37,9 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
             args += ", ";
             args += param_name;
         }
+        if (ctx.config().bool_mapped_func.contains(get_id(prop->getter_function.id))) {
+            ident[0] = std::tolower(ident[0]);
+        }
         if (prop->merge_mode != ebm::MergeMode::STRICT_TYPE) {
             return CODE(base.to_writer(), ".", ident, "(", args, ")");
         }
@@ -60,6 +63,9 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
             auto base_ = base.to_writer();
             if (ctx.get_field<"struct_decl.related_variant">(comp_getter->parent_struct)) {
                 base_ = CODE(std::move(base_), ".", parent_ident);
+            }
+            if (ctx.config().bool_mapped_func.contains(get_id(comp->id))) {
+                member_ident[0] = std::tolower(member_ident[0]);
             }
             return CODE(base_, ".", member_ident, "(", args.empty() ? "" : ", ", args, ")");
         }

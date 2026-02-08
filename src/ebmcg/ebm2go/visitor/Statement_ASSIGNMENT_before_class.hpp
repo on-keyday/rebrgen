@@ -43,8 +43,13 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
         if (ctx.get_field<"struct_decl.related_variant">(comp->parent_struct)) {
             base_ = CODE(std::move(base_), ".", parent_ident);
         }
+        auto setter_prefix = "Set";
+        if (ctx.config().bool_mapped_func.contains(get_id(setter->id))) {
+            setter_prefix = "set";
+        }
         auto setter_func_name = std::format(
-            "Set{}",
+            "{}{}",
+            setter_prefix,
             member_ident);
         w.writeln(base_, ".", setter_func_name, "(", value.to_writer(), ");");
         return w;

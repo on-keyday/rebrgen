@@ -23,7 +23,11 @@
 #include "escape/escape.h"
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
-    ctx.config().array_type_wrapper = [](Result r, size_t size, ebm::ArrayAnnotation) -> expected<Result> {
+    ctx.config().array_type_wrapper = [](Result r, size_t size, ebm::ArrayAnnotation anno) -> expected<Result> {
+        if (anno != ebm::ArrayAnnotation::none) {
+            // as slice
+            return CODE("[]", r.to_writer());
+        }
         return CODE("[", std::to_string(size), "]", r.to_writer());
     };
     ctx.config().vector_type_wrapper = [](Result r) -> expected<Result> {
@@ -36,15 +40,15 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().struct_definition_start_wrapper = [&](Context_Statement_STRUCT_DECL& sctx) -> expected<Result> {
         CodeWriter w;
         auto name = sctx.identifier();
-        w.writeln("type ", name, " struct ", ctx.config().begin_block);
+        w.writeln_with_loc(to_any_ref(sctx.item_id), "type ", name, " struct ", ctx.config().begin_block);
         return w;
     };
     ctx.config().function_define_keyword = "func";
     ctx.config().function_return_type_separator = "";
     ctx.config().encoder_return_type = "error";
     ctx.config().decoder_return_type = "error";
-    ctx.config().encoder_input_type = "[]byte";
-    ctx.config().decoder_input_type = "[]byte";
+    ctx.config().encoder_input_type = "*[]byte";
+    ctx.config().decoder_input_type = "*[]byte";
     ctx.config().function_definition_start_wrapper = [&](Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& fctx) -> expected<Result> {
         CodeWriter w;
         std::string_view name_prefix;
@@ -53,10 +57,51 @@ DEFINE_VISITOR(entry_before) {
             if (is_nil(fctx.func_decl.name)) {
                 name_prefix = "set";  // unexported
             }
+            // first parameter is u1, change to value type
+            MAYBE(param_type, fctx.get_field<"param_decl.param_type.instance">(fctx.func_decl.params.container[0]));
+            if (auto size = param_type.body.size()) {
+                if (size->value() == 1) {
+                    if (name_prefix == "Set") {
+                        name_prefix = "set";
+                        ctx.config().bool_mapped_func.insert(get_id(fctx.item_id));
+                        w.writeln("func (", ctx.config().self_value, " *", ctx.identifier(fctx.func_decl.parent_format), ") Set", name, "(value bool) ", ctx.config().function_return_type_separator, " ", return_type.to_writer(), " ", ctx.config().begin_block);
+                        {
+                            auto scope = w.indent_scope();
+                            w.writeln("var intVal uint8");
+                            w.writeln("if value {");
+                            w.indent_writeln("intVal = 1");
+                            w.writeln("} else {");
+                            w.indent_writeln("intVal = 0");
+                            w.writeln("}");
+                            w.writeln("return ", ctx.config().self_value, ".", name_prefix, name, "(intVal)");
+                        }
+                        w.writeln("}");
+                    }
+                }
+            }
+        }
+        std::string tmp_buffer;
+        if (is_getter_func(fctx.func_decl.kind)) {
+            // if return type is u1, change to bool
+            MAYBE(ret_type, fctx.get_field<"func_decl.return_type.instance">(fctx.item_id));
+            if (auto size = ret_type.body.size()) {
+                if (size->value() == 1) {
+                    tmp_buffer = std::string(name);
+                    tmp_buffer[0] = std::tolower(tmp_buffer[0]);
+                    w.writeln("func (", ctx.config().self_value, " *", ctx.identifier(fctx.func_decl.parent_format), ") ", name, "() ", ctx.config().function_return_type_separator, " bool ", ctx.config().begin_block);
+                    {
+                        auto scope = w.indent_scope();
+                        w.writeln("intVal := ", ctx.config().self_value, ".", tmp_buffer, "()");
+                        w.writeln("return intVal != 0");
+                    }
+                    w.writeln("}");
+                    ctx.config().bool_mapped_func.insert(get_id(fctx.item_id));
+                    name = tmp_buffer;
+                }
+            }
         }
         if (is_composite_func(fctx.func_decl.kind)) {
             // may change return type or params
-
             if (fctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_GETTER) {
                 auto got = ctx.get_field<"variant_desc">(fctx.func_decl.return_type);
                 if (got && !is_nil(got->common_type)) {
@@ -107,6 +152,26 @@ DEFINE_VISITOR(entry_before) {
         }
         return cctx.visit(cctx.composite_field_decl.fields);
     };
+    ctx.config().reserve_data_visitor = [&](Context_Statement_RESERVE_DATA& rctx) -> expected<Result> {
+        MAYBE(write_data, ctx.get_field<"write_data">(rctx.reserve_data.write_data));
+        MAYBE(size_str, get_size_str(ctx, rctx.reserve_data.size));
+        auto io_ref = ctx.identifier(write_data.io_ref);
+        MAYBE(target, ctx.visit(write_data.target));
+        MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(write_data.field)));
+        field_name = "\\\"" + field_name + "\\\"";
+        CodeWriter w;
+        w.writeln("if len(*", io_ref, ") < int(", size_str, ") {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("if cap(*", io_ref, ") < int(", size_str, ") {");
+            w.indent_writeln("return errors.New(\"not enough space to reserve data for field ", field_name, "\")");
+            w.writeln("}");
+            w.writeln("*", io_ref, " = (*", io_ref, ")[:", size_str, "]");
+        }
+        w.writeln("}");
+        w.writeln(target.to_writer(), " = ", "(*", io_ref, ")[:", size_str, "]");
+        return w;
+    };
     ctx.config().read_data_visitor = [&](Context_Statement_READ_DATA& rctx) -> expected<Result> {
         if (auto low = rctx.read_data.lowered_statement()) {
             if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
@@ -123,13 +188,26 @@ DEFINE_VISITOR(entry_before) {
                 offset_val = offset_str.to_writer();
             }
             MAYBE(layer_str, get_identifier_layer_str(rctx, from_weak(rctx.read_data.field)));
-            layer_str = "\"" + layer_str + "\"";
-            if (cand == BytesType::vector) {
-                return CODELINE("/* read from buffer*/");
+            layer_str = "\\\"" + layer_str + "\\\"";
+            CodeWriter w;
+            if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
+                // until eof
+                w.writeln(target.to_writer(), " = (*", io_, ")[", offset_val, ":]");
+                w.writeln("*", io_, " = (*", io_, ")[:", offset_val, "]");
             }
-            else if (cand == BytesType::array) {
-                return CODELINE("/* read from buffer */");
+            else {
+                w.writeln("if len(*", io_, ") < ", offset_val, " + ", size_str, " {");
+                w.indent_writeln("return errors.New(\"not enough data to read for field ", layer_str, "\")");
+                w.writeln("}");
+                if (cand == BytesType::vector) {
+                    w.writeln(target.to_writer(), " = (*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "]");
+                }
+                else if (cand == BytesType::array) {
+                    w.writeln("copy(", target.to_writer(), "[:], (*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "])");
+                }
+                w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
             }
+            return w;
         }
         if (auto lw = rctx.read_data.lowered_statement()) {
             return rctx.visit(lw->io_statement.id);
@@ -152,13 +230,39 @@ DEFINE_VISITOR(entry_before) {
                 offset_val = offset_str.to_writer();
             }
             MAYBE(layer_str, get_identifier_layer_str(wctx, from_weak(wctx.write_data.field)));
-            layer_str = "\"" + layer_str + "\"";
+            layer_str = "\\\"" + layer_str + "\\\"";
+            CodeWriter w;
             if (cand == BytesType::vector) {
-                return CODELINE("/* write to buffer*/");
+                w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
+                w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+                w.writeln("}");
+                auto ref = wctx.write_data.size.ref();
+                if (ref && !ctx.is(ebm::ExpressionKind::ARRAY_SIZE, *ref)) {
+                    // check length consistency
+                    w.writeln("if len(", target.to_writer(), ") != int(", size_str, ") {");
+                    ctx.config().imports.insert("fmt");
+                    w.indent_writeln("return fmt.Errorf(\"size mismatch when writing field ", layer_str, ": expected %d, got %d\", int(", size_str, "), len(", target.to_writer(), "))");
+                    w.writeln("}");
+                }
+                w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), ")");
+                w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+                return w;
             }
             else if (cand == BytesType::array) {
-                return CODELINE("/* write to buffer */");
+                auto array_anno = ctx.get_field<"array_annotation">(wctx.write_data.data_type);
+                if (array_anno && *array_anno != ebm::ArrayAnnotation::none) {
+                    // only shift
+                    w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+                }
+                else {
+                    w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
+                    w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+                    w.writeln("}");
+                    w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), "[:])");
+                    w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+                }
             }
+            return w;
         }
         if (auto lw = wctx.write_data.lowered_statement()) {
             return wctx.visit(lw->io_statement.id);
@@ -286,7 +390,7 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().can_read_stream_visitor = [&](Context_Expression_CAN_READ_STREAM& cctx) -> expected<Result> {
         auto stream = cctx.identifier(cctx.io_ref);
         MAYBE(size_str, get_size_str(cctx, cctx.num_bytes));
-        return CODE("len(", stream, ") >= ", size_str);
+        return CODE("len(*", stream, ") >= ", size_str);
     };
     ctx.config().pointer_type_wrapper = [](Result r) -> expected<Result> {
         return CODE("*", r.to_writer());

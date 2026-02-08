@@ -1044,4 +1044,14 @@ namespace ebmcodegen::util {
                 return false;
         }
     }
+
+    constexpr bool is_getter_func(ebm::FunctionKind kind) {
+        switch (kind) {
+            case ebm::FunctionKind::PROPERTY_GETTER:
+            case ebm::FunctionKind::COMPOSITE_GETTER:
+                return true;
+            default:
+                return false;
+        }
+    }
 }  // namespace ebmcodegen::util

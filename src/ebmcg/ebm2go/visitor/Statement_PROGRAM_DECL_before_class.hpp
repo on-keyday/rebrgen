@@ -23,12 +23,15 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_PROGRAM_DECL_before) {
     using namespace CODEGEN_NAMESPACE;
+
+    MAYBE(main, ctx.main_logic());
+
     /*here to write the hook*/
     std::string final_package_name;
     constexpr auto go_package_key = "config.go.package";
 
     // A. フラグによる上書きを確認
-    auto override_name = ctx.config().flags.get_config(go_package_key);
+    auto override_name = ctx.flags().get_config(go_package_key);
 
     if (!override_name.empty()) {
         final_package_name = override_name;
@@ -53,7 +56,6 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL_before) {
     CodeWriter w;
     w.writeln("package ", final_package_name);
     w.writeln();
-    MAYBE(main, ctx.main_logic());
     if (ctx.config().imports.size()) {
         w.writeln("import (");
         {

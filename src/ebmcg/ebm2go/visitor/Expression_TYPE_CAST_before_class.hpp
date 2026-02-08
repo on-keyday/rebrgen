@@ -71,6 +71,35 @@ DEFINE_VISITOR(Expression_TYPE_CAST_before) {
             return CODE(tmp_var);
         }
     }
+
+    if (ctx.type_cast_desc.cast_kind == ebm::CastType::FLOAT_TO_INT_BIT) {
+        MAYBE(target_size, target_type->body.size());
+        MAYBE(target_type_str, ctx.visit(ctx.type));
+        if (target_size.value() == 32) {
+            MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
+            ctx.config().imports.insert("math");
+            return CODE("(", target_type_str.to_writer(), "(math.Float32bits(float32(", source_expr_str.to_writer(), "))))");
+        }
+        else if (target_size.value() == 64) {
+            MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
+            ctx.config().imports.insert("math");
+            return CODE("(", target_type_str.to_writer(), "(math.Float64bits(float64(", source_expr_str.to_writer(), "))))");
+        }
+    }
+    if (ctx.type_cast_desc.cast_kind == ebm::CastType::INT_TO_FLOAT_BIT) {
+        MAYBE(target_size, target_type->body.size());
+        MAYBE(target_type_str, ctx.visit(ctx.type));
+        if (target_size.value() == 32) {
+            MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
+            ctx.config().imports.insert("math");
+            return CODE("math.Float32frombits(", source_expr_str.to_writer(), ")");
+        }
+        else if (target_size.value() == 64) {
+            MAYBE(source_expr_str, ctx.visit(ctx.type_cast_desc.source_expr));
+            ctx.config().imports.insert("math");
+            return CODE("math.Float64frombits(", source_expr_str.to_writer(), ")");
+        }
+    }
     /*here to write the hook*/
     return pass;
 }

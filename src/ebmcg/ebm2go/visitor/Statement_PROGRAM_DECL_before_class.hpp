@@ -24,21 +24,34 @@
 DEFINE_VISITOR(Statement_PROGRAM_DECL_before) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    MAYBE(meta, get_metadata(ctx, ctx.item_id));
-    CodeWriter w;
-    constexpr auto go_package= "config.go.package";
-   auto override_name= ctx.config().flags.get_config(go_package);
-   if(!override_name.empty()){
+    std::string final_package_name;
+    constexpr auto go_package_key = "config.go.package";
 
-   }
-    auto package = meta.get_first(go_package);
-    if (package) {
-        MAYBE(package_name, package->get_string(ctx, 0));
-        w.writeln("package ", package_name);
+    // A. フラグによる上書きを確認
+    auto override_name = ctx.config().flags.get_config(go_package_key);
+
+    if (!override_name.empty()) {
+        final_package_name = override_name;
     }
     else {
-        w.writeln("package main");
+        // B. メタデータからの取得を試行
+        MAYBE(meta_res, get_metadata(ctx, ctx.item_id));
+
+        auto package_meta = meta_res.get_first(go_package_key);
+        if (package_meta) {
+            auto name_res = package_meta->get_string(ctx, 0);
+            if (name_res) {
+                final_package_name = *name_res;
+            }
+        }
     }
+
+    // C. いずれも取得できなかった場合はデフォルト値
+    if (final_package_name.empty()) {
+        final_package_name = "main";
+    }
+    CodeWriter w;
+    w.writeln("package ", final_package_name);
     w.writeln();
     MAYBE(main, ctx.main_logic());
     if (ctx.config().imports.size()) {

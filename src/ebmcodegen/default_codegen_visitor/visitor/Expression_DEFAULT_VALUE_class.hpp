@@ -20,15 +20,7 @@
 DEFINE_VISITOR(Expression_DEFAULT_VALUE) {
     using namespace CODEGEN_NAMESPACE;
     if (ctx.config().default_value_custom) {
-        auto custom = ctx.config().default_value_custom(ctx);
-        if (!custom) {
-            if (!is_pass_error(custom.error())) {
-                return ebmgen::unexpect_error(std::move(custom.error()));
-            }
-        }
-        else {
-            return custom;
-        }
+        CALL_OR_PASS(default_, ctx.config().default_value_custom(ctx));
     }
     /*here to write the hook*/
     MAYBE(default_, get_default_value(ctx, ctx.type, ctx.config().default_value_option));

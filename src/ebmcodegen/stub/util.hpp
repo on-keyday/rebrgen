@@ -530,6 +530,20 @@ namespace ebmcodegen::util {
         return err.category() == futils::error::Category::lib && err.sub_category() == 0xba55ba55;
     }
 
+    // CALL_OR_PASS macro: call a function that returns expected<T>, if it returns pass error, continue, otherwise return the error or value
+#define CALL_OR_PASS(uniq, func_call)                                     \
+    auto uniq##_res = (func_call);                                        \
+    if (!uniq##_res) {                                                    \
+        if (ebmcodegen::util::is_pass_error(uniq##_res.error())) {        \
+        }                                                                 \
+        else {                                                            \
+            return ebmgen::unexpect_error(std::move(uniq##_res.error())); \
+        }                                                                 \
+    }                                                                     \
+    else {                                                                \
+        return uniq##_res.value();                                        \
+    }
+
     template <class ResultType>
     struct MainLogicWrapper {
        private:
@@ -761,6 +775,11 @@ namespace ebmcodegen::util {
         template <ebmgen::FieldNames<> V>
         decltype(auto) get_field(auto&& root) const {
             return ebmgen::access_field<V>(module(), root);
+        }
+
+        template <size_t N, ebmgen::FieldNames<N> V>
+        decltype(auto) get_field(auto&& root) const {
+            return ebmgen::access_field<N, V>(module(), root);
         }
 
         template <class R = void, class F>

@@ -209,11 +209,12 @@ DEFINE_VISITOR(entry_before) {
             ictx.init_check.init_check_type == ebm::InitCheckType::union_init_decode ||
             ictx.init_check.init_check_type == ebm::InitCheckType::union_get ||
             ictx.init_check.init_check_type == ebm::InitCheckType::union_set) {
+            MAYBE(type, ictx.get_field<"type">(ictx.init_check.expect_value));
             if (get_composite_field(ctx, ctx.get_field<"member">(ictx.init_check.target_field))) {
+                ctx.config().bulk_primitive.insert(get_id(type));
                 return "";
             }
             MAYBE(field_txt, ictx.visit(ictx.init_check.target_field));
-            MAYBE(type, ictx.get_field<"type">(ictx.init_check.expect_value));
             auto tmpname = std::format("tmp{}", get_id(type));
             MAYBE(type_txt, ictx.visit(type));
             // tmp,ok := field_txt.(*type_txt)
@@ -239,6 +240,14 @@ DEFINE_VISITOR(entry_before) {
             return w;
         }
         return "";
+    };
+    ctx.config().variant_type_custom = [&](Context_Type_VARIANT& vctx) -> expected<Result> {
+        if (is_nil(vctx.variant_desc.related_field) &&
+            is_nil(vctx.variant_desc.common_type)) {
+            ctx.config().any_variant.insert(get_id(vctx.item_id));
+            return CODE("any");
+        }
+        return pass;
     };
     ctx.config().default_value_custom = [&](Context_Expression_DEFAULT_VALUE& dctx) -> expected<Result> {
         MAYBE(type, dctx.get(dctx.type));

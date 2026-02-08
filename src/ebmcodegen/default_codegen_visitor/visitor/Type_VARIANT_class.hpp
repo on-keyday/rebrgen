@@ -25,6 +25,9 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Type_VARIANT) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().variant_type_custom) {
+        CALL_OR_PASS(result, ctx.config().variant_type_custom(ctx));
+    }
     /*here to write the hook*/
     if (!is_nil(ctx.variant_desc.common_type) && is_nil(ctx.variant_desc.related_field)) {
         return ctx.visit(ctx.variant_desc.common_type);

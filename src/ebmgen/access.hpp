@@ -164,7 +164,7 @@ namespace ebmgen {
         }
 
         template <class T>
-        static consteval Name make(FieldNames<> n) {
+        static consteval Name make(FieldNames<N> n) {
             return Name{ebmcodegen::get_type_index<std::decay_t<T>>(), n};
         }
     };
@@ -282,7 +282,7 @@ namespace ebmgen {
 
     template <size_t N, FieldNames<N> V>
     constexpr decltype(auto) access_field(auto&& ctx, auto&& in) {
-        constexpr auto name = Name<>::make<std::remove_pointer_t<std::decay_t<decltype(in)>>>(V);
+        constexpr auto name = Name<N>::template make<std::remove_pointer_t<std::decay_t<decltype(in)>>>(V);
         return FieldAccessor<N, name>::get_field(ctx, in);
     }
 

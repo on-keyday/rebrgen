@@ -146,7 +146,7 @@
       "name": "Debug ebm2c",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/ebm2c",
+      "program": "${workspaceRoot}/tool/ebm2go",
       "args": ["-i", "${workspaceRoot}/save/objproto.ebm"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

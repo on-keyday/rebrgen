@@ -21,8 +21,27 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
     using namespace CODEGEN_NAMESPACE;
+    auto prop = ctx.get_field<"body.id.property_decl">(ctx.member);
+    if (prop) {
+        MAYBE(getter_decl, ctx.get_field<"func_decl">(prop->getter_function.id));
+        MAYBE(base, ctx.visit(ctx.base));
+        MAYBE(ident, ctx.identifier(ctx.member));
+        auto parent_ident = ctx.identifier(prop->parent_format);
+        std::string args;
+        // if state variable, pass as is
+        for (auto& param : getter_decl.params.container) {
+            auto param_name = ctx.identifier(param);
+            args += ", ";
+            args += param_name;
+        }
+        if (prop->merge_mode != ebm::MergeMode::STRICT_TYPE) {
+            return CODE(base.to_writer(), ".", ident, "(", args, ")");
+        }
+        return CODE("(*", base.to_writer(), ".", ident, "(", args, "))");
+    }
     if (auto comp_getter = get_composite_field(ctx, ctx.member)) {
         if (auto comp = comp_getter->composite_getter()) {
             MAYBE(getter_decl, ctx.get_field<"func_decl">(comp->id));
@@ -47,7 +66,18 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
     }
     MAYBE(member, ctx.get_field<"body.id">(ctx.member));
     if (auto type_ref = get_variant_member_from_field(ctx, from_weak(member))) {
-        auto is_specialized = ctx.get_field<"body.id.struct_decl.related_variant.variant_desc.related_field.id">(*type_ref);
+        auto got = ctx.config().bulk_primitive.find(get_id(*type_ref));
+        if (got != ctx.config().bulk_primitive.end()) {
+            // self.x -> self.
+            MAYBE(base, ctx.get_field<"body.base">(ctx.base));
+            MAYBE(comp_field, (ctx.get_field<11, physical_field>(*type_ref)));
+            MAYBE(base_str, ctx.visit(base));
+            // TODO: cast to original field type
+            MAYBE(original_type, ctx.get_field<"type">(ctx.member));
+            MAYBE(type_str, ctx.visit(original_type));
+            // currently, type_str must be integer type
+            return CODE(type_str.to_writer(), " (", base_str.to_writer(), ".", ctx.identifier(from_weak(comp_field)), ")");
+        }
         auto variant_hold = std::format("tmp{}", get_id(*type_ref));
         MAYBE(member, ctx.visit(ctx.member));
         return CODE(variant_hold, ".", member.to_writer());

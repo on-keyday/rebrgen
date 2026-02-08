@@ -13,7 +13,8 @@
         "python",
         "rust",
         "p4",
-        "c"
+        "c",
+        "go"
     ],
     "INTERPRET_TARGET_LANGUAGE": [
         "rmw"

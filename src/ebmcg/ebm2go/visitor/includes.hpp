@@ -22,4 +22,7 @@ namespace ebm2go {
         }
         return nullptr;
     }
+
+    constexpr auto physical_field = "body.id.struct_decl.related_variant.variant_desc.related_field.field_decl.composite_field";
+
 }  // namespace ebm2go

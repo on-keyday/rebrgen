@@ -25,6 +25,9 @@
 DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
     using namespace CODEGEN_NAMESPACE;
     auto member = ctx.get_field<"member">(ctx.target);
+    if (!member) {
+        return pass;
+    }
     if (auto comp = get_composite_field(ctx, member)) {
         auto setter = comp->composite_setter();
         if (!setter) {
@@ -45,6 +48,24 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
             member_ident);
         w.writeln(base_, ".", setter_func_name, "(", value.to_writer(), ");");
         return w;
+    }
+    auto may_variant = ctx.get_field<"body.id.id">(member);
+    if (!may_variant) {
+        return pass;
+    }
+    if (auto type_ref = get_variant_member_from_field(ctx, *may_variant)) {
+        if (ctx.config().bulk_primitive.contains(get_id(*type_ref))) {
+            // bulk primitive assignment
+            MAYBE(base, ctx.get_field<"base.base">(ctx.target));
+            MAYBE(base_str, ctx.visit(base));
+            MAYBE(value, ctx.visit(ctx.value));
+            MAYBE(comp_field, (ctx.get_field<11, physical_field>(*type_ref)));
+            MAYBE(comp_field_type, ctx.get_field<"id.composite_field_decl">(comp_field));
+            MAYBE(cast_str, ctx.visit(comp_field_type.composite_type));
+            CodeWriter w;
+            w.writeln(base_str.to_writer(), ".", ctx.identifier(from_weak(comp_field)), " = ", cast_str.to_writer(), "(", value.to_writer(), ")");
+            return w;
+        }
     }
     return pass;
 }

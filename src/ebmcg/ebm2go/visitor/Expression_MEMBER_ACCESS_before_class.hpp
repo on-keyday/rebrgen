@@ -47,6 +47,7 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
     }
     MAYBE(member, ctx.get_field<"body.id">(ctx.member));
     if (auto type_ref = get_variant_member_from_field(ctx, from_weak(member))) {
+        auto is_specialized = ctx.get_field<"body.id.struct_decl.related_variant.variant_desc.related_field.id">(*type_ref);
         auto variant_hold = std::format("tmp{}", get_id(*type_ref));
         MAYBE(member, ctx.visit(ctx.member));
         return CODE(variant_hold, ".", member.to_writer());

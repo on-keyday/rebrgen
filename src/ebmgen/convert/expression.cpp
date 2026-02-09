@@ -383,10 +383,10 @@ namespace ebmgen {
                 dst_type = left_type;
             }
             if (kind == ebm::BinaryOpKind::COMPARISON) {
-                MAYBE(common_type, get_common_type(ctx, left_expr.body.type, right_expr.body.type));
+                MAYBE(common_type, get_common_type(ctx, left_type, right_type));
                 if (common_type) {  //  TODO(on-keyday): currently, this is best effort
-                    EBM_CAST(left_casted, *common_type, left_expr.body.type, left);
-                    EBM_CAST(right_casted, *common_type, right_expr.body.type, right);
+                    EBM_CAST(left_casted, *common_type, left_type, left);
+                    EBM_CAST(right_casted, *common_type, right_type, right);
                     left = left_casted;
                     right = right_casted;
                 }

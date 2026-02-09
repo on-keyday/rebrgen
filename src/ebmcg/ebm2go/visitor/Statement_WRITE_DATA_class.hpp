@@ -100,6 +100,7 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
         layer_str = "\\\"" + layer_str + "\\\"";
         CodeWriter w;
         if (cand == BytesType::vector) {
+            ctx.config().imports.insert("errors");
             w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
             w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
             w.writeln("}");
@@ -122,6 +123,7 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
                 w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
             }
             else {
+                ctx.config().imports.insert("errors");
                 w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
                 w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
                 w.writeln("}");

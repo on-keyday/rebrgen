@@ -1144,7 +1144,9 @@ namespace ebmgen {
 
                 if (node->right) {
                     EBMA_CONVERT_EXPRESSION(initial_value_ref, node->right);
-                    var_decl.initial_value = initial_value_ref;
+                    MAYBE(init_expr, ctx.repository().get_expression(initial_value_ref));
+                    EBM_CAST(casted_initial, type_ref, init_expr.body.type, initial_value_ref);
+                    var_decl.initial_value = casted_initial;
                 }
                 node->left->constant_level == ast::ConstantLevel::constant             ? var_decl.decl_kind(ebm::VariableDeclKind::CONSTANT)
                 : node->left->constant_level == ast::ConstantLevel::immutable_variable ? var_decl.decl_kind(ebm::VariableDeclKind::IMMUTABLE)

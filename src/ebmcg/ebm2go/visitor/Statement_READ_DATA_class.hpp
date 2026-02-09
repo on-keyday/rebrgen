@@ -64,6 +64,7 @@ DEFINE_VISITOR(Statement_READ_DATA) {
             w.writeln("*", io_, " = (*", io_, ")[:0]");
         }
         else {
+            ctx.config().imports.insert("errors");
             w.writeln("if len(*", io_, ") < ", size_str, " {");
             w.indent_writeln("return errors.New(\"not enough data to read for field ", layer_str, "\")");
             w.writeln("}");

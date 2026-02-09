@@ -34,7 +34,9 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
         // if state variable, pass as is
         for (auto& param : getter_decl.params.container) {
             auto param_name = ctx.identifier(param);
-            args += ", ";
+            if (!args.empty()) {
+                args += ", ";
+            }
             args += param_name;
         }
         if (ctx.config().bool_mapped_func.contains(get_id(prop->getter_function.id))) {
@@ -67,7 +69,7 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
             if (ctx.config().bool_mapped_func.contains(get_id(comp->id))) {
                 member_ident[0] = std::tolower(member_ident[0]);
             }
-            return CODE(base_, ".", member_ident, "(", args.empty() ? "" : ", ", args, ")");
+            return CODE(base_, ".", member_ident, "(", args, ")");
         }
     }
     MAYBE(member, ctx.get_field<"body.id">(ctx.member));

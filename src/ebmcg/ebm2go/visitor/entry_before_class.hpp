@@ -232,6 +232,7 @@ DEFINE_VISITOR(entry_before) {
         MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(write_data.field)));
         field_name = "\\\"" + field_name + "\\\"";
         CodeWriter w;
+        rctx.config().imports.insert("errors");
         w.writeln("if len(*", io_ref, ") < int(", size_str, ") {");
         {
             auto scope = w.indent_scope();
@@ -308,6 +309,7 @@ DEFINE_VISITOR(entry_before) {
             {
                 auto scope = w.indent_scope();
                 if (ictx.init_check.init_check_type == ebm::InitCheckType::union_init_encode) {
+                    ictx.config().imports.insert("errors");
                     w.writeln("return errors.New(\"invalid union type for encoding\")");
                 }
                 else if (ictx.init_check.init_check_type == ebm::InitCheckType::union_get) {

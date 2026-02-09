@@ -200,7 +200,9 @@ namespace ebmgen {
     EBM_AST_VARIABLE_REF(counter_name);                                                 \
     {                                                                                   \
         EBMU_INT_LITERAL(zero, 0);                                                      \
-        EBM_DEFINE_ANONYMOUS_VARIABLE(counter_name##__, counter_type, zero);            \
+        MAYBE(zero_expr__, ctx.repository().get_expression(zero));                      \
+        EBM_CAST(zero_casted, counter_type, zero_expr__.body.type, zero);               \
+        EBM_DEFINE_ANONYMOUS_VARIABLE(counter_name##__, counter_type, zero_casted);     \
         EBM_AST_VARIABLE_REF_SET(counter_name, counter_name##__, counter_name##___def); \
     }
 

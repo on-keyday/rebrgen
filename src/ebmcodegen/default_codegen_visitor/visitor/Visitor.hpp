@@ -26,6 +26,7 @@ std::string immutable_variable_define_keyword = "";
 std::string constant_define_keyword = "";
 std::string constant_initializer = "";  // if set, used instead of variable_initializer for CONSTANT decls
 bool variable_with_type = true;
+bool cast_initial_value_when_no_type = false;  // when variable_with_type is false, wrap initial value with type cast
 std::string variable_type_separator = ":";
 std::map<ebm::BinaryOp, std::string> alt_binary_op;
 std::map<ebm::UnaryOp, std::string> alt_unary_op;

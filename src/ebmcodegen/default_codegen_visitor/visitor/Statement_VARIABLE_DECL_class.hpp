@@ -66,7 +66,10 @@ DEFINE_VISITOR(Statement_VARIABLE_DECL) {
         w.write(name);
     }
     if (initial_value) {
-        w.write(" ", ctx.config().variable_initializer, " ", tidy_condition_brace(initial_value->to_string()));
+        auto& initializer = (ctx.var_decl.decl_kind() == ebm::VariableDeclKind::CONSTANT && ctx.config().constant_initializer.size())
+                                ? ctx.config().constant_initializer
+                                : ctx.config().variable_initializer;
+        w.write(" ", initializer, " ", tidy_condition_brace(initial_value->to_string()));
     }
 
     w.writeln(ctx.config().endof_statement);

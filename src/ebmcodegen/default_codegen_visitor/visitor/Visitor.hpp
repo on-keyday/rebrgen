@@ -10,6 +10,7 @@ bool use_brace_for_condition = true;
 bool use_elif = false;
 std::string bool_true = "true";
 std::string bool_false = "false";
+std::string bool_type = "bool";
 std::string setter_status_ok = "";
 std::string setter_status_failure = "";
 std::string struct_keyword = "struct";
@@ -23,6 +24,7 @@ std::string default_vector_brace = "[]";
 std::string variable_define_keyword = "";
 std::string immutable_variable_define_keyword = "";
 std::string constant_define_keyword = "";
+std::string constant_initializer = "";  // if set, used instead of variable_initializer for CONSTANT decls
 bool variable_with_type = true;
 std::string variable_type_separator = ":";
 std::map<ebm::BinaryOp, std::string> alt_binary_op;
@@ -100,3 +102,4 @@ std::function<expected<Result>(Context_Statement_INIT_CHECK& ctx)> init_check_vi
 
 // if this returns `pass` using default logic
 std::function<expected<Result>(Context_Expression_DEFAULT_VALUE& ctx)> default_value_custom;
+std::function<expected<Result>(Context_Expression_CONDITIONAL& ctx)> conditional_visitor;

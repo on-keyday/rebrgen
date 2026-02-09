@@ -263,6 +263,8 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().variable_type_separator = "";
     ctx.config().variable_with_type = false;
     ctx.config().variable_initializer = ":=";
+    ctx.config().constant_define_keyword = "const";
+    ctx.config().constant_initializer = "=";
     ctx.config().enum_decl_visitor = [&](Context_Statement_ENUM_DECL& ectx) -> expected<Result> {
         CodeWriter w;
         auto name = ectx.identifier();
@@ -385,6 +387,16 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().use_brace_for_condition = false;
 
     ctx.config().alt_unary_op[ebm::UnaryOp::bit_not] = "^";
+
+    ctx.config().conditional_visitor = [&](Context_Expression_CONDITIONAL& cctx) -> expected<Result> {
+        MAYBE(cond_str, ctx.visit(cctx.condition));
+        MAYBE(then_str, ctx.visit(cctx.then));
+        MAYBE(else_str, ctx.visit(cctx.else_));
+        MAYBE(type_str, ctx.visit(cctx.type));
+        return CODE("func() ", type_str.to_writer(), " { if ", tidy_condition_brace(cond_str.to_string()),
+                    " { return ", tidy_condition_brace(then_str.to_string()),
+                    " } else { return ", tidy_condition_brace(else_str.to_string()), " } }()");
+    };
 
     return pass;
 }

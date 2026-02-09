@@ -5010,7 +5010,7 @@ namespace ebm {
         }
         return false;
     }
-    const StatementRef* ExpressionBody::sub_range() const {
+    const WeakStatementRef* ExpressionBody::sub_range() const {
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
@@ -5106,10 +5106,10 @@ namespace ebm {
         }
         return nullptr;
     }
-    StatementRef* ExpressionBody::sub_range() {
-        return const_cast<StatementRef*>(std::as_const(*this).sub_range());
+    WeakStatementRef* ExpressionBody::sub_range() {
+        return const_cast<WeakStatementRef*>(std::as_const(*this).sub_range());
     }
-    bool ExpressionBody::sub_range(const StatementRef& v) {
+    bool ExpressionBody::sub_range(const WeakStatementRef& v) {
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
             return false;
         }
@@ -5206,7 +5206,7 @@ namespace ebm {
         }
         return false;
     }
-    bool ExpressionBody::sub_range(StatementRef&& v) {
+    bool ExpressionBody::sub_range(WeakStatementRef&& v) {
         if (ExpressionKind::LITERAL_INT==(*this).kind) {
             return false;
         }

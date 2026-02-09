@@ -569,7 +569,7 @@ namespace ebm {
             }
         }
         if (auto got = j.at("sub_range")) {
-            StatementRef tmp;
+            WeakStatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }

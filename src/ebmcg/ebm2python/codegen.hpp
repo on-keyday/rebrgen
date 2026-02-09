@@ -4266,7 +4266,7 @@ namespace ebm2python {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::StatementRef& sub_range;
+        const ebm::WeakStatementRef& sub_range;
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT {};
     // Deconstruct context fields
@@ -4279,7 +4279,7 @@ namespace ebm2python {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::StatementRef& sub_range;
+        const ebm::WeakStatementRef& sub_range;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
     struct VisitorTag_Expression_SUB_RANGE_INIT_before {};
@@ -4293,7 +4293,7 @@ namespace ebm2python {
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
         const ebm::ExpressionKind& kind;
-        const ebm::StatementRef& sub_range;
+        const ebm::WeakStatementRef& sub_range;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };

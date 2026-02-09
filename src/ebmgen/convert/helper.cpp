@@ -357,7 +357,7 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::SUB_RANGE_INIT;
         body.type = type;
-        body.sub_range(init);
+        body.sub_range(to_weak(init));
         return body;
     }
 

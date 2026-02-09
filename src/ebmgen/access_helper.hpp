@@ -8269,7 +8269,7 @@ namespace ebmcodegen {
                 return {.index = 61, .is_array = false, .is_ptr = true};
             }
             if (field_index == get_field_index<11>("sub_range")) {
-                return {.index = 57, .is_array = false, .is_ptr = true};
+                return {.index = 56, .is_array = false, .is_ptr = true};
             }
             if (field_index == get_field_index<11>("target_expr")) {
                 return {.index = 59, .is_array = false, .is_ptr = true};

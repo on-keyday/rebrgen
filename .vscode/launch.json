@@ -147,7 +147,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebm2go",
-      "args": ["-i", "${workspaceRoot}/save/objproto.ebm"],
+      "args": ["-i", "${workspaceRoot}/test_tcp.ebm"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

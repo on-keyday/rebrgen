@@ -262,7 +262,7 @@ format ExpressionBody:
             target_expr :ExpressionRef
             lowered_expr :LoweredExpressionRef
         ExpressionKind.SUB_RANGE_INIT:
-            sub_range :StatementRef
+            sub_range :WeakStatementRef
         ExpressionKind.OR_COND:
             or_cond :Expressions
         ExpressionKind.ADDRESS_OF:

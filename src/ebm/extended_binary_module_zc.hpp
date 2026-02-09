@@ -2831,7 +2831,7 @@ namespace ebm::zc {
             LoweredExpressionRef lowered_expr;
         };
         struct EBM_API union_struct_59{
-            StatementRef sub_range;
+            WeakStatementRef sub_range;
         };
         struct EBM_API union_struct_60{
             Expressions or_cond;
@@ -2965,10 +2965,10 @@ namespace ebm::zc {
         StringRef* string_value();
         bool string_value(StringRef&& v);
         bool string_value(const StringRef& v);
-        const StatementRef* sub_range() const;
-        StatementRef* sub_range();
-        bool sub_range(StatementRef&& v);
-        bool sub_range(const StatementRef& v);
+        const WeakStatementRef* sub_range() const;
+        WeakStatementRef* sub_range();
+        bool sub_range(WeakStatementRef&& v);
+        bool sub_range(const WeakStatementRef& v);
         const ExpressionRef* target_expr() const;
         ExpressionRef* target_expr();
         bool target_expr(ExpressionRef&& v);

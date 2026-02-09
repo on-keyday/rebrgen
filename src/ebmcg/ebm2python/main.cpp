@@ -57216,12 +57216,6 @@ namespace ebm2python {
                 return unexpect_error(std::move(result_type.error()));
             }
         }
-        if (!is_nil(type_ctx.sub_range)) {
-            auto result_sub_range = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.sub_range);
-            if (!result_sub_range) {
-                return unexpect_error(std::move(result_sub_range.error()));
-            }
-        }
         return {};
     }
     template<typename Result,typename Context>

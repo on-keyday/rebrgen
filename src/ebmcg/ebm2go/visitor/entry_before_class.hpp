@@ -21,6 +21,70 @@
 #include "ebm/extended_binary_module.hpp"
 #include "ebmcodegen/stub/util.hpp"
 #include "escape/escape.h"
+#include "number/parse.h"
+
+namespace CODEGEN_NAMESPACE {
+    inline std::optional<ebm2go::ArrayLengthInfo> is_setter_target(Context_Statement_WRITE_DATA& wctx) {
+        if (is_nil(wctx.write_data.field)) {
+            return std::nullopt;
+        }
+        auto length_field = wctx.get_field<"member.body.id.field_decl">(wctx.write_data.size.ref());
+        if (!length_field) {
+            return std::nullopt;
+        }
+        auto length_type = wctx.get_field<"field_type.instance">(length_field);
+        if (!length_type) {
+            return std::nullopt;
+        }
+        // length must be int or uint
+        if (length_type->body.kind != ebm::TypeKind::INT &&
+            length_type->body.kind != ebm::TypeKind::UINT) {
+            return std::nullopt;
+        }
+        auto array_field = wctx.get_field<"member.body.id.field_decl">(wctx.write_data.target);
+        if (!array_field) {
+            return std::nullopt;
+        }
+        auto array_type = wctx.get_field<"field_type.instance">(array_field);
+        if (!array_type) {
+            return std::nullopt;
+        }
+        if (array_type->body.kind != ebm::TypeKind::VECTOR) {
+            return std::nullopt;
+        }
+        return ebm2go::ArrayLengthInfo{
+            &wctx.write_data,
+            array_field,
+            length_field,
+            array_type,
+            length_type,
+        };
+    }
+
+    struct ArraySetterDetector {
+        TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(ArraySetterDetector, BaseVisitor);
+        CodeWriter w;
+        expected<void> visit(Context_Statement_WRITE_DATA& ctx) {
+            if (auto info = is_setter_target(ctx); info) {
+                ctx.config().array_length_setters[get_id(ctx.write_data.field)] = *info;
+            }
+            return {};
+        }
+        template <typename Ctx>
+        expected<void> visit(Ctx&& ctx) {
+            if (ctx.is_before_or_after()) {
+                return pass;
+            }
+            if (ctx.context_name.contains("Type")) {
+                return {};
+            }
+            return traverse_children<void>(*this, std::forward<Ctx>(ctx));
+        }
+    };
+    static_assert(HasVisitor<void, ArraySetterDetector, Context_Statement_WRITE_DATA&>);
+
+}  // namespace CODEGEN_NAMESPACE
+
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
     ctx.config().array_type_wrapper = [](Result r, size_t size, ebm::ArrayAnnotation anno) -> expected<Result> {
@@ -41,6 +105,10 @@ DEFINE_VISITOR(entry_before) {
         CodeWriter w;
         auto name = sctx.identifier();
         w.writeln_with_loc(to_any_ref(sctx.item_id), "type ", name, " struct ", ctx.config().begin_block);
+        if (auto enc = sctx.struct_decl.encode_fn()) {
+            ArraySetterDetector detector{ctx.visitor};
+            MAYBE_VOID(detected, ctx.visit<void>(detector, *enc));
+        }
         return w;
     };
     ctx.config().function_define_keyword = "func";
@@ -52,7 +120,11 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().function_definition_start_wrapper = [&](Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& fctx) -> expected<Result> {
         CodeWriter w;
         std::string_view name_prefix;
+        ctx.config().inner_prop_setter = false;
         if (is_setter_func(fctx.func_decl.kind)) {
+            if (fctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+                ctx.config().inner_prop_setter = true;
+            }
             name_prefix = "Set";
             if (is_nil(fctx.func_decl.name)) {
                 name_prefix = "set";  // unexported
@@ -171,103 +243,6 @@ DEFINE_VISITOR(entry_before) {
         w.writeln("}");
         w.writeln(target.to_writer(), " = ", "(*", io_ref, ")[:", size_str, "]");
         return w;
-    };
-    ctx.config().read_data_visitor = [&](Context_Statement_READ_DATA& rctx) -> expected<Result> {
-        if (auto low = rctx.read_data.lowered_statement()) {
-            if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
-                return rctx.visit(low->io_statement.id);
-            }
-        }
-        if (auto cand = is_bytes_type(rctx, rctx.read_data.data_type)) {
-            MAYBE(target, rctx.visit(rctx.read_data.target));
-            MAYBE(size_str, get_size_str(rctx, rctx.read_data.size));
-            auto io_ = rctx.identifier(rctx.read_data.io_ref);
-            auto offset_val = CODE("0");
-            if (auto offset = rctx.read_data.offset()) {
-                MAYBE(offset_str, rctx.visit(*offset));
-                offset_val = offset_str.to_writer();
-            }
-            MAYBE(layer_str, get_identifier_layer_str(rctx, from_weak(rctx.read_data.field)));
-            layer_str = "\\\"" + layer_str + "\\\"";
-            CodeWriter w;
-            if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
-                // until eof
-                w.writeln(target.to_writer(), " = (*", io_, ")[", offset_val, ":]");
-                w.writeln("*", io_, " = (*", io_, ")[:", offset_val, "]");
-            }
-            else {
-                w.writeln("if len(*", io_, ") < ", offset_val, " + ", size_str, " {");
-                w.indent_writeln("return errors.New(\"not enough data to read for field ", layer_str, "\")");
-                w.writeln("}");
-                if (cand == BytesType::vector) {
-                    w.writeln(target.to_writer(), " = (*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "]");
-                }
-                else if (cand == BytesType::array) {
-                    w.writeln("copy(", target.to_writer(), "[:], (*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "])");
-                }
-                w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
-            }
-            return w;
-        }
-        if (auto lw = rctx.read_data.lowered_statement()) {
-            return rctx.visit(lw->io_statement.id);
-        }
-        return "/* not implemented read data */";
-    };
-    ctx.config().write_data_visitor = [&](Context_Statement_WRITE_DATA& wctx) -> expected<Result> {
-        if (auto low = wctx.write_data.lowered_statement()) {
-            if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
-                return wctx.visit(low->io_statement.id);
-            }
-        }
-        if (auto cand = is_bytes_type(wctx, wctx.write_data.data_type)) {
-            MAYBE(target, wctx.visit(wctx.write_data.target));
-            MAYBE(size_str, get_size_str(wctx, wctx.write_data.size));
-            auto io_ = wctx.identifier(wctx.write_data.io_ref);
-            auto offset_val = CODE("0");
-            if (auto offset = wctx.write_data.offset()) {
-                MAYBE(offset_str, wctx.visit(*offset));
-                offset_val = offset_str.to_writer();
-            }
-            MAYBE(layer_str, get_identifier_layer_str(wctx, from_weak(wctx.write_data.field)));
-            layer_str = "\\\"" + layer_str + "\\\"";
-            CodeWriter w;
-            if (cand == BytesType::vector) {
-                w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-                w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
-                w.writeln("}");
-                auto ref = wctx.write_data.size.ref();
-                if (ref && !ctx.is(ebm::ExpressionKind::ARRAY_SIZE, *ref)) {
-                    // check length consistency
-                    w.writeln("if len(", target.to_writer(), ") != int(", size_str, ") {");
-                    ctx.config().imports.insert("fmt");
-                    w.indent_writeln("return fmt.Errorf(\"size mismatch when writing field ", layer_str, ": expected %d, got %d\", int(", size_str, "), len(", target.to_writer(), "))");
-                    w.writeln("}");
-                }
-                w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), ")");
-                w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
-                return w;
-            }
-            else if (cand == BytesType::array) {
-                auto array_anno = ctx.get_field<"array_annotation">(wctx.write_data.data_type);
-                if (array_anno && *array_anno != ebm::ArrayAnnotation::none) {
-                    // only shift
-                    w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
-                }
-                else {
-                    w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-                    w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
-                    w.writeln("}");
-                    w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), "[:])");
-                    w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
-                }
-            }
-            return w;
-        }
-        if (auto lw = wctx.write_data.lowered_statement()) {
-            return wctx.visit(lw->io_statement.id);
-        }
-        return "/* not implemented write data */";
     };
     ctx.config().is_error_visitor = [&](Context_Expression_IS_ERROR& ectx) -> expected<Result> {
         MAYBE(err, ctx.visit(ectx.target_expr));

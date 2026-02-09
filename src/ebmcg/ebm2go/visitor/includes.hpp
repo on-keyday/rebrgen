@@ -8,6 +8,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+#include "ebm/extended_binary_module.hpp"
 namespace ebm2go {
     const ebm::FieldDecl* get_composite_field(auto&& ctx, auto target) {
         ebmgen::MappingTable& mapping = get_visitor(ctx).module_;
@@ -24,5 +25,13 @@ namespace ebm2go {
     }
 
     constexpr auto physical_field = "body.id.struct_decl.related_variant.variant_desc.related_field.field_decl";
+
+    struct ArrayLengthInfo {
+        const ebm::IOData* write_data = nullptr;
+        const ebm::FieldDecl* vector_field = nullptr;
+        const ebm::FieldDecl* length_field = nullptr;
+        const ebm::Type* vector_type = nullptr;
+        const ebm::Type* length_type = nullptr;
+    };
 
 }  // namespace ebm2go

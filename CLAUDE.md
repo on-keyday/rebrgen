@@ -262,12 +262,15 @@ The codebase uses macros extensively for error handling (like `MAYBE`). This is 
 
 - **Focus**: Making the EBM code generator-generator work
 - **Priority**: Functionality over polish (naming, redundant code addressed later)
-- **Active languages**: Python, Rust, P4, C (compiled), RMW (interpreted)
+- **Active languages**: Python, Rust, P4, C, Go (compiled), RMW (interpreted)
+- **Active development**: Go generator (`ebm2go`) is the current focus
 - **Legacy system**: `src/old/bmgen` and `src/old/bm2/` are not actively developed
 - **Testing**: Use `unictest.py` to identify unimplemented hooks
+- **Detailed status snapshot**: See `docs/en/current_status.md` for comprehensive analysis including per-generator maturity, known technical debt, and architecture notes
 
 ## Documentation
 
+- `docs/en/current_status.md` - Project status snapshot with per-generator analysis (AI-oriented)
 - `src/ebmgen/GEMINI.md` - Comprehensive guide for ebmgen development (MUST READ)
 - `docs/en/` - English documentation
 - `docs/ja/` - Japanese documentation

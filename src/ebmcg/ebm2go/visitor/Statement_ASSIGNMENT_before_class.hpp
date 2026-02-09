@@ -51,7 +51,7 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
             "{}{}",
             setter_prefix,
             member_ident);
-        w.writeln(base_, ".", setter_func_name, "(", value.to_writer(), ");");
+        w.writeln(base_, ".", setter_func_name, "(", value.to_writer(), ")");
         return w;
     }
     auto may_variant = ctx.get_field<"body.id.id">(member);
@@ -71,6 +71,29 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
             MAYBE(cast_str, ctx.visit(comp_field_type.composite_type));
             CodeWriter w;
             w.writeln(base_str.to_writer(), ".", setter_func_name, "(", cast_str.to_writer(), "(", value.to_writer(), "))");
+            return w;
+        }
+    }
+    if (ctx.config().inner_prop_setter) {
+        auto field_ref = ctx.get_field<"member.body.id">(ctx.target);
+        if (!field_ref) {
+            return pass;
+        }
+        if (auto found = ctx.config().array_length_setters.find(get_id(*field_ref)); found != ctx.config().array_length_setters.end()) {
+            const auto& info = found->second;
+            MAYBE(length_bit_size, info.length_type->body.size());
+            MAYBE(value, ctx.visit(ctx.value));
+            CodeWriter w;
+            auto value_len = CODE("len(", value.to_writer(), ")");
+            w.writeln("if ", value_len, " > ", std::to_string((1ULL << length_bit_size.value()) - 1), " {");
+            w.indent_writeln("return false");
+            w.writeln("}");
+            MAYBE(target_expr, ctx.visit(ctx.target));
+            MAYBE(length_expr, get_size_str(ctx, info.write_data->size));
+            w.writeln(target_expr.to_writer(), " = ", value.to_writer());
+            MAYBE(typ_str, ctx.visit(*info.length_type));
+            w.writeln(length_expr, " = ", typ_str.to_writer(), "(", value_len, ")");
+            ctx.config().array_length_set_done.insert(get_id(*field_ref));
             return w;
         }
     }

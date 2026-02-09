@@ -8,8 +8,11 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-std::unordered_set<std::string_view> imports;
+std::set<std::string_view> imports;
 std::unordered_set<std::uint64_t> bulk_primitive;
 std::unordered_set<std::uint64_t> any_variant;
 std::unordered_map<std::uint64_t, std::uint64_t> any_cast_counter;
 std::unordered_set<std::uint64_t> bool_mapped_func;
+std::unordered_map<std::uint64_t, ArrayLengthInfo> array_length_setters;
+std::unordered_set<std::uint64_t> array_length_set_done;
+bool inner_prop_setter = false;

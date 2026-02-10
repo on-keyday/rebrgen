@@ -86,11 +86,13 @@ namespace CODEGEN_NAMESPACE {
 
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
-    ctx.config().array_type_wrapper = [](Result r, size_t size, ebm::ArrayAnnotation anno) -> expected<Result> {
-        if (anno != ebm::ArrayAnnotation::none) {
-            // as slice
+    ctx.config().use_io_reader_writer = !ctx.flags().use_bytes_slice;
+    ctx.config().array_type_wrapper = [&](Result r, size_t size, ebm::ArrayAnnotation anno) -> expected<Result> {
+        if (!ctx.config().use_io_reader_writer && anno != ebm::ArrayAnnotation::none) {
+            // In *[]byte mode, annotated arrays are slices (they borrow from the IO buffer)
             return CODE("[]", r.to_writer());
         }
+        // In io.Writer mode, all arrays are fixed-size (including annotated ones for lowered IO)
         return CODE("[", std::to_string(size), "]", r.to_writer());
     };
     ctx.config().vector_type_wrapper = [](Result r) -> expected<Result> {
@@ -114,8 +116,15 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().function_return_type_separator = "";
     ctx.config().encoder_return_type = "error";
     ctx.config().decoder_return_type = "error";
-    ctx.config().encoder_input_type = "*[]byte";
-    ctx.config().decoder_input_type = "*[]byte";
+    if (ctx.config().use_io_reader_writer) {
+        ctx.config().encoder_input_type = "io.Writer";
+        ctx.config().decoder_input_type = "io.Reader";
+        ctx.config().imports.insert("io");
+    }
+    else {
+        ctx.config().encoder_input_type = "*[]byte";
+        ctx.config().decoder_input_type = "*[]byte";
+    }
     ctx.config().function_definition_start_wrapper = [&](Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& fctx) -> expected<Result> {
         CodeWriter w;
         std::string_view name_prefix;
@@ -231,17 +240,23 @@ DEFINE_VISITOR(entry_before) {
         MAYBE(field_name, get_identifier_layer_str(ctx, from_weak(write_data.field)));
         field_name = "\\\"" + field_name + "\\\"";
         CodeWriter w;
-        rctx.config().imports.insert("errors");
-        w.writeln("if len(*", io_ref, ") < int(", size_str, ") {");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("if cap(*", io_ref, ") < int(", size_str, ") {");
-            w.indent_writeln("return errors.New(\"not enough space to reserve data for field ", field_name, "\")");
-            w.writeln("}");
-            w.writeln("*", io_ref, " = (*", io_ref, ")[:", size_str, "]");
+        if (ctx.config().use_io_reader_writer) {
+            // In io.Writer mode: no-op. The fixed array declaration provides storage.
+            return "";
         }
-        w.writeln("}");
-        w.writeln(target.to_writer(), " = ", "(*", io_ref, ")[:", size_str, "]");
+        else {
+            rctx.config().imports.insert("errors");
+            w.writeln("if len(*", io_ref, ") < int(", size_str, ") {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("if cap(*", io_ref, ") < int(", size_str, ") {");
+                w.indent_writeln("return errors.New(\"not enough space to reserve data for field ", field_name, "\")");
+                w.writeln("}");
+                w.writeln("*", io_ref, " = (*", io_ref, ")[:", size_str, "]");
+            }
+            w.writeln("}");
+            w.writeln(target.to_writer(), " = ", "(*", io_ref, ")[:", size_str, "]");
+        }
         return w;
     };
     ctx.config().is_error_visitor = [&](Context_Expression_IS_ERROR& ectx) -> expected<Result> {
@@ -366,6 +381,11 @@ DEFINE_VISITOR(entry_before) {
         return CODELINE(target.to_writer(), " = append(", target.to_writer(), ", ", value.to_writer(), ")");
     };
     ctx.config().can_read_stream_visitor = [&](Context_Expression_CAN_READ_STREAM& cctx) -> expected<Result> {
+        if (ctx.config().use_io_reader_writer) {
+            // In io.Reader mode, we cannot check remaining bytes without consuming.
+            // For now, always return true and let io.ReadFull fail with io.ErrUnexpectedEOF.
+            return CODE("true");
+        }
         auto stream = cctx.identifier(cctx.io_ref);
         MAYBE(size_str, get_size_str(cctx, cctx.num_bytes));
         return CODE("len(*", stream, ") >= ", size_str);

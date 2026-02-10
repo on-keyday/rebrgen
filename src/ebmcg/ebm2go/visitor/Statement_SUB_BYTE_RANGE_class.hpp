@@ -38,6 +38,38 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
         MAYBE(length, ctx.sub_byte_range.length());
         MAYBE(length_str, ctx.visit(length));
 
+        if (ctx.config().use_io_reader_writer) {
+            if (ctx.sub_byte_range.stream_type == ebm::StreamType::INPUT) {
+                // Decode: read length bytes from reader, wrap in bytes.Reader for child
+                ctx.config().imports.insert("bytes");
+                w.writeln(io_base_, " := make([]byte, int(", length_str.to_writer(), "))");
+                w.writeln("if _, err := io.ReadFull(", parent_io_, ", ", io_base_, "); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+                w.writeln(io_, " := bytes.NewReader(", io_base_, ")");
+            }
+            else {
+                // Encode: create bytes.Buffer for child to write to
+                ctx.config().imports.insert("bytes");
+                w.writeln(io_, " := &bytes.Buffer{}");
+            }
+
+            MAYBE(do_io, ctx.visit(ctx.sub_byte_range.io_statement));
+            w.write(do_io.to_writer());
+
+            if (ctx.sub_byte_range.stream_type == ebm::StreamType::OUTPUT) {
+                // After encoding: verify length and write to parent
+                ctx.config().imports.insert("fmt");
+                w.writeln("if ", io_, ".Len() != int(", length_str.to_writer(), ") {");
+                w.indent_writeln("return fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), "), ", io_, ".Len())");
+                w.writeln("}");
+                w.writeln("if _, err := ", parent_io_, ".Write(", io_, ".Bytes()); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            return w;
+        }
+
         if (ctx.sub_byte_range.stream_type == ebm::StreamType::INPUT) {
             // Decode: slice length bytes from parent, create *[]byte for child IO
             ctx.config().imports.insert("errors");

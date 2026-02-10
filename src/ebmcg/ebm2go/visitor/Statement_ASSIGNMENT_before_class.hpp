@@ -41,7 +41,14 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
         MAYBE(member_ident, ctx.identifier(*member));
         auto base_ = base_str.to_writer();
         if (ctx.get_field<"struct_decl.related_variant">(comp->parent_struct)) {
-            base_ = CODE(std::move(base_), ".", parent_ident);
+            auto field_id = ctx.get_field<"body.id">(*member);
+            if (field_id) {
+                if (auto variant_type = get_variant_member_from_field(ctx, from_weak(*field_id))) {
+                    // variant member composite field: use INIT_CHECK-asserted variable (tmp{type_id})
+                    auto variant_hold = std::format("tmp{}", get_id(*variant_type));
+                    base_ = CODE(variant_hold);
+                }
+            }
         }
         auto setter_prefix = "Set";
         if (ctx.config().bool_mapped_func.contains(get_id(setter->id))) {
@@ -70,7 +77,7 @@ DEFINE_VISITOR(Statement_ASSIGNMENT_before) {
             MAYBE(comp_field_type, ctx.get_field<"composite_field_decl">(comp_field.composite_field()));
             MAYBE(cast_str, ctx.visit(comp_field_type.composite_type));
             CodeWriter w;
-            w.writeln(base_str.to_writer(), ".", setter_func_name, "(", cast_str.to_writer(), "(", value.to_writer(), "))");
+            w.writeln(std::move(base_str.to_writer()), ".", setter_func_name, "(", std::move(cast_str.to_writer()), "(", std::move(value.to_writer()), "))");
             return w;
         }
     }

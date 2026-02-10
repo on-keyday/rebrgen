@@ -17,9 +17,9 @@
 
 #include "../codegen.hpp"
 
-inline std::string to_camel_case(const std::string& s) {
+inline std::string to_camel_case(const std::string& s, bool upper_first) {
     std::string result;
-    bool upper_next = false;
+    bool upper_next = upper_first;
     for (char ch : s) {
         if (ch == '_' || ch == '-') {
             upper_next = true;
@@ -40,12 +40,12 @@ inline std::string to_camel_case(const std::string& s) {
 DEFINE_VISITOR(pre_visitor) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    for (auto& ident : ctx.ebm.identifiers) {
-        if (ident.body.data.contains('.')) {  // metadata or special identifier
-            continue;
-        }
-        ident.body.data = to_camel_case(ident.body.data);
-        ident.body.data[0] = std::toupper(ident.body.data[0]);
-    }
+    ctx.module().set_identifier_modifier(
+        [](ebm::StatementRef ref, std::string& name) {
+            if (name.contains(".")) {
+                return;
+            }
+            name = to_camel_case(name, true);
+        });
     return pass;
 }

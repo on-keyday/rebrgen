@@ -143,6 +143,10 @@ namespace ebmgen {
         void remove_directly_mapped_statement_identifier(ebm::StatementRef ref);
         void build_maps();
 
+        void set_identifier_modifier(std::function<void(ebm::StatementRef, std::string&)>&& modifier) {
+            identifier_modifier = std::move(modifier);
+        }
+
        private:
         EBMProxy module_;
         // Caches for faster lookups
@@ -155,5 +159,6 @@ namespace ebmgen {
         std::unordered_map<ebm::StatementKind, std::string> default_identifier_prefix_;
         std::unordered_map<std::uint64_t, std::string> statement_identifier_direct_map_;
         std::unordered_map<std::uint64_t, const ebm::Loc*> debug_loc_map_;
+        std::function<void(ebm::StatementRef, std::string&)> identifier_modifier;
     };
 }  // namespace ebmgen

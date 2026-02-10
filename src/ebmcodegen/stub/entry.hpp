@@ -18,6 +18,7 @@
 #endif
 #include "output.hpp"
 #include <wrap/argv.h>
+#include <chrono>
 
 namespace ebmcodegen {
     struct Flags : futils::cmdline::templ::HelpOption {
@@ -25,6 +26,8 @@ namespace ebmcodegen {
         std::string_view output;
         bool dump_code = false;
         bool show_flags = false;
+        bool timing = false;
+        std::chrono::steady_clock::time_point timepoint = std::chrono::steady_clock::now();
         // std::vector<std::string_view> args;
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
@@ -51,6 +54,15 @@ namespace ebmcodegen {
             return "";
         }
 
+        void debug_timing(const char* phase) {
+            if (timing) {
+                auto now = std::chrono::steady_clock::now();
+                auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - timepoint).count();
+                futils::wrap::cerr_wrap() << program_name << ": [timing] " << phase << " took " << diff << " ms\n";
+                timepoint = now;
+            }
+        }
+
         void bind(futils::cmdline::option::Context& ctx) {
             bind_help(ctx);
             ctx.VarString<true>(&input, "input,i", "input EBM file", "FILE");
@@ -60,7 +72,8 @@ namespace ebmcodegen {
             ctx.VarString<true>(&dump_test_file, "test-info", "dump test info file", "FILE");
             ctx.VarString<true>(&dump_test_separator, "test-separator", "dump test info separator when dumping test info to stdout", "SEP");
             ctx.VarBool(&debug_unimplemented, "debug-unimplemented", "debug unimplemented node (for debug)");
-            web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info", "test-separator"};
+            ctx.VarBool(&timing, "timing", "show timing info (for debug)");
+            web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info", "test-separator", "timing"};
         }
     };
     namespace internal {
@@ -76,6 +89,7 @@ namespace ebmcodegen {
             ebm::ExtendedBinaryModule ebm;
             auto& cout = futils::wrap::cout_wrap();
             auto& cerr = futils::wrap::cerr_wrap();
+            flags.debug_timing("start loading file");
             futils::file::View view;
             if (auto res = view.open(flags.input); !res) {
                 cerr << flags.program_name << ": " << res.error().template error<std::string>() << '\n';
@@ -85,8 +99,10 @@ namespace ebmcodegen {
                 cerr << flags.program_name << ": " << "Empty file\n";
                 return 1;
             }
+            flags.debug_timing("file opened");
             futils::binary::reader r{view};
             auto err = ebm.decode(r);
+            flags.debug_timing("file decoded");
             if (err) {
                 if (flags.dump_code) {
                     std::stringstream ss;
@@ -111,6 +127,7 @@ namespace ebmcodegen {
             }
             futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
             futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+            flags.debug_timing("file loaded");
             int ret = then(w, ebm, output);
             if (flags.dump_test_file.size()) {
                 futils::json::Stringer str;

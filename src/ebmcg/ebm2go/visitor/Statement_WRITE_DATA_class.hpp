@@ -102,7 +102,13 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
         if (cand == BytesType::vector) {
             ctx.config().imports.insert("errors");
             w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-            w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("if cap(*", io_, ") < int(", size_str, ") {");
+                w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+                w.writeln("}");
+                w.writeln("*", io_, " = (*", io_, ")[:", size_str, "]");
+            }
             w.writeln("}");
             auto ref = wctx.write_data.size.ref();
             if (ref && !ctx.is(ebm::ExpressionKind::ARRAY_SIZE, *ref)) {

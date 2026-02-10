@@ -201,6 +201,11 @@ namespace ebmgen {
             return it->second;
         }
         if (const ebm::Identifier* id = get_identifier(ref)) {
+            if (identifier_modifier) {
+                std::string name = id->body.data;
+                identifier_modifier(ref, name);
+                return name;
+            }
             return id->body.data;
         }
         if (prefix.empty()) {

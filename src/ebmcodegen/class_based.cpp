@@ -1352,13 +1352,25 @@ namespace ebmcodegen {
         user_config_include(w, includes_locations.user_include.post_includes, includes_locations);
     }
 
+    std::string dispatch_compatibility_name(const ContextClass& cls) {
+        // base + "_dispatch" (+ ["_before"|"_after"])
+        std::string name = std::string(cls.base) + "_dispatch";
+        if (cls.has(ContextClassKind_Before)) {
+            name += "_before";
+        }
+        else if (cls.has(ContextClassKind_After)) {
+            name += "_after";
+        }
+        return name;
+    }
+
     void generate_dummy_macro_for_class(CodeWriter& w, std::string_view ns_name, const HookType& hook, const ContextClass& cls) {
         auto instance = std::format("{}::{}", ns_name, context_instance_name(cls));
         auto visitor = hook.visitor_instance_name(cls, ns_name);
         auto upper_ns = upper(ns_name);
         auto cls_name = cls.class_name();
         if (cls.has(ContextClassKind_Generic)) {
-            cls_name += suffixes[suffix_dispatch];  // for backward compatibility
+            cls_name = dispatch_compatibility_name(cls);
         }
         w.writeln("#define ", upper_ns, "_", macro_CODEGEN_VISITOR, "_", cls_name, " ", visitor);
         // w.writeln("#define ", upper_ns, "_", macro_CODEGEN_CONTEXT_PARAMETERS, "_", cls_name, " ", cls.type_parameters_body(true));
@@ -1481,11 +1493,11 @@ namespace ebmcodegen {
     }
 
     std::string header_name(const LocationInfo& location, const ContextClass& cls) {
-        std::string_view additional_suffix;
+        auto name = cls.class_name();
         if (cls.has(ContextClassKind_Generic)) {
-            additional_suffix = suffixes[suffix_dispatch];  // for backward compatibility
+            name = dispatch_compatibility_name(cls);
         }
-        return std::format("{}{}{}", cls.class_name(), additional_suffix, location.suffix);
+        return std::format("{}{}", name, location.suffix);
     }
 
     void generate_user_implemented_includes(CodeWriter& w, std::string_view ns_name, const std::vector<HookType>& hooks, const IncludeLocations& locations, const std::vector<ContextClasses>& context_classes, const std::string_view result_type, UtilityClasses& utils) {
@@ -1496,10 +1508,6 @@ namespace ebmcodegen {
             auto location = locations.include_locations[i];
             for (auto& cls_group : context_classes) {
                 for (auto& cls : cls_group.classes) {
-                    std::string_view additional_suffix;
-                    if (cls.has(ContextClassKind_Generic)) {
-                        additional_suffix = suffixes[suffix_dispatch];  // for backward compatibility
-                    }
                     auto header = std::format("\"{}{}.hpp\"", location.location, header_name(location, cls));
                     auto instance = hook.visitor_instance_name(cls, ns_name);
                     include_or_default(

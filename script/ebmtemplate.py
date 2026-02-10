@@ -366,7 +366,7 @@ def parseInt(s: str) -> int:
         return 0
 
 
-def interactive_generate_single():
+def interactive_generate_single(mode :str):
     """Generate a single template."""
     tool_path = get_tool_path()
     if not tool_path:
@@ -455,7 +455,7 @@ def interactive_generate_single():
                 "Enter the language directory to save to (e.g., 'cpp', 'python', or 'default'): "
             ).strip()
             if lang:
-                run_save_template(tool_path, selected_variant, lang)
+                run_save_template(tool_path, selected_variant, mode, lang)
     except subprocess.CalledProcessError as e:
         print(
             f"Error: Failed to get hooklist. ebmcodegen exited with code {e.returncode}",
@@ -465,7 +465,7 @@ def interactive_generate_single():
         return
 
 
-def interactive():
+def interactive(mode :str):
     """interactive guide through the script features."""
     print("Welcome to the interactive guide!")
     print("This guide will help you use the ebmcodegen tool for template generation.")
@@ -482,7 +482,7 @@ def interactive():
             "Enter the number of your choice: "
         ).strip()
         if command == "1":
-            interactive_generate_single()
+            interactive_generate_single(mode)
         elif command == "2":
             lang = input(
                 "Enter the language directory to update (e.g., 'cpp', 'python', or 'default'): "
@@ -490,7 +490,7 @@ def interactive():
             if lang:
                 tool_path = get_tool_path()
                 if tool_path:
-                    run_update_hooks(tool_path, lang)
+                    run_update_hooks(tool_path, lang,mode)
         elif command == "3":
             tool_path = get_tool_path()
             if tool_path:
@@ -500,7 +500,7 @@ def interactive():
                 "Enter the language directory to list (e.g., 'cpp', 'python', or 'default'): "
             ).strip()
             if lang:
-                list_defined_templates(lang)
+                list_defined_templates(lang,mode)
         elif command == "5":
             print("Exiting the interactive guide. Goodbye!")
             break
@@ -580,7 +580,7 @@ def main(mode: str):
     target_arg = sys.argv[1]
 
     if target_arg == "interactive":
-        interactive()
+        interactive(mode)
         return
     if target_arg == "test":
         run_test_mode(tool_path)

@@ -63,8 +63,12 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
                 args += param_name;
             }
             auto base_ = base.to_writer();
-            if (ctx.get_field<"struct_decl.related_variant">(comp_getter->parent_struct)) {
-                base_ = CODE(std::move(base_), ".", parent_ident);
+            MAYBE(member_stmt, ctx.get_field<"body.id">(ctx.member));
+            if (auto variant_type = get_variant_member_from_field(ctx, from_weak(member_stmt))) {
+                // variant member composite field: use INIT_CHECK-asserted variable (tmp{type_id})
+                // instead of base.parent_ident which doesn't work in Go (interface has no fields)
+                auto variant_hold = std::format("tmp{}", get_id(*variant_type));
+                base_ = CODE(variant_hold);
             }
             if (ctx.config().bool_mapped_func.contains(get_id(comp->id))) {
                 member_ident[0] = std::tolower(member_ident[0]);

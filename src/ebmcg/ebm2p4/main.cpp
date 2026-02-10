@@ -2919,10 +2919,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Stateme
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Statement_before_dispatch_class.hpp")
+#if __has_include("visitor/Statement_dispatch_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_before<Result>
-#include "visitor/Statement_before_dispatch_class.hpp"
+#include "visitor/Statement_dispatch_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -2943,10 +2943,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Stateme
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Statement_after_dispatch_class.hpp")
+#if __has_include("visitor/Statement_dispatch_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Statement_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_after<Result>
-#include "visitor/Statement_after_dispatch_class.hpp"
+#include "visitor/Statement_dispatch_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -5727,10 +5727,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Express
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Expression_before_dispatch_class.hpp")
+#if __has_include("visitor/Expression_dispatch_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_before<Result>
-#include "visitor/Expression_before_dispatch_class.hpp"
+#include "visitor/Expression_dispatch_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -5751,10 +5751,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Express
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Expression_after_dispatch_class.hpp")
+#if __has_include("visitor/Expression_dispatch_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Expression_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_after<Result>
-#include "visitor/Expression_after_dispatch_class.hpp"
+#include "visitor/Expression_dispatch_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -7455,10 +7455,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type>>)
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Type_before_dispatch_class.hpp")
+#if __has_include("visitor/Type_dispatch_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_before<Result>
-#include "visitor/Type_before_dispatch_class.hpp"
+#include "visitor/Type_dispatch_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -7479,10 +7479,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_be
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Type_after_dispatch_class.hpp")
+#if __has_include("visitor/Type_dispatch_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserHook<ebm2p4::VisitorTag_Type_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_after<Result>
-#include "visitor/Type_after_dispatch_class.hpp"
+#include "visitor/Type_dispatch_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -11326,7 +11326,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Statement_before_dispatch.hpp")
+#if __has_include("visitor/Statement_dispatch_before.hpp")
 // Inlined hook for Statement_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Statement_before>> {
@@ -11345,7 +11345,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Statement_befo
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/Statement_before_dispatch.hpp"
+        #include "visitor/Statement_dispatch_before.hpp"
         return pass;
     }
 };
@@ -11357,7 +11357,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Statement_after_dispatch.hpp")
+#if __has_include("visitor/Statement_dispatch_after.hpp")
 // Inlined hook for Statement_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Statement_after>> {
@@ -11376,7 +11376,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Statement_afte
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/Statement_after_dispatch.hpp"
+        #include "visitor/Statement_dispatch_after.hpp"
         return pass;
     }
 };
@@ -14953,7 +14953,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Expression_before_dispatch.hpp")
+#if __has_include("visitor/Expression_dispatch_before.hpp")
 // Inlined hook for Expression_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Expression_before>> {
@@ -14972,7 +14972,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Expression_bef
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/Expression_before_dispatch.hpp"
+        #include "visitor/Expression_dispatch_before.hpp"
         return pass;
     }
 };
@@ -14984,7 +14984,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Expression_after_dispatch.hpp")
+#if __has_include("visitor/Expression_dispatch_after.hpp")
 // Inlined hook for Expression_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Expression_after>> {
@@ -15003,7 +15003,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Expression_aft
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/Expression_after_dispatch.hpp"
+        #include "visitor/Expression_dispatch_after.hpp"
         return pass;
     }
 };
@@ -17185,7 +17185,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Type_before_dispatch.hpp")
+#if __has_include("visitor/Type_dispatch_before.hpp")
 // Inlined hook for Type_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Type_before>> {
@@ -17204,7 +17204,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Type_before>> 
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/Type_before_dispatch.hpp"
+        #include "visitor/Type_dispatch_before.hpp"
         return pass;
     }
 };
@@ -17216,7 +17216,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/Type_after_dispatch.hpp")
+#if __has_include("visitor/Type_dispatch_after.hpp")
 // Inlined hook for Type_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Type_after>> {
@@ -17235,7 +17235,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedHook<ebm2p4::VisitorTag_Type_after>> {
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/Type_after_dispatch.hpp"
+        #include "visitor/Type_dispatch_after.hpp"
         return pass;
     }
 };
@@ -20244,10 +20244,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Stat
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Statement_before_dispatch_dsl_class.hpp")
+#if __has_include("visitor/dsl/Statement_dispatch_before_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Statement_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_before<Result>
-#include "visitor/dsl/Statement_before_dispatch_dsl_class.hpp"
+#include "visitor/dsl/Statement_dispatch_before_dsl_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -20268,10 +20268,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Stat
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Statement_after_dispatch_dsl_class.hpp")
+#if __has_include("visitor/dsl/Statement_dispatch_after_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Statement_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_after<Result>
-#include "visitor/dsl/Statement_after_dispatch_dsl_class.hpp"
+#include "visitor/dsl/Statement_dispatch_after_dsl_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -23052,10 +23052,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Expr
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Expression_before_dispatch_dsl_class.hpp")
+#if __has_include("visitor/dsl/Expression_dispatch_before_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Expression_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_before<Result>
-#include "visitor/dsl/Expression_before_dispatch_dsl_class.hpp"
+#include "visitor/dsl/Expression_dispatch_before_dsl_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -23076,10 +23076,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Expr
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Expression_after_dispatch_dsl_class.hpp")
+#if __has_include("visitor/dsl/Expression_dispatch_after_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Expression_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_after<Result>
-#include "visitor/dsl/Expression_after_dispatch_dsl_class.hpp"
+#include "visitor/dsl/Expression_dispatch_after_dsl_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -24780,10 +24780,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Type
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Type_before_dispatch_dsl_class.hpp")
+#if __has_include("visitor/dsl/Type_dispatch_before_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Type_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_before<Result>
-#include "visitor/dsl/Type_before_dispatch_dsl_class.hpp"
+#include "visitor/dsl/Type_dispatch_before_dsl_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -24804,10 +24804,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Type
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Type_after_dispatch_dsl_class.hpp")
+#if __has_include("visitor/dsl/Type_dispatch_after_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::UserDSLHook<ebm2p4::VisitorTag_Type_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_after<Result>
-#include "visitor/dsl/Type_after_dispatch_dsl_class.hpp"
+#include "visitor/dsl/Type_dispatch_after_dsl_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -28651,7 +28651,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorT
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Statement_before_dispatch_dsl.hpp")
+#if __has_include("visitor/dsl/Statement_dispatch_before_dsl.hpp")
 // Inlined hook for Statement_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Statement_before>> {
@@ -28670,7 +28670,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Statement_b
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/dsl/Statement_before_dispatch_dsl.hpp"
+        #include "visitor/dsl/Statement_dispatch_before_dsl.hpp"
         return pass;
     }
 };
@@ -28682,7 +28682,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorT
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Statement_after_dispatch_dsl.hpp")
+#if __has_include("visitor/dsl/Statement_dispatch_after_dsl.hpp")
 // Inlined hook for Statement_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Statement_after>> {
@@ -28701,7 +28701,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Statement_a
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/dsl/Statement_after_dispatch_dsl.hpp"
+        #include "visitor/dsl/Statement_dispatch_after_dsl.hpp"
         return pass;
     }
 };
@@ -32278,7 +32278,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorT
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Expression_before_dispatch_dsl.hpp")
+#if __has_include("visitor/dsl/Expression_dispatch_before_dsl.hpp")
 // Inlined hook for Expression_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Expression_before>> {
@@ -32297,7 +32297,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Expression_
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/dsl/Expression_before_dispatch_dsl.hpp"
+        #include "visitor/dsl/Expression_dispatch_before_dsl.hpp"
         return pass;
     }
 };
@@ -32309,7 +32309,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorT
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Expression_after_dispatch_dsl.hpp")
+#if __has_include("visitor/dsl/Expression_dispatch_after_dsl.hpp")
 // Inlined hook for Expression_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Expression_after>> {
@@ -32328,7 +32328,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Expression_
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/dsl/Expression_after_dispatch_dsl.hpp"
+        #include "visitor/dsl/Expression_dispatch_after_dsl.hpp"
         return pass;
     }
 };
@@ -34510,7 +34510,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorT
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Type_before_dispatch_dsl.hpp")
+#if __has_include("visitor/dsl/Type_dispatch_before_dsl.hpp")
 // Inlined hook for Type_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Type_before>> {
@@ -34529,7 +34529,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Type_before
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/dsl/Type_before_dispatch_dsl.hpp"
+        #include "visitor/dsl/Type_dispatch_before_dsl.hpp"
         return pass;
     }
 };
@@ -34541,7 +34541,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorT
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/Type_after_dispatch_dsl.hpp")
+#if __has_include("visitor/dsl/Type_dispatch_after_dsl.hpp")
 // Inlined hook for Type_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Type_after>> {
@@ -34560,7 +34560,7 @@ struct ebm2p4::Visitor<ebm2p4::UserInlinedDSLHook<ebm2p4::VisitorTag_Type_after>
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "visitor/dsl/Type_after_dispatch_dsl.hpp"
+        #include "visitor/dsl/Type_dispatch_after_dsl.hpp"
         return pass;
     }
 };
@@ -37569,10 +37569,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::V
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Statement_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_before<Result>
-#include "ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -37593,10 +37593,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::V
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Statement_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement_after<Result>
-#include "ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -40377,10 +40377,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::V
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Expression_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_before<Result>
-#include "ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -40401,10 +40401,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::V
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Expression_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Expression_after<Result>
-#include "ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Expression_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -42105,10 +42105,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::V
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_before_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Type_before>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_before<Result>
-#include "ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_before_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_before<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -42129,10 +42129,10 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::V
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch_class.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_after_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorHook<ebm2p4::VisitorTag_Type_after>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Type_after<Result>
-#include "ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch_class.hpp"
+#include "ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_after_class.hpp"
 #define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Type_after<Result>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
@@ -45976,7 +45976,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Statement>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_before.hpp")
 // Inlined hook for Statement_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Statement_before>> {
@@ -45995,7 +45995,7 @@ struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorT
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_before_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_before.hpp"
         return pass;
     }
 };
@@ -46007,7 +46007,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Statement_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_after.hpp")
 // Inlined hook for Statement_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Statement_after>> {
@@ -46026,7 +46026,7 @@ struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorT
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_after_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_after.hpp"
         return pass;
     }
 };
@@ -49603,7 +49603,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Expression>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_before.hpp")
 // Inlined hook for Expression_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Expression_before>> {
@@ -49622,7 +49622,7 @@ struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorT
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_before_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_before.hpp"
         return pass;
     }
 };
@@ -49634,7 +49634,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Expression_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_after.hpp")
 // Inlined hook for Expression_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Expression_after>> {
@@ -49653,7 +49653,7 @@ struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorT
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_after_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Expression_dispatch_after.hpp"
         return pass;
     }
 };
@@ -51835,7 +51835,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Type>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_before.hpp")
 // Inlined hook for Type_before for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Type_before>> {
@@ -51854,7 +51854,7 @@ struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorT
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "ebmcodegen/default_codegen_visitor/visitor/Type_before_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_before.hpp"
         return pass;
     }
 };
@@ -51866,7 +51866,7 @@ static_assert(sizeof(ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Type_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch.hpp")
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_after.hpp")
 // Inlined hook for Type_after for backward compatibility
 template <>
 struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorTag_Type_after>> {
@@ -51885,7 +51885,7 @@ struct ebm2p4::Visitor<ebm2p4::DefaultCodegenVisitorInlinedHook<ebm2p4::VisitorT
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2p4;
-        #include "ebmcodegen/default_codegen_visitor/visitor/Type_after_dispatch.hpp"
+        #include "ebmcodegen/default_codegen_visitor/visitor/Type_dispatch_after.hpp"
         return pass;
     }
 };

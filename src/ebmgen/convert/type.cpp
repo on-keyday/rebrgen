@@ -45,7 +45,7 @@ namespace ebmgen {
             ebm::VariantDesc desc;
             desc.related_field = to_weak(related_field);
             ebm::Types members;
-            std::optional<size_t> max_bit_size;
+            std::optional<std::uint64_t> max_bit_size;
             for (auto& struct_member : n->structs) {
                 MAYBE(member_type_ref, ctx.get_statement_converter().convert_struct_decl(struct_member, varint_id));
                 ebm::TypeBody body;

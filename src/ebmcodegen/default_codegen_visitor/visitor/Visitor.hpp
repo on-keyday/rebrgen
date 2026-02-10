@@ -104,3 +104,44 @@ std::function<expected<Result>(Context_Statement_INIT_CHECK& ctx)> init_check_vi
 // if this returns `pass` using default logic
 std::function<expected<Result>(Context_Expression_DEFAULT_VALUE& ctx)> default_value_custom;
 std::function<expected<Result>(Context_Expression_CONDITIONAL& ctx)> conditional_visitor;
+
+template <class Kind>
+struct MemoizationConfig {
+    bool enable = false;
+    bool target_kind_as_exclusive = false;
+    std::unordered_set<Kind> target_kinds;
+    std::unordered_map<std::uint64_t, CodeWriter> memoized_items;
+
+    expected<Result> try_get_memoized(std::uint64_t id) {
+        if (!enable) {
+            return pass;
+        }
+        auto found = memoized_items.find(id);
+        if (found != memoized_items.end()) {
+            auto copy = found->second;
+            return copy;
+        }
+        return pass;
+    }
+
+    void try_memoize(std::uint64_t id, Kind kind, const CodeWriter& result) {
+        if (!enable) {
+            return;
+        }
+        if (target_kind_as_exclusive) {
+            if (target_kinds.find(kind) != target_kinds.end()) {
+                return;
+            }
+        }
+        else {
+            if (target_kinds.find(kind) == target_kinds.end()) {
+                return;
+            }
+        }
+        memoized_items[id] = result;
+    }
+};
+
+// experimental
+MemoizationConfig<ebm::ExpressionKind> expression_memoization_config;
+MemoizationConfig<ebm::TypeKind> type_memoization_config;

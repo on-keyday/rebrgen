@@ -5676,10 +5676,10 @@ namespace ebm2rmw {
     #define EBM2RMW_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2rmw::Context_Statement_ENDIAN_VARIABLE_after<Result>
     #define EBM2RMW_CODEGEN_VISITOR_Statement_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Statement>>
     #define EBM2RMW_CODEGEN_CONTEXT_Statement_dispatch ebm2rmw::Context_Statement
-    #define EBM2RMW_CODEGEN_VISITOR_Statement_before_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Statement_before>>
-    #define EBM2RMW_CODEGEN_CONTEXT_Statement_before_dispatch ebm2rmw::Context_Statement_before<Result>
-    #define EBM2RMW_CODEGEN_VISITOR_Statement_after_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Statement_after>>
-    #define EBM2RMW_CODEGEN_CONTEXT_Statement_after_dispatch ebm2rmw::Context_Statement_after<Result>
+    #define EBM2RMW_CODEGEN_VISITOR_Statement_dispatch_before ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Statement_before>>
+    #define EBM2RMW_CODEGEN_CONTEXT_Statement_dispatch_before ebm2rmw::Context_Statement_before<Result>
+    #define EBM2RMW_CODEGEN_VISITOR_Statement_dispatch_after ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Statement_after>>
+    #define EBM2RMW_CODEGEN_CONTEXT_Statement_dispatch_after ebm2rmw::Context_Statement_after<Result>
     #define EBM2RMW_CODEGEN_VISITOR_Block ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Block>>
     #define EBM2RMW_CODEGEN_CONTEXT_Block ebm2rmw::Context_Block
     #define EBM2RMW_CODEGEN_VISITOR_Block_before ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Block_before>>
@@ -5910,10 +5910,10 @@ namespace ebm2rmw {
     #define EBM2RMW_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2rmw::Context_Expression_AS_ARG_after<Result>
     #define EBM2RMW_CODEGEN_VISITOR_Expression_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expression>>
     #define EBM2RMW_CODEGEN_CONTEXT_Expression_dispatch ebm2rmw::Context_Expression
-    #define EBM2RMW_CODEGEN_VISITOR_Expression_before_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expression_before>>
-    #define EBM2RMW_CODEGEN_CONTEXT_Expression_before_dispatch ebm2rmw::Context_Expression_before<Result>
-    #define EBM2RMW_CODEGEN_VISITOR_Expression_after_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expression_after>>
-    #define EBM2RMW_CODEGEN_CONTEXT_Expression_after_dispatch ebm2rmw::Context_Expression_after<Result>
+    #define EBM2RMW_CODEGEN_VISITOR_Expression_dispatch_before ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expression_before>>
+    #define EBM2RMW_CODEGEN_CONTEXT_Expression_dispatch_before ebm2rmw::Context_Expression_before<Result>
+    #define EBM2RMW_CODEGEN_VISITOR_Expression_dispatch_after ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expression_after>>
+    #define EBM2RMW_CODEGEN_CONTEXT_Expression_dispatch_after ebm2rmw::Context_Expression_after<Result>
     #define EBM2RMW_CODEGEN_VISITOR_Expressions ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expressions>>
     #define EBM2RMW_CODEGEN_CONTEXT_Expressions ebm2rmw::Context_Expressions
     #define EBM2RMW_CODEGEN_VISITOR_Expressions_before ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Expressions_before>>
@@ -6054,10 +6054,10 @@ namespace ebm2rmw {
     #define EBM2RMW_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2rmw::Context_Type_FUNCTION_after<Result>
     #define EBM2RMW_CODEGEN_VISITOR_Type_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Type>>
     #define EBM2RMW_CODEGEN_CONTEXT_Type_dispatch ebm2rmw::Context_Type
-    #define EBM2RMW_CODEGEN_VISITOR_Type_before_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Type_before>>
-    #define EBM2RMW_CODEGEN_CONTEXT_Type_before_dispatch ebm2rmw::Context_Type_before<Result>
-    #define EBM2RMW_CODEGEN_VISITOR_Type_after_dispatch ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Type_after>>
-    #define EBM2RMW_CODEGEN_CONTEXT_Type_after_dispatch ebm2rmw::Context_Type_after<Result>
+    #define EBM2RMW_CODEGEN_VISITOR_Type_dispatch_before ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Type_before>>
+    #define EBM2RMW_CODEGEN_CONTEXT_Type_dispatch_before ebm2rmw::Context_Type_before<Result>
+    #define EBM2RMW_CODEGEN_VISITOR_Type_dispatch_after ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Type_after>>
+    #define EBM2RMW_CODEGEN_CONTEXT_Type_dispatch_after ebm2rmw::Context_Type_after<Result>
     #define EBM2RMW_CODEGEN_VISITOR_Types ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Types>>
     #define EBM2RMW_CODEGEN_CONTEXT_Types ebm2rmw::Context_Types
     #define EBM2RMW_CODEGEN_VISITOR_Types_before ebm2rmw::Visitor<ebm2rmw::UserHook<ebm2rmw::VisitorTag_Types_before>>

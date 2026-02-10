@@ -18,16 +18,21 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Expression_BINARY_OP function.
 // We can use variables like `this` (for Visitor) and `bop`, `left`, `right` directly.
-CodeWriter w;
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_BINARY_OP) {
+    using namespace CODEGEN_NAMESPACE;
 
-MAYBE(left_str, visit_Expression(*this, left));
-MAYBE(right_str, visit_Expression(*this, right));
-auto it = visitor.alt_binary_op.find(bop);
-if (it != visitor.alt_binary_op.end()) {
-    w.write("(", left_str.to_writer(), " ", it->second, " ", right_str.to_writer(), ")");
-}
-else {
-    w.write("(", left_str.to_writer(), " ", to_string(bop), " ", right_str.to_writer(), ")");
-}
+    CodeWriter w;
 
-return w;
+    MAYBE(left_str, ctx.visit(ctx.left));
+    MAYBE(right_str, ctx.visit(ctx.right));
+    auto it = ctx.config().alt_binary_op.find(ctx.bop);
+    if (it != ctx.config().alt_binary_op.end()) {
+        w.write("(", left_str.to_writer(), " ", it->second, " ", right_str.to_writer(), ")");
+    }
+    else {
+        w.write("(", left_str.to_writer(), " ", to_string(ctx.bop), " ", right_str.to_writer(), ")");
+    }
+
+    return w;
+}

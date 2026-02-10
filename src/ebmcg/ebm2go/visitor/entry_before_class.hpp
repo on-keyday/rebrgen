@@ -63,7 +63,6 @@ namespace CODEGEN_NAMESPACE {
 
     struct ArraySetterDetector {
         TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(ArraySetterDetector, BaseVisitor);
-        CodeWriter w;
         expected<void> visit(Context_Statement_WRITE_DATA& ctx) {
             if (auto info = is_setter_target(ctx); info) {
                 ctx.config().array_length_setters[get_id(ctx.write_data.field)] = *info;
@@ -399,6 +398,14 @@ DEFINE_VISITOR(entry_before) {
                     " { return ", tidy_condition_brace(then_str.to_string()),
                     " } else { return ", tidy_condition_brace(else_str.to_string()), " } }()");
     };
-
+    ctx.config().expression_memoization_config.enable = true;
+    ctx.config().expression_memoization_config.target_kinds = {
+        ebm::ExpressionKind::BINARY_OP,
+        ebm::ExpressionKind::UNARY_OP,
+        ebm::ExpressionKind::LITERAL_INT,
+        ebm::ExpressionKind::LITERAL_INT64,
+    };
+    ctx.config().type_memoization_config.enable = true;
+    ctx.config().type_memoization_config.target_kind_as_exclusive = true;
     return pass;
 }

@@ -21,13 +21,18 @@
 #include <chrono>
 
 namespace ebmcodegen {
+    struct Timepoint {
+        std::chrono::steady_clock::time_point point = std::chrono::steady_clock::now();
+    };
+
     struct Flags : futils::cmdline::templ::HelpOption {
         std::string_view input;
         std::string_view output;
         bool dump_code = false;
         bool show_flags = false;
         bool timing = false;
-        std::chrono::steady_clock::time_point timepoint = std::chrono::steady_clock::now();
+        Timepoint start{};
+        Timepoint prev{};
         // std::vector<std::string_view> args;
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
@@ -56,10 +61,11 @@ namespace ebmcodegen {
 
         void debug_timing(const char* phase) {
             if (timing) {
-                auto now = std::chrono::steady_clock::now();
-                auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - timepoint).count();
-                futils::wrap::cerr_wrap() << program_name << ": [timing] " << phase << " took " << diff << " ms\n";
-                timepoint = now;
+                auto now = Timepoint{};
+                auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now.point - prev.point).count();
+                auto from_start = std::chrono::duration_cast<std::chrono::milliseconds>(now.point - start.point).count();
+                futils::wrap::cerr_wrap() << program_name << ": [timing] " << phase << " took " << diff << " ms (total " << from_start << " ms)\n";
+                prev = now;
             }
         }
 

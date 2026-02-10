@@ -5738,10 +5738,10 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2all::Context_Statement_ENDIAN_VARIABLE_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Statement_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement>>
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_dispatch ebm2all::Context_Statement
-    #define EBM2ALL_CODEGEN_VISITOR_Statement_before_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_before>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Statement_before_dispatch ebm2all::Context_Statement_before<Result>
-    #define EBM2ALL_CODEGEN_VISITOR_Statement_after_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_after>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Statement_after_dispatch ebm2all::Context_Statement_after<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_dispatch_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_dispatch_before ebm2all::Context_Statement_before<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_dispatch_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_dispatch_after ebm2all::Context_Statement_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Block ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block>>
     #define EBM2ALL_CODEGEN_CONTEXT_Block ebm2all::Context_Block
     #define EBM2ALL_CODEGEN_VISITOR_Block_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Block_before>>
@@ -5972,10 +5972,10 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Expression_AS_ARG_after ebm2all::Context_Expression_AS_ARG_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Expression_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression>>
     #define EBM2ALL_CODEGEN_CONTEXT_Expression_dispatch ebm2all::Context_Expression
-    #define EBM2ALL_CODEGEN_VISITOR_Expression_before_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_before>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Expression_before_dispatch ebm2all::Context_Expression_before<Result>
-    #define EBM2ALL_CODEGEN_VISITOR_Expression_after_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_after>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Expression_after_dispatch ebm2all::Context_Expression_after<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_dispatch_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_dispatch_before ebm2all::Context_Expression_before<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Expression_dispatch_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expression_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Expression_dispatch_after ebm2all::Context_Expression_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Expressions ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions>>
     #define EBM2ALL_CODEGEN_CONTEXT_Expressions ebm2all::Context_Expressions
     #define EBM2ALL_CODEGEN_VISITOR_Expressions_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Expressions_before>>
@@ -6116,10 +6116,10 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Type_FUNCTION_after ebm2all::Context_Type_FUNCTION_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Type_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type>>
     #define EBM2ALL_CODEGEN_CONTEXT_Type_dispatch ebm2all::Context_Type
-    #define EBM2ALL_CODEGEN_VISITOR_Type_before_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_before>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Type_before_dispatch ebm2all::Context_Type_before<Result>
-    #define EBM2ALL_CODEGEN_VISITOR_Type_after_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_after>>
-    #define EBM2ALL_CODEGEN_CONTEXT_Type_after_dispatch ebm2all::Context_Type_after<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Type_dispatch_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_dispatch_before ebm2all::Context_Type_before<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Type_dispatch_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Type_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Type_dispatch_after ebm2all::Context_Type_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Types ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types>>
     #define EBM2ALL_CODEGEN_CONTEXT_Types ebm2all::Context_Types
     #define EBM2ALL_CODEGEN_VISITOR_Types_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Types_before>>

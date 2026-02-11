@@ -84,10 +84,12 @@ namespace ebmcodegen {
                 if (flag) {
                     dump_test_file = "-";
                     dump_test_separator = "############";
+                    source_map = true;
                 }
                 else {
                     dump_test_file = "";
                     dump_test_separator = "";
+                    source_map = false;
                 }
                 return true;
             });
@@ -156,6 +158,9 @@ namespace ebmcodegen {
                 if (flags.dump_test_file == "-") {
                     cout << flags.dump_test_separator;
                     cout << str.out();
+                    if (flags.source_map) {
+                        cout << "\n";  // force
+                    }
                     return ret;
                 }
                 auto file = futils::file::File::create(flags.dump_test_file);

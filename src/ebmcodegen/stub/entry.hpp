@@ -31,6 +31,7 @@ namespace ebmcodegen {
         bool dump_code = false;
         bool show_flags = false;
         bool timing = false;
+        bool source_map = false;
         Timepoint start{};
         Timepoint prev{};
         // std::vector<std::string_view> args;
@@ -79,6 +80,17 @@ namespace ebmcodegen {
             ctx.VarString<true>(&dump_test_separator, "test-separator", "dump test info separator when dumping test info to stdout", "SEP");
             ctx.VarBool(&debug_unimplemented, "debug-unimplemented", "debug unimplemented node (for debug)");
             ctx.VarBool(&timing, "timing", "show timing info (for debug)");
+            ctx.VarBoolFunc(&source_map, "source-map", "same as --test-info - --test-separator \"############\" (for WebPlayground compatibility)", [&](bool flag, auto) {
+                if (flag) {
+                    dump_test_file = "-";
+                    dump_test_separator = "############";
+                }
+                else {
+                    dump_test_file = "";
+                    dump_test_separator = "";
+                }
+                return true;
+            });
             web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info", "test-separator", "timing"};
         }
     };

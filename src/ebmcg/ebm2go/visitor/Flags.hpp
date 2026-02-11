@@ -26,5 +26,6 @@
 
 FILE_EXTENSIONS(".go");
 WEB_UI_NAME("go3");
+DEFINE_BOOL_FLAG(use_bytes_slice, false, "use-io-reader-writer", "Use bytes slice instead of io.Reader/io.Writer for encoder/decoder input/output");
 DEFINE_STRING_FLAG(package_name, "", "package", "Package name for generated Go code", "NAME");
 CONFIG_MAP("config.go.package", package_name);

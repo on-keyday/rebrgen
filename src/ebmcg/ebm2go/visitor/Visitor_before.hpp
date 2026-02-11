@@ -16,3 +16,4 @@ std::unordered_set<std::uint64_t> bool_mapped_func;
 std::unordered_map<std::uint64_t, ArrayLengthInfo> array_length_setters;
 std::unordered_set<std::uint64_t> array_length_set_done;
 bool inner_prop_setter = false;
+bool use_io_reader_writer = true;

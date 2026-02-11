@@ -30,18 +30,18 @@ def main():
 
     # Create main.go test harness
     #
-    # The generated Go code uses *[]byte for both decoder and encoder IO:
-    #   func (s *Struct) Decode(input *[]byte) error
-    #   func (s *Struct) Encode(output *[]byte) error
+    # The generated Go code uses io.Reader/io.Writer for decoder and encoder IO:
+    #   func (s *Struct) Decode(r io.Reader) error
+    #   func (s *Struct) Encode(w io.Writer) error
     #
-    # Decode: the input slice is consumed (resliced) as data is read.
-    # Encode: the output slice is consumed (resliced) as data is written
-    #         via copy(). Written bytes = original capacity - len(remaining).
+    # Decode: wraps input data in bytes.NewReader.
+    # Encode: writes to bytes.Buffer, then extracts bytes.
     with open(proj_dir / "main.go", "w") as f:
         f.write(
             f"""package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 )
@@ -64,32 +64,23 @@ func main() {{
 
 	// Decode
 	var target {TEST_TARGET_FORMAT}
-	inputSlice := make([]byte, len(inputData))
-	copy(inputSlice, inputData)
-	err = target.Decode(&inputSlice)
+	reader := bytes.NewReader(inputData)
+	err = target.Decode(reader)
 	if err != nil {{
 		fmt.Fprintf(os.Stderr, "Decode error: %v\\n", err)
 		os.Exit(10)
 	}}
 
 	// Encode
-	outputCapacity := len(inputData) * 2
-	if outputCapacity < 1024 {{
-		outputCapacity = 1024
-	}}
-	outputBuf := make([]byte, outputCapacity)
-	outputSlice := outputBuf
-	err = target.Encode(&outputSlice)
+	var buf bytes.Buffer
+	err = target.Encode(&buf)
 	if err != nil {{
 		fmt.Fprintf(os.Stderr, "Encode error: %v\\n", err)
 		os.Exit(20)
 	}}
 
-	// Written bytes = original capacity - remaining slice length
-	writtenBytes := outputCapacity - len(outputSlice)
-
 	// Write output file
-	err = os.WriteFile(outputPath, outputBuf[:writtenBytes], 0644)
+	err = os.WriteFile(outputPath, buf.Bytes(), 0644)
 	if err != nil {{
 		fmt.Fprintf(os.Stderr, "Failed to write output file '%s': %v\\n", outputPath, err)
 		os.Exit(1)

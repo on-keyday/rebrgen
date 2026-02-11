@@ -99,6 +99,29 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
         MAYBE(layer_str, get_identifier_layer_str(wctx, from_weak(wctx.write_data.field)));
         layer_str = "\\\"" + layer_str + "\\\"";
         CodeWriter w;
+        if (ctx.config().use_io_reader_writer) {
+            // io.Writer mode: write data to writer
+            if (cand == BytesType::vector) {
+                auto ref = wctx.write_data.size.ref();
+                if (ref && !ctx.is(ebm::ExpressionKind::ARRAY_SIZE, *ref)) {
+                    // check length consistency
+                    ctx.config().imports.insert("fmt");
+                    w.writeln("if len(", target.to_writer(), ") != int(", size_str, ") {");
+                    w.indent_writeln("return fmt.Errorf(\"size mismatch when writing field ", layer_str, ": expected %d, got %d\", int(", size_str, "), len(", target.to_writer(), "))");
+                    w.writeln("}");
+                }
+                w.writeln("if _, err := ", io_, ".Write(", target.to_writer(), "); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            else if (cand == BytesType::array) {
+                // In io.Writer mode, all arrays are fixed-size, use [:] to get a slice
+                w.writeln("if _, err := ", io_, ".Write(", target.to_writer(), "[:]); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            return w;
+        }
         if (cand == BytesType::vector) {
             ctx.config().imports.insert("errors");
             w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");

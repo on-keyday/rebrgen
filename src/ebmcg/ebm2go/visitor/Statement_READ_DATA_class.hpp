@@ -58,6 +58,36 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         MAYBE(layer_str, get_identifier_layer_str(rctx, from_weak(rctx.read_data.field)));
         layer_str = "\\\"" + layer_str + "\\\"";
         CodeWriter w;
+        if (ctx.config().use_io_reader_writer) {
+            // io.Reader mode
+            if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
+                // read until EOF
+                w.writeln("{");
+                {
+                    auto scope = w.indent_scope();
+                    w.writeln("var readErr error");
+                    w.writeln(target.to_writer(), ", readErr = io.ReadAll(", io_, ")");
+                    w.writeln("if readErr != nil {");
+                    w.indent_writeln("return readErr");
+                    w.writeln("}");
+                }
+                w.writeln("}");
+            }
+            else if (cand == BytesType::vector) {
+                // allocate slice then read
+                w.writeln(target.to_writer(), " = make([]byte, int(", size_str, "))");
+                w.writeln("if _, err := io.ReadFull(", io_, ", ", target.to_writer(), "); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            else if (cand == BytesType::array) {
+                // In io.Reader mode, all arrays are fixed-size: read directly into them
+                w.writeln("if _, err := io.ReadFull(", io_, ", ", target.to_writer(), "[:]); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            return w;
+        }
         if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
             // until eof
             w.writeln(target.to_writer(), " = (*", io_, ")[:]");

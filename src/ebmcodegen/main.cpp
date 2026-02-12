@@ -233,6 +233,7 @@ int print_cmake(CodeWriter& w, Flags& flags) {
     w.writeln("install(TARGETS ", target_name, " DESTINATION tool)");
     w.writeln("if (\"$ENV{BUILD_MODE}\" STREQUAL \"web\")");
     w.indent_writeln("install(FILES \"${CMAKE_BINARY_DIR}/tool/", target_name, ".wasm\" DESTINATION tool)");
+    w.indent_writeln("install(FILES \"${CMAKE_BINARY_DIR}/tool/", target_name, ".wasm.map\" DESTINATION tool)");
     w.writeln("endif()");
     cout << w.out();
     return 0;

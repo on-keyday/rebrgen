@@ -19,7 +19,7 @@ FetchContent_MakeAvailable(googletest)
 
 if("$ENV{BUILD_MODE}" STREQUAL "web")
 add_compile_options(-fexperimental-library)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=undefined -fexceptions -sENVIRONMENT=worker -sINVOKE_RUN=0 -sMODULARIZE=1 -sEXPORT_ES6=1 -sEXIT_RUNTIME=0 -sEXPORTED_RUNTIME_METHODS=[ccall,cwrap,FS] -sALLOW_MEMORY_GROWTH=1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gline-tables-only -fsanitize=undefined -fexceptions -sENVIRONMENT=worker -sINVOKE_RUN=0 -sMODULARIZE=1 -sEXPORT_ES6=1 -sEXIT_RUNTIME=0 -sEXPORTED_RUNTIME_METHODS=[ccall,cwrap,FS] -sALLOW_MEMORY_GROWTH=1")
 add_link_options("-gsource-map --source-map-base http://localhost:8000/")
 endif()
 

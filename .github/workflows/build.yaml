@@ -73,7 +73,7 @@ jobs:
           cp README.md web/
           cp LICENSE web/
       - name: Upload Artifact
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: bmgen-wasm-${{ github.sha }}
           path: web
@@ -130,7 +130,7 @@ jobs:
           ls -laR .
           BUILD_OLD_BMGEN=1 FUTILS_DIR=$(pwd)/utils ./script/build.sh native Release
       - name: Upload Artifact
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: bmgen-native-${{ github.sha }}
           path: tool
@@ -163,7 +163,7 @@ jobs:
           python script/bm/generate_web_glue.py
           python script/ebmwebgen.py
       - name: Upload Web Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bmgen-web
           path: web

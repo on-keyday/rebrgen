@@ -173,4 +173,4 @@ jobs:
         run: |
           gh api repos/${{ github.repository_owner }}/brgen/dispatches \
             -f event_type='rebrgen-build-success' \
-            -F client_payload='{"ref": "${{ github.ref_name }}", "sha": "${{ github.sha }}", "repo": "${{ github.event.repository.name }}"}
+            -F client_payload='{"ref": "${{ github.ref_name }}", "sha": "${{ github.sha }}", "repo": "${{ github.event.repository.name }}"}'

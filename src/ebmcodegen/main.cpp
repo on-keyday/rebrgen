@@ -232,6 +232,8 @@ int print_cmake(CodeWriter& w, Flags& flags) {
     w.writeln("target_link_libraries(", target_name, " ebm futils ebm_mapping)");
     w.writeln("install(TARGETS ", target_name, " DESTINATION tool)");
     w.writeln("if (\"$ENV{BUILD_MODE}\" STREQUAL \"web\")");
+    w.indent_writeln("target_compile_options(", target_name, " PUBLIC \"-gsource-map\")");
+    w.indent_writeln("target_link_options(", target_name, " PUBLIC \"-gsource-map --source-map-base http://localhost:8000/\")");
     w.indent_writeln("install(FILES \"${CMAKE_BINARY_DIR}/tool/", target_name, ".wasm\" DESTINATION tool)");
     w.indent_writeln("install(FILES \"${CMAKE_BINARY_DIR}/tool/", target_name, ".wasm.map\" DESTINATION tool)");
     w.writeln("endif()");

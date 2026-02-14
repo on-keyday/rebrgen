@@ -151,7 +151,7 @@ const convert{upper_ui_lang_name}OptionToFlags = (opt) => {{
         flags.push("--{flag_name}");
     }}
 """
-        elif flag_type == "string":
+        elif flag_type == "string" or flag_type == "map<string,value>":
             if (
                 "argdesc" in flag and flag["argdesc"]
             ):  # Check if it's a flag that takes an argument
@@ -159,6 +159,7 @@ const convert{upper_ui_lang_name}OptionToFlags = (opt) => {{
         flags.push("--{flag_name}", opt.{flag_var_name});
     }}
 """
+            
     code += f"""    return flags;
 }};
 
@@ -202,6 +203,17 @@ function set{upper_ui_lang_name}UIConfig(ui) {{
             value: "", // Assuming empty string as default for UI
         }});
 """
+        elif flag_type == "map<string,value>":
+            arg_desc = str(flag["argdesc"])
+            arg_desc = arg_desc[1:len(arg_desc)-1]
+            candidates = arg_desc.split(",")
+            code += f"""        nest_setter("{flag_name}",{{
+            type: "choice",
+            value: {json.dumps(candidates[0])},
+            candidates: {json.dumps(candidates)}
+        }});
+"""
+
     code += f"""    }});
 }}
 """

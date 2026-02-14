@@ -54771,7 +54771,7 @@ namespace ebm2go {
         if (!result_in) {
             return unexpect_error(std::move(result_in.error()));
         }
-        return {};
+        return result_in;
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Block(Context&& ctx,const ebm::Block& in){
@@ -57679,7 +57679,7 @@ namespace ebm2go {
         if (!result_in) {
             return unexpect_error(std::move(result_in.error()));
         }
-        return {};
+        return result_in;
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Expressions(Context&& ctx,const ebm::Expressions& in){
@@ -59026,7 +59026,7 @@ namespace ebm2go {
         if (!result_in) {
             return unexpect_error(std::move(result_in.error()));
         }
-        return {};
+        return result_in;
     }
     template<typename Result,typename Context>
     expected<Result> dispatch_Types(Context&& ctx,const ebm::Types& in){

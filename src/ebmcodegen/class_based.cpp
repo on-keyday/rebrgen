@@ -1797,7 +1797,12 @@ namespace ebmcodegen {
                 auto prefix = std::format("type_ctx.", field_ptr->name);
                 handle_recursive(handle_recursive, field_ptr, prefix, true);
             }
-            src.writeln("return {};");
+            if (cls.has(ContextClassKind_Generic)) {
+                src.writeln("return result_in;");  // default propagation
+            }
+            else {
+                src.writeln("return {};");
+            }
         }
         src.writeln("}");
     }

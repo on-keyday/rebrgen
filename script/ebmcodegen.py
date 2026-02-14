@@ -103,27 +103,29 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
             f.write(CODE_GENERATOR_HEADER)
 
     # add FILE_EXTENSIONS(ext) to Flags.hpp using script/ebmtemplate.py
-    if not isInterpreter:
-        flags_path = os.path.join(VISITOR_DIR, "Flags.hpp")
-        if not os.path.exists(flags_path):
-            execute(
-                [
-                    "python",
-                    "./script/ebmtemplate.py",
-                    "Flags",
-                    lang_name,
-                ],
-                None,
-            )
+    flags_path = os.path.join(VISITOR_DIR, "Flags.hpp")
+    if not os.path.exists(flags_path):
+        execute(
+            [
+                "python",
+                "./script/ebmtemplate.py" if not isInterpreter else "./script/ebmtemplate_ip.py",
+                "Flags",
+                lang_name,
+            ],
+            None,
+        )
+        if not isInterpreter:
             with open(flags_path, "a") as f:
                 f.write(f'\nFILE_EXTENSIONS("{file_extension}");\n')
             print(
                 f"Added FILE_EXTENSIONS to {flags_path} with extension: {file_extension}"
             )
         else:
-            print(
-                f"Flags.hpp already exists: {flags_path}, skipping FILE_EXTENSIONS addition."
-            )
+            print(f"Created {flags_path}")
+    else:
+        print(
+            f"Flags.hpp already exists: {flags_path}, skipping FILE_EXTENSIONS addition."
+        )
 
     # add test script file if not exists
     TEST_SCRIPT_PATH = os.path.join(OUTPUT_DIR, "unictest.py")

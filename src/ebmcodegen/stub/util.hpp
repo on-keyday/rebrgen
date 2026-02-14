@@ -357,6 +357,24 @@ namespace ebmcodegen::util {
         return join(joint, layer_strs);
     }
 
+    auto get_struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<ebm::StatementRef>> {
+        const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+        MAYBE(type, module_.get_type(variant));
+        std::vector<ebm::StatementRef> result;
+        if (type.body.kind == ebm::TypeKind::VARIANT) {
+            auto varint_desc = type.body.variant_desc();
+            if (!is_nil(varint_desc->related_field)) {
+                auto& members = varint_desc->members;
+                for (auto& mem : members.container) {
+                    MAYBE(member_type, module_.get_type(mem));
+                    MAYBE(stmt_id, member_type.body.id());
+                    result.push_back(stmt_id.id);
+                }
+            }
+        }
+        return result;
+    }
+
     auto struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<std::pair<ebm::StatementRef, std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>>> {
         const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(variant));
@@ -416,7 +434,6 @@ namespace ebmcodegen::util {
 
     ebmgen::expected<void> handle_fields(auto&& ctx, const ebm::Block& fields, bool recurse_composite, auto&& callback) {
         auto& visitor = get_visitor(ctx);
-        ebmgen::expected<void> result = {};
         for (auto& field_ref : fields.container) {
             MAYBE(field, visitor.module_.get_statement(field_ref));
             if (auto comp = field.body.composite_field_decl()) {
@@ -425,12 +442,12 @@ namespace ebmcodegen::util {
                     continue;
                 }
             }
-            result = callback(field_ref, field);
+            auto result = callback(field_ref, field);
             if (!result) {
                 return ebmgen::unexpect_error(std::move(result.error()));
             }
         }
-        return result;
+        return {};
     }
 
     ebmgen::expected<std::pair<std::string, std::string>> first_enum_name(auto&& visitor, ebm::TypeRef enum_type) {

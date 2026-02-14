@@ -21,6 +21,7 @@
 #include "ebm/extended_binary_module.hpp"
 #include "ebmcodegen/stub/util.hpp"
 #include "escape/escape.h"
+#include "json/stringer.h"
 #include "number/parse.h"
 
 namespace CODEGEN_NAMESPACE {
@@ -109,6 +110,9 @@ DEFINE_VISITOR(entry_before) {
         if (auto enc = sctx.struct_decl.encode_fn()) {
             ArraySetterDetector detector{ctx.visitor};
             MAYBE_VOID(detected, ctx.visit<void>(detector, *enc));
+        }
+        if (!is_nil(sctx.struct_decl.name)) {
+            ctx.output().struct_names.push_back(name);
         }
         return w;
     };

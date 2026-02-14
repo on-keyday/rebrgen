@@ -8,6 +8,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 bool use_brace_for_condition = true;
 bool use_elif = false;
+bool auto_output_root = true;
 std::string bool_true = "true";
 std::string bool_false = "false";
 std::string bool_type = "bool";
@@ -15,6 +16,8 @@ std::string setter_status_ok = "";
 std::string setter_status_failure = "";
 std::string struct_keyword = "struct";
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx)> struct_definition_start_wrapper;
+std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef encode)> struct_encode_start_wrapper;
+std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef decode)> struct_decode_start_wrapper;
 std::string variable_initializer = "=";
 std::string begin_block = "{";
 std::string end_block = "}";

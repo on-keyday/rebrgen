@@ -69,12 +69,24 @@ DEFINE_VISITOR(Statement_STRUCT_DECL) {
     }
 
     if (auto enc = ctx.struct_decl.encode_fn()) {
-        MAYBE(encode_fn, ctx.visit(*enc));
-        w.writeln(encode_fn.to_writer());
+        if (ctx.config().struct_encode_start_wrapper) {
+            MAYBE(encode_fn, ctx.config().struct_encode_start_wrapper(ctx, *enc));
+            w.writeln(std::move(encode_fn.to_writer()));
+        }
+        else {
+            MAYBE(encode_fn, ctx.visit(*enc));
+            w.writeln(std::move(encode_fn.to_writer()));
+        }
     }
     if (auto dec = ctx.struct_decl.decode_fn()) {
-        MAYBE(decode_fn, ctx.visit(*dec));
-        w.writeln(decode_fn.to_writer());
+        if (ctx.config().struct_decode_start_wrapper) {
+            MAYBE(decode_fn, ctx.config().struct_decode_start_wrapper(ctx, *dec));
+            w.writeln(std::move(decode_fn.to_writer()));
+        }
+        else {
+            MAYBE(decode_fn, ctx.visit(*dec));
+            w.writeln(std::move(decode_fn.to_writer()));
+        }
     }
     if (auto methods = ctx.struct_decl.methods()) {
         for (const auto& method_ref : methods->container) {

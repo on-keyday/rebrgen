@@ -10,15 +10,17 @@ from util import execute
 
 def get_tools():
     TOOL_DIR = "tool/"
-    OUTPUT_DIR = "src/ebmcg/"
+    OUTPUT_DIR = ["src/ebmcg/","src/ebmip"]
 
+    
     # search output dirs
     # 1. walk output dir
     LANG_NAME_LIST = []
-    for root, dirs, files in os.walk(OUTPUT_DIR):
-        for name in dirs:
-            if name.startswith("ebm2"):
-                LANG_NAME_LIST.append(name[4:])
+    for output_dir in OUTPUT_DIR:
+        for root, dirs, files in os.walk(output_dir):
+            for name in dirs:
+                if name.startswith("ebm2"):
+                    LANG_NAME_LIST.append(name[4:])
 
     # 2. remove duplicates
     LANG_NAME_LIST = list(set(LANG_NAME_LIST))

@@ -13,19 +13,12 @@
         wm: ebmcodegen::WriterManager<CodeWriter>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
+
 #include "../codegen.hpp"
 DEFINE_VISITOR(entry) {
     using namespace CODEGEN_NAMESPACE;
     auto& root = ctx.visitor.wm.root;
     MAYBE(entry_point, ctx.get_entry_point());
     MAYBE(result, ctx.visit(entry_point));
-    ctx.flags().debug_timing("code generated");
-    if (ctx.config().auto_output_root) {
-        root.write_unformatted(result.to_string());
-        ctx.flags().debug_timing("code written");
-    }
-    convert_location_info(ctx, result.to_writer());
-    futils::wrap::cerr_wrap() << ctx.visitor.program_name << ": Code Generated\n";
-    ctx.flags().debug_timing("code generation complete");
     return {};
 }

@@ -17,6 +17,7 @@
         "go"
     ],
     "INTERPRET_TARGET_LANGUAGE": [
-        "rmw"
+        "rmw",
+        "json"
     ]
 }

@@ -9,3 +9,6 @@
 
 /*here to write the hook*/
 futils::json::Stringer<> json_output;
+std::unordered_map<std::uint64_t, SwitchContainer> field_to_switch;
+std::unordered_map<std::uint64_t, ebm::Size> array_length_mapper;
+std::unordered_map<std::uint64_t, std::uint64_t> oneof_counter;

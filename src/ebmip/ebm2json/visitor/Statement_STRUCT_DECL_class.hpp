@@ -42,6 +42,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "common.hpp"
 #include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_STRUCT_DECL) {
     using namespace CODEGEN_NAMESPACE;
@@ -51,10 +52,25 @@ DEFINE_VISITOR(Statement_STRUCT_DECL) {
     if (!is_nil(ctx.struct_decl.name)) {
         auto name = ctx.identifier();
         field("name", name);
+        if (auto enc = ctx.struct_decl.encode_fn()) {
+            SwitchDetector detector{ctx.visitor};
+            MAYBE_VOID(detect, ctx.visit<void>(detector, *enc));
+        }
     }
+    if (auto found = ctx.config().field_to_switch.find(get_id(ctx.item_id)); found != ctx.config().field_to_switch.end()) {
+        ExprStringer s{ctx.visitor};
+        MAYBE(expr, ctx.visit<std::string>(s, found->second.expr));
+        if (found->second.not_) {
+            field("condition", "else");
+        }
+        else {
+            field("condition", expr);
+        }
+    }
+    expected<void> result;
     field("fields", [&] {
         auto item = js.array();
-        handle_fields(ctx, ctx.struct_decl.fields, true, [&](ebm::StatementRef ref, auto) {
+        result = handle_fields(ctx, ctx.struct_decl.fields, true, [&](ebm::StatementRef ref, auto) {
             expected<Result> result;
             item([&] {
                 result = ctx.visit(ref);
@@ -62,5 +78,5 @@ DEFINE_VISITOR(Statement_STRUCT_DECL) {
             return result;
         });
     });
-    return {};
+    return result.transform([&] { return Result{}; });
 }

@@ -36,13 +36,17 @@ DEFINE_VISITOR(Statement_ENUM_DECL) {
         MAYBE(type, ctx.visit<std::string>(s, ctx.enum_decl.base_type));
         field("base_type", type);
     }
+    expected<Result> result;
     field("members", [&] {
         auto item = js.array();
         for (auto& member : ctx.enum_decl.members.container) {
             item([&] {
-                ctx.visit(member);
+                result = ctx.visit(member);
             });
+            if (!result) {
+                break;
+            }
         }
     });
-    return {};
+    return result;
 }

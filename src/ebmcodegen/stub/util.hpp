@@ -804,7 +804,7 @@ namespace ebmcodegen::util {
             return get_visitor_impl<R>(derived(), f);
         }
 
-        constexpr bool is_before_or_after() const {
+        static constexpr bool is_before_or_after() {
             constexpr std::string_view name = D::context_name;
             return name.ends_with("_before") || name.ends_with("_after");
         }

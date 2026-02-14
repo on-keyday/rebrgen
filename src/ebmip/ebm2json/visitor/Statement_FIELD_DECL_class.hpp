@@ -34,21 +34,38 @@ DEFINE_VISITOR(Statement_FIELD_DECL) {
     auto& js = ctx.config().json_output;
     auto field = js.object();
     MAYBE(members, get_struct_union_members(ctx, ctx.field_decl.field_type));
+    expected<Result> result;
     if (members.size()) {
+        auto counter = ctx.config().oneof_counter[get_id(ctx.field_decl.parent_struct)]++;
+        ctx.module().directly_map_statement_identifier(ctx.item_id, std::format("oneof{}", counter));
         field("oneof", [&] {
             auto item = js.array();
             for (auto& m : members) {
                 item([&] {
-                    ctx.visit(m);
+                    result = ctx.visit(m);
                 });
+                if (!result) {
+                    break;
+                }
             }
         });
-        return {};
+        return result;
     }
     auto name = ctx.identifier();
     field("name", name);
     TypeStringer s{ctx.visitor};
     MAYBE(type, ctx.visit<std::string>(s, ctx.field_decl.field_type));
     field("type", type);
+    if (auto found = ctx.config().array_length_mapper.find(get_id(ctx.item_id));
+        found != ctx.config().array_length_mapper.end()) {
+        if (auto size = found->second.size()) {
+            field("length", size->value());
+        }
+        else if (auto ref = found->second.ref()) {
+            ExprStringer e{ctx.visitor};
+            MAYBE(len, ctx.visit<std::string>(e, *ref));
+            field("length", len);
+        }
+    }
     return {};
 }

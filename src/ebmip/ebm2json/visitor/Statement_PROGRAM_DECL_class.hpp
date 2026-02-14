@@ -25,9 +25,10 @@
 struct JSONWrapper {
     ebm2json::Context_Statement_PROGRAM_DECL* pctx;
     ebm::StatementRef ref;
+    ebm2json::expected<ebm2json::Result> result;
     void as_json(futils::json::Stringer<>& js) {
         auto& ctx = *pctx;
-        ctx.visit(ref);
+        result = ctx.visit(ref);
     }
 };
 
@@ -70,8 +71,16 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
             variables.push_back({&ctx, b});
         }
     }
+#define CHECK(vec)          \
+    for (auto& x : vec) {   \
+        MAYBE(_, x.result); \
+    }
     obj("structs", structs);
+    CHECK(structs);
     obj("enums", enums);
+    CHECK(enums);
     obj("variables", variables);
+    CHECK(variables);
+#undef CHECK
     return {};
 }

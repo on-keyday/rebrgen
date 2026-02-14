@@ -10,6 +10,8 @@
 /*here to write the hook*/
 #pragma once
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/util.hpp"
 namespace ebm2json {
     struct ExprStringer {
         TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(ExprStringer, BaseVisitor);
@@ -23,11 +25,63 @@ namespace ebm2json {
         expected<std::string> visit(Context_Expression_BINARY_OP& ctx) {
             MAYBE(left, ctx.visit<std::string>(*this, ctx.left));
             MAYBE(right, ctx.visit<std::string>(*this, ctx.right));
-            return std::format("{} {} {}", left, to_string(ctx.bop), right);
+            return std::format("({} {} {})", left, to_string(ctx.bop), right);
         }
         expected<std::string> visit(Context_Expression_UNARY_OP& ctx) {
             MAYBE(right, ctx.visit<std::string>(*this, ctx.operand));
             return std::format("{}{}", to_string(ctx.uop), right);
+        }
+        expected<std::string> visit(Context_Expression_TYPE_CAST& ctx) {
+            MAYBE(right, ctx.visit<std::string>(*this, ctx.type_cast_desc.source_expr));
+            return right;
+        }
+        expected<std::string> visit(Context_Expression_ENUM_MEMBER& ctx) {
+            auto parent = ctx.identifier(ctx.enum_decl);
+            MAYBE(member, ctx.identifier(ctx.member));
+            return std::format("{}.{}", parent, member);
+        }
+
+        expected<std::string> visit(Context_Expression_SELF& ctx) {
+            MAYBE(type, ctx.get_field<"body.id">(ctx.type));
+            auto ident = ctx.identifier(type);
+            return std::format("self({})", ident);
+        }
+
+        expected<std::string> visit(Context_Expression_MEMBER_ACCESS& ctx) {
+            MAYBE(base, ctx.visit<std::string>(*this, ctx.base));
+            MAYBE(member, ctx.identifier(ctx.member));
+            auto field_member = ctx.get_field<"body.id">(ctx.member);
+            if (field_member) {
+                if (auto type = get_variant_member_from_field(ctx, field_member->id)) {
+                    auto variant_type = ctx.get_field<"body.id.struct_decl.related_variant">(*type);
+                    if (variant_type) {
+                        MAYBE(index, get_variant_index(ctx, *variant_type, *type));
+                        return std::format("{}.{}.{}", base, index, member);
+                    }
+                }
+            }
+            return std::format("{}.{}", base, member);
+        }
+
+        size_t stack = 0;
+
+        expected<std::string> visit(Context_Expression_before<std::string>& ctx) {
+            stack++;
+            return pass;
+        }
+
+        expected<std::string> visit(Context_Expression_after<std::string>& ctx) {
+            stack--;
+            if (!ctx.result) {
+                return pass;
+            }
+            if (ctx.result->empty()) {
+                return std::format("Expression({})", to_string(ctx.in.body.kind));
+            }
+            if (stack == 0) {
+                return tidy_condition_brace(std::move(*ctx.result));
+            }
+            return pass;
         }
 
         template <typename Ctx>
@@ -60,6 +114,9 @@ namespace ebm2json {
         expected<std::string> visit(Context_Type_STRUCT& ctx) {
             return ctx.identifier(ctx.id);
         }
+        expected<std::string> visit(Context_Type_RECURSIVE_STRUCT& ctx) {
+            return ctx.identifier(ctx.id);
+        }
         expected<std::string> visit(Context_Type_ARRAY& ctx) {
             MAYBE(elem_type, ctx.visit<std::string>(*this, ctx.element_type));
             return std::format("[{}]{}", ctx.length.value(), elem_type);
@@ -79,6 +136,68 @@ namespace ebm2json {
                 return {};
             }
             return traverse_children<std::string>(*this, std::forward<Ctx>(ctx));
+        }
+    };
+
+    // detects IF_STATEMENT or MATCH_STATEMENT
+    struct SwitchDetector {
+        BaseVisitor& visitor;
+
+        std::vector<SwitchContainer> stack;
+
+        expected<void> visit(Context_Statement_WRITE_DATA& ctx) {
+            if (auto lw = ctx.write_data.lowered_statement(); lw && lw->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
+                return ctx.visit(*this, lw->io_statement.id);
+            }
+            if (!is_nil(ctx.write_data.field) && ctx.get_kind(ctx.write_data.data_type) == ebm::TypeKind::VECTOR) {
+                ctx.config().array_length_mapper[get_id(ctx.write_data.field)] = ctx.write_data.size;
+            }
+            return {};
+        }
+
+        expected<void> visit(Context_Statement_IF_STATEMENT& ctx) {
+            stack.push_back({ctx.if_statement.condition.cond});
+            MAYBE_VOID(then, ctx.visit(*this, ctx.if_statement.then_block));
+            stack.pop_back();
+            if (!is_nil(ctx.if_statement.else_block)) {
+                stack.push_back({ctx.if_statement.condition.cond, true});
+                MAYBE_VOID(els, ctx.visit(*this, ctx.if_statement.else_block));
+                stack.pop_back();
+            }
+            return {};
+        }
+
+        expected<void> visit(Context_Statement_MATCH_STATEMENT& ctx) {
+            // TODO: currently, use lowered if statement
+            MAYBE_VOID(if_, ctx.visit(*this, ctx.match_statement.lowered_if_statement.id));
+            return {};
+        }
+
+        expected<void> visit(Context_Statement_INIT_CHECK& ctx) {
+            if (ctx.init_check.init_check_type != ebm::InitCheckType::union_init_encode) {
+                return {};
+            }
+            if (stack.empty()) {
+                return unexpect_error("Unexpected stack state");
+            }
+            MAYBE(type, ctx.get_field<"type.body.id">(ctx.init_check.expect_value));
+            stack.back().init = ctx.item_id;
+            ctx.config().field_to_switch[get_id(type)] = stack.back();
+            return {};
+        }
+
+        template <typename Ctx>
+        expected<void> visit(Ctx&& ctx) {
+            if (ctx.is_before_or_after()) {
+                return pass;
+            }
+            if constexpr (ctx.context_name.contains("Expression") ||
+                          ctx.context_name.contains("Type")) {
+                return {};
+            }
+            else {
+                return traverse_children<void>(*this, std::forward<Ctx>(ctx));
+            }
         }
     };
 }  // namespace ebm2json

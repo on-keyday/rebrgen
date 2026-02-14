@@ -191,13 +191,11 @@ namespace ebm2json {
             if (ctx.is_before_or_after()) {
                 return pass;
             }
-            if constexpr (ctx.context_name.contains("Expression") ||
-                          ctx.context_name.contains("Type")) {
+            if (ctx.context_name.contains("Expression") ||
+                ctx.context_name.contains("Type")) {
                 return {};
             }
-            else {
-                return traverse_children<void>(*this, std::forward<Ctx>(ctx));
-            }
+            return traverse_children<void>(*this, std::forward<Ctx>(ctx));
         }
     };
 }  // namespace ebm2json

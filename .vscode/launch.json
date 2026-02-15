@@ -124,7 +124,9 @@
       "args": [
         "-i",
         "${workspaceRoot}/brgen/example/feature_test/inline_format.bgn",
-        "-I"
+        "-I",
+        "-d",
+        "-"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

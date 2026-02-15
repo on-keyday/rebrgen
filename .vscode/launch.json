@@ -121,7 +121,11 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "${workspaceRoot}/src/test/dns_label.bgn", "-Iv"],
+      "args": [
+        "-i",
+        "${workspaceRoot}/brgen/example/feature_test/inline_format.bgn",
+        "-I"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

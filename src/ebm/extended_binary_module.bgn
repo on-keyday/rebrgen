@@ -352,7 +352,8 @@ format StructDecl:
     has_encode_decode :u1 # 0: no, 1: yes (if encoder/decoder functions are generated)
     has_functions :u1 # 0: no, 1: yes (if there are methods defined for this struct)
     has_properties :u1 # 0: no, 1: yes (if there are properties defined for this struct)
-    reserved :u2 # Reserved for future use
+    has_parent :u1 # 0: no, 1: yes
+    has_nested_types :u1 # 0: no, 1: yes
     if has_related_variant == 1:
         related_variant :TypeRef # Reference to related variant type (maybe null)
     if is_fixed_size == 1:
@@ -364,6 +365,10 @@ format StructDecl:
         methods :Block # List of method FunctionDecl
     if has_properties == 1:
         properties :Block # List of PropertyDecl
+    if has_parent == 1:
+        parent_struct :WeakStatementRef
+    if has_nested_types == 1:
+        nested_types :Block # List of StructDecl or EnumDecl
 
 format PropertyMemberDecl:
     setter_condition :ExpressionRef

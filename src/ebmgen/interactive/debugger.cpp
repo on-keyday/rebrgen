@@ -68,7 +68,7 @@ namespace ebmgen {
         constexpr auto and_expr = group(NodeType::BinaryOp, compare & -(and_op & spaces & +and_recurse));
         constexpr auto or_expr = group(NodeType::BinaryOp, and_expr & -(or_op & spaces & +or_recurse));
         constexpr auto expr = or_expr;
-        constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression") | lit("Any"));
+        constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression") | lit("Alias") | lit("Any"));
         constexpr auto object = group(NodeType::Object, object_type& spaces & +lit("{") & spaces & +expr_recurse & spaces & +lit("}"));
         constexpr auto full_expr = spaces & ~(object_recurse & spaces) & spaces & +eos;
         struct Recurse {
@@ -104,12 +104,14 @@ namespace ebmgen {
     using ObjectSet = std::unordered_set<ebm::AnyRef>;
 
     using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef, ObjectSet>;
+
+    using ObjectVariantExtended = std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*, const ebm::RefAlias*>;
     struct EvalContext {
         MappingTable& table;
         Failures& failures;
         std::vector<EvalValue> stack;
         std::map<std::string, EvalValue> variables;
-        ObjectVariant current_target;
+        ObjectVariantExtended current_target;
 
         template <class T>
         void unwrap_any_ref(EvalValue& value) {
@@ -218,8 +220,15 @@ namespace ebmgen {
                         ctx.unwrap_any_ref<bool>(ctx.stack[0]);
                         some_has_valid_result = true;
                         if (std::holds_alternative<bool>(ctx.stack[0]) && std::get<bool>(ctx.stack[0])) {
-                            if (matched.insert(to_any_ref(t.id)).second && result) {
-                                result->push_back(to_any_ref(t.id));
+                            if constexpr (std::is_same_v<decltype(t), const ebm::RefAlias&>) {
+                                if (matched.insert(t.from).second && result) {
+                                    result->push_back(to_any_ref(t.from));
+                                }
+                            }
+                            else {
+                                if (matched.insert(to_any_ref(t.id)).second && result) {
+                                    result->push_back(to_any_ref(t.id));
+                                }
                             }
                         }
                     }
@@ -248,6 +257,9 @@ namespace ebmgen {
             }
             else if (type == "Expression") {
                 for_each(table.module().expressions);
+            }
+            else if (type == "Alias") {
+                for_each(table.module().aliases);
             }
             else if (type == "Any") {
                 for_each(table.module().identifiers);

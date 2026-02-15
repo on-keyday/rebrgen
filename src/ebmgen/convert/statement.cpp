@@ -572,8 +572,18 @@ namespace ebmgen {
             struct_decl.has_related_variant(true);
             struct_decl.related_variant(related_variant);
         }
+        if (auto locked = node->base.lock()) {
+            if (auto member = ast::as<ast::Member>(locked)) {
+                if (auto belong = member->belong.lock()) {
+                    EBMA_CONVERT_STATEMENT(stmt_ref, belong);
+                    struct_decl.has_parent(true);
+                    struct_decl.parent_struct(to_weak(stmt_ref));
+                }
+            }
+        }
         ebm::Block methods_block;
         ebm::Block properties_block;
+        ebm::Block nested_types;
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
             for (auto& element : node->fields) {
@@ -585,6 +595,10 @@ namespace ebmgen {
                         continue;
                     }
                     append(struct_decl.fields, stmt_ref);
+                }
+                else if (ast::as<ast::Format>(element) || ast::as<ast::Enum>(element) || ast::as<ast::State>(element)) {
+                    EBMA_CONVERT_STATEMENT(stmt_ref, element);
+                    append(nested_types, stmt_ref);
                 }
                 else if (ast::as<ast::Function>(element)) {
                     if (element->ident->ident == "encode" || element->ident->ident == "decode") {
@@ -611,6 +625,10 @@ namespace ebmgen {
             struct_decl.has_properties(true);
             struct_decl.properties(std::move(properties_block));
         }
+        if (!nested_types.container.empty()) {
+            struct_decl.has_nested_types(true);
+            struct_decl.nested_types(std::move(nested_types));
+        }
         return struct_decl;
     }
 
@@ -619,7 +637,11 @@ namespace ebmgen {
             return unexpect_error("unexpected node type: {}", to_string(ctx.state().get_current_generate_type()));
         }
         body.kind = ebm::StatementKind::STRUCT_DECL;
-        EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
+        ebm::IdentifierRef name_ref;
+        if (node->ident) {
+            EBMA_ADD_IDENTIFIER(name_ref_, node->ident->ident);
+            name_ref = name_ref_;
+        }
         MAYBE(encoder_input, get_coder_input(ctx, true));
         MAYBE(decoder_input, get_coder_input(ctx, false));
 

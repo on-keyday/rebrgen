@@ -53879,6 +53879,12 @@ namespace ebm2python {
                 return unexpect_error(std::move(result_properties.error()));
             }
         }
+        if (auto ptr = type_ctx.struct_decl.nested_types()) {
+            auto result_nested_types = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),(*ptr));
+            if (!result_nested_types) {
+                return unexpect_error(std::move(result_nested_types.error()));
+            }
+        }
         return {};
     }
     template<typename Result,typename Context>

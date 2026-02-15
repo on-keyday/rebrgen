@@ -2479,14 +2479,22 @@ namespace ebm {
         else {
             return false;
         }
-        if (auto got = j.at("reserved")) {
-            std::uint8_t tmp;
+        if (auto got = j.at("has_parent")) {
+            bool tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
-            if(!obj.reserved(std::move(tmp))) {
+            obj.has_parent(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("has_nested_types")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
+            obj.has_nested_types(std::move(tmp));
         }
         else {
             return false;
@@ -2542,6 +2550,24 @@ namespace ebm {
                 return false;
             }
             if(!obj.properties(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("parent_struct")) {
+            WeakStatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.parent_struct(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("nested_types")) {
+            Block tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.nested_types(std::move(tmp))) {
                 return false;
             }
         }

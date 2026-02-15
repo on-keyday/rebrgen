@@ -24,7 +24,8 @@
         has_encode_decode: bool
         has_functions: bool
         has_properties: bool
-        reserved: std::uint8_t
+        has_parent: bool
+        has_nested_types: bool
         related_variant: *TypeRef
         size: *Size
           unit: SizeUnit
@@ -36,6 +37,10 @@
           len: Varint
           container: std::vector<StatementRef>
         properties: *Block
+          len: Varint
+          container: std::vector<StatementRef>
+        parent_struct: *WeakStatementRef
+        nested_types: *Block
           len: Varint
           container: std::vector<StatementRef>
       main_logic: ebmcodegen::util::MainLogicWrapper<Result>

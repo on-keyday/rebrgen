@@ -26,6 +26,8 @@
 
 FILE_EXTENSIONS(".go");
 WEB_UI_NAME("go3");
+DEFINE_BOOL_FLAG(trust_input_len, false, "trust-input-len", "Trust input length so that use make([]byte,len). For production, check length for your safety threshold manually before reading array.")
+DEFINE_INT_FLAG(safe_len_limit, std::uint64_t, 0, "safe-len-limit", "Safe vector length limit for []byte. default: 0 means infinity", "LEN");
 DEFINE_STRING_FLAG(package_name, "", "package", "Package name for generated Go code", "NAME");
 BEGIN_MAP_FLAG(io_mode, IOMode, io_both, "io-mode", "IO Generation Mode (bytes slice based or std io based)")
 MAP_FLAG_ITEM("all", io_both)

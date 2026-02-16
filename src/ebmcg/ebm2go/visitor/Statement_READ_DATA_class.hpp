@@ -74,16 +74,30 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                 w.writeln("}");
             }
             else if (cand == BytesType::vector) {
-                // allocate slice then read
-                // TODO: size_str is untrusted so we need to use safe way that incrementally allocate buffer
-                ctx.config().imports.insert("bytes");
-                auto tempBuf = std::format("io_temp_{}", get_id(ctx.item_id));
-                w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
-                w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
-                w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
-                w.indent_writeln("return err");
-                w.writeln("}");
-                w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
+                if (ctx.flags().safe_len_limit != 0) {
+                    ctx.config().imports.insert("fmt");
+                    w.writeln("if ", size_str, " > ", std::to_string(ctx.flags().safe_len_limit), " {");
+                    w.indent_writeln("return fmt.New(\"input requested length exceeded safe length ", std::to_string(ctx.flags().safe_len_limit), ": %d\")");
+                    w.writeln("}");
+                }
+                if (ctx.flags().trust_input_len) {
+                    w.writeln("// WARNING: ensure your code is checking length manually");
+                    w.writeln(target.to_writer(), " = make([]byte,", size_str, ")");
+                    w.writeln("if _, err := io.ReadFull(", io_, ",", target.to_writer(), "); err != nil {");
+                    w.indent_writeln("return err");
+                    w.writeln("}");
+                }
+                else {
+                    ctx.config().imports.insert("bytes");
+                    auto tempBuf = std::format("io_temp_{}", get_id(ctx.item_id));
+                    w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
+                    w.writeln("// for more performance, use (assert on DSL or safe-len-limit option) and trust-input-len option");
+                    w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
+                    w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
+                    w.indent_writeln("return err");
+                    w.writeln("}");
+                    w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
+                }
             }
             else if (cand == BytesType::array) {
                 // In io.Reader mode, all arrays are fixed-size: read directly into them

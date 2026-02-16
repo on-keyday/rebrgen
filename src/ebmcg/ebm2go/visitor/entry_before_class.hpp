@@ -483,6 +483,30 @@ DEFINE_VISITOR(entry_before) {
             }
         }
         w.writeln(")");
+        w.writeln("func (e ", name, ") String() string {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("switch e {");
+            {
+                auto scope = w.indent_scope();
+                for (auto& member_ref : ectx.enum_decl.members.container) {
+                    MAYBE(member, ectx.get_field<"enum_member_decl">(member_ref));
+                    w.writeln("case ", name, "_", ectx.identifier(member_ref), ":");
+                    if (!is_nil(member.string_repr)) {
+                        MAYBE(lit, ctx.get(member.string_repr));
+                        w.indent_writeln("return \"", futils::escape::escape_str<std::string>(lit.body.data), "\"");
+                    }
+                    else {
+                        w.indent_writeln("return \"", ectx.identifier(member_ref), "\"");
+                    }
+                }
+                ectx.config().imports.insert("fmt");
+                w.writeln("default:");
+                w.indent_writeln("return fmt.Sprintf(\"", name, "(%d)\",e)");
+            }
+            w.writeln("}");
+        }
+        w.writeln("}");
         return w;
     };
     ctx.config().enum_member_decl_visitor = [&](Context_Statement_ENUM_MEMBER_DECL& mctx) -> expected<Result> {

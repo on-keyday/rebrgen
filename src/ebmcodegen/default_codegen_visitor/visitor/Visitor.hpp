@@ -18,6 +18,7 @@ std::string struct_keyword = "struct";
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx)> struct_definition_start_wrapper;
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef encode)> struct_encode_start_wrapper;
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef decode)> struct_decode_start_wrapper;
+std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, CodeWriter& result)> struct_definition_end_wrapper;
 std::string variable_initializer = "=";
 std::string begin_block = "{";
 std::string end_block = "}";

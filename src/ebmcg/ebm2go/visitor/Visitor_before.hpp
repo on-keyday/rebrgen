@@ -22,4 +22,4 @@ std::string decode_fn_name;
 
 bool on_until_eof_loop = false;
 
-bool no_heap_mode = false;
+std::vector<bool> no_heap_mode;

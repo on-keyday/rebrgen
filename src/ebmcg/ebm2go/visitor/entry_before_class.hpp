@@ -71,6 +71,12 @@ namespace CODEGEN_NAMESPACE {
             }
             return {};
         }
+        MetadataSet meta;
+
+        expected<void> visit(Context_Statement_METADATA& ctx) {
+            return meta.try_add_metadata(ctx, &ctx.metadata);
+        }
+
         template <typename Ctx>
         expected<void> visit(Ctx&& ctx) {
             if (ctx.is_before_or_after()) {
@@ -107,16 +113,13 @@ DEFINE_VISITOR(entry_before) {
         CodeWriter w;
         auto name = sctx.identifier();
         w.writeln_with_loc(to_any_ref(sctx.item_id), "type ", name, " struct ", ctx.config().begin_block);
-        ctx.config().no_heap_mode = false;
+        ctx.config().no_heap_mode.push_back(false);
         if (auto enc = sctx.struct_decl.encode_fn()) {
             ArraySetterDetector detector{ctx.visitor};
             MAYBE_VOID(detected, ctx.visit<void>(detector, *enc));
-            if (auto body = ctx.get_field<"func_decl.body">(*enc)) {
-                MAYBE(meta, get_metadata(ctx, *body));
-                if (auto conf = meta.get_first("config.go.union")) {
-                    if (conf->get_string(ctx, 0) == "noheap") {
-                        ctx.config().no_heap_mode = true;
-                    }
+            if (auto conf = detector.meta.get_first("config.go.union")) {
+                if (conf->get_string(ctx, 0) == "noheap") {
+                    ctx.config().no_heap_mode.back() = true;
                 }
             }
         }
@@ -124,6 +127,10 @@ DEFINE_VISITOR(entry_before) {
             ctx.output().struct_names.push_back(name);
         }
         return w;
+    };
+    ctx.config().struct_definition_end_wrapper = [](Context_Statement_STRUCT_DECL& ctx, CodeWriter& result) {
+        ctx.config().no_heap_mode.pop_back();
+        return result;
     };
     ctx.config().function_define_keyword = "func";
     ctx.config().function_return_type_separator = "";
@@ -493,6 +500,9 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(type, ictx.get_field<"type">(ictx.init_check.expect_value));
             if (get_composite_field(ctx, ctx.get_field<"member">(ictx.init_check.target_field))) {
                 ctx.config().bulk_primitive.insert(get_id(type));
+                return "";
+            }
+            if (ctx.config().no_heap_mode.back()) {
                 return "";
             }
             MAYBE(field_txt, ictx.visit(ictx.init_check.target_field));

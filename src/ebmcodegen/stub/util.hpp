@@ -1013,23 +1013,36 @@ namespace ebmcodegen::util {
             }
             return nullptr;
         }
+
+        ebmgen::expected<void> try_add_metadata(auto&& visitor, const ebm::Metadata* meta_decl) {
+            ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+            MAYBE(key_str, module_.get_identifier(meta_decl->name));
+            items[key_str.body.data].push_back(Metadata{key_str.body.data, meta_decl});
+            return {};
+        }
+
+        ebmgen::expected<void> try_add_metadata(auto&& visitor, ebm::StatementRef meta_ref) {
+            ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+            MAYBE(meta_stmt, module_.get_statement(meta_ref));
+            auto meta_decl = meta_stmt.body.metadata();
+            if (!meta_decl) {
+                return {};
+            }
+            MAYBE(key_str, module_.get_identifier(meta_decl->name));
+            items[key_str.body.data].push_back(Metadata{key_str.body.data, meta_decl});
+            return {};
+        }
     };
 
     ebmgen::expected<MetadataSet> get_metadata(auto&& visitor, ebm::StatementRef stmt_ref) {
         ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(statement, module_.get_statement(stmt_ref));
         MAYBE(block, statement.body.block());
-        std::unordered_map<std::string_view, std::vector<Metadata>> result;
+        MetadataSet result;
         for (auto& meta_ref : block.container) {
-            MAYBE(meta_stmt, module_.get_statement(meta_ref));
-            auto meta_decl = meta_stmt.body.metadata();
-            if (!meta_decl) {
-                continue;
-            }
-            MAYBE(key_str, module_.get_identifier(meta_decl->name));
-            result[key_str.body.data].push_back(Metadata{key_str.body.data, meta_decl});
+            MAYBE_VOID(_, result.try_add_metadata(visitor, meta_ref));
         }
-        return MetadataSet{.items = std::move(result)};
+        return result;
     }
 
     ebmgen::expected<MetadataSet> get_global_metadata(auto&& visitor) {

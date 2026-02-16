@@ -37,18 +37,21 @@ DEFINE_VISITOR(Statement_FIELD_DECL_before) {
 
         for (auto& member : struct_members) {
             ctx.config().decl_toplevel.push_back(member.second.to_writer());
-            if (!ctx.config().no_heap_mode) {
+            if (!ctx.config().no_heap_mode.back()) {
                 auto name = ctx.identifier(member.first);
                 ctx.config().decl_toplevel.push_back(CODE("func (v *", name, ") is", variant_name, "(){}"));
             }
         }
         CodeWriter w;
 
-        if (ctx.config().no_heap_mode) {
+        if (ctx.config().no_heap_mode.back()) {
             w.writeln("type ", variant_name, " struct {");
-            for (auto& member : struct_members) {
-                auto name = ctx.identifier(member.first);
-                w.writeln(name, " ", name);
+            {
+                auto scope = w.indent_scope();
+                for (auto& member : struct_members) {
+                    auto name = ctx.identifier(member.first);
+                    w.writeln(name, " ", name);
+                }
             }
             w.writeln("}");
         }

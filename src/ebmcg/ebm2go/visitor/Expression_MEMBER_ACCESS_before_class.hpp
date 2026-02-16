@@ -92,8 +92,14 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS_before) {
             // currently, type_str must be integer type
             return CODE(type_str.to_writer(), " (", base_str.to_writer(), ".", getter_name, "())");
         }
-        auto variant_hold = std::format("tmp{}", get_id(*type_ref));
         MAYBE(member, ctx.visit(ctx.member));
+        if (ctx.config().no_heap_mode.back()) {
+            MAYBE(base, ctx.visit(ctx.base));
+            MAYBE(id, ctx.get_field<"body.id">(*type_ref));
+            auto x = std::format("tmp{}", get_id(id));
+            return CODE(base.to_writer(), ".", x, ".", member.to_writer());
+        }
+        auto variant_hold = std::format("tmp{}", get_id(*type_ref));
         return CODE(variant_hold, ".", member.to_writer());
     }
     return pass;

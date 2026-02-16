@@ -309,7 +309,9 @@ namespace ebmgen {
         auto base_locked = base->first->base.lock();
         bool has_parent = false;
         if (auto m = ast::as<ast::Member>(base_locked); m && m->belong.lock()) {
-            has_parent = true;
+            if (m->belong.lock()->node_type != ast::NodeType::function) {
+                has_parent = true;
+            }
         }
         if (auto f = ast::as<ast::Field>(base_locked); f && f->is_state_variable) {
             is_state_variable = true;

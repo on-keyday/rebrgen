@@ -107,9 +107,18 @@ DEFINE_VISITOR(entry_before) {
         CodeWriter w;
         auto name = sctx.identifier();
         w.writeln_with_loc(to_any_ref(sctx.item_id), "type ", name, " struct ", ctx.config().begin_block);
+        ctx.config().no_heap_mode = false;
         if (auto enc = sctx.struct_decl.encode_fn()) {
             ArraySetterDetector detector{ctx.visitor};
             MAYBE_VOID(detected, ctx.visit<void>(detector, *enc));
+            if (auto body = ctx.get_field<"func_decl.body">(*enc)) {
+                MAYBE(meta, get_metadata(ctx, *body));
+                if (auto conf = meta.get_first("config.go.union")) {
+                    if (conf->get_string(ctx, 0) == "noheap") {
+                        ctx.config().no_heap_mode = true;
+                    }
+                }
+            }
         }
         if (!is_nil(sctx.struct_decl.name)) {
             ctx.output().struct_names.push_back(name);

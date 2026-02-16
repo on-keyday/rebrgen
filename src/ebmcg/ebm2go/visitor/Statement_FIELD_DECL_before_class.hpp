@@ -37,14 +37,27 @@ DEFINE_VISITOR(Statement_FIELD_DECL_before) {
 
         for (auto& member : struct_members) {
             ctx.config().decl_toplevel.push_back(member.second.to_writer());
-            auto name = ctx.identifier(member.first);
-            ctx.config().decl_toplevel.push_back(CODE("func (v *", name, ") is", variant_name, "(){}"));
+            if (!ctx.config().no_heap_mode) {
+                auto name = ctx.identifier(member.first);
+                ctx.config().decl_toplevel.push_back(CODE("func (v *", name, ") is", variant_name, "(){}"));
+            }
+        }
+        CodeWriter w;
+
+        if (ctx.config().no_heap_mode) {
+            w.writeln("type ", variant_name, " struct {");
+            for (auto& member : struct_members) {
+                auto name = ctx.identifier(member.first);
+                w.writeln(name, " ", name);
+            }
+            w.writeln("}");
+        }
+        else {
+            w.writeln("type ", variant_name, " interface {");
+            w.indent_writeln("is", variant_name, "()");
+            w.writeln("}");
         }
 
-        CodeWriter w;
-        w.writeln("type ", variant_name, " interface {");
-        w.indent_writeln("is", variant_name, "()");
-        w.writeln("}");
         ctx.config().decl_toplevel.push_back(std::move(w));
     }
 

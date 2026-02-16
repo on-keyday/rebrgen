@@ -473,13 +473,13 @@ namespace ebmgen {
         MAYBE(variant_alt, handle_variant_alternative(ctx, node->struct_type));
         auto for_each_node = [&]() -> expected<void> {
             for (auto& element : node->elements) {
-                if (ast::as<ast::Function>(element)) {
-                    continue;
-                }
                 if (auto field = ast::as<ast::Field>(element)) {
                     if (field->is_state_variable) {
                         continue;
                     }
+                }
+                else if (ast::as<ast::Member>(element)) {
+                    continue;
                 }
                 EBMA_CONVERT_STATEMENT(stmt_ref, element);
                 append(block_body, stmt_ref);
@@ -829,14 +829,15 @@ namespace ebmgen {
                 func_decl.return_type = void_;
             }
         }
+        const auto _mode = ctx.state().set_current_generate_type(typ);
+        const auto _func = ctx.state().set_current_function_id(func_id);
         for (auto& param : node->parameters) {
             EBMA_ADD_IDENTIFIER(param_name_ref, param->ident->ident);
             EBMA_CONVERT_TYPE(param_type_ref, param->field_type);
             EBM_DEFINE_PARAMETER(param_ref, param_name_ref, param_type_ref, false);
             append(func_decl.params, param_ref_def);
+            ctx.state().add_visited_node(param, param_ref_def);
         }
-        const auto _mode = ctx.state().set_current_generate_type(typ);
-        const auto _func = ctx.state().set_current_function_id(func_id);
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
         if (typ != GenerateType::Normal) {
             // tail return

@@ -80,23 +80,48 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                     w.indent_writeln("return fmt.New(\"input requested length exceeded safe length ", std::to_string(ctx.flags().safe_len_limit), ": %d\")");
                     w.writeln("}");
                 }
+                CodeWriter direct_allocate;
+                direct_allocate.writeln(target.to_writer(), " = make([]byte,", size_str, ")");
+                direct_allocate.writeln("if _, err := io.ReadFull(", io_, ",", target.to_writer(), "); err != nil {");
+                direct_allocate.indent_writeln("return err");
+                direct_allocate.writeln("}");
                 if (ctx.flags().trust_input_len) {
                     w.writeln("// WARNING: ensure your code is checking length manually");
-                    w.writeln(target.to_writer(), " = make([]byte,", size_str, ")");
-                    w.writeln("if _, err := io.ReadFull(", io_, ",", target.to_writer(), "); err != nil {");
-                    w.indent_writeln("return err");
-                    w.writeln("}");
+                    w.write(std::move(direct_allocate));
                 }
                 else {
                     ctx.config().imports.insert("bytes");
                     auto tempBuf = std::format("io_temp_{}", get_id(ctx.item_id));
-                    w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
-                    w.writeln("// for more performance, use (assert on DSL or safe-len-limit option) and trust-input-len option");
-                    w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
-                    w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
-                    w.indent_writeln("return err");
+                    CodeWriter err_return;
+                    err_return.writeln("if err != nil {");
+                    err_return.indent_writeln("return err");
+                    err_return.writeln("}");
+                    w.writeln("if seeker,ok := ", io_, ".(io.Seeker); ok {");
+                    {
+                        w.writeln("current,err := seeker.Seek(0,io.SeekCurrent)");
+                        w.write(err_return);
+                        w.writeln("endOffset,err := seeker.Seek(0,io.SeekEnd)");
+                        w.write(err_return);
+                        w.writeln("_,err = seeker.Seek(current,io.SeekStart)");
+                        w.write(err_return);
+                        w.writeln("if (endOffset - current) < int64(", size_str, ") {");
+                        ctx.config().imports.insert("fmt");
+                        w.indent_writeln("return fmt.Errorf(\"Too larget length requested: %d < %d\",endOffset - current, int64(", size_str, "))");
+                        w.writeln("}");
+                        w.write(std::move(direct_allocate));
+                    }
+                    w.writeln("} else {");
+                    {
+                        auto scope = w.indent_scope();
+                        w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
+                        w.writeln("// for more performance, use (assert on DSL or safe-len-limit option) and trust-input-len option");
+                        w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
+                        w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
+                        w.indent_writeln("return err");
+                        w.writeln("}");
+                        w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
+                    }
                     w.writeln("}");
-                    w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
                 }
             }
             else if (cand == BytesType::array) {

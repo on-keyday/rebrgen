@@ -78,11 +78,22 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
             w.writeln("}");
             w.writeln(io_base_, " := (*", parent_io_, ")[:int(", length_str.to_writer(), ")]");
             w.writeln(io_, " := &", io_base_);
+            w.writeln(offset_var(io_), " := 0");
             w.writeln("*", parent_io_, " = (*", parent_io_, ")[int(", length_str.to_writer(), "):]");
+            w.writeln("*", offset_var(parent_io_), "+= int(", length_str.to_writer(), ")");
         }
         else {
-            // Encode: pre-allocate buffer, create *[]byte for child IO
-            w.writeln(io_base_, " := make([]byte, 0, int(", length_str.to_writer(), "))");
+            // Encode: allocate buffer from parent io
+            w.writeln("if len(*", parent_io_, ") < int(", length_str.to_writer(), ") {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("if cap(*", parent_io_, ") < ", length_str.to_writer(), ") {");
+                w.indent_writeln("return errors.New(\"not enough space for subrange\")");
+                w.writeln("}");
+                w.writeln(parent_io_, " := (*", parent_io_, ")[:int(", length_str.to_writer(), ")]");
+            }
+            w.writeln("}");
+            w.writeln(io_base_, " := (*", parent_io_, ")[:int(", length_str.to_writer(), ")]");
             w.writeln(io_, " := &", io_base_);
         }
 
@@ -93,14 +104,11 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
             // After encoding: verify length and copy to parent
             ctx.config().imports.insert("fmt");
             ctx.config().imports.insert("errors");
-            w.writeln("if len(*", io_, ") != int(", length_str.to_writer(), ") {");
+            w.writeln("if len(*", io_, ") != 0 {");
             w.indent_writeln("return fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), "), len(*", io_, "))");
             w.writeln("}");
-            w.writeln("if len(*", parent_io_, ") < len(*", io_, ") {");
-            w.indent_writeln("return errors.New(\"not enough space for subrange\")");
-            w.writeln("}");
-            w.writeln("copy((*", parent_io_, ")[:len(*", io_, ")], *", io_, ")");
-            w.writeln("*", parent_io_, " = (*", parent_io_, ")[len(*", io_, "):]");
+            w.writeln("*", parent_io_, " = (*", parent_io_, ")[int(", length_str.to_writer(), "):]");
+            w.writeln("*", offset_var(parent_io_), "+= int(", length_str.to_writer(), ")");
         }
     }
     else if (ctx.sub_byte_range.range_type == ebm::SubByteRangeType::seek_bytes) {

@@ -25,12 +25,15 @@
 DEFINE_VISITOR(Statement_PARAMETER_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    auto name = ctx.identifier();
     MAYBE(type, ctx.visit(ctx.param_decl.param_type));
     if (ctx.config().param_type_wrapper) {
         MAYBE(wrapped, ctx.config().param_type_wrapper(type, ctx.param_decl.is_state_variable()));
         type = std::move(wrapped);
     }
+    if (ctx.config().param_visitor) {
+        return ctx.config().param_visitor(ctx, std::move(type));
+    }
+    auto name = ctx.identifier();
     if (ctx.config().field_name_prior_to_type) {
         return CODE(name, " ", type.to_writer());
     }

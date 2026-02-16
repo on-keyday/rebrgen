@@ -34,4 +34,17 @@ namespace ebm2go {
         const ebm::Type* length_type = nullptr;
     };
 
+    struct IOMode {
+        bool slice_io = false;
+        bool std_io = false;
+    };
+
+    constexpr auto io_both = IOMode{true, true};
+    constexpr auto io_slice = IOMode{true, false};
+    constexpr auto io_std = IOMode{false, true};
+
+    inline std::string offset_var(std::string x) {
+        return x + "Offset";
+    }
+
 }  // namespace ebm2go

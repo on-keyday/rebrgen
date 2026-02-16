@@ -74,6 +74,7 @@ bool use_base_type_of_enum = false;
 std::function<expected<Result>(Result elem_type, size_t len, ebm::ArrayAnnotation anot)> array_type_wrapper;
 std::function<expected<Result>(Result elem_type)> vector_type_wrapper;
 std::function<expected<Result>(Result typ, bool is_state_variable)> param_type_wrapper;
+std::function<expected<Result>(Context_Statement_PARAMETER_DECL& ctx, Result typ)> param_visitor;
 std::function<expected<Result>(Result elem_type)> pointer_type_wrapper;
 std::function<expected<Result>(Result elem_type)> optional_type_wrapper;
 std::function<expected<Result>(Result elem_type)> recursive_struct_type_wrapper;
@@ -99,6 +100,8 @@ std::function<expected<Result>(Context_Statement_COMPOSITE_FIELD_DECL& ctx)> com
 std::function<expected<Result>(Context_Expression_IS_ERROR& ctx)> is_error_visitor;
 std::function<expected<Result>(Context_Statement_ERROR_RETURN& ctx)> error_return_visitor;
 std::function<expected<Result>(Context_Statement_ERROR_REPORT& ctx)> error_report_visitor;
+
+std::function<expected<Result>(Context_Expression_AS_ARG& ctx)> as_arg_visitor;
 
 std::function<expected<Result>(Context_Statement_ENUM_DECL& ctx)> enum_decl_visitor;
 std::function<expected<Result>(Context_Statement_ENUM_MEMBER_DECL& ctx)> enum_member_decl_visitor;

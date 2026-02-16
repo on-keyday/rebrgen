@@ -16,4 +16,10 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-return visit_Expression(*this, target_expr);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_AS_ARG) {
+    if (ctx.config().as_arg_visitor) {
+        return ctx.config().as_arg_visitor(ctx);
+    }
+    return ctx.visit(ctx.target_expr);
+}

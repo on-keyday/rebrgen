@@ -37,6 +37,7 @@ namespace ebmgen {
     }
 
     constexpr auto instance_index = static_cast<size_t>(-2);
+    constexpr auto optional_index = static_cast<size_t>(-3);
 
     template <size_t N = 10>
     struct FieldNames {
@@ -63,6 +64,9 @@ namespace ebmgen {
                 if (name == static_cast<size_t>(-1)) {
                     if (field_name == "instance") {
                         tag.index = instance_index;
+                    }
+                    else if (field_name == "optional") {
+                        tag.index = optional_index;
                     }
                     else {
                         if (!futils::number::parse_integer(field_name, tag.index)) {
@@ -150,6 +154,9 @@ namespace ebmgen {
                     }
                     else if (type_index.index == type_index_expression_ref || type_index.index == type_index_lowered_expression_ref) {
                         do_fallback(type_index_expression, type_index_expression_body);
+                    }
+                    if (new_type_index.index == static_cast<size_t>(-1) && n.tags[i].index == optional_index) {
+                        new_type_index = type_index;  // stay at same type
                     }
                     if (new_type_index.index == static_cast<size_t>(-1)) {
                         [](auto... a) { throw "Invalid field name"; }(
@@ -272,6 +279,18 @@ namespace ebmgen {
                             return ref;
                         }
                     }
+                    else if constexpr (V.tags[offset].field_tag.index == optional_index) {
+                        if constexpr (std::is_pointer_v<std::decay_t<decltype(in)>>) {
+                            if (!in) {
+                                return std::optional<std::decay_t<decltype(*in)>>{std::nullopt};
+                            }
+                            return std::optional<std::decay_t<decltype(*in)>>(*in);
+                        }
+                        else {
+                            auto& ref = in;
+                            return ref;
+                        }
+                    }
                     else {
                         return ebmcodegen::get_field<field_index>(in);
                     }
@@ -320,6 +339,8 @@ namespace ebmgen {
             auto is_optional = access_field<"is_state_variable">(DummyContext{}, &*f);
 
             auto instance = access_field<"id.instance">(DummyContext{}, statement);
+
+            auto ptr_to_optional = access_field<"id.kind.optional">(DummyContext{}, statement);
         }
 
     }  // namespace test

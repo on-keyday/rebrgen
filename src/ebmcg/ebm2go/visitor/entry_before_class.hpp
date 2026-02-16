@@ -20,6 +20,7 @@
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmcodegen/stub/util.hpp"
+#include "ebmgen/common.hpp"
 #include "escape/escape.h"
 #include "json/stringer.h"
 #include "number/parse.h"
@@ -87,7 +88,6 @@ namespace CODEGEN_NAMESPACE {
 
 DEFINE_VISITOR(entry_before) {
     using namespace CODEGEN_NAMESPACE;
-    ctx.config().use_io_reader_writer = !ctx.flags().use_bytes_slice;
     ctx.config().array_type_wrapper = [&](Result r, size_t size, ebm::ArrayAnnotation anno) -> expected<Result> {
         if (!ctx.config().use_io_reader_writer && anno != ebm::ArrayAnnotation::none) {
             // In *[]byte mode, annotated arrays are slices (they borrow from the IO buffer)
@@ -120,15 +120,165 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().function_return_type_separator = "";
     ctx.config().encoder_return_type = "error";
     ctx.config().decoder_return_type = "error";
-    if (ctx.config().use_io_reader_writer) {
-        ctx.config().encoder_input_type = "io.Writer";
-        ctx.config().decoder_input_type = "io.Reader";
-        ctx.config().imports.insert("io");
-    }
-    else {
-        ctx.config().encoder_input_type = "*[]byte";
-        ctx.config().decoder_input_type = "*[]byte";
-    }
+    ctx.config().param_visitor = [](Context_Statement_PARAMETER_DECL& ctx, Result type) -> expected<Result> {
+        auto kind = ctx.get_kind(ctx.param_decl.param_type);
+        if (!ctx.config().use_io_reader_writer &&
+            (kind == ebm::TypeKind::ENCODER_INPUT ||
+             kind == ebm::TypeKind::DECODER_INPUT)) {
+            return CODE(ctx.identifier(), " ", type.to_writer(), ", ", offset_var(ctx.identifier()), " *int");
+        }
+        return CODE(ctx.identifier(), " ", type.to_writer());
+    };
+    ctx.config().as_arg_visitor = [](Context_Expression_AS_ARG& ctx) -> expected<Result> {
+        MAYBE(target, ctx.visit(ctx.target_expr));
+        auto kind = ctx.get_kind(ctx.type);
+        if (!ctx.config().use_io_reader_writer &&
+            (kind == ebm::TypeKind::ENCODER_INPUT ||
+             kind == ebm::TypeKind::DECODER_INPUT)) {
+            return CODE(target.to_writer(), ", ", offset_var(target.to_string()));
+        }
+        return target;
+    };
+    ctx.config().struct_encode_start_wrapper = [](Context_Statement_STRUCT_DECL& sctx, ebm::StatementRef encode_fn) -> expected<Result> {
+        CodeWriter w;
+        if (sctx.flags().io_mode.std_io) {
+            sctx.config().encoder_input_type = "io.Writer";
+            sctx.config().imports.insert("io");
+            sctx.config().encode_fn_name = "Write";
+            sctx.config().use_io_reader_writer = true;
+            MAYBE(enc, sctx.visit(encode_fn));
+            w.write(std::move(enc.to_writer()));
+            auto name = sctx.identifier();
+            w.writeln("func (s *", name, ") EncodeCopy(reserved []byte) ([]byte,error) {");
+            {
+                auto scope = w.indent_scope();
+                sctx.config().imports.insert("bytes");
+                w.writeln("buf := bytes.NewBuffer(reserved)");
+                w.writeln("err := s.Write(buf)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("return nil,err");
+                w.writeln("}");
+                w.writeln("return buf.Bytes(), nil");
+            }
+            w.writeln("}");
+            w.writeln("func (s *", name, ") MustEncodeCopy(reserved []byte) []byte {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("buf,err := s.EncodeCopy(reserved)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("panic(err)");
+                w.writeln("}");
+                w.writeln("return buf");
+            }
+            w.writeln("}");
+        }
+        if (sctx.flags().io_mode.slice_io) {
+            sctx.config().encoder_input_type = "*[]byte";
+            sctx.config().encode_fn_name = "EncodeSlice";
+            sctx.config().use_io_reader_writer = false;
+            MAYBE(enc, sctx.visit(encode_fn));
+            w.write(std::move(enc.to_writer()));
+            auto name = sctx.identifier();
+            w.writeln("func (s *", name, ") Encode(buf []byte) ([]byte,error) {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("var tmp []byte = buf");
+                w.writeln("var offset int");
+                w.writeln("err := s.EncodeSlice(&tmp,&offset)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("return nil,err");
+                w.writeln("}");
+                w.writeln("return buf[:offset], nil");
+            }
+            w.writeln("}");
+            w.writeln("func (s *", name, ") MustEncode(reserved []byte) []byte {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("buf,err := s.Encode(reserved)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("panic(err)");
+                w.writeln("}");
+                w.writeln("return buf");
+            }
+            w.writeln("}");
+        }
+        return w;
+    };
+
+    ctx.config().struct_decode_start_wrapper = [](Context_Statement_STRUCT_DECL& sctx, ebm::StatementRef decode_fn) -> expected<Result> {
+        CodeWriter w;
+        if (sctx.flags().io_mode.std_io) {
+            sctx.config().decoder_input_type = "io.Reader";
+            sctx.config().imports.insert("io");
+            sctx.config().decode_fn_name = "Read";
+            sctx.config().use_io_reader_writer = true;
+            MAYBE(enc, sctx.visit(decode_fn));
+            w.write(std::move(enc.to_writer()));
+            auto name = sctx.identifier();
+            w.writeln("func (s *", name, ") DecodeCopy(buf []byte) ([]byte,error) {");
+            {
+                auto scope = w.indent_scope();
+                sctx.config().imports.insert("bytes");
+                w.writeln("r := bytes.NewReader(buf)");
+                w.writeln("err := s.Read(r)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("return nil,err");
+                w.writeln("}");
+                w.writeln("return buf[int(r.Size()) - r.Len():], nil");
+            }
+            w.writeln("}");
+            w.writeln("func (s *", name, ") DecodeExactCopy(buf []byte) error {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("remain,err := s.DecodeCopy(buf)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+                w.writeln("if len(remain) != 0 {");
+                sctx.config().imports.insert("fmt");
+                w.indent_writeln("return fmt.Errorf(\"expect no remaining bytes but got %d bytes\",len(remain))");
+                w.writeln("}");
+                w.writeln("return nil");
+            }
+            w.writeln("}");
+        }
+        if (sctx.flags().io_mode.slice_io) {
+            sctx.config().decoder_input_type = "*[]byte";
+            sctx.config().decode_fn_name = "DecodeSlice";
+            sctx.config().use_io_reader_writer = false;
+            MAYBE(enc, sctx.visit(decode_fn));
+            w.write(std::move(enc.to_writer()));
+            auto name = sctx.identifier();
+            w.writeln("func (s *", name, ") Decode(buf []byte) ([]byte,error) {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("var tmp []byte = buf");
+                w.writeln("var offset int");
+                w.writeln("err := s.DecodeSlice(&tmp,&offset)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("return nil,err");
+                w.writeln("}");
+                w.writeln("return buf[offset:], nil");
+            }
+            w.writeln("}");
+            w.writeln("func (s *", name, ") DecodeExact(buf []byte) error {");
+            {
+                auto scope = w.indent_scope();
+                w.writeln("remain,err := s.Decode(buf)");
+                w.writeln("if err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+                w.writeln("if len(remain) != 0 {");
+                sctx.config().imports.insert("fmt");
+                w.indent_writeln("return fmt.Errorf(\"expect no remaining bytes but got %d bytes\",len(remain))");
+                w.writeln("}");
+                w.writeln("return nil");
+            }
+            w.writeln("}");
+        }
+        return w;
+    };
+
     ctx.config().function_definition_start_wrapper = [&](Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& fctx) -> expected<Result> {
         CodeWriter w;
         std::string_view name_prefix;
@@ -202,6 +352,12 @@ DEFINE_VISITOR(entry_before) {
                 }
             }
         }
+        if (fctx.func_decl.kind == ebm::FunctionKind::ENCODE) {
+            name = fctx.config().encode_fn_name;
+        }
+        else if (fctx.func_decl.kind == ebm::FunctionKind::DECODE) {
+            name = fctx.config().decode_fn_name;
+        }
         if (!is_nil(fctx.func_decl.parent_format)) {
             auto struct_name = ctx.identifier(fctx.func_decl.parent_format);
             ctx.config().self_value = std::string(1, std::tolower(struct_name[0]));
@@ -269,7 +425,14 @@ DEFINE_VISITOR(entry_before) {
     };
     ctx.config().error_return_visitor = [&](Context_Statement_ERROR_RETURN& rctx) -> expected<Result> {
         MAYBE(err_expr, ctx.visit(rctx.value));
-        return CODELINE("return ", err_expr.to_writer());
+        CodeWriter w;
+        if (rctx.config().use_io_reader_writer && rctx.config().on_until_eof_loop) {
+            w.writeln("if ", err_expr.to_writer(), " == io.EOF {");
+            w.writeln("break");
+            w.writeln("}");
+        }
+        w.writeln("return ", err_expr.to_writer());
+        return w;
     };
     ctx.config().error_report_visitor = [&](Context_Statement_ERROR_REPORT& rptctx) -> expected<Result> {
         MAYBE(err_expr, ctx.get(rptctx.error_report.message));
@@ -287,7 +450,13 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().enum_decl_visitor = [&](Context_Statement_ENUM_DECL& ectx) -> expected<Result> {
         CodeWriter w;
         auto name = ectx.identifier();
-        w.writeln("type ", name, " int");
+        if (is_nil(ectx.enum_decl.base_type)) {
+            w.writeln("type ", name, " int");
+        }
+        else {
+            MAYBE(type, ctx.visit(ectx.enum_decl.base_type));
+            w.writeln("type ", name, " ", type.to_writer());
+        }
         w.writeln("");
         w.writeln("const (");
         {
@@ -341,6 +510,7 @@ DEFINE_VISITOR(entry_before) {
                 }
             }
             w.writeln("}");
+            w.writeln("_ = ", tmpname, " // to prevent unused warnings");
             return w;
         }
         return "";
@@ -385,13 +555,16 @@ DEFINE_VISITOR(entry_before) {
         return CODELINE(target.to_writer(), " = append(", target.to_writer(), ", ", value.to_writer(), ")");
     };
     ctx.config().can_read_stream_visitor = [&](Context_Expression_CAN_READ_STREAM& cctx) -> expected<Result> {
-        if (ctx.config().use_io_reader_writer) {
-            // In io.Reader mode, we cannot check remaining bytes without consuming.
-            // For now, always return true and let io.ReadFull fail with io.ErrUnexpectedEOF.
-            return CODE("true");
-        }
         auto stream = cctx.identifier(cctx.io_ref);
         MAYBE(size_str, get_size_str(cctx, cctx.num_bytes));
+        if (ctx.config().use_io_reader_writer) {
+            if (size_str.to_string() == "1") {
+                // In io.Reader mode, we cannot check remaining bytes without consuming.
+                // For now, always return true and let io.ReadFull fail with io.ErrUnexpectedEOF.
+                return CODE("true");
+            }
+            return CODE("true");
+        }
         return CODE("len(*", stream, ") >= ", size_str);
     };
     ctx.config().pointer_type_wrapper = [](Result r) -> expected<Result> {
@@ -431,5 +604,10 @@ DEFINE_VISITOR(entry_before) {
     };
     ctx.config().type_memoization_config.enable = true;
     ctx.config().type_memoization_config.target_kind_as_exclusive = true;
+    ctx.config().type_memoization_config.target_kinds = {
+        ebm::TypeKind::ARRAY,
+        ebm::TypeKind::ENCODER_INPUT,
+        ebm::TypeKind::DECODER_INPUT,
+    };
     return pass;
 }

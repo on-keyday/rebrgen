@@ -33,10 +33,16 @@ namespace ebmcodegen::util {
         }
     }
 
+    template <class T>
+    concept has_to_writer = requires(T t) {
+        { t.to_writer() };
+    };
+
     template <class CodeWriter>
     auto code_write(auto&&... args) {
         static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
         static_assert(!(... || std::is_integral_v<std::decay_t<decltype(args)>>), "Integral types are not supported in code_write. Please convert them to string");
+        static_assert(!(... || has_to_writer<decltype(args)>), "Result type is not supported in code_write. Please convert using to_writer()");
         CodeWriter w;
         w.write(std::forward<decltype(args)>(args)...);
         return w;

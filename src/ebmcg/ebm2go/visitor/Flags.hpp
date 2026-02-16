@@ -26,6 +26,10 @@
 
 FILE_EXTENSIONS(".go");
 WEB_UI_NAME("go3");
-DEFINE_BOOL_FLAG(use_bytes_slice, false, "use-slice-io", "Use bytes slice instead of io.Reader/io.Writer for encoder/decoder input/output");
 DEFINE_STRING_FLAG(package_name, "", "package", "Package name for generated Go code", "NAME");
+BEGIN_MAP_FLAG(io_mode, IOMode, io_both, "io-mode", "IO Generation Mode (bytes slice based or std io based)")
+MAP_FLAG_ITEM("all", io_both)
+MAP_FLAG_ITEM("slice", io_slice)
+MAP_FLAG_ITEM("std", io_std)
+END_MAP_FLAG()
 CONFIG_MAP("config.go.package", package_name);

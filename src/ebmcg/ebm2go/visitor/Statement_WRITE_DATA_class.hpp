@@ -143,7 +143,6 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
             }
             w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), ")");
             w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
-            return w;
         }
         else if (cand == BytesType::array) {
             auto array_anno = ctx.get_field<"array_annotation">(wctx.write_data.data_type);
@@ -154,12 +153,18 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
             else {
                 ctx.config().imports.insert("errors");
                 w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-                w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
-                w.writeln("}");
+                {
+                    auto scope = w.indent_scope();
+                    w.writeln("if cap(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
+                    w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+                    w.writeln("}");
+                    w.writeln("*", io_, " = (*", io_, ")[:", offset_val, " + ", size_str, "]");
+                }
                 w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), "[:])");
                 w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
             }
         }
+        w.writeln("*", offset_var(io_), " += int(", offset_val, " + ", size_str, ")");
         return w;
     }
     if (auto lw = wctx.write_data.lowered_statement()) {

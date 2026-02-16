@@ -75,14 +75,25 @@ DEFINE_VISITOR(Statement_READ_DATA) {
             }
             else if (cand == BytesType::vector) {
                 // allocate slice then read
-                w.writeln(target.to_writer(), " = make([]byte, int(", size_str, "))");
-                w.writeln("if _, err := io.ReadFull(", io_, ", ", target.to_writer(), "); err != nil {");
+                // TODO: size_str is untrusted so we need to use safe way that incrementally allocate buffer
+                ctx.config().imports.insert("bytes");
+                auto tempBuf = std::format("io_temp_{}", get_id(ctx.item_id));
+                w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
+                w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
+                w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
                 w.indent_writeln("return err");
                 w.writeln("}");
+                w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
             }
             else if (cand == BytesType::array) {
                 // In io.Reader mode, all arrays are fixed-size: read directly into them
                 w.writeln("if _, err := io.ReadFull(", io_, ", ", target.to_writer(), "[:]); err != nil {");
+                if (ctx.config().on_until_eof_loop) {
+                    auto scope = w.indent_scope();
+                    w.writeln("if err == io.EOF {");
+                    w.indent_writeln("break");
+                    w.writeln("}");
+                }
                 w.indent_writeln("return err");
                 w.writeln("}");
             }
@@ -126,15 +137,25 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                         w.writeln("}");
                     }
                     w.writeln("*", io_, " = (*", io_, ")[", size_str, ":]");
+                    w.writeln("*", offset_var(io_), " += int(", size_str, ")");
                     return w;
                 }
                 w.writeln("copy(", target.to_writer(), "[:], (*", io_, ")[:", offset_val, " + ", size_str, "])");
             }
             w.writeln("*", io_, " = (*", io_, ")[", size_str, ":]");
+            w.writeln("*", offset_var(io_), " += int(", offset_val, " + ", size_str, ")");
         }
         return w;
     }
     if (auto lw = rctx.read_data.lowered_statement()) {
+        if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
+            // this is special case for until eof
+            ctx.config().on_until_eof_loop = true;
+            const auto _defer = futils::helper::defer([&] {
+                ctx.config().on_until_eof_loop = false;
+            });
+            return rctx.visit(lw->io_statement.id);
+        }
         return rctx.visit(lw->io_statement.id);
     }
     return "/* not implemented read data */";

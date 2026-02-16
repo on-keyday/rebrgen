@@ -17,3 +17,7 @@ std::unordered_map<std::uint64_t, ArrayLengthInfo> array_length_setters;
 std::unordered_set<std::uint64_t> array_length_set_done;
 bool inner_prop_setter = false;
 bool use_io_reader_writer = true;
+std::string encode_fn_name;
+std::string decode_fn_name;
+
+bool on_until_eof_loop = false;

@@ -149,6 +149,58 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(EndianConvertDesc& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("endian")) {
+            Endian tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.endian(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("target")) {
+            if(!futils::json::convert_from_json(*got, obj.target)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("source")) {
+            if(!futils::json::convert_from_json(*got, obj.source)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("lowered_statement")) {
+            if(!futils::json::convert_from_json(*got, obj.lowered_statement)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(EndianVariable& obj, const futils::json::JSON& j) {
         if (auto got = j.at("endian")) {
             Endian tmp;
@@ -2077,6 +2129,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.continue_(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("endian_convert")) {
+            EndianConvertDesc tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.endian_convert(std::move(tmp))) {
                 return false;
             }
         }
@@ -4089,6 +4150,14 @@ namespace ebm {
             }
             if (s == "ENDIAN_VARIABLE") {
                 obj = StatementKind::ENDIAN_VARIABLE;
+                return true;
+            }
+            if (s == "ARRAY_TO_INT") {
+                obj = StatementKind::ARRAY_TO_INT;
+                return true;
+            }
+            if (s == "INT_TO_ARRAY") {
+                obj = StatementKind::INT_TO_ARRAY;
                 return true;
             }
             return false;

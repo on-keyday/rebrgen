@@ -44,7 +44,6 @@ DEFINE_VISITOR(Expression_CALL_before) {
         MAYBE(base_type_name, ctx.identifier(base_type.id));
         MAYBE(base_str, ctx.visit(base));
         CodeWriter w;
-        std::string address = base_type.body.kind == ebm::TypeKind::RECURSIVE_STRUCT ? "" : "&";
         w.write(base_str.to_writer(), ".", ident, "(");
         bool first = true;
         for (const auto& arg_ref : ctx.call_desc.arguments.container) {

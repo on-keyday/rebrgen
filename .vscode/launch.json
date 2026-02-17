@@ -191,16 +191,16 @@
       ]
     },
     {
-      "type": "cppvsdbg",
+      "type": "debugpy",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-3d26ba2d1c\\r-0e515b6525\\t-fc4017e12f",
-      "name": "Debug ebm2c unictest (TestPacket)",
-      "program": "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-3d26ba2d1c/r-0e515b6525/t-fc4017e12f/c_proj/build/test_runner.exe",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-2da09739f7\\r-7a42cd3ee2\\t-b8835f8bd0",
+      "name": "Debug ebm2python unictest (Frame)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-2da09739f7\\r-7a42cd3ee2\\t-b8835f8bd0\\test_script.py",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-3d26ba2d1c/r-0e515b6525/t-fc4017e12f/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-3d26ba2d1c/r-0e515b6525/t-fc4017e12f/output.bin"
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-2da09739f7/r-7a42cd3ee2/t-b8835f8bd0/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-2da09739f7/r-7a42cd3ee2/t-b8835f8bd0/output.bin"
       ],
-      "stopAtEntry": true
+      "stopOnEntry": true
     }
   ]
 }

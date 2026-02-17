@@ -8,6 +8,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+#include "ebm/extended_binary_module.hpp"
 std::set<std::string_view> imports;
 std::unordered_set<std::uint64_t> bulk_primitive;
 std::unordered_set<std::uint64_t> any_variant;
@@ -17,9 +18,13 @@ std::unordered_map<std::uint64_t, ArrayLengthInfo> array_length_setters;
 std::unordered_set<std::uint64_t> array_length_set_done;
 bool inner_prop_setter = false;
 bool use_io_reader_writer = true;
+bool append_io = false;
+ebm::StatementRef current_io;
 std::string encode_fn_name;
 std::string decode_fn_name;
 
 bool on_until_eof_loop = false;
 
 std::vector<bool> no_heap_mode;
+
+IOMode io_mode;

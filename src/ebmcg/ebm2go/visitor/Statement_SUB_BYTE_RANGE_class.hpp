@@ -84,6 +84,9 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
             w.writeln("*", parent_io_, " = (*", parent_io_, ")[int(", length_str.to_writer(), "):]");
             w.writeln("*", offset_var(parent_io_), "+= int(", length_str.to_writer(), ")");
         }
+        else if (ctx.config().append_io) {
+            w.writeln(io_, " = ", parent_io_);
+        }
         else {
             // Encode: allocate buffer from parent io
             w.writeln("if len(*", parent_io_, ") < int(", length_str.to_writer(), ") {");
@@ -103,14 +106,22 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
         w.write(do_io.to_writer());
 
         if (ctx.sub_byte_range.stream_type == ebm::StreamType::OUTPUT) {
-            // After encoding: verify length and copy to parent
-            ctx.config().imports.insert("fmt");
-            ctx.config().imports.insert("errors");
-            w.writeln("if len(*", io_, ") != 0 {");
-            w.indent_writeln("return fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), "), len(*", io_, "))");
-            w.writeln("}");
-            w.writeln("*", parent_io_, " = (*", parent_io_, ")[int(", length_str.to_writer(), "):]");
-            w.writeln("*", offset_var(parent_io_), "+= int(", length_str.to_writer(), ")");
+            if (ctx.config().append_io) {
+                w.writeln("if len(", io_, ") - len(", parent_io_, ") != int(", length_str.to_writer(), ") {");
+                ctx.config().imports.insert("fmt");
+                w.indent_writeln("return nil, fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), ") , len(", io_, ") - len(", parent_io_, "))");
+                w.writeln("}");
+                w.writeln(parent_io_, " = ", io_);
+            }
+            else {
+                // After encoding: verify length and copy to parent
+                ctx.config().imports.insert("fmt");
+                w.writeln("if len(*", io_, ") != 0 {");
+                w.indent_writeln("return fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), "), len(*", io_, "))");
+                w.writeln("}");
+                w.writeln("*", parent_io_, " = (*", parent_io_, ")[int(", length_str.to_writer(), "):]");
+                w.writeln("*", offset_var(parent_io_), "+= int(", length_str.to_writer(), ")");
+            }
         }
     }
     else if (ctx.sub_byte_range.range_type == ebm::SubByteRangeType::seek_bytes) {

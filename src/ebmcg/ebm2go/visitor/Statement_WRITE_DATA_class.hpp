@@ -75,6 +75,7 @@ namespace CODEGEN_NAMESPACE {
 DEFINE_VISITOR(Statement_WRITE_DATA) {
     using namespace CODEGEN_NAMESPACE;
     auto& wctx = ctx;
+    ctx.config().current_io = wctx.write_data.io_ref;
     if (auto low = wctx.write_data.lowered_statement()) {
         if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
             return wctx.visit(low->io_statement.id);
@@ -122,49 +123,70 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
             }
             return w;
         }
+        auto range = [&](auto&& start, auto&& size) {
+            return CODE(io_, "[", start, ":", offset_ref(io_), "+ int(", size, ")]");
+        };
+        auto force_reslice = [&] {
+            w.writeln("// force reslice");
+            w.writeln(io_, " = ", range("0", size_str));
+        };
         if (cand == BytesType::vector) {
             ctx.config().imports.insert("errors");
-            w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-            {
-                auto scope = w.indent_scope();
-                w.writeln("if cap(*", io_, ") < int(", size_str, ") {");
-                w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+            if (!ctx.config().append_io) {
+                w.writeln("if len(", io_, ") - ", offset_ref(io_), " < int(", offset_val, " + ", size_str, ") {");
+                {
+                    auto scope = w.indent_scope();
+                    w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+                }
                 w.writeln("}");
-                w.writeln("*", io_, " = (*", io_, ")[:", size_str, "]");
             }
-            w.writeln("}");
             auto ref = wctx.write_data.size.ref();
             if (ref && !ctx.is(ebm::ExpressionKind::ARRAY_SIZE, *ref)) {
                 // check length consistency
                 w.writeln("if len(", target.to_writer(), ") != int(", size_str, ") {");
                 ctx.config().imports.insert("fmt");
-                w.indent_writeln("return fmt.Errorf(\"size mismatch when writing field ", layer_str, ": expected %d, got %d\", int(", size_str, "), len(", target.to_writer(), "))");
+                std::string nil;
+                if (ctx.config().append_io) {
+                    nil = "nil,";
+                }
+                w.indent_writeln("return ", nil, "fmt.Errorf(\"size mismatch when writing field ", layer_str, ": expected %d, got %d\", int(", size_str, "), len(", target.to_writer(), "))");
                 w.writeln("}");
             }
-            w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), ")");
-            w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+            if (ctx.config().append_io) {
+                w.writeln(io_, " = append(", io_, ",", target.to_writer(), "...)");
+            }
+            else {
+                w.writeln("copy(", range(offset_ref(io_), size_str), ", ", target.to_writer(), ")");
+            }
         }
         else if (cand == BytesType::array) {
             auto array_anno = ctx.get_field<"array_annotation">(wctx.write_data.data_type);
             if (array_anno && *array_anno != ebm::ArrayAnnotation::none) {
-                // only shift
-                w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+                // if (!ctx.config().append_io) {
+                //  only shift
+                //  w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+                //}
+                // nothing to do
             }
             else {
-                ctx.config().imports.insert("errors");
-                w.writeln("if len(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("if cap(*", io_, ") < int(", offset_val, " + ", size_str, ") {");
-                    w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
-                    w.writeln("}");
-                    w.writeln("*", io_, " = (*", io_, ")[:", offset_val, " + ", size_str, "]");
+                if (ctx.config().append_io) {
+                    w.writeln(io_, " = append(", io_, ",", target.to_writer(), "[:]...)");
                 }
-                w.writeln("copy((*", io_, ")[", offset_val, ":", offset_val, " + ", size_str, "], ", target.to_writer(), "[:])");
-                w.writeln("*", io_, " = (*", io_, ")[", offset_val, " + ", size_str, ":]");
+                else {
+                    ctx.config().imports.insert("errors");
+                    w.writeln("if len(", io_, ") - ", offset_ref(io_), " < int(", size_str, ") {");
+                    {
+                        auto scope = w.indent_scope();
+                        w.indent_writeln("return errors.New(\"not enough space to write for field ", layer_str, "\")");
+                    }
+                    w.writeln("}");
+                    w.writeln("copy(", range(offset_ref(io_), size_str), ",", target.to_writer(), "[:])");
+                }
             }
         }
-        w.writeln("*", offset_var(io_), " += int(", offset_val, " + ", size_str, ")");
+        if (!ctx.config().append_io) {
+            w.writeln(offset_ref(io_), " += int(", size_str, ")");
+        }
         return w;
     }
     if (auto lw = wctx.write_data.lowered_statement()) {

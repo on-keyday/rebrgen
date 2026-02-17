@@ -398,6 +398,11 @@ namespace ebmgen {
 
     ebm::Condition make_condition(ebm::ExpressionRef cond);
 
+    ebm::StatementBody make_endian_convert(ebm::StatementKind kind, ebm::Endian endian, ebm::ExpressionRef src, ebm::ExpressionRef target, ebm::StatementRef lowered);
+
+#define EBM_ENDIAN_CONVERT(ref_name, kind, endian, src, target, lowered) \
+    EBM_AST_STATEMENT(ref_name, make_endian_convert, kind, endian, src, target, lowered)
+
 #define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref, field_ref, annot)                       \
     EBMU_U8_N_ARRAY(u8_n_array, n, annot);                                                     \
     EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                                                \

@@ -14,6 +14,7 @@ namespace ebmcodegen {
             body.break_({});
             body.composite_field_decl({});
             body.continue_({});
+            body.endian_convert({});
             body.endian_variable({});
             body.enum_decl({});
             body.enum_member_decl({});

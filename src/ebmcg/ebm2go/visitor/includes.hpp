@@ -9,6 +9,7 @@
 
 /*here to write the hook*/
 #include "ebm/extended_binary_module.hpp"
+#include <format>
 namespace ebm2go {
     const ebm::FieldDecl* get_composite_field(auto&& ctx, auto target) {
         ebmgen::MappingTable& mapping = get_visitor(ctx).module_;
@@ -37,14 +38,14 @@ namespace ebm2go {
     struct IOMode {
         bool slice_io = false;
         bool std_io = false;
+        bool bytes_io = false;
     };
-
-    constexpr auto io_both = IOMode{true, true};
-    constexpr auto io_slice = IOMode{true, false};
-    constexpr auto io_std = IOMode{false, true};
 
     inline std::string offset_var(std::string x) {
         return x + "Offset";
+    }
+    inline std::string offset_ref(std::string x) {
+        return std::format("*{}Offset", x);
     }
 
 }  // namespace ebm2go

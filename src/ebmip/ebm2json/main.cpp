@@ -2895,6 +2895,150 @@ static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_S
 template <>
 struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
 #endif
+#if __has_include("visitor/Statement_ARRAY_TO_INT_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT
+#include "visitor/Statement_ARRAY_TO_INT_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 0
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_ARRAY_TO_INT_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT_before<Result>
+#include "visitor/Statement_ARRAY_TO_INT_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 0
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_ARRAY_TO_INT_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT_after<Result>
+#include "visitor/Statement_ARRAY_TO_INT_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 0
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_INT_TO_ARRAY_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY
+#include "visitor/Statement_INT_TO_ARRAY_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 0
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_INT_TO_ARRAY_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY_before<Result>
+#include "visitor/Statement_INT_TO_ARRAY_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 0
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_INT_TO_ARRAY_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY_after<Result>
+#include "visitor/Statement_INT_TO_ARRAY_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 0
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
+#endif
 #if __has_include("visitor/Statement_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserHook<ebm2json::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
@@ -11294,6 +11438,192 @@ static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::Visit
 #else
 template <>
 struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_ARRAY_TO_INT.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/Statement_ARRAY_TO_INT.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 1
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_ARRAY_TO_INT_before.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT_before for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/Statement_ARRAY_TO_INT_before.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 1
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_ARRAY_TO_INT_after.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT_after for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/Statement_ARRAY_TO_INT_after.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 1
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_INT_TO_ARRAY.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/Statement_INT_TO_ARRAY.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 1
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_INT_TO_ARRAY_before.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY_before for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/Statement_INT_TO_ARRAY_before.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 1
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_INT_TO_ARRAY_after.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY_after for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/Statement_INT_TO_ARRAY_after.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 1
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/Statement_dispatch.hpp")
 // Inlined hook for Statement for backward compatibility
@@ -20220,6 +20550,150 @@ static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTa
 template <>
 struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
 #endif
+#if __has_include("visitor/dsl/Statement_ARRAY_TO_INT_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT
+#include "visitor/dsl/Statement_ARRAY_TO_INT_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 2
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_ARRAY_TO_INT_before_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT_before<Result>
+#include "visitor/dsl/Statement_ARRAY_TO_INT_before_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 2
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_ARRAY_TO_INT_after_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT_after<Result>
+#include "visitor/dsl/Statement_ARRAY_TO_INT_after_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 2
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_INT_TO_ARRAY_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY
+#include "visitor/dsl/Statement_INT_TO_ARRAY_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 2
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_INT_TO_ARRAY_before_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY_before<Result>
+#include "visitor/dsl/Statement_INT_TO_ARRAY_before_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 2
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_INT_TO_ARRAY_after_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY_after<Result>
+#include "visitor/dsl/Statement_INT_TO_ARRAY_after_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 2
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
+#endif
 #if __has_include("visitor/dsl/Statement_dispatch_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::UserDSLHook<ebm2json::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
@@ -28619,6 +29093,192 @@ static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::Vi
 #else
 template <>
 struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_ARRAY_TO_INT_dsl.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/dsl/Statement_ARRAY_TO_INT_dsl.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 3
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_ARRAY_TO_INT_before_dsl.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT_before for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/dsl/Statement_ARRAY_TO_INT_before_dsl.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 3
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_ARRAY_TO_INT_after_dsl.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT_after for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/dsl/Statement_ARRAY_TO_INT_after_dsl.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 3
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_INT_TO_ARRAY_dsl.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/dsl/Statement_INT_TO_ARRAY_dsl.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 3
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_INT_TO_ARRAY_before_dsl.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY_before for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/dsl/Statement_INT_TO_ARRAY_before_dsl.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 3
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_INT_TO_ARRAY_after_dsl.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY_after for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "visitor/dsl/Statement_INT_TO_ARRAY_after_dsl.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 3
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::UserInlinedDSLHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/dsl/Statement_dispatch_dsl.hpp")
 // Inlined hook for Statement for backward compatibility
@@ -37545,6 +38205,150 @@ static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2j
 template <>
 struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
 #endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT
+#include "ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 4
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT_before<Result>
+#include "ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 4
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_ARRAY_TO_INT_after<Result>
+#include "ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_ARRAY_TO_INT_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 4
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY
+#include "ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 4
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY_before<Result>
+#include "ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 4
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_INT_TO_ARRAY_after<Result>
+#include "ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_INT_TO_ARRAY_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 4
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
+#endif
 #if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2json::Visitor<ebm2json::DefaultCodegenVisitorHook<ebm2json::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
@@ -45944,6 +46748,192 @@ static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHoo
 #else
 template <>
 struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ENDIAN_VARIABLE_after>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 5
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_before.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT_before for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_before.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 5
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_before>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_after.hpp")
+// Inlined hook for Statement_ARRAY_TO_INT_after for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "ebmcodegen/default_interpret_visitor/visitor/Statement_ARRAY_TO_INT_after.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 5
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_ARRAY_TO_INT_after>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 5
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_before.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY_before for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_before.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 5
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_before>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_after.hpp")
+// Inlined hook for Statement_INT_TO_ARRAY_after for backward compatibility
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {
+    // for backward compatibility
+    ebm2json::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
+        EBM2JSON_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& module_ = ctx.visitor.module_;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2json;
+        #include "ebmcodegen/default_interpret_visitor/visitor/Statement_INT_TO_ARRAY_after.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 5
+#endif
+#else
+template <>
+struct ebm2json::Visitor<ebm2json::DefaultCodegenVisitorInlinedHook<ebm2json::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
 #if __has_include("ebmcodegen/default_interpret_visitor/visitor/Statement_dispatch.hpp")
 // Inlined hook for Statement for backward compatibility
@@ -54728,6 +55718,142 @@ namespace ebm2json {
         return {};
     }
     template<typename Result,typename Context>
+    expected<Result> dispatch_Statement_ARRAY_TO_INT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
+        auto& kind = in.body.kind;
+        if (!in.body.endian_convert()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::endian_convert");
+        }
+        auto& endian_convert = *in.body.endian_convert();
+        auto main_logic = [&]() -> expected<Result>{
+            Context_Statement_ARRAY_TO_INT new_ctx{
+                .visitor = get_visitor_arg_from_context(ctx),
+                .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+                .kind = kind,
+                .endian_convert = endian_convert,
+            };
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
+        };
+        Context_Statement_ARRAY_TO_INT_before<Result> before_ctx{
+            .visitor = get_visitor_arg_from_context(ctx),
+            .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+            .kind = kind,
+            .endian_convert = endian_convert,
+            .main_logic = main_logic,
+        };
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
+        if (!before_result) {
+            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
+                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
+            }
+        }
+        else { // if hijacked
+            return before_result;
+        }
+        expected<Result> main_result = main_logic();
+        Context_Statement_ARRAY_TO_INT_after<Result> after_ctx{
+            .visitor = get_visitor_arg_from_context(ctx),
+            .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+            .kind = kind,
+            .endian_convert = endian_convert,
+            .main_logic = main_logic,
+            .result = main_result,
+        };
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
+        if (!after_result) {
+            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
+                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
+            }
+        }
+        else { // if hijacked
+            return after_result;
+        }
+        return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ARRAY_TO_INT(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.endian_convert.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.endian_convert.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.endian_convert.source)) {
+            auto result_source = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.endian_convert.source);
+            if (!result_source) {
+                return unexpect_error(std::move(result_source.error()));
+            }
+        }
+        return {};
+    }
+    template<typename Result,typename Context>
+    expected<Result> dispatch_Statement_INT_TO_ARRAY(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
+        auto& kind = in.body.kind;
+        if (!in.body.endian_convert()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::endian_convert");
+        }
+        auto& endian_convert = *in.body.endian_convert();
+        auto main_logic = [&]() -> expected<Result>{
+            Context_Statement_INT_TO_ARRAY new_ctx{
+                .visitor = get_visitor_arg_from_context(ctx),
+                .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+                .kind = kind,
+                .endian_convert = endian_convert,
+            };
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
+        };
+        Context_Statement_INT_TO_ARRAY_before<Result> before_ctx{
+            .visitor = get_visitor_arg_from_context(ctx),
+            .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+            .kind = kind,
+            .endian_convert = endian_convert,
+            .main_logic = main_logic,
+        };
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
+        if (!before_result) {
+            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
+                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
+            }
+        }
+        else { // if hijacked
+            return before_result;
+        }
+        expected<Result> main_result = main_logic();
+        Context_Statement_INT_TO_ARRAY_after<Result> after_ctx{
+            .visitor = get_visitor_arg_from_context(ctx),
+            .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+            .kind = kind,
+            .endian_convert = endian_convert,
+            .main_logic = main_logic,
+            .result = main_result,
+        };
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
+        if (!after_result) {
+            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
+                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
+            }
+        }
+        else { // if hijacked
+            return after_result;
+        }
+        return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_INT_TO_ARRAY(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.endian_convert.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.endian_convert.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.endian_convert.source)) {
+            auto result_source = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.endian_convert.source);
+            if (!result_source) {
+                return unexpect_error(std::move(result_source.error()));
+            }
+        }
+        return {};
+    }
+    template<typename Result,typename Context>
     expected<Result> dispatch_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto main_logic = [&]() -> expected<Result>{
             Context_Statement new_ctx{
@@ -59207,6 +60333,12 @@ namespace ebm2json {
         else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ENDIAN_VARIABLE> || std::is_same_v<TypeContextType,Context_Statement_ENDIAN_VARIABLE_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ENDIAN_VARIABLE_after<Result>>) {
             return traverse_children_Statement_ENDIAN_VARIABLE<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
         }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_ARRAY_TO_INT> || std::is_same_v<TypeContextType,Context_Statement_ARRAY_TO_INT_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_ARRAY_TO_INT_after<Result>>) {
+            return traverse_children_Statement_ARRAY_TO_INT<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_INT_TO_ARRAY> || std::is_same_v<TypeContextType,Context_Statement_INT_TO_ARRAY_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_INT_TO_ARRAY_after<Result>>) {
+            return traverse_children_Statement_INT_TO_ARRAY<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
         else if constexpr (std::is_same_v<TypeContextType,Context_Statement> || std::is_same_v<TypeContextType,Context_Statement_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_after<Result>>) {
             return traverse_children_Statement<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
         }
@@ -60605,6 +61737,66 @@ namespace ebm2json {
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENDIAN_VARIABLE_AFTER)
     #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENDIAN_VARIABLE_AFTER 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ARRAY_TO_INT",get_id(ctx.item_id));
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT_before>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return pass;
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT_after>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return pass;
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_INT_TO_ARRAY",get_id(ctx.item_id));
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY_before>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return pass;
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY_after>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return pass;
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 6
     #endif
     template <>
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement>> {
@@ -66515,6 +67707,204 @@ namespace ebm2json {
             }
             else {
                 static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENDIAN_VARIABLE_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENDIAN_VARIABLE_AFTER < 7, "No suitable visitor hook found for Statement_ENDIAN_VARIABLE_after");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT>> visitor_Statement_ARRAY_TO_INT_GeneratorDefaultHook;
+        auto& get_visitor_Statement_ARRAY_TO_INT(const Context_Statement_ARRAY_TO_INT&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 0) {
+                return visitor_Statement_ARRAY_TO_INT_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 1) {
+                return visitor_Statement_ARRAY_TO_INT_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 2) {
+                return visitor_Statement_ARRAY_TO_INT_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 3) {
+                return visitor_Statement_ARRAY_TO_INT_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 4) {
+                return visitor_Statement_ARRAY_TO_INT_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 5) {
+                return visitor_Statement_ARRAY_TO_INT_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT == 6) {
+                return visitor_Statement_ARRAY_TO_INT_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT < 7, "No suitable visitor hook found for Statement_ARRAY_TO_INT");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT_before>> visitor_Statement_ARRAY_TO_INT_before_GeneratorDefaultHook;
+        auto& get_visitor_Statement_ARRAY_TO_INT_before(const Context_Statement_ARRAY_TO_INT_before<Result>&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 0) {
+                return visitor_Statement_ARRAY_TO_INT_before_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 1) {
+                return visitor_Statement_ARRAY_TO_INT_before_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 2) {
+                return visitor_Statement_ARRAY_TO_INT_before_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 3) {
+                return visitor_Statement_ARRAY_TO_INT_before_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 4) {
+                return visitor_Statement_ARRAY_TO_INT_before_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 5) {
+                return visitor_Statement_ARRAY_TO_INT_before_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE == 6) {
+                return visitor_Statement_ARRAY_TO_INT_before_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_BEFORE < 7, "No suitable visitor hook found for Statement_ARRAY_TO_INT_before");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT_after>> visitor_Statement_ARRAY_TO_INT_after_GeneratorDefaultHook;
+        auto& get_visitor_Statement_ARRAY_TO_INT_after(const Context_Statement_ARRAY_TO_INT_after<Result>&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 0) {
+                return visitor_Statement_ARRAY_TO_INT_after_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 1) {
+                return visitor_Statement_ARRAY_TO_INT_after_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 2) {
+                return visitor_Statement_ARRAY_TO_INT_after_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 3) {
+                return visitor_Statement_ARRAY_TO_INT_after_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 4) {
+                return visitor_Statement_ARRAY_TO_INT_after_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 5) {
+                return visitor_Statement_ARRAY_TO_INT_after_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER == 6) {
+                return visitor_Statement_ARRAY_TO_INT_after_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT_AFTER < 7, "No suitable visitor hook found for Statement_ARRAY_TO_INT_after");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY>> visitor_Statement_INT_TO_ARRAY_GeneratorDefaultHook;
+        auto& get_visitor_Statement_INT_TO_ARRAY(const Context_Statement_INT_TO_ARRAY&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 0) {
+                return visitor_Statement_INT_TO_ARRAY_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 1) {
+                return visitor_Statement_INT_TO_ARRAY_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 2) {
+                return visitor_Statement_INT_TO_ARRAY_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 3) {
+                return visitor_Statement_INT_TO_ARRAY_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 4) {
+                return visitor_Statement_INT_TO_ARRAY_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 5) {
+                return visitor_Statement_INT_TO_ARRAY_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY == 6) {
+                return visitor_Statement_INT_TO_ARRAY_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY < 7, "No suitable visitor hook found for Statement_INT_TO_ARRAY");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY_before>> visitor_Statement_INT_TO_ARRAY_before_GeneratorDefaultHook;
+        auto& get_visitor_Statement_INT_TO_ARRAY_before(const Context_Statement_INT_TO_ARRAY_before<Result>&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 0) {
+                return visitor_Statement_INT_TO_ARRAY_before_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 1) {
+                return visitor_Statement_INT_TO_ARRAY_before_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 2) {
+                return visitor_Statement_INT_TO_ARRAY_before_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 3) {
+                return visitor_Statement_INT_TO_ARRAY_before_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 4) {
+                return visitor_Statement_INT_TO_ARRAY_before_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 5) {
+                return visitor_Statement_INT_TO_ARRAY_before_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE == 6) {
+                return visitor_Statement_INT_TO_ARRAY_before_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_BEFORE < 7, "No suitable visitor hook found for Statement_INT_TO_ARRAY_before");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY_after>> visitor_Statement_INT_TO_ARRAY_after_GeneratorDefaultHook;
+        auto& get_visitor_Statement_INT_TO_ARRAY_after(const Context_Statement_INT_TO_ARRAY_after<Result>&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 0) {
+                return visitor_Statement_INT_TO_ARRAY_after_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 1) {
+                return visitor_Statement_INT_TO_ARRAY_after_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 2) {
+                return visitor_Statement_INT_TO_ARRAY_after_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 3) {
+                return visitor_Statement_INT_TO_ARRAY_after_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 4) {
+                return visitor_Statement_INT_TO_ARRAY_after_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 5) {
+                return visitor_Statement_INT_TO_ARRAY_after_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER == 6) {
+                return visitor_Statement_INT_TO_ARRAY_after_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER < 7, "No suitable visitor hook found for Statement_INT_TO_ARRAY_after");
             }
         }
         Visitor<UserHook<VisitorTag_Statement>> visitor_Statement_UserHook;
@@ -73435,6 +74825,30 @@ namespace ebm2json {
         }
         expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_after<Result>& ctx) {
             auto visitor = impl.get_visitor_Statement_ENDIAN_VARIABLE_after(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
+            auto visitor = impl.get_visitor_Statement_ARRAY_TO_INT(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
+            auto visitor = impl.get_visitor_Statement_ARRAY_TO_INT_before(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
+            auto visitor = impl.get_visitor_Statement_ARRAY_TO_INT_after(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
+            auto visitor = impl.get_visitor_Statement_INT_TO_ARRAY(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
+            auto visitor = impl.get_visitor_Statement_INT_TO_ARRAY_before(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
+            auto visitor = impl.get_visitor_Statement_INT_TO_ARRAY_after(ctx);
             return visitor.visit(ctx);
         }
         expected<Result> visit(Context_Statement& ctx) {

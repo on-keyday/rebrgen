@@ -454,6 +454,14 @@ namespace ebm2all {
     template<typename Result = Result, typename UserContext,typename TypeContext>
     expected<Result> traverse_children_Statement_ENDIAN_VARIABLE(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
+    expected<Result> dispatch_Statement_ARRAY_TO_INT(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_ARRAY_TO_INT(UserContext&& ctx,TypeContext&& type_ctx);
+    template<typename Result = Result,typename Context>
+    expected<Result> dispatch_Statement_INT_TO_ARRAY(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
+    template<typename Result = Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_INT_TO_ARRAY(UserContext&& ctx,TypeContext&& type_ctx);
+    template<typename Result = Result,typename Context>
     expected<Result> dispatch_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
     template<typename Result = Result, typename Context>
     expected<Result> dispatch_Statement_default(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {}) {
@@ -568,6 +576,12 @@ namespace ebm2all {
             }
             case ebm::StatementKind::ENDIAN_VARIABLE: {
                 return dispatch_Statement_ENDIAN_VARIABLE<Result>(std::forward<Context>(ctx),in,alias_ref);
+            }
+            case ebm::StatementKind::ARRAY_TO_INT: {
+                return dispatch_Statement_ARRAY_TO_INT<Result>(std::forward<Context>(ctx),in,alias_ref);
+            }
+            case ebm::StatementKind::INT_TO_ARRAY: {
+                return dispatch_Statement_INT_TO_ARRAY<Result>(std::forward<Context>(ctx),in,alias_ref);
             }
             default: {
                 return unexpect_error("Unknown Statement kind: {}", to_string(in.body.kind));
@@ -1283,6 +1297,8 @@ namespace ebm2all {
     struct Context_Statement_SUB_BYTE_RANGE;
     struct Context_Statement_INIT_CHECK;
     struct Context_Statement_ENDIAN_VARIABLE;
+    struct Context_Statement_ARRAY_TO_INT;
+    struct Context_Statement_INT_TO_ARRAY;
     struct Context_Statement;
     struct Context_Block;
     struct Context_Expression_LITERAL_INT;
@@ -2903,6 +2919,82 @@ namespace ebm2all {
     // Deconstruct context fields
     #define EBM2ALL_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    struct Context_Statement_ARRAY_TO_INT : ebmcodegen::util::ContextBase<Context_Statement_ARRAY_TO_INT> {
+        constexpr static std::string_view context_name = "Statement_ARRAY_TO_INT";
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::EndianConvertDesc& endian_convert;
+    };
+    struct VisitorTag_Statement_ARRAY_TO_INT {};
+    // Deconstruct context fields
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_convert = instance_name.endian_convert;
+    template <typename Result>
+    struct Context_Statement_ARRAY_TO_INT_before : ebmcodegen::util::ContextBase<Context_Statement_ARRAY_TO_INT_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_ARRAY_TO_INT_before";
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::EndianConvertDesc& endian_convert;
+        ebmcodegen::util::MainLogicWrapper<Result> main_logic;
+    };
+    struct VisitorTag_Statement_ARRAY_TO_INT_before {};
+    // Deconstruct context fields
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_convert = instance_name.endian_convert;auto& main_logic = instance_name.main_logic;
+    template <typename Result>
+    struct Context_Statement_ARRAY_TO_INT_after : ebmcodegen::util::ContextBase<Context_Statement_ARRAY_TO_INT_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_ARRAY_TO_INT_after";
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::EndianConvertDesc& endian_convert;
+        ebmcodegen::util::MainLogicWrapper<Result> main_logic;
+        expected<Result>& result;
+    };
+    struct VisitorTag_Statement_ARRAY_TO_INT_after {};
+    // Deconstruct context fields
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_convert = instance_name.endian_convert;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
+    struct Context_Statement_INT_TO_ARRAY : ebmcodegen::util::ContextBase<Context_Statement_INT_TO_ARRAY> {
+        constexpr static std::string_view context_name = "Statement_INT_TO_ARRAY";
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::EndianConvertDesc& endian_convert;
+    };
+    struct VisitorTag_Statement_INT_TO_ARRAY {};
+    // Deconstruct context fields
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_convert = instance_name.endian_convert;
+    template <typename Result>
+    struct Context_Statement_INT_TO_ARRAY_before : ebmcodegen::util::ContextBase<Context_Statement_INT_TO_ARRAY_before<Result>> {
+        constexpr static std::string_view context_name = "Statement_INT_TO_ARRAY_before";
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::EndianConvertDesc& endian_convert;
+        ebmcodegen::util::MainLogicWrapper<Result> main_logic;
+    };
+    struct VisitorTag_Statement_INT_TO_ARRAY_before {};
+    // Deconstruct context fields
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_convert = instance_name.endian_convert;auto& main_logic = instance_name.main_logic;
+    template <typename Result>
+    struct Context_Statement_INT_TO_ARRAY_after : ebmcodegen::util::ContextBase<Context_Statement_INT_TO_ARRAY_after<Result>> {
+        constexpr static std::string_view context_name = "Statement_INT_TO_ARRAY_after";
+        BaseVisitor& visitor;
+        ebm::StatementRef item_id;
+        const ebm::StatementKind& kind;
+        const ebm::EndianConvertDesc& endian_convert;
+        ebmcodegen::util::MainLogicWrapper<Result> main_logic;
+        expected<Result>& result;
+    };
+    struct VisitorTag_Statement_INT_TO_ARRAY_after {};
+    // Deconstruct context fields
+    #define EBM2ALL_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(instance_name) \
+    auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_convert = instance_name.endian_convert;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement : ebmcodegen::util::ContextBase<Context_Statement> {
         constexpr static std::string_view context_name = "Statement";
         BaseVisitor& visitor;
@@ -5736,6 +5828,18 @@ namespace ebm2all {
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_before ebm2all::Context_Statement_ENDIAN_VARIABLE_before<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Statement_ENDIAN_VARIABLE_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ENDIAN_VARIABLE_after>>
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_ENDIAN_VARIABLE_after ebm2all::Context_Statement_ENDIAN_VARIABLE_after<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ARRAY_TO_INT ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ARRAY_TO_INT>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ARRAY_TO_INT ebm2all::Context_Statement_ARRAY_TO_INT
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ARRAY_TO_INT_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ARRAY_TO_INT_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ARRAY_TO_INT_before ebm2all::Context_Statement_ARRAY_TO_INT_before<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_ARRAY_TO_INT_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_ARRAY_TO_INT_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_ARRAY_TO_INT_after ebm2all::Context_Statement_ARRAY_TO_INT_after<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_INT_TO_ARRAY ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_INT_TO_ARRAY>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_INT_TO_ARRAY ebm2all::Context_Statement_INT_TO_ARRAY
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_INT_TO_ARRAY_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_INT_TO_ARRAY_before>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_INT_TO_ARRAY_before ebm2all::Context_Statement_INT_TO_ARRAY_before<Result>
+    #define EBM2ALL_CODEGEN_VISITOR_Statement_INT_TO_ARRAY_after ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_INT_TO_ARRAY_after>>
+    #define EBM2ALL_CODEGEN_CONTEXT_Statement_INT_TO_ARRAY_after ebm2all::Context_Statement_INT_TO_ARRAY_after<Result>
     #define EBM2ALL_CODEGEN_VISITOR_Statement_dispatch ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement>>
     #define EBM2ALL_CODEGEN_CONTEXT_Statement_dispatch ebm2all::Context_Statement
     #define EBM2ALL_CODEGEN_VISITOR_Statement_dispatch_before ebm2all::Visitor<ebm2all::UserHook<ebm2all::VisitorTag_Statement_before>>

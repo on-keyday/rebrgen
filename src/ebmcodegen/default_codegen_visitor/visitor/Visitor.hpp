@@ -112,6 +112,9 @@ std::function<expected<Result>(Context_Statement_INIT_CHECK& ctx)> init_check_vi
 std::function<expected<Result>(Context_Expression_DEFAULT_VALUE& ctx)> default_value_custom;
 std::function<expected<Result>(Context_Expression_CONDITIONAL& ctx)> conditional_visitor;
 
+std::function<expected<Result>(Context_Statement_INT_TO_ARRAY& ctx)> int_to_array_custom;
+std::function<expected<Result>(Context_Statement_ARRAY_TO_INT& ctx)> array_to_int_custom;
+
 template <class Kind>
 struct MemoizationConfig {
     bool enable = false;

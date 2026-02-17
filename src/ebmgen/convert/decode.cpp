@@ -57,7 +57,8 @@ namespace ebmgen {
                 }
                 EBM_CAST(cast_ref, cast_to, value_type, *prev);
                 EBM_ASSIGNMENT(assign, to, cast_ref);
-                return assign;
+                EBM_ENDIAN_CONVERT(conv, ebm::StatementKind::ARRAY_TO_INT, ebm::Endian::little, buffer, to, assign);
+                return conv;
             },
             [&] -> expected<ebm::StatementRef> {
                 std::optional<ebm::ExpressionRef> prev;
@@ -68,7 +69,8 @@ namespace ebmgen {
                 }
                 EBM_CAST(cast_ref, cast_to, value_type, *prev);
                 EBM_ASSIGNMENT(assign, to, cast_ref);
-                return assign;
+                EBM_ENDIAN_CONVERT(conv, ebm::StatementKind::ARRAY_TO_INT, ebm::Endian::big, buffer, to, assign);
+                return conv;
             });
         if (!do_it) {
             return unexpect_error(std::move(do_it.error()));

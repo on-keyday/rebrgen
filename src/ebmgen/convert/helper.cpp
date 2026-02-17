@@ -437,4 +437,16 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_endian_convert(ebm::StatementKind kind, ebm::Endian endian, ebm::ExpressionRef src, ebm::ExpressionRef target, ebm::StatementRef lowered) {
+        ebm::StatementBody body;
+        ebm::EndianConvertDesc desc;
+        desc.endian(endian);
+        desc.source = src;
+        desc.target = target;
+        desc.lowered_statement = ebm::LoweredStatementRef{lowered};
+        body.kind = kind;
+        body.endian_convert(std::move(desc));
+        return body;
+    }
+
 }  // namespace ebmgen

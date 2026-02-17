@@ -17,6 +17,8 @@ namespace ebm {
     
     bool from_json(DebugInfo& obj, const futils::json::JSON& j);
     
+    bool from_json(EndianConvertDesc& obj, const futils::json::JSON& j);
+    
     bool from_json(EndianVariable& obj, const futils::json::JSON& j);
     
     bool from_json(EnumDecl& obj, const futils::json::JSON& j);

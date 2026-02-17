@@ -38,6 +38,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebmcg/ebm2go/codegen.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
     auto& rctx = ctx;
@@ -90,38 +91,46 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                     w.write(std::move(direct_allocate));
                 }
                 else {
-                    ctx.config().imports.insert("bytes");
-                    auto tempBuf = std::format("io_temp_{}", get_id(ctx.item_id));
-                    CodeWriter err_return;
-                    err_return.writeln("if err != nil {");
-                    err_return.indent_writeln("return err");
-                    err_return.writeln("}");
-                    w.writeln("if seeker,ok := ", io_, ".(io.Seeker); ok {");
-                    {
-                        w.writeln("current,err := seeker.Seek(0,io.SeekCurrent)");
-                        w.write(err_return);
-                        w.writeln("endOffset,err := seeker.Seek(0,io.SeekEnd)");
-                        w.write(err_return);
-                        w.writeln("_,err = seeker.Seek(current,io.SeekStart)");
-                        w.write(err_return);
-                        w.writeln("if (endOffset - current) < int64(", size_str, ") {");
+                    if (ctx.config().decoder_input_type == "*bytes.Reader") {
+                        w.writeln("if ", io_, ".Len() < ", size_str, " {");
                         ctx.config().imports.insert("fmt");
-                        w.indent_writeln("return fmt.Errorf(\"Too larget length requested: %d < %d\",endOffset - current, int64(", size_str, "))");
+                        w.indent_writeln("return fmt.Errorf(\"Too larget length requested: %d < %d\",", io_, ".Len(), int64(", size_str, "))");
                         w.writeln("}");
-                        w.write(std::move(direct_allocate));
                     }
-                    w.writeln("} else {");
-                    {
-                        auto scope = w.indent_scope();
-                        w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
-                        w.writeln("// for more performance, use (assert on DSL or safe-len-limit option) and trust-input-len option");
-                        w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
-                        w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
-                        w.indent_writeln("return err");
+                    else {
+                        ctx.config().imports.insert("bytes");
+                        auto tempBuf = std::format("io_temp_{}", get_id(ctx.item_id));
+                        CodeWriter err_return;
+                        err_return.writeln("if err != nil {");
+                        err_return.indent_writeln("return err");
+                        err_return.writeln("}");
+                        w.writeln("if seeker,ok := ", io_, ".(io.Seeker); ok {");
+                        {
+                            w.writeln("current,err := seeker.Seek(0,io.SeekCurrent)");
+                            w.write(err_return);
+                            w.writeln("endOffset,err := seeker.Seek(0,io.SeekEnd)");
+                            w.write(err_return);
+                            w.writeln("_,err = seeker.Seek(current,io.SeekStart)");
+                            w.write(err_return);
+                            w.writeln("if (endOffset - current) < int64(", size_str, ") {");
+                            ctx.config().imports.insert("fmt");
+                            w.indent_writeln("return fmt.Errorf(\"Too larget length requested: %d < %d\",endOffset - current, int64(", size_str, "))");
+                            w.writeln("}");
+                            w.write(std::move(direct_allocate));
+                        }
+                        w.writeln("} else {");
+                        {
+                            auto scope = w.indent_scope();
+                            w.writeln("// To mitigate DoS attack, use incremental buffer allocation");
+                            w.writeln("// for more performance, use (assert on DSL or safe-len-limit option) and trust-input-len option");
+                            w.writeln(tempBuf, " := bytes.NewBuffer(nil)");
+                            w.writeln("if _, err := io.CopyN(", tempBuf, ", ", io_, ", int64(", size_str, ")); err != nil {");
+                            w.indent_writeln("return err");
+                            w.writeln("}");
+                            w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
+                        }
                         w.writeln("}");
-                        w.writeln(target.to_writer(), " = ", tempBuf, ".Bytes()");
                     }
-                    w.writeln("}");
                 }
             }
             else if (cand == BytesType::array) {
@@ -140,16 +149,18 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         }
         if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
             // until eof
-            w.writeln(target.to_writer(), " = (*", io_, ")[:]");
-            w.writeln("*", io_, " = (*", io_, ")[:0]");
+            w.writeln(target.to_writer(), " = ", io_, "[", offset_ref(io_), ":]");
         }
         else {
             ctx.config().imports.insert("errors");
-            w.writeln("if len(*", io_, ") < ", size_str, " {");
+            w.writeln("if len(", io_, ") - ", offset_ref(io_), " < ", size_str, " {");
             w.indent_writeln("return errors.New(\"not enough data to read for field ", layer_str, "\")");
             w.writeln("}");
+            auto size_range = [&](auto&&... size) {
+                return CODE(io_, "[", offset_ref(io_), ":", offset_ref(io_), "+", size..., "]");
+            };
             if (cand == BytesType::vector) {
-                w.writeln(target.to_writer(), " = (*", io_, ")[:", size_str, "]");
+                w.writeln(target.to_writer(), " = ", size_range(size_str));
             }
             else if (cand == BytesType::array) {
                 auto array_anno = ctx.get_field<"array_annotation">(rctx.read_data.data_type);
@@ -157,7 +168,7 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                     // assign and shift
                     // if target is nil, assign io_ else expand target
                     if (offset_val.to_string() == "0") {
-                        w.writeln(target.to_writer(), " = (*", io_, ")[:", size_str, "]");
+                        w.writeln(target.to_writer(), " = ", size_range(size_str));
                     }
                     else if (futils::number::is_integer(offset_val.to_string())) {
                         w.writeln(target.to_writer(), " = ", target.to_writer(), "[:", offset_val, " + ", size_str, "]");
@@ -166,7 +177,7 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                         w.writeln("if len(", target.to_writer(), ") == 0 {");
                         {
                             auto scope = w.indent_scope();
-                            w.writeln(target.to_writer(), " = (*", io_, ")[:", size_str, "]");
+                            w.writeln(target.to_writer(), " = ", size_range(size_str));
                         }
                         w.writeln("} else {");
                         {
@@ -175,14 +186,12 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                         }
                         w.writeln("}");
                     }
-                    w.writeln("*", io_, " = (*", io_, ")[", size_str, ":]");
-                    w.writeln("*", offset_var(io_), " += int(", size_str, ")");
+                    w.writeln(offset_ref(io_), " += int(", size_str, ")");
                     return w;
                 }
-                w.writeln("copy(", target.to_writer(), "[:], (*", io_, ")[:", offset_val, " + ", size_str, "])");
+                w.writeln("copy(", target.to_writer(), "[:], ", size_range(size_str), ")");
             }
-            w.writeln("*", io_, " = (*", io_, ")[", size_str, ":]");
-            w.writeln("*", offset_var(io_), " += int(", offset_val, " + ", size_str, ")");
+            w.writeln(offset_ref(io_), " += int(", size_str, ")");
         }
         return w;
     }

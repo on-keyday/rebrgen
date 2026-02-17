@@ -376,7 +376,8 @@ namespace ebmgen {
                     append(encode_loop, elem);
                 }
                 EBM_BLOCK(enc_block, std::move(encode_loop));
-                return enc_block;
+                EBM_ENDIAN_CONVERT(conv, ebm::StatementKind::INT_TO_ARRAY, ebm::Endian::little, casted, buffer, enc_block);
+                return conv;
             },
             [&] -> expected<ebm::StatementRef> {
                 for (size_t i = 0; i < n; i++) {
@@ -385,6 +386,7 @@ namespace ebmgen {
                     append(encode_loop, elem);
                 }
                 EBM_BLOCK(enc_block, std::move(encode_loop));
+                EBM_ENDIAN_CONVERT(conv, ebm::StatementKind::INT_TO_ARRAY, ebm::Endian::big, casted, buffer, enc_block);
                 return enc_block;
             });
         if (!do_it) {

@@ -29,9 +29,7 @@ WEB_UI_NAME("go3");
 DEFINE_BOOL_FLAG(trust_input_len, false, "trust-input-len", "Trust input length so that use make([]byte,len). For production, check length for your safety threshold manually before reading array.");
 DEFINE_INT_FLAG(safe_len_limit, std::uint64_t, 0, "safe-len-limit", "Safe vector length limit for []byte. default: 0 means infinity", "LEN");
 DEFINE_STRING_FLAG(package_name, "", "package", "Package name for generated Go code", "NAME");
-BEGIN_MAP_FLAG(io_mode, IOMode, io_both, "io-mode", "IO Generation Mode (bytes slice based or std io based)")
-MAP_FLAG_ITEM("all", io_both)
-MAP_FLAG_ITEM("slice", io_slice)
-MAP_FLAG_ITEM("std", io_std)
-END_MAP_FLAG()
+DEFINE_BOOL_FLAG(no_slice_io, false, "no-slice-io", "No sliced based io");
+DEFINE_BOOL_FLAG(no_std_io, false, "no-std-io", "No standard io based io");
+DEFINE_BOOL_FLAG(bytes_io, false, "bytes-io", "Generates *bytes.Buffer based io");
 CONFIG_MAP("config.go.package", package_name);

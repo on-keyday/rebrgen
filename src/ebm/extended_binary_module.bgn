@@ -81,6 +81,13 @@ format EndianVariable:
     if endian == Endian.dynamic:
         dynamic_expr :ExpressionRef # ref to dynamic endian or null
 
+format EndianConvertDesc:
+    endian :Endian
+    reserved :u5
+    target :ExpressionRef
+    source :ExpressionRef
+    lowered_statement :LoweredStatementRef
+
 format String:
     length :Varint
     data :[length.value]u8
@@ -522,6 +529,8 @@ enum StatementKind:
     SUB_BYTE_RANGE
     INIT_CHECK # check the field is initialized for io operation (for example, check whether variant has correct member for this encoding)
     ENDIAN_VARIABLE
+    ARRAY_TO_INT # for endian conversion on decode
+    INT_TO_ARRAY # for endian conversion on encode
 
 
 
@@ -689,6 +698,10 @@ format StatementBody:
             endian_variable :EndianVariable
         StatementKind.LOWERED_IO_STATEMENTS:
             lowered_io_statements :LoweredIOStatements
+        StatementKind.ARRAY_TO_INT:
+            endian_convert :EndianConvertDesc
+        StatementKind.INT_TO_ARRAY:
+            endian_convert :EndianConvertDesc
 
 format Expressions:
     len :Varint

@@ -22,6 +22,10 @@
 DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     using namespace CODEGEN_NAMESPACE;
     CodeWriter w;
+    if (ctx.config().program_decl_start_wrapper) {
+        MAYBE(result, ctx.config().program_decl_start_wrapper(ctx));
+        w.write(std::move(result.to_writer()));
+    }
     for (const auto& stmt : ctx.block.container) {
         MAYBE(stmt_code, ctx.visit(stmt));
         for (auto& toplevel : ctx.config().decl_toplevel) {

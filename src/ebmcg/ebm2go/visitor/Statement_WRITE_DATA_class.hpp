@@ -88,6 +88,38 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
             ctx.config().array_length_set_done.insert(get_id(wctx.write_data.field));
         }
     }
+    if (is_single_byte_io(ctx, ctx.write_data) && (ctx.config().use_io_reader_writer)) {  // currently, only for u8
+        MAYBE(target, ctx.visit(ctx.write_data.target));
+        auto io_ = ctx.identifier(ctx.write_data.io_ref);
+        MAYBE(layer_str, get_identifier_layer_str(ctx, from_weak(ctx.write_data.field)));
+        layer_str = "\\\"" + layer_str + "\\\"";
+        CodeWriter w;
+        if (ctx.config().encoder_input_type == "*bytes.Buffer") {
+            w.writeln("if err := ", io_, ".WriteByte(", target.to_writer(), "); err != nil {");
+            w.indent_writeln("return err");
+            w.writeln("}");
+        }
+        else {
+            w.writeln("if ", byte_io_ref(io_), " != nil {");
+            {
+                auto scope = w.indent_scope();
+                // use WriteByte
+                w.writeln("if err := ", byte_io_ref(io_), ".WriteByte(", target.to_writer(), "); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            w.writeln("} else {");
+            {
+                // use Write as fallback
+                auto scope = w.indent_scope();
+                w.writeln("if _, err := ", io_, ".Write([]byte{", target.to_writer(), "}); err != nil {");
+                w.indent_writeln("return err");
+                w.writeln("}");
+            }
+            w.writeln("}");
+        }
+        return w;
+    }
     if (auto cand = is_bytes_type(wctx, wctx.write_data.data_type)) {
         MAYBE(target, wctx.visit(wctx.write_data.target));
         MAYBE(size_str, get_size_str(wctx, wctx.write_data.size));

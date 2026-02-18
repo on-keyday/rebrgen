@@ -38,7 +38,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
-#include "ebmcg/ebm2go/codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
     auto& rctx = ctx;
@@ -46,6 +46,53 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
             return rctx.visit(low->io_statement.id);
         }
+    }
+    if (is_single_byte_io(ctx,ctx.read_data)&&ctx.config().decoder_input_type == "io.Reader" ) {  // currently, only for u8
+        MAYBE(target, rctx.visit(rctx.read_data.target));
+        auto io_ = rctx.identifier(rctx.read_data.io_ref);
+        MAYBE(layer_str, get_identifier_layer_str(rctx, from_weak(rctx.read_data.field)));
+        layer_str = "\\\"" + layer_str + "\\\"";
+        CodeWriter w;
+        w.writeln("if ", byte_io_ref(io_), " != nil {");
+        {
+            auto scope = w.indent_scope();
+            // use ReadByte
+            w.writeln("var err error");
+            w.writeln(target.to_writer(), ", err = ", byte_io_ref(io_), ".ReadByte()");
+            w.writeln("if err != nil {");
+            if (ctx.config().on_until_eof_loop) {
+                auto scope = w.indent_scope();
+                w.writeln("if err == io.EOF {");
+                w.indent_writeln("break");
+                w.writeln("}");
+            }
+            w.indent_writeln("return err");
+            w.writeln("}");
+        }
+        w.writeln("} else {");
+        {
+            // use io.ReadFull as fallback
+            auto scope = w.indent_scope();
+            w.writeln("var err error");
+            w.writeln("var n int");
+            w.writeln("buf := []byte{0}");
+            w.writeln("if n, err = io.ReadFull(", io_, ", buf); err != nil {");
+            if (ctx.config().on_until_eof_loop) {
+                auto scope = w.indent_scope();
+                w.writeln("if err == io.EOF {");
+                w.indent_writeln("break");
+                w.writeln("}");
+            }
+            w.indent_writeln("return err");
+            w.writeln("}");
+            w.writeln("if n != 1 {");
+            ctx.config().imports.insert("fmt");
+            w.indent_writeln("return fmt.Errorf(\"failed to read byte for field ", layer_str, ": expected to read 1 byte, but read %d bytes\", n)");
+            w.writeln("}");
+            w.writeln(target.to_writer(), " = buf[0]");
+        }
+        w.writeln("}");
+        return w;
     }
     if (auto cand = is_bytes_type(rctx, rctx.read_data.data_type)) {
         MAYBE(target, rctx.visit(rctx.read_data.target));
@@ -61,18 +108,100 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         CodeWriter w;
         if (ctx.config().use_io_reader_writer) {
             // io.Reader mode
+            auto read_full = [&](bool init_with_size) {
+                CodeWriter direct_allocate;
+                if (init_with_size) {
+                    direct_allocate.writeln(target.to_writer(), " = make([]byte,", size_str, ")");
+                }
+                if (ctx.config().decoder_input_type == "*bytes.Reader") {
+                    direct_allocate.writeln("if n, err := ", io_, ".Read(", target.to_writer(), "[:]); err != nil {");
+                    if (ctx.config().on_until_eof_loop) {
+                        auto scope = direct_allocate.indent_scope();
+                        direct_allocate.writeln("if n == 0 && err == io.EOF {");
+                        direct_allocate.indent_writeln("break");
+                        direct_allocate.writeln("}");
+                    }
+                    direct_allocate.indent_writeln("return err");
+                    direct_allocate.writeln("} else if n != ", size_str, " {");
+                    ctx.config().imports.insert("fmt");
+                    direct_allocate.indent_writeln("return fmt.Errorf(\"failed to read all bytes for field ", layer_str, ": expected %d, got %d\", ", size_str, ", n)");
+                    direct_allocate.writeln("}");
+                }
+                else {
+                    auto normal_read_full = [&] {
+                        direct_allocate.writeln("if _, err := io.ReadFull(", io_, ",", target.to_writer(), "[:]); err != nil {");
+                        if (ctx.config().on_until_eof_loop) {
+                            auto scope = direct_allocate.indent_scope();
+                            direct_allocate.writeln("if err == io.EOF {");
+                            direct_allocate.indent_writeln("break");
+                            direct_allocate.writeln("}");
+                        }
+                        direct_allocate.indent_writeln("return err");
+                        direct_allocate.writeln("}");
+                    };
+                    if (ctx.config().has_byte_io && rctx.read_data.size.unit == ebm::SizeUnit::BYTE_FIXED &&
+                        rctx.read_data.size.size()->value() == 1) {
+                        direct_allocate.writeln("if ", byte_io_ref(io_), " != nil {");
+                        {
+                            auto scope = direct_allocate.indent_scope();
+                            // use ReadByte
+                            direct_allocate.writeln("var err error");
+                            direct_allocate.writeln(target.to_writer(), "[0], err = ", byte_io_ref(io_), ".ReadByte()");
+                            direct_allocate.writeln("if err != nil {");
+                            if (ctx.config().on_until_eof_loop) {
+                                auto scope = direct_allocate.indent_scope();
+                                direct_allocate.writeln("if err == io.EOF {");
+                                direct_allocate.indent_writeln("break");
+                                direct_allocate.writeln("}");
+                            }
+                            direct_allocate.indent_writeln("return err");
+                            direct_allocate.writeln("}");
+                        }
+                        direct_allocate.writeln("} else {");
+                        {
+                            auto scope = direct_allocate.indent_scope();
+                            normal_read_full();
+                        }
+                        direct_allocate.writeln("}");
+                    }
+                    else {
+                        normal_read_full();
+                    }
+                }
+                return direct_allocate;
+            };
             if (auto dyn_size = rctx.read_data.size.ref(); dyn_size && ctx.is(ebm::ExpressionKind::GET_REMAINING_BYTES, *dyn_size)) {
-                // read until EOF
-                w.writeln("{");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("var readErr error");
-                    w.writeln(target.to_writer(), ", readErr = io.ReadAll(", io_, ")");
-                    w.writeln("if readErr != nil {");
-                    w.indent_writeln("return readErr");
+                if (ctx.config().decoder_input_type == "*bytes.Reader") {
+                    // allocate a slice with the remaining length and read directly into it
+                    w.writeln("{");
+                    {
+                        auto scope = w.indent_scope();
+                        w.writeln(target.to_writer(), " = make([]byte, ", io_, ".Len())");
+                        w.writeln("n,err := ", io_, ".Read(", target.to_writer(), ")");
+                        w.writeln("if err != nil {");
+                        w.indent_writeln("return err");
+                        w.writeln("}");
+                        w.writeln("if n != ", io_, ".Len() {");
+                        ctx.config().imports.insert("fmt");
+                        w.indent_writeln("return fmt.Errorf(\"failed to read all remaining bytes: expected %d, got %d\", ", io_, ".Len(), n)");
+                        w.writeln("}");
+                    }
                     w.writeln("}");
                 }
-                w.writeln("}");
+                else {
+                    ctx.config().imports.insert("io");
+                    // read until EOF
+                    w.writeln("{");
+                    {
+                        auto scope = w.indent_scope();
+                        w.writeln("var readErr error");
+                        w.writeln(target.to_writer(), ", readErr = io.ReadAll(", io_, ")");
+                        w.writeln("if readErr != nil {");
+                        w.indent_writeln("return readErr");
+                        w.writeln("}");
+                    }
+                    w.writeln("}");
+                }
             }
             else if (cand == BytesType::vector) {
                 if (ctx.flags().safe_len_limit != 0) {
@@ -81,14 +210,10 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                     w.indent_writeln("return fmt.New(\"input requested length exceeded safe length ", std::to_string(ctx.flags().safe_len_limit), ": %d\")");
                     w.writeln("}");
                 }
-                CodeWriter direct_allocate;
-                direct_allocate.writeln(target.to_writer(), " = make([]byte,", size_str, ")");
-                direct_allocate.writeln("if _, err := io.ReadFull(", io_, ",", target.to_writer(), "); err != nil {");
-                direct_allocate.indent_writeln("return err");
-                direct_allocate.writeln("}");
+
                 if (ctx.flags().trust_input_len) {
                     w.writeln("// WARNING: ensure your code is checking length manually");
-                    w.write(std::move(direct_allocate));
+                    w.write(read_full(true));
                 }
                 else {
                     if (ctx.config().decoder_input_type == "*bytes.Reader") {
@@ -96,6 +221,7 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                         ctx.config().imports.insert("fmt");
                         w.indent_writeln("return fmt.Errorf(\"Too larget length requested: %d < %d\",", io_, ".Len(), int64(", size_str, "))");
                         w.writeln("}");
+                        w.write(read_full(true));
                     }
                     else {
                         ctx.config().imports.insert("bytes");
@@ -116,7 +242,7 @@ DEFINE_VISITOR(Statement_READ_DATA) {
                             ctx.config().imports.insert("fmt");
                             w.indent_writeln("return fmt.Errorf(\"Too larget length requested: %d < %d\",endOffset - current, int64(", size_str, "))");
                             w.writeln("}");
-                            w.write(std::move(direct_allocate));
+                            w.write(read_full(true));
                         }
                         w.writeln("} else {");
                         {
@@ -135,15 +261,7 @@ DEFINE_VISITOR(Statement_READ_DATA) {
             }
             else if (cand == BytesType::array) {
                 // In io.Reader mode, all arrays are fixed-size: read directly into them
-                w.writeln("if _, err := io.ReadFull(", io_, ", ", target.to_writer(), "[:]); err != nil {");
-                if (ctx.config().on_until_eof_loop) {
-                    auto scope = w.indent_scope();
-                    w.writeln("if err == io.EOF {");
-                    w.indent_writeln("break");
-                    w.writeln("}");
-                }
-                w.indent_writeln("return err");
-                w.writeln("}");
+                w.write(read_full(false));
             }
             return w;
         }

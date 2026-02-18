@@ -26,5 +26,6 @@ std::string decode_fn_name;
 bool on_until_eof_loop = false;
 
 std::vector<bool> no_heap_mode;
+bool has_byte_io = false;
 
 IOMode io_mode;

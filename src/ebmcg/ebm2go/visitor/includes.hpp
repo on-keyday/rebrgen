@@ -48,4 +48,15 @@ namespace ebm2go {
         return std::format("*{}Offset", x);
     }
 
+    inline std::string byte_io_ref(std::string x) {
+        return std::format("{}ByteIO", x);
+    }
+
+    inline bool is_single_byte_io(auto&& ctx, const ebm::IOData& io_) {
+        return ctx.config().has_byte_io &&
+               io_.size.unit == ebm::SizeUnit::BYTE_FIXED &&
+               io_.size.size()->value() == 1 &&
+               ctx.get_kind(io_.data_type) == ebm::TypeKind::UINT;
+    }
+
 }  // namespace ebm2go

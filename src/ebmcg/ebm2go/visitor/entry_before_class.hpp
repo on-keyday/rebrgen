@@ -69,8 +69,13 @@ namespace CODEGEN_NAMESPACE {
             if (auto info = is_setter_target(ctx); info) {
                 ctx.config().array_length_setters[get_id(ctx.write_data.field)] = *info;
             }
+            if (ctx.write_data.size.unit == ebm::SizeUnit::BYTE_FIXED &&
+                ctx.write_data.size.size()->value() == 1) {
+                has_byte_write = true;
+            }
             return {};
         }
+        bool has_byte_write = false;
         MetadataSet meta;
 
         expected<void> visit(Context_Statement_METADATA& ctx) {
@@ -125,6 +130,7 @@ DEFINE_VISITOR(entry_before) {
                     ctx.config().no_heap_mode.back() = true;
                 }
             }
+            ctx.config().has_byte_io = detector.has_byte_write;
         }
         if (!is_nil(sctx.struct_decl.name)) {
             ctx.output().struct_names.push_back(name);
@@ -472,6 +478,22 @@ DEFINE_VISITOR(entry_before) {
         else {
             w.writeln(ctx.config().function_define_keyword, " ", name_prefix, name, "(", params, ") ", ctx.config().function_return_type_separator, return_type.to_writer(), " ", ctx.config().begin_block);
         }
+        if (fctx.func_decl.kind == ebm::FunctionKind::DECODE && ctx.config().has_byte_io && ctx.config().decoder_input_type == "io.Reader") {
+            auto scope = w.indent_scope();
+            fctx.config().imports.insert("io");
+            MAYBE(param0, ctx.get_field<"container.0">(&fctx.func_decl.params));
+            auto original = ctx.identifier(param0);
+            auto ident = byte_io_ref(original);
+            w.writeln(ident, ", _ := ", original, ".(io.ByteReader)");
+        }
+        if (fctx.func_decl.kind == ebm::FunctionKind::ENCODE && ctx.config().has_byte_io && ctx.config().encoder_input_type == "io.Writer") {
+            auto scope = w.indent_scope();
+            fctx.config().imports.insert("io");
+            MAYBE(param0, ctx.get_field<"container.0">(&fctx.func_decl.params));
+            auto original = ctx.identifier(param0);
+            auto ident = byte_io_ref(original);
+            w.writeln(ident, ", _ := ", original, ".(io.ByteWriter)");
+        }
         return w;
     };
     ctx.config().composite_field_decl_visitor = [&](Context_Statement_COMPOSITE_FIELD_DECL& cctx) -> expected<Result> {
@@ -755,6 +777,58 @@ DEFINE_VISITOR(entry_before) {
         ebm::TypeKind::ENCODER_INPUT,
         ebm::TypeKind::DECODER_INPUT,
         ebm::TypeKind::ENCODER_RETURN,
+    };
+    ctx.config().int_to_array_custom = [&](Context_Statement_INT_TO_ARRAY& i2a_ctx) -> expected<Result> {
+        MAYBE(target_type, i2a_ctx.get_field<"type.instance">(i2a_ctx.endian_convert.target));
+        MAYBE(size, target_type.body.length());
+        auto byte_size = size.value();
+        switch (byte_size) {
+            case 2:
+            case 4:
+            case 8: {
+                auto endian = i2a_ctx.endian_convert.endian() == ebm::Endian::big ? "BigEndian" : "LittleEndian";
+                MAYBE(target, i2a_ctx.visit(i2a_ctx.endian_convert.target));
+                MAYBE(value_str, i2a_ctx.visit(i2a_ctx.endian_convert.source));
+                ctx.config().imports.insert("encoding/binary");
+                auto size_str = std::to_string(byte_size * 8);
+                return CODELINE("binary.", endian, ".PutUint", size_str, "(", target.to_writer(), "[:], uint", size_str, "(", value_str.to_writer(), "))");
+            }
+        }
+        return pass;
+    };
+    ctx.config().array_to_int_custom = [&](Context_Statement_ARRAY_TO_INT& i2a_ctx) -> expected<Result> {
+        MAYBE(source_type, i2a_ctx.get_field<"type.instance">(i2a_ctx.endian_convert.source));
+        MAYBE(size, source_type.body.length());
+        auto byte_size = size.value();
+        switch (byte_size) {
+            case 2:
+            case 4:
+            case 8: {
+                auto endian = i2a_ctx.endian_convert.endian() == ebm::Endian::big ? "BigEndian" : "LittleEndian";
+                MAYBE(target, i2a_ctx.visit(i2a_ctx.endian_convert.target));
+                MAYBE(value_str, i2a_ctx.visit(i2a_ctx.endian_convert.source));
+                MAYBE(target_type, ctx.get_field<"type">(i2a_ctx.endian_convert.target));
+                MAYBE(target_type_str, ctx.visit(target_type));
+                ctx.config().imports.insert("encoding/binary");
+                auto size_str = std::to_string(byte_size * 8);
+                auto to = CODE("binary.", endian, ".Uint", size_str, "(", value_str.to_writer(), "[:])");
+                auto cast_str = target_type_str.to_string();
+                if (cast_str != "uint" + size_str) {
+                    if (cast_str.starts_with("float") && cast_str.substr(5) == size_str) {
+                        // for float, we need to convert from uint to float
+                        std::string float_cast_str = "math.Float" + size_str + "frombits";
+                        ctx.config().imports.insert("math");
+                        to = CODE(float_cast_str, "(", to, ")");
+                    }
+                    else {
+                        // for other int types, just cast
+                        to = CODE(target_type_str.to_writer(), "(", to, ")");
+                    }
+                }
+                return CODELINE(target.to_writer(), " = ", to);
+            }
+        }
+        return pass;
     };
     return pass;
 }

@@ -1090,4 +1090,34 @@ namespace ebmcodegen::util {
                 return false;
         }
     }
+
+    struct IfThen {
+        std::optional<ebm::ExpressionRef> condition;
+        ebm::StatementRef then_branch;
+    };
+
+    ebmgen::expected<std::vector<IfThen>> flatten_if_then(auto&& visitor, ebm::StatementRef stmt_ref) {
+        ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
+        std::vector<IfThen> result;
+        MAYBE(current_stmt, module_.get_statement(stmt_ref));
+        const ebm::IfStatement* if_stmt = current_stmt.body.if_statement();
+        if (!if_stmt) {
+            return ebmgen::unexpect_error("not an if statement");
+        }
+        result.push_back(IfThen{if_stmt->condition.cond, if_stmt->then_block});
+        while (true) {
+            if (is_nil(if_stmt->else_block)) {
+                break;
+            }
+            MAYBE(next_stmt, module_.get_statement(if_stmt->else_block));
+            auto else_id = if_stmt->else_block;
+            if_stmt = next_stmt.body.if_statement();
+            if (!if_stmt) {
+                result.push_back(IfThen{std::nullopt, else_id});
+                break;
+            }
+            result.push_back(IfThen{if_stmt->condition.cond, if_stmt->then_block});
+        }
+        return result;
+    }
 }  // namespace ebmcodegen::util

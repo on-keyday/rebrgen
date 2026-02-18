@@ -366,7 +366,7 @@ def parseInt(s: str) -> int:
         return 0
 
 
-def interactive_generate_single(mode :str):
+def interactive_generate_single(mode: str):
     """Generate a single template."""
     tool_path = get_tool_path()
     if not tool_path:
@@ -465,7 +465,7 @@ def interactive_generate_single(mode :str):
         return
 
 
-def interactive(mode :str):
+def interactive(mode: str):
     """interactive guide through the script features."""
     print("Welcome to the interactive guide!")
     print("This guide will help you use the ebmcodegen tool for template generation.")
@@ -490,7 +490,7 @@ def interactive(mode :str):
             if lang:
                 tool_path = get_tool_path()
                 if tool_path:
-                    run_update_hooks(tool_path, lang,mode)
+                    run_update_hooks(tool_path, lang, mode)
         elif command == "3":
             tool_path = get_tool_path()
             if tool_path:
@@ -500,7 +500,7 @@ def interactive(mode :str):
                 "Enter the language directory to list (e.g., 'cpp', 'python', or 'default'): "
             ).strip()
             if lang:
-                list_defined_templates(lang,mode)
+                list_defined_templates(lang, mode)
         elif command == "5":
             print("Exiting the interactive guide. Goodbye!")
             break
@@ -513,6 +513,7 @@ def use_class_default(target: str) -> str:
         "Statement",
         "Expression",
         "Type",
+        "Block",
         "entry",
         "post_entry",
         "pre_visitor",

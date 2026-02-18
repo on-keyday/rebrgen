@@ -67,7 +67,7 @@ DEFINE_VISITOR(Expression_TYPE_CAST_before) {
                 w.writeln("return false");
             }
             w.writeln("}");
-            got.write(std::move(w));
+            got.get().write(std::move(w));
             return CODE(tmp_var);
         }
     }

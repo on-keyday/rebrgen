@@ -27,6 +27,9 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_VARIABLE_DECL) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().variable_decl_custom) {
+        CALL_OR_PASS(var_decl, ctx.config().variable_decl_custom(ctx));
+    }
     /*here to write the hook*/
     if (ctx.var_decl.is_reference()) {
         MAYBE(initial_value, ctx.visit(ctx.var_decl.initial_value));
@@ -42,7 +45,7 @@ DEFINE_VISITOR(Statement_VARIABLE_DECL) {
         auto add = ctx.config().wm.add_writer();
         MAYBE(initial_value_, ctx.visit(ctx.var_decl.initial_value));
         MAYBE(got, ctx.config().wm.get_writer());
-        w.merge(std::move(got));
+        w.merge(std::move(got.get()));
         initial_value = initial_value_;
     }
     if (ctx.var_decl.decl_kind() == ebm::VariableDeclKind::CONSTANT && ctx.config().constant_define_keyword.size()) {

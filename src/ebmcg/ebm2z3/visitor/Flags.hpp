@@ -25,3 +25,4 @@
 /*here to write the hook*/
 
 FILE_EXTENSIONS(".z3");
+WEB_LSP_NAME("python");

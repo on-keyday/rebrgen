@@ -21,14 +21,17 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_RETURN) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().return_visitor) {
+        return ctx.config().return_visitor(ctx);
+    }
     /*here to write the hook*/
     CodeWriter w;
 
     if (!is_nil(ctx.value)) {
-        auto add = ctx.config().wm.add_writer();
+        auto add = ctx.add_writer();
         MAYBE(ret_val, ctx.visit(ctx.value));
-        MAYBE(got, ctx.config().wm.get_writer());
-        w.merge(std::move(got));
+        MAYBE(got, ctx.get_writer());
+        w.merge(std::move(got.get()));
         w.writeln("return ", ret_val.to_writer(), ctx.config().endof_statement);
     }
     else {

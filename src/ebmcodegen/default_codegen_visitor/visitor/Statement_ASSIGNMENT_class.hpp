@@ -23,12 +23,15 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_ASSIGNMENT) {
     using namespace CODEGEN_NAMESPACE;
+    if(ctx.config().assignment_custom){
+      CALL_OR_PASS(assign,ctx.config().assignment_custom(ctx));
+    }
     CodeWriter w;
     MAYBE(result_target, ctx.visit(ctx.target));
     auto add = ctx.add_writer();
-    MAYBE(got, ctx.get_writer());
     MAYBE(result_value, ctx.visit(ctx.value));
-    w.write(std::move(got));
+    MAYBE(got, ctx.get_writer());
+    w.write(std::move(got.get()));
     w.writeln(result_target.to_writer(), " = ", tidy_condition_brace(result_value.to_string()), ctx.config().endof_statement);
     return w;
 }

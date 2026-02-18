@@ -17,10 +17,13 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Expression_READ_DATA function.
 // We can use variables like `this` (for Visitor) and function parameters directly.
-std::string ident = module_.get_associated_identifier(target_stmt);
-MAYBE(define_variable, visit_Statement(*this, target_stmt));
-MAYBE(io_logic, visit_Statement(*this, io_statement));
-MAYBE(w, get_writer());
-w.write(define_variable.to_writer());
-w.write(io_logic.to_writer());
-return ident;
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_READ_DATA) {
+    std::string ident = ctx.identifier(ctx.target_stmt);
+    MAYBE(define_variable, ctx.visit(ctx.target_stmt));
+    MAYBE(io_logic, ctx.visit(ctx.io_statement));
+    MAYBE(w, ctx.get_writer());
+    w.get().write(define_variable.to_writer());
+    w.get().write(io_logic.to_writer());
+    return ident;
+}

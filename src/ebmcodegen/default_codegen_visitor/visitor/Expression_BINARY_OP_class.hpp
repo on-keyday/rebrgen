@@ -29,6 +29,9 @@ DEFINE_VISITOR(Expression_BINARY_OP) {
 
     MAYBE(left_str, ctx.visit(ctx.left));
     MAYBE(right_str, ctx.visit(ctx.right));
+    if (ctx.config().binary_op_custom) {
+        CALL_OR_PASS(custom_result, ctx.config().binary_op_custom(ctx, left_str, right_str));
+    }
     auto it = ctx.config().alt_binary_op.find(ctx.bop);
     if (it != ctx.config().alt_binary_op.end()) {
         w.write("(", left_str.to_writer(), " ", it->second, " ", right_str.to_writer(), ")");

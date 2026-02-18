@@ -15,10 +15,13 @@
     target_stmt: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-
-MAYBE(target_str, visit_Statement(*this, target_stmt));
-MAYBE(conditional_str, visit_Statement(*this, conditional_stmt));
-MAYBE(w, get_writer());
-w.write(target_str.to_writer());
-w.write(conditional_str.to_writer());
-return module_.get_associated_identifier(target_stmt);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Expression_CONDITIONAL_STATEMENT) {
+    using namespace CODEGEN_NAMESPACE;
+    MAYBE(target_str, ctx.visit(ctx.target_stmt));
+    MAYBE(conditional_str, ctx.visit(ctx.conditional_stmt));
+    MAYBE(w, ctx.get_writer());
+    w.get().write(std::move(target_str.to_writer()));
+    w.get().write(std::move(conditional_str.to_writer()));
+    return ctx.identifier(ctx.target_stmt);
+}

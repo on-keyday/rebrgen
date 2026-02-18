@@ -2000,7 +2000,10 @@ namespace ebmcodegen {
 
         for (auto& cls_group : context_classes) {
             for (auto& cls : cls_group.classes) {
-                if (hook_name.target == cls.base && hook_name.kind == cls.variant) {
+                if (hook_name.target == cls.base && hook_name.kind == cls.variant ||
+                    (hook_name.target == "Block" && cls.base == "Statement" && cls.has(ContextClassKind_List) ||
+                     hook_name.target == "Expressions" && cls.base == "Expression" && cls.has(ContextClassKind_List) ||
+                     hook_name.target == "Types" && cls.base == "Type" && cls.has(ContextClassKind_List))) {
                     auto before_after = cls.is_before_after();
                     if ((before_after == ContextClassKind_Before && hook_name.include_location == suffixes[suffix_before]) ||
                         (before_after == ContextClassKind_After && hook_name.include_location == suffixes[suffix_after]) ||

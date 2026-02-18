@@ -15,6 +15,7 @@ std::string bool_type = "bool";
 std::string setter_status_ok = "";
 std::string setter_status_failure = "";
 std::string struct_keyword = "struct";
+std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx)> struct_decl_visitor;
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx)> struct_definition_start_wrapper;
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef encode)> struct_encode_start_wrapper;
 std::function<expected<Result>(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef decode)> struct_decode_start_wrapper;
@@ -99,6 +100,8 @@ std::function<expected<Result>(Context_Statement_RESERVE_DATA& ctx)> reserve_dat
 
 std::function<expected<Result>(Context_Statement_COMPOSITE_FIELD_DECL& ctx)> composite_field_decl_visitor;
 
+std::function<expected<Result>(Context_Statement_RETURN& ctx)> return_visitor;
+
 std::function<expected<Result>(Context_Expression_IS_ERROR& ctx)> is_error_visitor;
 std::function<expected<Result>(Context_Statement_ERROR_RETURN& ctx)> error_return_visitor;
 std::function<expected<Result>(Context_Statement_ERROR_REPORT& ctx)> error_report_visitor;
@@ -115,6 +118,17 @@ std::function<expected<Result>(Context_Expression_CONDITIONAL& ctx)> conditional
 
 std::function<expected<Result>(Context_Statement_INT_TO_ARRAY& ctx)> int_to_array_custom;
 std::function<expected<Result>(Context_Statement_ARRAY_TO_INT& ctx)> array_to_int_custom;
+
+std::function<expected<Result>(Context_Expression_IDENTIFIER& ctx)> identifier_custom;
+std::function<expected<Result>(Context_Expression_BINARY_OP& ctx, Result& left, Result& right)> binary_op_custom;
+std::function<expected<Result>(Context_Expression_UNARY_OP& ctx, Result& operand)> unary_op_custom;
+
+std::function<expected<Result>(Context_Expression_TYPE_CAST& ctx)> type_cast_custom;
+
+std::function<expected<Result>(Context_Statement_IF_STATEMENT& ctx)> if_statement_custom;
+
+std::function<expected<Result>(Context_Statement_ASSIGNMENT& ctx)> assignment_custom;
+std::function<expected<Result>(Context_Statement_VARIABLE_DECL& ctx)> variable_decl_custom;
 
 template <class Kind>
 struct MemoizationConfig {

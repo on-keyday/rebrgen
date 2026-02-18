@@ -13,8 +13,12 @@
     expression: ExpressionRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-auto writer_added = add_writer();
-MAYBE(r, visit_Expression(*this, expression));
-MAYBE(got, get_writer());
-got.write(r.to_writer());
-return std::move(got);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_EXPRESSION) {
+    using namespace CODEGEN_NAMESPACE;
+    auto writer_added = ctx.add_writer();
+    MAYBE(r, ctx.visit(ctx.expression));
+    MAYBE(got, ctx.get_writer());
+    got.get().write(std::move(r.to_writer()));
+    return std::move(got.get());
+}

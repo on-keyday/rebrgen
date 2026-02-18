@@ -50,6 +50,9 @@
 DEFINE_VISITOR(Statement_STRUCT_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
+    if(ctx.config().struct_decl_visitor){
+        return ctx.config().struct_decl_visitor(ctx);
+    }
 
     CodeWriter w;
     if (ctx.config().struct_definition_start_wrapper) {

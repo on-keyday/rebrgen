@@ -45,7 +45,7 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
         MAYBE(expr, ctx.visit(c->cond));
         cond = std::move(expr.to_string());
         MAYBE(got, ctx.get_writer());
-        condition_related = std::move(got);
+        condition_related = std::move(got.get());
         w.write(condition_related);
     }
     else {
@@ -69,12 +69,18 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
     {
         auto body_indent = w.indent_scope();
         MAYBE(body, ctx.visit(loop.body));
+        bool empty_body = body.to_writer().empty();
         w.write(body.to_writer());
         if (auto iter = loop.increment()) {
             MAYBE(step, ctx.visit(*iter));
             w.write(step.to_writer());
+            empty_body = empty_body && step.to_writer().empty();
         }
+        empty_body = empty_body && condition_related.empty();
         w.write(condition_related);
+        if (empty_body && ctx.config().empty_block_marker.size()) {
+            w.writeln(ctx.config().empty_block_marker);
+        }
     }
     w.writeln(ctx.config().end_block);
 

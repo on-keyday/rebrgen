@@ -61,7 +61,7 @@ DEFINE_VISITOR(Expression_CAN_READ_STREAM) {
         w.writeln("raise ValueError(\"Unsupported stream type for CAN_READ_STREAM\")");
     }
     MAYBE(got_writer, v.wm.get_writer());
-    got_writer.write(std::move(w));
+    got_writer.get().write(std::move(w));
 
     return CODE("bool(", result, " >= ", size_str, ")");
 }

@@ -42,9 +42,9 @@ DEFINE_VISITOR(Expression_TYPE_CAST_before) {
             // src expr may not be a single variable
             MAYBE(source_type_str, ctx.visit(ctx.type_cast_desc.from_type));
             auto tmp_var = "tmpi" + std::to_string(get_id(ctx.item_id));
-            got.writeln(source_type_str.to_writer(), " ", tmp_var, " = ", source_expr_str.to_writer(), ";");
-            got.writeln(target_type_str.to_writer(), " ", result_var, ";");
-            got.writeln("MEMCPY(&", result_var, ", &", tmp_var, ", sizeof(", source_type_str.to_writer(), "));");
+            got.get().writeln(source_type_str.to_writer(), " ", tmp_var, " = ", source_expr_str.to_writer(), ";");
+            got.get().writeln(target_type_str.to_writer(), " ", result_var, ";");
+            got.get().writeln("MEMCPY(&", result_var, ", &", tmp_var, ", sizeof(", source_type_str.to_writer(), "));");
         }
         return CODE(result_var);
     }

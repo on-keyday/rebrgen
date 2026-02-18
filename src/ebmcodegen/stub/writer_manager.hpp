@@ -3,9 +3,29 @@
 #include <vector>
 #include "binary/writer.h"
 #include "code/code_writer.h"
+#include "ebmgen/common.hpp"
 #include <helper/defer.h>
 
 namespace ebmcodegen {
+    template <class CodeWriter>
+    struct WriterManager;
+    template <typename CodeWriter>
+    struct WriterWrapper {
+       private:
+        size_t index = 0;
+        // because tmp_writers may be reallocated, we store a reference to the manager instead of a pointer to the writer
+        WriterManager<CodeWriter>& manager;
+
+       public:
+        CodeWriter& get() {
+            assert(index < manager.tmp_writers.size());
+            return manager.tmp_writers[index];
+        }
+
+        WriterWrapper(WriterManager<CodeWriter>& manager, size_t index)
+            : manager(manager), index(index) {}
+    };
+
     template <class CodeWriter>
     struct WriterManager {
         futils::code::CodeWriter<futils::binary::writer&> root;
@@ -16,11 +36,11 @@ namespace ebmcodegen {
                 tmp_writers.pop_back();
             });
         }
-        CodeWriter* get_writer() {
+        ebmgen::expected<WriterWrapper<CodeWriter>> get_writer() {
             if (tmp_writers.empty()) {
-                return nullptr;
+                return ebmgen::unexpect_error("no available writer");
             }
-            return &tmp_writers.back();
+            return WriterWrapper<CodeWriter>(*this, tmp_writers.size() - 1);
         }
     };
 }  // namespace ebmcodegen

@@ -39,10 +39,10 @@ DEFINE_VISITOR(Statement_VARIABLE_DECL) {
     std::optional<Result> initial_value;
 
     if (!is_nil(ctx.var_decl.initial_value)) {
-        auto add = ctx.config().wm.add_writer();
+        auto add = ctx.add_writer();
         MAYBE(initial_value_, ctx.visit(ctx.var_decl.initial_value));
-        MAYBE(got, ctx.config().wm.get_writer());
-        w.merge(std::move(got));
+        MAYBE(got, ctx.get_writer());
+        w.merge(std::move(got.get()));
         initial_value = initial_value_;
     }
     auto mapped_decl = map_decl(type_str_val.to_string(), std::move(name));

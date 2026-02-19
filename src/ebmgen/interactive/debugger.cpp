@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <unordered_set>
 #include <variant>
+#include "binary/writer.h"
 #include "code/src_location.h"
 #include "comb2/composite/number.h"
 #include "comb2/composite/range.h"
@@ -23,6 +24,7 @@
 #include "ebmgen/mapping.hpp"
 #include "error/error.h"
 #include "escape/escape.h"
+#include "number/hex/bin2hex.h"
 #include "number/prefix.h"
 #include <strutil/splits.h>
 #include <comb2/composite/cmdline.h>
@@ -669,6 +671,39 @@ namespace ebmgen {
         std::string line;
         std::vector<std::string_view> args;
 
+        void print_hex() {
+            if (args.size() < 2) {
+                cout << "Usage: hex <identifier>\n";
+                return;
+            }
+            auto ident = args[1];
+            std::uint64_t id;
+            if (!futils::number::prefix_integer(ident, id)) {
+                cout << "Invalid identifier: " << ident << "\n";
+                return;
+            }
+            auto obj = table.get_object(ebm::AnyRef{id});
+            std::string buffer;
+            std::visit(
+                [&](auto&& obj) {
+                    if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
+                        cout << "Identifier not found: " << ident << "\n";
+                    }
+                    else {
+                        futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
+                        auto err = obj->encode(w);
+                        if (err) {
+                            cout << "Error encoding object: " << err.template error<std::string>() << "\n";
+                        }
+                        else {
+                            cout << futils::number::hex::to_hex<std::string>(buffer) << "\n";
+                            cout << futils::number::hex::hexdump<std::string>(buffer) << "\n";
+                        }
+                    }
+                },
+                obj);
+        }
+
         void print() {
             std::stringstream print_buf;
             DebugPrinter printer{table, print_buf};
@@ -826,6 +861,7 @@ namespace ebmgen {
             cout << "  help             Show this help message\n";
             cout << "  exit, quit       Exit the debugger\n";
             cout << "  print <id>       Print the object with the given identifier\n";
+            cout << "  hex <id>         Print the raw hex data of the object with the given identifier\n";
             cout << "  p <id>           Alias for print\n";
             cout << "  pr <id>          Alias for print\n";
             cout << "  header           Print module header information\n";
@@ -861,6 +897,9 @@ namespace ebmgen {
             }
             else if (command == "print" || command == "p" || command == "pr") {
                 print();
+            }
+            else if (command == "hex") {
+                print_hex();
             }
             else if (command == "header") {
                 header();

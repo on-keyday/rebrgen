@@ -95,6 +95,21 @@ namespace CODEGEN_NAMESPACE {
     };
     static_assert(HasVisitor<void, ArraySetterDetector, Context_Statement_WRITE_DATA&>);
 
+    inline expected<std::pair<CodeWriter, CodeWriter>> get_additional_parameters(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef func) {
+        MAYBE(decl, ctx.get_field<"func_decl">(func));
+        if (decl.params.container.size() > 1) {
+            CodeWriter def, use;
+            for (size_t i = 1; i < decl.params.container.size(); i++) {
+                auto current = decl.params.container[i];
+                MAYBE(param, ctx.visit(current));
+                def.write(",", param.to_writer());
+                use.write(",", ctx.identifier(current));
+            }
+            return std::make_pair(def, use);
+        }
+        return {};
+    }
+
 }  // namespace CODEGEN_NAMESPACE
 
 DEFINE_VISITOR(entry_before) {
@@ -145,6 +160,12 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().function_return_type_separator = "";
     ctx.config().encoder_return_type = "error";
     ctx.config().decoder_return_type = "error";
+    ctx.config().param_type_wrapper = [](Result type, bool is_state_variable) -> expected<Result> {
+        if (is_state_variable) {
+            return CODE("*", type.to_writer());
+        }
+        return type;
+    };
     ctx.config().param_visitor = [](Context_Statement_PARAMETER_DECL& ctx, Result type) -> expected<Result> {
         auto kind = ctx.get_kind(ctx.param_decl.param_type);
         if (!ctx.config().use_io_reader_writer &&
@@ -168,6 +189,9 @@ DEFINE_VISITOR(entry_before) {
     };
     ctx.config().struct_encode_start_wrapper = [](Context_Statement_STRUCT_DECL& sctx, ebm::StatementRef encode_fn) -> expected<Result> {
         CodeWriter w;
+        MAYBE(def_use, get_additional_parameters(sctx, encode_fn));
+        auto& def = def_use.first;
+        auto& use = def_use.second;
         if (sctx.config().io_mode.bytes_io) {
             sctx.config().encoder_input_type = "*bytes.Buffer";
             sctx.config().imports.insert("bytes");
@@ -176,22 +200,22 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(enc, sctx.visit(encode_fn));
             w.write(std::move(enc.to_writer()));
             auto name = sctx.identifier();
-            w.writeln("func (s *", name, ") EncodeBuffer(reserved []byte) ([]byte,error) {");
+            w.writeln("func (s *", name, ") EncodeBuffer(reserved []byte", def, ") ([]byte,error) {");
             {
                 auto scope = w.indent_scope();
                 sctx.config().imports.insert("bytes");
                 w.writeln("buf := bytes.NewBuffer(reserved)");
-                w.writeln("err := s.WriteBuffer(buf)");
+                w.writeln("err := s.WriteBuffer(buf", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return nil,err");
                 w.writeln("}");
                 w.writeln("return buf.Bytes(), nil");
             }
             w.writeln("}");
-            w.writeln("func (s *", name, ") MustEncodeBuffer(reserved []byte) []byte {");
+            w.writeln("func (s *", name, ") MustEncodeBuffer(reserved []byte", def, ") []byte {");
             {
                 auto scope = w.indent_scope();
-                w.writeln("buf,err := s.EncodeBuffer(reserved)");
+                w.writeln("buf,err := s.EncodeBuffer(reserved", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("panic(err)");
                 w.writeln("}");
@@ -207,22 +231,22 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(enc, sctx.visit(encode_fn));
             w.write(std::move(enc.to_writer()));
             auto name = sctx.identifier();
-            w.writeln("func (s *", name, ") EncodeCopy(reserved []byte) ([]byte,error) {");
+            w.writeln("func (s *", name, ") EncodeCopy(reserved []byte", def, ") ([]byte,error) {");
             {
                 auto scope = w.indent_scope();
                 sctx.config().imports.insert("bytes");
                 w.writeln("buf := bytes.NewBuffer(reserved)");
-                w.writeln("err := s.Write(buf)");
+                w.writeln("err := s.Write(buf", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return nil,err");
                 w.writeln("}");
                 w.writeln("return buf.Bytes(), nil");
             }
             w.writeln("}");
-            w.writeln("func (s *", name, ") MustEncodeCopy(reserved []byte) []byte {");
+            w.writeln("func (s *", name, ") MustEncodeCopy(reserved []byte", def, ") []byte {");
             {
                 auto scope = w.indent_scope();
-                w.writeln("buf,err := s.EncodeCopy(reserved)");
+                w.writeln("buf,err := s.EncodeCopy(reserved", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("panic(err)");
                 w.writeln("}");
@@ -238,21 +262,21 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(enc, sctx.visit(encode_fn));
             w.write(std::move(enc.to_writer()));
             auto name = sctx.identifier();
-            w.writeln("func (s *", name, ") Encode(buf []byte) ([]byte,error) {");
+            w.writeln("func (s *", name, ") Encode(buf []byte", def, ") ([]byte,error) {");
             {
                 auto scope = w.indent_scope();
                 w.writeln("var offset int");
-                w.writeln("err := s.EncodeSlice(buf,&offset)");
+                w.writeln("err := s.EncodeSlice(buf,&offset", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return nil,err");
                 w.writeln("}");
                 w.writeln("return buf[:offset], nil");
             }
             w.writeln("}");
-            w.writeln("func (s *", name, ") MustEncode(reserved []byte) []byte {");
+            w.writeln("func (s *", name, ") MustEncode(reserved []byte", def, ") []byte {");
             {
                 auto scope = w.indent_scope();
-                w.writeln("buf,err := s.Encode(reserved)");
+                w.writeln("buf,err := s.Encode(reserved", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("panic(err)");
                 w.writeln("}");
@@ -268,11 +292,11 @@ DEFINE_VISITOR(entry_before) {
             w.write(std::move(enc2.to_writer()));
             sctx.config().encoder_return_type = "error";
             sctx.config().append_io = false;
-            w.writeln("func (s *", name, ") MustAppend(buf []byte) []byte {");
+            w.writeln("func (s *", name, ") MustAppend(buf []byte", def, ") []byte {");
             {
                 auto scope = w.indent_scope();
                 w.writeln("var err error");
-                w.writeln("buf,err = s.Append(buf)");
+                w.writeln("buf,err = s.Append(buf", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("panic(err)");
                 w.writeln("}");
@@ -285,6 +309,11 @@ DEFINE_VISITOR(entry_before) {
 
     ctx.config().struct_decode_start_wrapper = [](Context_Statement_STRUCT_DECL& sctx, ebm::StatementRef decode_fn) -> expected<Result> {
         CodeWriter w;
+        MAYBE(func, sctx.get_field<"func_decl.params">(decode_fn));
+        MAYBE(def_use, get_additional_parameters(sctx, decode_fn));
+        auto& def = def_use.first;
+        auto& use = def_use.second;
+
         if (sctx.config().io_mode.bytes_io) {
             sctx.config().decoder_input_type = "*bytes.Reader";
             sctx.config().imports.insert("bytes");
@@ -293,22 +322,22 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(enc, sctx.visit(decode_fn));
             w.write(std::move(enc.to_writer()));
             auto name = sctx.identifier();
-            w.writeln("func (s *", name, ") DecodeBuffer(buf []byte) ([]byte,error) {");
+            w.writeln("func (s *", name, ") DecodeBuffer(buf []byte", def, ") ([]byte,error) {");
             {
                 auto scope = w.indent_scope();
                 sctx.config().imports.insert("bytes");
                 w.writeln("r := bytes.NewReader(buf)");
-                w.writeln("err := s.ReadBuffer(r)");
+                w.writeln("err := s.ReadBuffer(r", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return nil,err");
                 w.writeln("}");
                 w.writeln("return buf[int(r.Size()) - r.Len():], nil");
             }
             w.writeln("}");
-            w.writeln("func (s *", name, ") DecodeExactBuffer(buf []byte) error {");
+            w.writeln("func (s *", name, ") DecodeExactBuffer(buf []byte", def, ") error {");
             {
                 auto scope = w.indent_scope();
-                w.writeln("remain,err := s.DecodeBuffer(buf)");
+                w.writeln("remain,err := s.DecodeBuffer(buf", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return err");
                 w.writeln("}");
@@ -328,22 +357,22 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(enc, sctx.visit(decode_fn));
             w.write(std::move(enc.to_writer()));
             auto name = sctx.identifier();
-            w.writeln("func (s *", name, ") DecodeCopy(buf []byte) ([]byte,error) {");
+            w.writeln("func (s *", name, ") DecodeCopy(buf []byte", def, ") ([]byte,error) {");
             {
                 auto scope = w.indent_scope();
                 sctx.config().imports.insert("bytes");
                 w.writeln("r := bytes.NewReader(buf)");
-                w.writeln("err := s.Read(r)");
+                w.writeln("err := s.Read(r", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return nil,err");
                 w.writeln("}");
                 w.writeln("return buf[int(r.Size()) - r.Len():], nil");
             }
             w.writeln("}");
-            w.writeln("func (s *", name, ") DecodeExactCopy(buf []byte) error {");
+            w.writeln("func (s *", name, ") DecodeExactCopy(buf []byte", def, ") error {");
             {
                 auto scope = w.indent_scope();
-                w.writeln("remain,err := s.DecodeCopy(buf)");
+                w.writeln("remain,err := s.DecodeCopy(buf", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return err");
                 w.writeln("}");
@@ -362,21 +391,21 @@ DEFINE_VISITOR(entry_before) {
             MAYBE(enc, sctx.visit(decode_fn));
             w.write(std::move(enc.to_writer()));
             auto name = sctx.identifier();
-            w.writeln("func (s *", name, ") Decode(buf []byte) ([]byte,error) {");
+            w.writeln("func (s *", name, ") Decode(buf []byte", def, ") ([]byte,error) {");
             {
                 auto scope = w.indent_scope();
                 w.writeln("var offset int");
-                w.writeln("err := s.DecodeSlice(buf,&offset)");
+                w.writeln("err := s.DecodeSlice(buf,&offset", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return nil,err");
                 w.writeln("}");
                 w.writeln("return buf[offset:], nil");
             }
             w.writeln("}");
-            w.writeln("func (s *", name, ") DecodeExact(buf []byte) error {");
+            w.writeln("func (s *", name, ") DecodeExact(buf []byte", def, ") error {");
             {
                 auto scope = w.indent_scope();
-                w.writeln("remain,err := s.Decode(buf)");
+                w.writeln("remain,err := s.Decode(buf", use, ")");
                 w.writeln("if err != nil {");
                 w.indent_writeln("return err");
                 w.writeln("}");
@@ -662,9 +691,10 @@ DEFINE_VISITOR(entry_before) {
             w.writeln("if !ok {");
             {
                 auto scope = w.indent_scope();
+                std::string nil = ictx.config().append_io ? "nil," : "";
                 if (ictx.init_check.init_check_type == ebm::InitCheckType::union_init_encode) {
                     ictx.config().imports.insert("errors");
-                    w.writeln("return errors.New(\"invalid union type for encoding\")");
+                    w.writeln("return ", nil, "errors.New(\"invalid union type for encoding\")");
                 }
                 else if (ictx.init_check.init_check_type == ebm::InitCheckType::union_get) {
                     MAYBE(func_decl, ictx.get_field<"id.func_decl">(ictx.init_check.related_function));

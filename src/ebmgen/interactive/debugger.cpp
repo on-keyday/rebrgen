@@ -23,7 +23,6 @@
 #include "ebmgen/mapping.hpp"
 #include "error/error.h"
 #include "escape/escape.h"
-#include "number/parse.h"
 #include "number/prefix.h"
 #include <strutil/splits.h>
 #include <comb2/composite/cmdline.h>
@@ -679,7 +678,7 @@ namespace ebmgen {
             }
             auto ident = args[1];
             std::uint64_t id;
-            if (!futils::number::parse_integer(ident, id)) {
+            if (!futils::number::prefix_integer(ident, id)) {
                 cout << "Invalid identifier: " << ident << "\n";
                 return;
             }

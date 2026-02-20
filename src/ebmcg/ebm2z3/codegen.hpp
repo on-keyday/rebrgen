@@ -262,37 +262,6 @@ namespace ebm2z3 {
     struct DefaultCodegenVisitorHook {}; // Hook tag
     template <typename Tag>
     struct DefaultCodegenVisitorInlinedHook {}; // Hook tag
-    template<typename T>
-    constexpr bool dependent_false = false;
-    template<typename Context>
-    concept HasVisitorInContext = requires(const Context& ctx) { ctx.visitor; };
-    template<typename Context>
-    concept HasLegacyVisitorInContext = requires(const Context& ctx) { *ctx.__legacy_compat_ptr; };
-    template<typename Result,typename VisitorImpl,typename Context>
-    concept HasVisitor = !std::is_base_of_v<ContextBase<std::decay_t<VisitorImpl>>,std::decay_t<VisitorImpl>> && requires(VisitorImpl v,Context c) {
-         { v.visit(c) } -> std::convertible_to<expected<Result>>;
-    };
-    template<typename Context>
-    decltype(auto) get_visitor_arg_from_context(Context&& ctx) {
-        if constexpr (HasVisitorInContext<Context>) {
-            return *ctx.visitor.__legacy_compat_ptr;
-        }
-        else if constexpr (HasLegacyVisitorInContext<Context>) {
-            return *ctx.__legacy_compat_ptr;
-        }
-        else {
-            static_assert(dependent_false<Context>, "No visitor found in context");
-        }
-    }
-    template<typename Result,typename UserContext,typename TypeContext>
-    auto& get_visitor_from_context(UserContext&& uctx,TypeContext&& ctx) {
-        if constexpr (HasVisitor<Result,UserContext,TypeContext>) {
-            return uctx;
-        }
-        else {
-            return get_visitor_arg_from_context(uctx);
-        }
-    }
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_entry(Context&& ctx);
     template<typename Result = Result, typename UserContext,typename TypeContext>
@@ -1365,13 +1334,13 @@ namespace ebm2z3 {
     struct Context_Type;
     struct Context_Types;
     struct BaseVisitor {
-        BaseVisitor(MergedVisitor* __legacy_compat_ptr,ebmgen::EBMProxy module_,Flags& flags,Output& output,futils::binary::writer& wm) :__legacy_compat_ptr(__legacy_compat_ptr),module_(module_, ebmgen::lazy_init),flags(flags),output(output),wm(wm){}
+        BaseVisitor(MergedVisitor* __legacy_compat_ptr,Flags& flags,Output& output,futils::binary::writer& wm,ebmgen::EBMProxy module_) :__legacy_compat_ptr(__legacy_compat_ptr),flags(flags),output(output),wm(wm),module_(module_, ebmgen::lazy_init){}
         static constexpr const char* program_name = "ebm2z3";
         MergedVisitor* const __legacy_compat_ptr;
-        ebmgen::MappingTable module_;
         Flags& flags;
         Output& output;
         ebmcodegen::WriterManager<CodeWriter> wm;
+        ebmgen::MappingTable module_;
         #if __has_include("visitor/Visitor_before.hpp")
         #include "visitor/Visitor_before.hpp"
         #elif __has_include("visitor/dsl/Visitor_before_dsl.hpp")

@@ -12,6 +12,7 @@ namespace ebmcodegen {
         std::string_view ns_name;
         std::vector<LocationInfo> include_locations;
         bool is_codegen = false;
+        bool ebmgen_mode = false;
 
         std::string_view lang;
         std::string_view program_name;

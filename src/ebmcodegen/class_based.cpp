@@ -16,6 +16,7 @@ namespace ebmcodegen {
     constexpr auto macro_CODEGEN_CONTEXT_PARAMETERS = "CODEGEN_CONTEXT_PARAMETERS";
     constexpr auto macro_CODEGEN_CONTEXT = "CODEGEN_CONTEXT";
     constexpr auto macro_CODEGEN_EXPECTED_PRIORITY = "CODEGEN_EXPECTED_PRIORITY";
+    constexpr auto macro_CODEGEN_MAY_HIJACK = "CODEGEN_MAY_HIJACK";
     constexpr auto legacy_compat_ptr_name = "__legacy_compat_ptr";
     constexpr auto template_param_result(bool is_decl) {
         if (is_decl) {
@@ -467,7 +468,20 @@ namespace ebmcodegen {
         w.writeln();
     }
 
+    void generate_hijack_logic_macro(CodeWriter& w) {
+        auto may_inject = "value";
+        w.writeln("#define ", macro_CODEGEN_MAY_HIJACK, "(value) \\");
+        w.writeln("if (ebmcodegen::util::needs_return(value)) { \\");
+        {
+            auto if_scope = w.indent_scope();
+            w.writeln("return ebmcodegen::util::wrap_return(std::move(value)); \\");
+        }
+        w.writeln("}");
+    }
+
     void handle_hijack_logic(CodeWriter& w, std::string_view may_inject) {
+        w.writeln(macro_CODEGEN_MAY_HIJACK, "(", may_inject, ");");
+        /*
         w.writeln("if (!", may_inject, ") {");
         {
             auto if_scope = w.indent_scope();
@@ -485,6 +499,7 @@ namespace ebmcodegen {
             w.writeln("return ", may_inject, ";");
         }
         w.writeln("}");
+        */
     }
 
     void generate_visitor_requirements(CodeWriter& w, const std::string_view result_type) {
@@ -897,16 +912,18 @@ namespace ebmcodegen {
 
     using UtilityClasses = std::map<std::string, UtilityClass>;
 
-    UtilityClasses generate_utility_classes() {
+    UtilityClasses generate_utility_classes(bool ebmgen_mode) {
         UtilityClasses utility_classes;
         UtilityClass base_visitor;
         base_visitor.name = "BaseVisitor";
-        base_visitor.fields.push_back(UtilityClassField{.name = "program_name", .type = "static constexpr const char*"});
-        base_visitor.fields.push_back(UtilityClassField{.name = legacy_compat_ptr_name, .type = "MergedVisitor* const", .constructor_type = "MergedVisitor*", .back_ptr_when_derived = true});
+        if (!ebmgen_mode) {
+            base_visitor.fields.push_back(UtilityClassField{.name = "program_name", .type = "static constexpr const char*"});
+            base_visitor.fields.push_back(UtilityClassField{.name = legacy_compat_ptr_name, .type = "MergedVisitor* const", .constructor_type = "MergedVisitor*", .back_ptr_when_derived = true});
+            base_visitor.fields.push_back(UtilityClassField{.name = "flags", .type = "Flags&", .constructor_type = "Flags&"});
+            base_visitor.fields.push_back(UtilityClassField{.name = "output", .type = "Output&", .constructor_type = "Output&"});
+            base_visitor.fields.push_back(UtilityClassField{.name = "wm", .type = "ebmcodegen::WriterManager<CodeWriter>", .constructor_type = "futils::binary::writer&"});
+        }
         base_visitor.fields.push_back(UtilityClassField{.name = "module_", .type = "ebmgen::MappingTable", .constructor_type = "ebmgen::EBMProxy", .constructor_additional_arg = "ebmgen::lazy_init"});
-        base_visitor.fields.push_back(UtilityClassField{.name = "flags", .type = "Flags&", .constructor_type = "Flags&"});
-        base_visitor.fields.push_back(UtilityClassField{.name = "output", .type = "Output&", .constructor_type = "Output&"});
-        base_visitor.fields.push_back(UtilityClassField{.name = "wm", .type = "ebmcodegen::WriterManager<CodeWriter>", .constructor_type = "futils::binary::writer&"});
         utility_classes["BaseVisitor"] = std::move(base_visitor);
         return utility_classes;
     }
@@ -922,7 +939,7 @@ namespace ebmcodegen {
         }
     }
 
-    void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info, const UtilityClass& base_visitor) {
+    void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info, const UtilityClass& base_visitor, bool ebmgen_mode) {
         w.writeln("struct BaseVisitor {");
         {
             auto scope = w.indent_scope();
@@ -934,7 +951,9 @@ namespace ebmcodegen {
                 }
                 w.writeln(";");
             }
-            user_config_include(w, includes_info.user_include.visitor, includes_info);
+            if (!ebmgen_mode) {
+                user_config_include(w, includes_info.user_include.visitor, includes_info);
+            }
         }
         w.writeln("};");
 
@@ -1116,7 +1135,9 @@ namespace ebmcodegen {
             w.indent_writeln("return value;");
             w.writeln("}");
         }
-        user_config_include(w, includes_info.user_include.result, includes_info);
+        if (!includes_info.includes.ebmgen_mode) {
+            user_config_include(w, includes_info.user_include.result, includes_info);
+        }
         result_scope.execute();
         w.writeln("};");
     }
@@ -1645,7 +1666,7 @@ namespace ebmcodegen {
         {
             auto scope = w.indent_scope();
             w.writeln(ns_name, "::VisitorsImpl visitors_impl;");
-            w.writeln(ns_name, "::MergedVisitor visitor{ebm,flags,output,w,visitors_impl};");
+            w.writeln(ns_name, "::MergedVisitor visitor{flags,output,w,ebm,visitors_impl};");
             w.writeln("auto entry_function = [&]() -> ", fq_result_type, " {");
             {
                 auto entry_scope = w.indent_scope();
@@ -1845,19 +1866,24 @@ namespace ebmcodegen {
 
     void generate(const IncludeLocations& locations, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs) {
         auto result_type = "expected<Result>";
+        bool ebmgen_mode = locations.ebmgen_mode;  // on ebmgen_mode, omit some needless features like user defined includes
         auto context_classes = generate_context_classes(structs);
-        auto utility_classes = generate_utility_classes();
+        auto utility_classes = generate_utility_classes(ebmgen_mode);
         auto hooks = generate_hooks();
         auto ns_name = locations.ns_name;
         auto is_codegen = locations.is_codegen;
         IncludeInfo includes_info{.includes = locations, .hooks = hooks};
 
         generate_common_include_guard(hdr, true);
-        generate_user_include_before(hdr, includes_info);
+        if (!ebmgen_mode) {
+            generate_user_include_before(hdr, includes_info);
+        }
         generate_namespace(hdr, ns_name, true);
         generate_undef_dummy_macros(src);
-        generate_forward_declaration_source(src, ns_name, result_type, is_codegen);
-        generate_user_implemented_includes(src, ns_name, hooks, locations, context_classes, result_type, utility_classes);
+        if (!ebmgen_mode) {
+            generate_forward_declaration_source(src, ns_name, result_type, is_codegen);
+            generate_user_implemented_includes(src, ns_name, hooks, locations, context_classes, result_type, utility_classes);
+        }
         generate_namespace(src, ns_name, true);
         auto ns_scope_hdr = hdr.indent_scope();
         auto ns_scope_src = src.indent_scope();
@@ -1865,15 +1891,20 @@ namespace ebmcodegen {
 
         generate_namespace_injection(hdr);
         generate_Result(hdr, is_codegen, includes_info);
-        generate_Flags(hdr, includes_info);
-        generate_Output(hdr, includes_info);
-
-        for (size_t i = 0; i < hooks.size() - 1; i++) {
-            generate_hook_tag(hdr, hooks[i]);
+        if (!ebmgen_mode) {
+            generate_Flags(hdr, includes_info);
+            generate_Output(hdr, includes_info);
         }
-        generate_hook_tag(src, hooks.back());  // hidden hook in source
-        generate_always_false_template(hdr);
-        generate_get_visitor_from_context(hdr, result_type);
+
+        if (!ebmgen_mode) {
+            for (size_t i = 0; i < hooks.size() - 1; i++) {
+                generate_hook_tag(hdr, hooks[i]);
+            }
+            generate_hook_tag(src, hooks.back());  // hidden hook in source
+        }
+        // generate_always_false_template(hdr);
+        // generate_get_visitor_from_context(hdr, result_type);
+        generate_hijack_logic_macro(src);
         for (auto& cls_group : context_classes) {
             generate_dispatcher_function(hdr, src, cls_group, result_type);
             generate_list_dispatch_default(hdr, cls_group.main(), is_codegen, result_type);
@@ -1884,7 +1915,7 @@ namespace ebmcodegen {
         generate_user_interface(hdr, context_classes, result_type);
         generate_impl_getter_header(hdr);
         generate_Contexts_forward_declaration(hdr, context_classes);
-        generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);
+        generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"], ebmgen_mode);
         generate_initial_context(hdr);
 
         generate_visitor_customization_point(hdr);
@@ -1893,24 +1924,34 @@ namespace ebmcodegen {
                 generate_context_class(hdr, cls);
                 generate_visitor_tag(hdr, cls);
                 deconstruct_context_fields_macro(hdr, ns_name, cls);
-                generate_generator_default_hook(src, hooks.back(), hooks.size() - 1, cls, is_codegen, result_type);
+                if (!ebmgen_mode) {
+                    generate_generator_default_hook(src, hooks.back(), hooks.size() - 1, cls, is_codegen, result_type);
+                }
             }
         }
 
-        generate_merged_visitor(src, hooks, context_classes, result_type, utility_classes);
-        generate_impl_getter_source(src);
+        if (!ebmgen_mode) {
+            generate_merged_visitor(src, hooks, context_classes, result_type, utility_classes);
+            generate_impl_getter_source(src);
 
-        generate_unimplemented_stub_def(src, result_type, is_codegen);
+            generate_unimplemented_stub_def(src, result_type, is_codegen);
+        }
 
-        generate_dummy_macros(hdr, ns_name, hooks.front(), context_classes);
+        if (!ebmgen_mode) {
+            generate_dummy_macros(hdr, ns_name, hooks.front(), context_classes);
+        }
 
         ns_scope_hdr.execute();
         ns_scope_src.execute();
         generate_namespace(hdr, ns_name, false);
         generate_namespace(src, ns_name, false);
-        generate_user_include_after(hdr, includes_info);
+        if (!ebmgen_mode) {
+            generate_user_include_after(hdr, includes_info);
+        }
         generate_common_include_guard(hdr, false);
-        generate_entry_point(src, ns_name);
+        if (!ebmgen_mode) {
+            generate_entry_point(src, ns_name);
+        }
     }
 
     void generate_hook_description(CodeWriter& w, const ParsedHookName& hook_name, const ContextClass& cls, UtilityClasses& utils, const std::map<std::string_view, Struct>& struct_map) {
@@ -1995,7 +2036,7 @@ namespace ebmcodegen {
 
     ebmgen::expected<void> class_based_hook_descriptions(CodeWriter& w, const ParsedHookName& hook_name, const std::map<std::string_view, Struct>& structs) {
         auto context_classes = generate_context_classes(structs);
-        auto utility_classes = generate_utility_classes();
+        auto utility_classes = generate_utility_classes(false);
         auto hooks = generate_hooks();
 
         for (auto& cls_group : context_classes) {

@@ -60,6 +60,7 @@ enum class QueryOutputFormat {
     ID,
     Text,
     JSON,
+    Hex,
 };
 
 struct Flags : futils::cmdline::templ::HelpOption {
@@ -109,6 +110,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"id", QueryOutputFormat::ID},
                        {"text", QueryOutputFormat::Text},
                        {"json", QueryOutputFormat::JSON},
+                       {"hex", QueryOutputFormat::Hex},
+
                    });
         ctx.VarString<true>(&cfg_output, "cfg-output,c", "control flow graph output file (if -, write to stdout)", "FILE");
         ctx.VarBoolFunc(&output_format, "base64", "output as base64 encoding (for web playground compatibility)", [&](bool y, auto) {
@@ -535,6 +538,27 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
             cout << ss.str();
             cout << "Total matched objects: " << result.size() << "\n";
+        }
+        else if (flags.query_output_format == QueryOutputFormat::Hex) {
+            for (auto obj : result) {
+                auto objv = table->get_object(obj);
+                std::visit([&](auto&& o) {
+                    if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {
+                        std::string buffer;
+                        futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
+                        auto err = o->encode(w);
+                        if (err) {
+                            cout << "Failed to encode object: " << err.template error<std::string>() << '\n';
+                        }
+                        else {
+                            std::string hex_output;
+                            futils::number::hex::to_hex(hex_output, buffer);
+                            cout << hex_output << "\n";
+                        }
+                    }
+                },
+                           objv);
+            }
         }
         else {
             for (auto obj : result) {

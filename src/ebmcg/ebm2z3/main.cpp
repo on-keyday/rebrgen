@@ -7728,10 +7728,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_entry>> {
     expected<Result> visit(Context_entry& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7759,10 +7759,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_entry_before>>
     expected<Result> visit(Context_entry_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7790,10 +7790,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_entry_after>> 
     expected<Result> visit(Context_entry_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7821,10 +7821,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_pre_visitor>> 
     expected<Result> visit(Context_pre_visitor& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7852,10 +7852,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_pre_visitor_be
     expected<Result> visit(Context_pre_visitor_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7883,10 +7883,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_pre_visitor_af
     expected<Result> visit(Context_pre_visitor_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7914,10 +7914,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_post_entry>> {
     expected<Result> visit(Context_post_entry<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7945,10 +7945,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_post_entry_bef
     expected<Result> visit(Context_post_entry_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -7976,10 +7976,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_post_entry_aft
     expected<Result> visit(Context_post_entry_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8007,10 +8007,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_BLOC
     expected<Result> visit(Context_Statement_BLOCK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8038,10 +8038,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_BLOC
     expected<Result> visit(Context_Statement_BLOCK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8069,10 +8069,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_BLOC
     expected<Result> visit(Context_Statement_BLOCK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8100,10 +8100,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ASSI
     expected<Result> visit(Context_Statement_ASSIGNMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8131,10 +8131,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ASSI
     expected<Result> visit(Context_Statement_ASSIGNMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8162,10 +8162,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ASSI
     expected<Result> visit(Context_Statement_ASSIGNMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8193,10 +8193,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_YIEL
     expected<Result> visit(Context_Statement_YIELD& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8224,10 +8224,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_YIEL
     expected<Result> visit(Context_Statement_YIELD_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8255,10 +8255,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_YIEL
     expected<Result> visit(Context_Statement_YIELD_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8286,10 +8286,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_APPE
     expected<Result> visit(Context_Statement_APPEND& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8317,10 +8317,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_APPE
     expected<Result> visit(Context_Statement_APPEND_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8348,10 +8348,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_APPE
     expected<Result> visit(Context_Statement_APPEND_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8379,10 +8379,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_RETU
     expected<Result> visit(Context_Statement_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8410,10 +8410,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_RETU
     expected<Result> visit(Context_Statement_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8441,10 +8441,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_RETU
     expected<Result> visit(Context_Statement_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8472,10 +8472,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ERRO
     expected<Result> visit(Context_Statement_ERROR_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8503,10 +8503,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ERRO
     expected<Result> visit(Context_Statement_ERROR_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8534,10 +8534,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ERRO
     expected<Result> visit(Context_Statement_ERROR_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8565,10 +8565,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ASSE
     expected<Result> visit(Context_Statement_ASSERT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8596,10 +8596,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ASSE
     expected<Result> visit(Context_Statement_ASSERT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8627,10 +8627,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ASSE
     expected<Result> visit(Context_Statement_ASSERT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8658,10 +8658,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_READ
     expected<Result> visit(Context_Statement_READ_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8689,10 +8689,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_READ
     expected<Result> visit(Context_Statement_READ_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8720,10 +8720,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_READ
     expected<Result> visit(Context_Statement_READ_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8751,10 +8751,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_WRIT
     expected<Result> visit(Context_Statement_WRITE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8782,10 +8782,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_WRIT
     expected<Result> visit(Context_Statement_WRITE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8813,10 +8813,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_WRIT
     expected<Result> visit(Context_Statement_WRITE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8844,10 +8844,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_RESE
     expected<Result> visit(Context_Statement_RESERVE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8875,10 +8875,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_RESE
     expected<Result> visit(Context_Statement_RESERVE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8906,10 +8906,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_RESE
     expected<Result> visit(Context_Statement_RESERVE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8937,10 +8937,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_IF_S
     expected<Result> visit(Context_Statement_IF_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8968,10 +8968,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_IF_S
     expected<Result> visit(Context_Statement_IF_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -8999,10 +8999,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_IF_S
     expected<Result> visit(Context_Statement_IF_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9030,10 +9030,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_LOOP
     expected<Result> visit(Context_Statement_LOOP_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9061,10 +9061,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_LOOP
     expected<Result> visit(Context_Statement_LOOP_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9092,10 +9092,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_LOOP
     expected<Result> visit(Context_Statement_LOOP_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9123,10 +9123,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_MATC
     expected<Result> visit(Context_Statement_MATCH_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9154,10 +9154,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_MATC
     expected<Result> visit(Context_Statement_MATCH_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9185,10 +9185,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_MATC
     expected<Result> visit(Context_Statement_MATCH_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9216,10 +9216,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_MATC
     expected<Result> visit(Context_Statement_MATCH_BRANCH& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9247,10 +9247,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_MATC
     expected<Result> visit(Context_Statement_MATCH_BRANCH_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9278,10 +9278,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_MATC
     expected<Result> visit(Context_Statement_MATCH_BRANCH_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9309,10 +9309,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_BREA
     expected<Result> visit(Context_Statement_BREAK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9340,10 +9340,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_BREA
     expected<Result> visit(Context_Statement_BREAK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9371,10 +9371,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_BREA
     expected<Result> visit(Context_Statement_BREAK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9402,10 +9402,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_CONT
     expected<Result> visit(Context_Statement_CONTINUE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9433,10 +9433,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_CONT
     expected<Result> visit(Context_Statement_CONTINUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9464,10 +9464,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_CONT
     expected<Result> visit(Context_Statement_CONTINUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9495,10 +9495,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_FUNC
     expected<Result> visit(Context_Statement_FUNCTION_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9526,10 +9526,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_FUNC
     expected<Result> visit(Context_Statement_FUNCTION_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9557,10 +9557,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_FUNC
     expected<Result> visit(Context_Statement_FUNCTION_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9588,10 +9588,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_VARI
     expected<Result> visit(Context_Statement_VARIABLE_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9619,10 +9619,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_VARI
     expected<Result> visit(Context_Statement_VARIABLE_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9650,10 +9650,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_VARI
     expected<Result> visit(Context_Statement_VARIABLE_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9681,10 +9681,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PARA
     expected<Result> visit(Context_Statement_PARAMETER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9712,10 +9712,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PARA
     expected<Result> visit(Context_Statement_PARAMETER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9743,10 +9743,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PARA
     expected<Result> visit(Context_Statement_PARAMETER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9774,10 +9774,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_FIEL
     expected<Result> visit(Context_Statement_FIELD_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9805,10 +9805,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_FIEL
     expected<Result> visit(Context_Statement_FIELD_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9836,10 +9836,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_FIEL
     expected<Result> visit(Context_Statement_FIELD_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9867,10 +9867,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_COMP
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9898,10 +9898,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_COMP
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9929,10 +9929,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_COMP
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9960,10 +9960,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENUM
     expected<Result> visit(Context_Statement_ENUM_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -9991,10 +9991,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENUM
     expected<Result> visit(Context_Statement_ENUM_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10022,10 +10022,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENUM
     expected<Result> visit(Context_Statement_ENUM_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10053,10 +10053,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENUM
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10084,10 +10084,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENUM
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10115,10 +10115,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENUM
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10146,10 +10146,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_STRU
     expected<Result> visit(Context_Statement_STRUCT_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10177,10 +10177,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_STRU
     expected<Result> visit(Context_Statement_STRUCT_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10208,10 +10208,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_STRU
     expected<Result> visit(Context_Statement_STRUCT_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10239,10 +10239,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_UNIO
     expected<Result> visit(Context_Statement_UNION_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10270,10 +10270,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_UNIO
     expected<Result> visit(Context_Statement_UNION_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10301,10 +10301,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_UNIO
     expected<Result> visit(Context_Statement_UNION_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10332,10 +10332,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_UNIO
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10363,10 +10363,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_UNIO
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10394,10 +10394,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_UNIO
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10425,10 +10425,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROG
     expected<Result> visit(Context_Statement_PROGRAM_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10456,10 +10456,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROG
     expected<Result> visit(Context_Statement_PROGRAM_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10487,10 +10487,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROG
     expected<Result> visit(Context_Statement_PROGRAM_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10518,10 +10518,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROP
     expected<Result> visit(Context_Statement_PROPERTY_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10549,10 +10549,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROP
     expected<Result> visit(Context_Statement_PROPERTY_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10580,10 +10580,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROP
     expected<Result> visit(Context_Statement_PROPERTY_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10611,10 +10611,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROP
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10642,10 +10642,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROP
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10673,10 +10673,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_PROP
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10704,10 +10704,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_META
     expected<Result> visit(Context_Statement_METADATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10735,10 +10735,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_META
     expected<Result> visit(Context_Statement_METADATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10766,10 +10766,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_META
     expected<Result> visit(Context_Statement_METADATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10797,10 +10797,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_IMPO
     expected<Result> visit(Context_Statement_IMPORT_MODULE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10828,10 +10828,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_IMPO
     expected<Result> visit(Context_Statement_IMPORT_MODULE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10859,10 +10859,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_IMPO
     expected<Result> visit(Context_Statement_IMPORT_MODULE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10890,10 +10890,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_EXPR
     expected<Result> visit(Context_Statement_EXPRESSION& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10921,10 +10921,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_EXPR
     expected<Result> visit(Context_Statement_EXPRESSION_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10952,10 +10952,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_EXPR
     expected<Result> visit(Context_Statement_EXPRESSION_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -10983,10 +10983,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ERRO
     expected<Result> visit(Context_Statement_ERROR_REPORT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11014,10 +11014,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ERRO
     expected<Result> visit(Context_Statement_ERROR_REPORT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11045,10 +11045,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ERRO
     expected<Result> visit(Context_Statement_ERROR_REPORT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11076,10 +11076,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_LOWE
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11107,10 +11107,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_LOWE
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11138,10 +11138,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_LOWE
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11169,10 +11169,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_SUB_
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11200,10 +11200,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_SUB_
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11231,10 +11231,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_SUB_
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11262,10 +11262,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_INIT
     expected<Result> visit(Context_Statement_INIT_CHECK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11293,10 +11293,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_INIT
     expected<Result> visit(Context_Statement_INIT_CHECK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11324,10 +11324,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_INIT
     expected<Result> visit(Context_Statement_INIT_CHECK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11355,10 +11355,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENDI
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11386,10 +11386,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENDI
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11417,10 +11417,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ENDI
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11448,10 +11448,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ARRA
     expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11479,10 +11479,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ARRA
     expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11510,10 +11510,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_ARRA
     expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11541,10 +11541,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_INT_
     expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11572,10 +11572,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_INT_
     expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11603,10 +11603,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_INT_
     expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11634,10 +11634,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement>> {
     expected<Result> visit(Context_Statement& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11665,10 +11665,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_befo
     expected<Result> visit(Context_Statement_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11696,10 +11696,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Statement_afte
     expected<Result> visit(Context_Statement_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11727,10 +11727,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Block>> {
     expected<Result> visit(Context_Block& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11758,10 +11758,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Block_before>>
     expected<Result> visit(Context_Block_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11789,10 +11789,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Block_after>> 
     expected<Result> visit(Context_Block_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11820,10 +11820,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_INT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11851,10 +11851,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11882,10 +11882,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11913,10 +11913,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_INT64& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11944,10 +11944,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_INT64_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -11975,10 +11975,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_INT64_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12006,10 +12006,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_BOOL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12037,10 +12037,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_BOOL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12068,10 +12068,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_BOOL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12099,10 +12099,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_STRING& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12130,10 +12130,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_STRING_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12161,10 +12161,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_STRING_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12192,10 +12192,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_TYPE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12223,10 +12223,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_TYPE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12254,10 +12254,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_TYPE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12285,10 +12285,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_CHAR& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12316,10 +12316,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_CHAR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12347,10 +12347,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_LIT
     expected<Result> visit(Context_Expression_LITERAL_CHAR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12378,10 +12378,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IDE
     expected<Result> visit(Context_Expression_IDENTIFIER& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12409,10 +12409,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IDE
     expected<Result> visit(Context_Expression_IDENTIFIER_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12440,10 +12440,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IDE
     expected<Result> visit(Context_Expression_IDENTIFIER_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12471,10 +12471,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_BIN
     expected<Result> visit(Context_Expression_BINARY_OP& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12502,10 +12502,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_BIN
     expected<Result> visit(Context_Expression_BINARY_OP_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12533,10 +12533,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_BIN
     expected<Result> visit(Context_Expression_BINARY_OP_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12564,10 +12564,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_UNA
     expected<Result> visit(Context_Expression_UNARY_OP& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12595,10 +12595,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_UNA
     expected<Result> visit(Context_Expression_UNARY_OP_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12626,10 +12626,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_UNA
     expected<Result> visit(Context_Expression_UNARY_OP_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12657,10 +12657,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CAL
     expected<Result> visit(Context_Expression_CALL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12688,10 +12688,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CAL
     expected<Result> visit(Context_Expression_CALL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12719,10 +12719,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CAL
     expected<Result> visit(Context_Expression_CALL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12750,10 +12750,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IND
     expected<Result> visit(Context_Expression_INDEX_ACCESS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12781,10 +12781,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IND
     expected<Result> visit(Context_Expression_INDEX_ACCESS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12812,10 +12812,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IND
     expected<Result> visit(Context_Expression_INDEX_ACCESS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12843,10 +12843,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_MEM
     expected<Result> visit(Context_Expression_MEMBER_ACCESS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12874,10 +12874,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_MEM
     expected<Result> visit(Context_Expression_MEMBER_ACCESS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12905,10 +12905,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_MEM
     expected<Result> visit(Context_Expression_MEMBER_ACCESS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12936,10 +12936,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ENU
     expected<Result> visit(Context_Expression_ENUM_MEMBER& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12967,10 +12967,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ENU
     expected<Result> visit(Context_Expression_ENUM_MEMBER_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -12998,10 +12998,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ENU
     expected<Result> visit(Context_Expression_ENUM_MEMBER_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13029,10 +13029,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_TYP
     expected<Result> visit(Context_Expression_TYPE_CAST& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13060,10 +13060,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_TYP
     expected<Result> visit(Context_Expression_TYPE_CAST_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13091,10 +13091,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_TYP
     expected<Result> visit(Context_Expression_TYPE_CAST_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13122,10 +13122,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_RAN
     expected<Result> visit(Context_Expression_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13153,10 +13153,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_RAN
     expected<Result> visit(Context_Expression_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13184,10 +13184,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_RAN
     expected<Result> visit(Context_Expression_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13215,10 +13215,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_DEF
     expected<Result> visit(Context_Expression_DEFAULT_VALUE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13246,10 +13246,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_DEF
     expected<Result> visit(Context_Expression_DEFAULT_VALUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13277,10 +13277,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_DEF
     expected<Result> visit(Context_Expression_DEFAULT_VALUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13308,10 +13308,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IS_
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13339,10 +13339,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IS_
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13370,10 +13370,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IS_
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13401,10 +13401,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_GET
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13432,10 +13432,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_GET
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13463,10 +13463,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_GET
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13494,10 +13494,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_GET
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13525,10 +13525,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_GET
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13556,10 +13556,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_GET
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13587,10 +13587,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CAN
     expected<Result> visit(Context_Expression_CAN_READ_STREAM& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13618,10 +13618,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CAN
     expected<Result> visit(Context_Expression_CAN_READ_STREAM_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13649,10 +13649,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CAN
     expected<Result> visit(Context_Expression_CAN_READ_STREAM_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13680,10 +13680,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ARR
     expected<Result> visit(Context_Expression_ARRAY_SIZE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13711,10 +13711,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ARR
     expected<Result> visit(Context_Expression_ARRAY_SIZE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13742,10 +13742,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ARR
     expected<Result> visit(Context_Expression_ARRAY_SIZE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13773,10 +13773,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ENU
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13804,10 +13804,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ENU
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13835,10 +13835,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ENU
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13866,10 +13866,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IS_
     expected<Result> visit(Context_Expression_IS_ERROR& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13897,10 +13897,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IS_
     expected<Result> visit(Context_Expression_IS_ERROR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13928,10 +13928,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_IS_
     expected<Result> visit(Context_Expression_IS_ERROR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13959,10 +13959,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_MAX
     expected<Result> visit(Context_Expression_MAX_VALUE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -13990,10 +13990,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_MAX
     expected<Result> visit(Context_Expression_MAX_VALUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14021,10 +14021,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_MAX
     expected<Result> visit(Context_Expression_MAX_VALUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14052,10 +14052,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_REA
     expected<Result> visit(Context_Expression_READ_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14083,10 +14083,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_REA
     expected<Result> visit(Context_Expression_READ_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14114,10 +14114,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_REA
     expected<Result> visit(Context_Expression_READ_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14145,10 +14145,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_WRI
     expected<Result> visit(Context_Expression_WRITE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14176,10 +14176,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_WRI
     expected<Result> visit(Context_Expression_WRITE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14207,10 +14207,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_WRI
     expected<Result> visit(Context_Expression_WRITE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14238,10 +14238,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CON
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14269,10 +14269,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CON
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14300,10 +14300,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CON
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14331,10 +14331,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CON
     expected<Result> visit(Context_Expression_CONDITIONAL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14362,10 +14362,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CON
     expected<Result> visit(Context_Expression_CONDITIONAL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14393,10 +14393,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_CON
     expected<Result> visit(Context_Expression_CONDITIONAL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14424,10 +14424,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_AVA
     expected<Result> visit(Context_Expression_AVAILABLE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14455,10 +14455,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_AVA
     expected<Result> visit(Context_Expression_AVAILABLE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14486,10 +14486,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_AVA
     expected<Result> visit(Context_Expression_AVAILABLE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14517,10 +14517,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SIZ
     expected<Result> visit(Context_Expression_SIZEOF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14548,10 +14548,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SIZ
     expected<Result> visit(Context_Expression_SIZEOF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14579,10 +14579,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SIZ
     expected<Result> visit(Context_Expression_SIZEOF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14610,10 +14610,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SUB
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14641,10 +14641,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SUB
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14672,10 +14672,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SUB
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14703,10 +14703,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_OR_
     expected<Result> visit(Context_Expression_OR_COND& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14734,10 +14734,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_OR_
     expected<Result> visit(Context_Expression_OR_COND_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14765,10 +14765,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_OR_
     expected<Result> visit(Context_Expression_OR_COND_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14796,10 +14796,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ADD
     expected<Result> visit(Context_Expression_ADDRESS_OF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14827,10 +14827,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ADD
     expected<Result> visit(Context_Expression_ADDRESS_OF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14858,10 +14858,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_ADD
     expected<Result> visit(Context_Expression_ADDRESS_OF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14889,10 +14889,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_OPT
     expected<Result> visit(Context_Expression_OPTIONAL_OF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14920,10 +14920,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_OPT
     expected<Result> visit(Context_Expression_OPTIONAL_OF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14951,10 +14951,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_OPT
     expected<Result> visit(Context_Expression_OPTIONAL_OF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -14982,10 +14982,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SET
     expected<Result> visit(Context_Expression_SETTER_STATUS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15013,10 +15013,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SET
     expected<Result> visit(Context_Expression_SETTER_STATUS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15044,10 +15044,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SET
     expected<Result> visit(Context_Expression_SETTER_STATUS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15075,10 +15075,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SEL
     expected<Result> visit(Context_Expression_SELF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15106,10 +15106,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SEL
     expected<Result> visit(Context_Expression_SELF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15137,10 +15137,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_SEL
     expected<Result> visit(Context_Expression_SELF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15168,10 +15168,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_AS_
     expected<Result> visit(Context_Expression_AS_ARG& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15199,10 +15199,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_AS_
     expected<Result> visit(Context_Expression_AS_ARG_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15230,10 +15230,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_AS_
     expected<Result> visit(Context_Expression_AS_ARG_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15261,10 +15261,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression>> {
     expected<Result> visit(Context_Expression& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15292,10 +15292,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_bef
     expected<Result> visit(Context_Expression_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15323,10 +15323,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expression_aft
     expected<Result> visit(Context_Expression_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15354,10 +15354,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expressions>> 
     expected<Result> visit(Context_Expressions& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15385,10 +15385,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expressions_be
     expected<Result> visit(Context_Expressions_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15416,10 +15416,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Expressions_af
     expected<Result> visit(Context_Expressions_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15447,10 +15447,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_INT>> {
     expected<Result> visit(Context_Type_INT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15478,10 +15478,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_INT_befor
     expected<Result> visit(Context_Type_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15509,10 +15509,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_INT_after
     expected<Result> visit(Context_Type_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15540,10 +15540,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_UINT>> {
     expected<Result> visit(Context_Type_UINT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15571,10 +15571,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_UINT_befo
     expected<Result> visit(Context_Type_UINT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15602,10 +15602,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_UINT_afte
     expected<Result> visit(Context_Type_UINT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15633,10 +15633,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_USIZE>> {
     expected<Result> visit(Context_Type_USIZE& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15664,10 +15664,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_USIZE_bef
     expected<Result> visit(Context_Type_USIZE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15695,10 +15695,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_USIZE_aft
     expected<Result> visit(Context_Type_USIZE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15726,10 +15726,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_FLOAT>> {
     expected<Result> visit(Context_Type_FLOAT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15757,10 +15757,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_FLOAT_bef
     expected<Result> visit(Context_Type_FLOAT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15788,10 +15788,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_FLOAT_aft
     expected<Result> visit(Context_Type_FLOAT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15819,10 +15819,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_STRUCT>> 
     expected<Result> visit(Context_Type_STRUCT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15850,10 +15850,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_STRUCT_be
     expected<Result> visit(Context_Type_STRUCT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15881,10 +15881,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_STRUCT_af
     expected<Result> visit(Context_Type_STRUCT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15912,10 +15912,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_RECURSIVE
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15943,10 +15943,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_RECURSIVE
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -15974,10 +15974,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_RECURSIVE
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16005,10 +16005,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_BOOL>> {
     expected<Result> visit(Context_Type_BOOL& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16036,10 +16036,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_BOOL_befo
     expected<Result> visit(Context_Type_BOOL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16067,10 +16067,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_BOOL_afte
     expected<Result> visit(Context_Type_BOOL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16098,10 +16098,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VOID>> {
     expected<Result> visit(Context_Type_VOID& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16129,10 +16129,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VOID_befo
     expected<Result> visit(Context_Type_VOID_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16160,10 +16160,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VOID_afte
     expected<Result> visit(Context_Type_VOID_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16191,10 +16191,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_META>> {
     expected<Result> visit(Context_Type_META& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16222,10 +16222,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_META_befo
     expected<Result> visit(Context_Type_META_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16253,10 +16253,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_META_afte
     expected<Result> visit(Context_Type_META_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16284,10 +16284,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENUM>> {
     expected<Result> visit(Context_Type_ENUM& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16315,10 +16315,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENUM_befo
     expected<Result> visit(Context_Type_ENUM_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16346,10 +16346,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENUM_afte
     expected<Result> visit(Context_Type_ENUM_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16377,10 +16377,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ARRAY>> {
     expected<Result> visit(Context_Type_ARRAY& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16408,10 +16408,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ARRAY_bef
     expected<Result> visit(Context_Type_ARRAY_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16439,10 +16439,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ARRAY_aft
     expected<Result> visit(Context_Type_ARRAY_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16470,10 +16470,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VECTOR>> 
     expected<Result> visit(Context_Type_VECTOR& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16501,10 +16501,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VECTOR_be
     expected<Result> visit(Context_Type_VECTOR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16532,10 +16532,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VECTOR_af
     expected<Result> visit(Context_Type_VECTOR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16563,10 +16563,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VARIANT>>
     expected<Result> visit(Context_Type_VARIANT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16594,10 +16594,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VARIANT_b
     expected<Result> visit(Context_Type_VARIANT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16625,10 +16625,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_VARIANT_a
     expected<Result> visit(Context_Type_VARIANT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16656,10 +16656,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_RANGE>> {
     expected<Result> visit(Context_Type_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16687,10 +16687,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_RANGE_bef
     expected<Result> visit(Context_Type_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16718,10 +16718,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_RANGE_aft
     expected<Result> visit(Context_Type_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16749,10 +16749,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENCODER_R
     expected<Result> visit(Context_Type_ENCODER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16780,10 +16780,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENCODER_R
     expected<Result> visit(Context_Type_ENCODER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16811,10 +16811,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENCODER_R
     expected<Result> visit(Context_Type_ENCODER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16842,10 +16842,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_DECODER_R
     expected<Result> visit(Context_Type_DECODER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16873,10 +16873,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_DECODER_R
     expected<Result> visit(Context_Type_DECODER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16904,10 +16904,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_DECODER_R
     expected<Result> visit(Context_Type_DECODER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16935,10 +16935,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENCODER_I
     expected<Result> visit(Context_Type_ENCODER_INPUT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16966,10 +16966,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENCODER_I
     expected<Result> visit(Context_Type_ENCODER_INPUT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -16997,10 +16997,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_ENCODER_I
     expected<Result> visit(Context_Type_ENCODER_INPUT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17028,10 +17028,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_DECODER_I
     expected<Result> visit(Context_Type_DECODER_INPUT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17059,10 +17059,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_DECODER_I
     expected<Result> visit(Context_Type_DECODER_INPUT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17090,10 +17090,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_DECODER_I
     expected<Result> visit(Context_Type_DECODER_INPUT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17121,10 +17121,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_PROPERTY_
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17152,10 +17152,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_PROPERTY_
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17183,10 +17183,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_PROPERTY_
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17214,10 +17214,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_OPTIONAL>
     expected<Result> visit(Context_Type_OPTIONAL& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17245,10 +17245,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_OPTIONAL_
     expected<Result> visit(Context_Type_OPTIONAL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17276,10 +17276,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_OPTIONAL_
     expected<Result> visit(Context_Type_OPTIONAL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17307,10 +17307,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_PTR>> {
     expected<Result> visit(Context_Type_PTR& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17338,10 +17338,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_PTR_befor
     expected<Result> visit(Context_Type_PTR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17369,10 +17369,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_PTR_after
     expected<Result> visit(Context_Type_PTR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17400,10 +17400,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_FUNCTION>
     expected<Result> visit(Context_Type_FUNCTION& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17431,10 +17431,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_FUNCTION_
     expected<Result> visit(Context_Type_FUNCTION_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17462,10 +17462,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_FUNCTION_
     expected<Result> visit(Context_Type_FUNCTION_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17493,10 +17493,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type>> {
     expected<Result> visit(Context_Type& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17524,10 +17524,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_before>> 
     expected<Result> visit(Context_Type_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17555,10 +17555,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Type_after>> {
     expected<Result> visit(Context_Type_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17586,10 +17586,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Types>> {
     expected<Result> visit(Context_Types& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17617,10 +17617,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Types_before>>
     expected<Result> visit(Context_Types_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -17648,10 +17648,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedHook<ebm2z3::VisitorTag_Types_after>> 
     expected<Result> visit(Context_Types_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25383,10 +25383,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_entry>> {
     expected<Result> visit(Context_entry& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25414,10 +25414,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_entry_befor
     expected<Result> visit(Context_entry_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25445,10 +25445,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_entry_after
     expected<Result> visit(Context_entry_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25476,10 +25476,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_pre_visitor
     expected<Result> visit(Context_pre_visitor& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25507,10 +25507,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_pre_visitor
     expected<Result> visit(Context_pre_visitor_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25538,10 +25538,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_pre_visitor
     expected<Result> visit(Context_pre_visitor_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25569,10 +25569,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_post_entry>
     expected<Result> visit(Context_post_entry<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25600,10 +25600,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_post_entry_
     expected<Result> visit(Context_post_entry_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25631,10 +25631,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_post_entry_
     expected<Result> visit(Context_post_entry_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25662,10 +25662,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_B
     expected<Result> visit(Context_Statement_BLOCK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25693,10 +25693,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_B
     expected<Result> visit(Context_Statement_BLOCK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25724,10 +25724,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_B
     expected<Result> visit(Context_Statement_BLOCK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25755,10 +25755,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ASSIGNMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25786,10 +25786,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ASSIGNMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25817,10 +25817,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ASSIGNMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25848,10 +25848,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_Y
     expected<Result> visit(Context_Statement_YIELD& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25879,10 +25879,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_Y
     expected<Result> visit(Context_Statement_YIELD_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25910,10 +25910,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_Y
     expected<Result> visit(Context_Statement_YIELD_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25941,10 +25941,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_APPEND& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -25972,10 +25972,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_APPEND_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26003,10 +26003,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_APPEND_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26034,10 +26034,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26065,10 +26065,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26096,10 +26096,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26127,10 +26127,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ERROR_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26158,10 +26158,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ERROR_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26189,10 +26189,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ERROR_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26220,10 +26220,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ASSERT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26251,10 +26251,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ASSERT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26282,10 +26282,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ASSERT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26313,10 +26313,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_READ_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26344,10 +26344,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_READ_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26375,10 +26375,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_READ_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26406,10 +26406,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_W
     expected<Result> visit(Context_Statement_WRITE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26437,10 +26437,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_W
     expected<Result> visit(Context_Statement_WRITE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26468,10 +26468,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_W
     expected<Result> visit(Context_Statement_WRITE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26499,10 +26499,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_RESERVE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26530,10 +26530,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_RESERVE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26561,10 +26561,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_R
     expected<Result> visit(Context_Statement_RESERVE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26592,10 +26592,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_IF_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26623,10 +26623,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_IF_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26654,10 +26654,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_IF_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26685,10 +26685,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_L
     expected<Result> visit(Context_Statement_LOOP_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26716,10 +26716,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_L
     expected<Result> visit(Context_Statement_LOOP_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26747,10 +26747,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_L
     expected<Result> visit(Context_Statement_LOOP_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26778,10 +26778,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_MATCH_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26809,10 +26809,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_MATCH_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26840,10 +26840,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_MATCH_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26871,10 +26871,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_MATCH_BRANCH& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26902,10 +26902,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_MATCH_BRANCH_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26933,10 +26933,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_MATCH_BRANCH_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26964,10 +26964,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_B
     expected<Result> visit(Context_Statement_BREAK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -26995,10 +26995,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_B
     expected<Result> visit(Context_Statement_BREAK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27026,10 +27026,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_B
     expected<Result> visit(Context_Statement_BREAK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27057,10 +27057,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_C
     expected<Result> visit(Context_Statement_CONTINUE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27088,10 +27088,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_C
     expected<Result> visit(Context_Statement_CONTINUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27119,10 +27119,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_C
     expected<Result> visit(Context_Statement_CONTINUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27150,10 +27150,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_F
     expected<Result> visit(Context_Statement_FUNCTION_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27181,10 +27181,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_F
     expected<Result> visit(Context_Statement_FUNCTION_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27212,10 +27212,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_F
     expected<Result> visit(Context_Statement_FUNCTION_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27243,10 +27243,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_V
     expected<Result> visit(Context_Statement_VARIABLE_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27274,10 +27274,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_V
     expected<Result> visit(Context_Statement_VARIABLE_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27305,10 +27305,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_V
     expected<Result> visit(Context_Statement_VARIABLE_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27336,10 +27336,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PARAMETER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27367,10 +27367,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PARAMETER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27398,10 +27398,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PARAMETER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27429,10 +27429,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_F
     expected<Result> visit(Context_Statement_FIELD_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27460,10 +27460,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_F
     expected<Result> visit(Context_Statement_FIELD_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27491,10 +27491,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_F
     expected<Result> visit(Context_Statement_FIELD_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27522,10 +27522,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_C
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27553,10 +27553,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_C
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27584,10 +27584,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_C
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27615,10 +27615,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENUM_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27646,10 +27646,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENUM_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27677,10 +27677,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENUM_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27708,10 +27708,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27739,10 +27739,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27770,10 +27770,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27801,10 +27801,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_S
     expected<Result> visit(Context_Statement_STRUCT_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27832,10 +27832,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_S
     expected<Result> visit(Context_Statement_STRUCT_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27863,10 +27863,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_S
     expected<Result> visit(Context_Statement_STRUCT_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27894,10 +27894,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_U
     expected<Result> visit(Context_Statement_UNION_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27925,10 +27925,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_U
     expected<Result> visit(Context_Statement_UNION_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27956,10 +27956,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_U
     expected<Result> visit(Context_Statement_UNION_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -27987,10 +27987,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_U
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28018,10 +28018,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_U
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28049,10 +28049,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_U
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28080,10 +28080,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROGRAM_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28111,10 +28111,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROGRAM_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28142,10 +28142,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROGRAM_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28173,10 +28173,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROPERTY_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28204,10 +28204,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROPERTY_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28235,10 +28235,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROPERTY_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28266,10 +28266,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28297,10 +28297,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28328,10 +28328,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_P
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28359,10 +28359,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_METADATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28390,10 +28390,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_METADATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28421,10 +28421,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_M
     expected<Result> visit(Context_Statement_METADATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28452,10 +28452,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_IMPORT_MODULE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28483,10 +28483,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_IMPORT_MODULE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28514,10 +28514,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_IMPORT_MODULE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28545,10 +28545,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_EXPRESSION& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28576,10 +28576,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_EXPRESSION_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28607,10 +28607,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_EXPRESSION_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28638,10 +28638,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ERROR_REPORT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28669,10 +28669,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ERROR_REPORT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28700,10 +28700,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ERROR_REPORT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28731,10 +28731,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_L
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28762,10 +28762,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_L
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28793,10 +28793,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_L
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28824,10 +28824,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_S
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28855,10 +28855,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_S
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28886,10 +28886,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_S
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28917,10 +28917,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_INIT_CHECK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28948,10 +28948,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_INIT_CHECK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -28979,10 +28979,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_INIT_CHECK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29010,10 +29010,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29041,10 +29041,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29072,10 +29072,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_E
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29103,10 +29103,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29134,10 +29134,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29165,10 +29165,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_A
     expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29196,10 +29196,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29227,10 +29227,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29258,10 +29258,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_I
     expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29289,10 +29289,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement>>
     expected<Result> visit(Context_Statement& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29320,10 +29320,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_b
     expected<Result> visit(Context_Statement_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29351,10 +29351,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Statement_a
     expected<Result> visit(Context_Statement_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29382,10 +29382,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Block>> {
     expected<Result> visit(Context_Block& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29413,10 +29413,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Block_befor
     expected<Result> visit(Context_Block_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29444,10 +29444,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Block_after
     expected<Result> visit(Context_Block_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29475,10 +29475,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_INT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29506,10 +29506,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29537,10 +29537,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29568,10 +29568,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_INT64& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29599,10 +29599,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_INT64_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29630,10 +29630,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_INT64_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29661,10 +29661,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_BOOL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29692,10 +29692,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_BOOL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29723,10 +29723,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_BOOL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29754,10 +29754,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_STRING& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29785,10 +29785,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_STRING_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29816,10 +29816,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_STRING_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29847,10 +29847,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_TYPE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29878,10 +29878,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_TYPE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29909,10 +29909,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_TYPE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29940,10 +29940,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_CHAR& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -29971,10 +29971,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_CHAR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30002,10 +30002,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_LITERAL_CHAR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30033,10 +30033,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IDENTIFIER& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30064,10 +30064,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IDENTIFIER_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30095,10 +30095,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IDENTIFIER_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30126,10 +30126,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_BINARY_OP& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30157,10 +30157,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_BINARY_OP_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30188,10 +30188,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_BINARY_OP_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30219,10 +30219,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_UNARY_OP& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30250,10 +30250,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_UNARY_OP_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30281,10 +30281,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_UNARY_OP_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30312,10 +30312,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CALL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30343,10 +30343,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CALL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30374,10 +30374,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CALL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30405,10 +30405,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_INDEX_ACCESS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30436,10 +30436,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_INDEX_ACCESS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30467,10 +30467,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_INDEX_ACCESS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30498,10 +30498,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_MEMBER_ACCESS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30529,10 +30529,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_MEMBER_ACCESS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30560,10 +30560,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_MEMBER_ACCESS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30591,10 +30591,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ENUM_MEMBER& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30622,10 +30622,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ENUM_MEMBER_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30653,10 +30653,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ENUM_MEMBER_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30684,10 +30684,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_TYPE_CAST& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30715,10 +30715,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_TYPE_CAST_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30746,10 +30746,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_TYPE_CAST_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30777,10 +30777,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30808,10 +30808,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30839,10 +30839,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30870,10 +30870,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_DEFAULT_VALUE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30901,10 +30901,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_DEFAULT_VALUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30932,10 +30932,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_DEFAULT_VALUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30963,10 +30963,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -30994,10 +30994,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31025,10 +31025,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31056,10 +31056,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31087,10 +31087,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31118,10 +31118,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31149,10 +31149,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31180,10 +31180,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31211,10 +31211,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31242,10 +31242,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CAN_READ_STREAM& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31273,10 +31273,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CAN_READ_STREAM_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31304,10 +31304,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CAN_READ_STREAM_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31335,10 +31335,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ARRAY_SIZE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31366,10 +31366,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ARRAY_SIZE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31397,10 +31397,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ARRAY_SIZE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31428,10 +31428,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31459,10 +31459,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31490,10 +31490,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31521,10 +31521,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IS_ERROR& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31552,10 +31552,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IS_ERROR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31583,10 +31583,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_IS_ERROR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31614,10 +31614,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_MAX_VALUE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31645,10 +31645,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_MAX_VALUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31676,10 +31676,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_MAX_VALUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31707,10 +31707,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_READ_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31738,10 +31738,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_READ_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31769,10 +31769,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_READ_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31800,10 +31800,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_WRITE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31831,10 +31831,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_WRITE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31862,10 +31862,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_WRITE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31893,10 +31893,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31924,10 +31924,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31955,10 +31955,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -31986,10 +31986,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CONDITIONAL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32017,10 +32017,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CONDITIONAL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32048,10 +32048,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_CONDITIONAL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32079,10 +32079,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_AVAILABLE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32110,10 +32110,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_AVAILABLE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32141,10 +32141,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_AVAILABLE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32172,10 +32172,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SIZEOF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32203,10 +32203,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SIZEOF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32234,10 +32234,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SIZEOF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32265,10 +32265,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32296,10 +32296,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32327,10 +32327,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32358,10 +32358,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_OR_COND& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32389,10 +32389,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_OR_COND_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32420,10 +32420,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_OR_COND_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32451,10 +32451,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ADDRESS_OF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32482,10 +32482,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ADDRESS_OF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32513,10 +32513,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_ADDRESS_OF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32544,10 +32544,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_OPTIONAL_OF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32575,10 +32575,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_OPTIONAL_OF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32606,10 +32606,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_OPTIONAL_OF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32637,10 +32637,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SETTER_STATUS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32668,10 +32668,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SETTER_STATUS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32699,10 +32699,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SETTER_STATUS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32730,10 +32730,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SELF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32761,10 +32761,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SELF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32792,10 +32792,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_SELF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32823,10 +32823,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_AS_ARG& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32854,10 +32854,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_AS_ARG_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32885,10 +32885,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_AS_ARG_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32916,10 +32916,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression>
     expected<Result> visit(Context_Expression& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32947,10 +32947,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -32978,10 +32978,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expression_
     expected<Result> visit(Context_Expression_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33009,10 +33009,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expressions
     expected<Result> visit(Context_Expressions& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33040,10 +33040,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expressions
     expected<Result> visit(Context_Expressions_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33071,10 +33071,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Expressions
     expected<Result> visit(Context_Expressions_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33102,10 +33102,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_INT>> 
     expected<Result> visit(Context_Type_INT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33133,10 +33133,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_INT_be
     expected<Result> visit(Context_Type_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33164,10 +33164,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_INT_af
     expected<Result> visit(Context_Type_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33195,10 +33195,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_UINT>>
     expected<Result> visit(Context_Type_UINT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33226,10 +33226,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_UINT_b
     expected<Result> visit(Context_Type_UINT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33257,10 +33257,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_UINT_a
     expected<Result> visit(Context_Type_UINT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33288,10 +33288,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_USIZE>
     expected<Result> visit(Context_Type_USIZE& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33319,10 +33319,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_USIZE_
     expected<Result> visit(Context_Type_USIZE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33350,10 +33350,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_USIZE_
     expected<Result> visit(Context_Type_USIZE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33381,10 +33381,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_FLOAT>
     expected<Result> visit(Context_Type_FLOAT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33412,10 +33412,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_FLOAT_
     expected<Result> visit(Context_Type_FLOAT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33443,10 +33443,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_FLOAT_
     expected<Result> visit(Context_Type_FLOAT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33474,10 +33474,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_STRUCT
     expected<Result> visit(Context_Type_STRUCT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33505,10 +33505,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_STRUCT
     expected<Result> visit(Context_Type_STRUCT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33536,10 +33536,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_STRUCT
     expected<Result> visit(Context_Type_STRUCT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33567,10 +33567,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_RECURS
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33598,10 +33598,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_RECURS
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33629,10 +33629,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_RECURS
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33660,10 +33660,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_BOOL>>
     expected<Result> visit(Context_Type_BOOL& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33691,10 +33691,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_BOOL_b
     expected<Result> visit(Context_Type_BOOL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33722,10 +33722,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_BOOL_a
     expected<Result> visit(Context_Type_BOOL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33753,10 +33753,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VOID>>
     expected<Result> visit(Context_Type_VOID& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33784,10 +33784,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VOID_b
     expected<Result> visit(Context_Type_VOID_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33815,10 +33815,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VOID_a
     expected<Result> visit(Context_Type_VOID_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33846,10 +33846,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_META>>
     expected<Result> visit(Context_Type_META& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33877,10 +33877,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_META_b
     expected<Result> visit(Context_Type_META_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33908,10 +33908,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_META_a
     expected<Result> visit(Context_Type_META_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33939,10 +33939,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENUM>>
     expected<Result> visit(Context_Type_ENUM& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -33970,10 +33970,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENUM_b
     expected<Result> visit(Context_Type_ENUM_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34001,10 +34001,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENUM_a
     expected<Result> visit(Context_Type_ENUM_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34032,10 +34032,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ARRAY>
     expected<Result> visit(Context_Type_ARRAY& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34063,10 +34063,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ARRAY_
     expected<Result> visit(Context_Type_ARRAY_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34094,10 +34094,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ARRAY_
     expected<Result> visit(Context_Type_ARRAY_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34125,10 +34125,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VECTOR
     expected<Result> visit(Context_Type_VECTOR& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34156,10 +34156,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VECTOR
     expected<Result> visit(Context_Type_VECTOR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34187,10 +34187,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VECTOR
     expected<Result> visit(Context_Type_VECTOR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34218,10 +34218,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VARIAN
     expected<Result> visit(Context_Type_VARIANT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34249,10 +34249,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VARIAN
     expected<Result> visit(Context_Type_VARIANT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34280,10 +34280,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_VARIAN
     expected<Result> visit(Context_Type_VARIANT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34311,10 +34311,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_RANGE>
     expected<Result> visit(Context_Type_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34342,10 +34342,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_RANGE_
     expected<Result> visit(Context_Type_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34373,10 +34373,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_RANGE_
     expected<Result> visit(Context_Type_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34404,10 +34404,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENCODE
     expected<Result> visit(Context_Type_ENCODER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34435,10 +34435,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENCODE
     expected<Result> visit(Context_Type_ENCODER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34466,10 +34466,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENCODE
     expected<Result> visit(Context_Type_ENCODER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34497,10 +34497,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_DECODE
     expected<Result> visit(Context_Type_DECODER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34528,10 +34528,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_DECODE
     expected<Result> visit(Context_Type_DECODER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34559,10 +34559,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_DECODE
     expected<Result> visit(Context_Type_DECODER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34590,10 +34590,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENCODE
     expected<Result> visit(Context_Type_ENCODER_INPUT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34621,10 +34621,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENCODE
     expected<Result> visit(Context_Type_ENCODER_INPUT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34652,10 +34652,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_ENCODE
     expected<Result> visit(Context_Type_ENCODER_INPUT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34683,10 +34683,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_DECODE
     expected<Result> visit(Context_Type_DECODER_INPUT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34714,10 +34714,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_DECODE
     expected<Result> visit(Context_Type_DECODER_INPUT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34745,10 +34745,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_DECODE
     expected<Result> visit(Context_Type_DECODER_INPUT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34776,10 +34776,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_PROPER
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34807,10 +34807,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_PROPER
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34838,10 +34838,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_PROPER
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34869,10 +34869,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_OPTION
     expected<Result> visit(Context_Type_OPTIONAL& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34900,10 +34900,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_OPTION
     expected<Result> visit(Context_Type_OPTIONAL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34931,10 +34931,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_OPTION
     expected<Result> visit(Context_Type_OPTIONAL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34962,10 +34962,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_PTR>> 
     expected<Result> visit(Context_Type_PTR& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -34993,10 +34993,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_PTR_be
     expected<Result> visit(Context_Type_PTR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35024,10 +35024,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_PTR_af
     expected<Result> visit(Context_Type_PTR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35055,10 +35055,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_FUNCTI
     expected<Result> visit(Context_Type_FUNCTION& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35086,10 +35086,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_FUNCTI
     expected<Result> visit(Context_Type_FUNCTION_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35117,10 +35117,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_FUNCTI
     expected<Result> visit(Context_Type_FUNCTION_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35148,10 +35148,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type>> {
     expected<Result> visit(Context_Type& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35179,10 +35179,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_before
     expected<Result> visit(Context_Type_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35210,10 +35210,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Type_after>
     expected<Result> visit(Context_Type_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35241,10 +35241,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Types>> {
     expected<Result> visit(Context_Types& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35272,10 +35272,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Types_befor
     expected<Result> visit(Context_Types_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -35303,10 +35303,10 @@ struct ebm2z3::Visitor<ebm2z3::UserInlinedDSLHook<ebm2z3::VisitorTag_Types_after
     expected<Result> visit(Context_Types_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43038,10 +43038,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_entry& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43069,10 +43069,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_entry_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43100,10 +43100,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_entry_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43131,10 +43131,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_pre_visitor& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43162,10 +43162,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_pre_visitor_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43193,10 +43193,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_pre_visitor_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_PRE_VISITOR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43224,10 +43224,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_post_entry<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43255,10 +43255,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_post_entry_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43286,10 +43286,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_post_entry_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_POST_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43317,10 +43317,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_BLOCK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43348,10 +43348,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_BLOCK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43379,10 +43379,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_BLOCK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BLOCK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43410,10 +43410,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ASSIGNMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43441,10 +43441,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ASSIGNMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43472,10 +43472,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ASSIGNMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43503,10 +43503,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_YIELD& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43534,10 +43534,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_YIELD_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43565,10 +43565,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_YIELD_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_YIELD_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43596,10 +43596,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_APPEND& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43627,10 +43627,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_APPEND_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43658,10 +43658,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_APPEND_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_APPEND_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43689,10 +43689,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43720,10 +43720,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43751,10 +43751,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43782,10 +43782,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ERROR_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43813,10 +43813,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ERROR_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43844,10 +43844,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ERROR_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43875,10 +43875,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ASSERT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43906,10 +43906,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ASSERT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43937,10 +43937,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ASSERT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ASSERT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43968,10 +43968,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_READ_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -43999,10 +43999,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_READ_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44030,10 +44030,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_READ_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44061,10 +44061,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_WRITE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44092,10 +44092,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_WRITE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44123,10 +44123,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_WRITE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44154,10 +44154,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_RESERVE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44185,10 +44185,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_RESERVE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44216,10 +44216,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_RESERVE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_RESERVE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44247,10 +44247,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_IF_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44278,10 +44278,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_IF_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44309,10 +44309,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_IF_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44340,10 +44340,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_LOOP_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44371,10 +44371,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_LOOP_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44402,10 +44402,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_LOOP_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44433,10 +44433,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_MATCH_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44464,10 +44464,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_MATCH_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44495,10 +44495,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_MATCH_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44526,10 +44526,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_MATCH_BRANCH& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44557,10 +44557,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_MATCH_BRANCH_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44588,10 +44588,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_MATCH_BRANCH_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44619,10 +44619,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_BREAK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44650,10 +44650,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_BREAK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44681,10 +44681,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_BREAK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BREAK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44712,10 +44712,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_CONTINUE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44743,10 +44743,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_CONTINUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44774,10 +44774,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_CONTINUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44805,10 +44805,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_FUNCTION_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44836,10 +44836,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_FUNCTION_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44867,10 +44867,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_FUNCTION_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44898,10 +44898,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_VARIABLE_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44929,10 +44929,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_VARIABLE_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44960,10 +44960,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_VARIABLE_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -44991,10 +44991,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PARAMETER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45022,10 +45022,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PARAMETER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45053,10 +45053,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PARAMETER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45084,10 +45084,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_FIELD_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45115,10 +45115,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_FIELD_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45146,10 +45146,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_FIELD_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45177,10 +45177,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45208,10 +45208,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45239,10 +45239,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_COMPOSITE_FIELD_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45270,10 +45270,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENUM_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45301,10 +45301,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENUM_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45332,10 +45332,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENUM_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45363,10 +45363,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45394,10 +45394,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45425,10 +45425,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENUM_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45456,10 +45456,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_STRUCT_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45487,10 +45487,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_STRUCT_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45518,10 +45518,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_STRUCT_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45549,10 +45549,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_UNION_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45580,10 +45580,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_UNION_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45611,10 +45611,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_UNION_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45642,10 +45642,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45673,10 +45673,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45704,10 +45704,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_UNION_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45735,10 +45735,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROGRAM_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45766,10 +45766,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROGRAM_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45797,10 +45797,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROGRAM_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45828,10 +45828,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROPERTY_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45859,10 +45859,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROPERTY_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45890,10 +45890,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROPERTY_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45921,10 +45921,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45952,10 +45952,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -45983,10 +45983,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_PROPERTY_MEMBER_DECL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46014,10 +46014,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_METADATA& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46045,10 +46045,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_METADATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46076,10 +46076,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_METADATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_METADATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46107,10 +46107,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_IMPORT_MODULE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46138,10 +46138,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_IMPORT_MODULE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46169,10 +46169,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_IMPORT_MODULE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46200,10 +46200,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_EXPRESSION& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46231,10 +46231,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_EXPRESSION_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46262,10 +46262,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_EXPRESSION_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46293,10 +46293,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ERROR_REPORT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46324,10 +46324,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ERROR_REPORT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46355,10 +46355,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ERROR_REPORT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46386,10 +46386,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46417,10 +46417,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46448,10 +46448,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_LOWERED_IO_STATEMENTS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46479,10 +46479,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46510,10 +46510,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46541,10 +46541,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_SUB_BYTE_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46572,10 +46572,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_INIT_CHECK& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46603,10 +46603,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_INIT_CHECK_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46634,10 +46634,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_INIT_CHECK_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46665,10 +46665,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46696,10 +46696,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46727,10 +46727,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ENDIAN_VARIABLE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46758,10 +46758,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ARRAY_TO_INT& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46789,10 +46789,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ARRAY_TO_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46820,10 +46820,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_ARRAY_TO_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_ARRAY_TO_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46851,10 +46851,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_INT_TO_ARRAY& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46882,10 +46882,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_INT_TO_ARRAY_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46913,10 +46913,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_INT_TO_ARRAY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46944,10 +46944,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -46975,10 +46975,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47006,10 +47006,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Statement_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47037,10 +47037,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Block& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47068,10 +47068,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Block_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47099,10 +47099,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Block_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_BLOCK_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47130,10 +47130,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_INT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47161,10 +47161,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47192,10 +47192,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47223,10 +47223,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_INT64& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47254,10 +47254,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_INT64_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47285,10 +47285,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_INT64_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47316,10 +47316,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_BOOL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47347,10 +47347,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_BOOL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47378,10 +47378,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_BOOL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47409,10 +47409,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_STRING& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47440,10 +47440,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_STRING_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47471,10 +47471,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_STRING_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47502,10 +47502,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_TYPE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47533,10 +47533,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_TYPE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47564,10 +47564,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_TYPE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47595,10 +47595,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_CHAR& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47626,10 +47626,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_CHAR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47657,10 +47657,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_LITERAL_CHAR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47688,10 +47688,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IDENTIFIER& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47719,10 +47719,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IDENTIFIER_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47750,10 +47750,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IDENTIFIER_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47781,10 +47781,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_BINARY_OP& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47812,10 +47812,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_BINARY_OP_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47843,10 +47843,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_BINARY_OP_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47874,10 +47874,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_UNARY_OP& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47905,10 +47905,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_UNARY_OP_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47936,10 +47936,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_UNARY_OP_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47967,10 +47967,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CALL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -47998,10 +47998,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CALL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48029,10 +48029,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CALL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CALL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48060,10 +48060,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_INDEX_ACCESS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48091,10 +48091,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_INDEX_ACCESS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48122,10 +48122,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_INDEX_ACCESS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48153,10 +48153,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_MEMBER_ACCESS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48184,10 +48184,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_MEMBER_ACCESS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48215,10 +48215,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_MEMBER_ACCESS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48246,10 +48246,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ENUM_MEMBER& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48277,10 +48277,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ENUM_MEMBER_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48308,10 +48308,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ENUM_MEMBER_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48339,10 +48339,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_TYPE_CAST& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48370,10 +48370,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_TYPE_CAST_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48401,10 +48401,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_TYPE_CAST_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48432,10 +48432,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48463,10 +48463,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48494,10 +48494,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48525,10 +48525,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_DEFAULT_VALUE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48556,10 +48556,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_DEFAULT_VALUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48587,10 +48587,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_DEFAULT_VALUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48618,10 +48618,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48649,10 +48649,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48680,10 +48680,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IS_LITTLE_ENDIAN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48711,10 +48711,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48742,10 +48742,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48773,10 +48773,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_GET_STREAM_OFFSET_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48804,10 +48804,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48835,10 +48835,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48866,10 +48866,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_GET_REMAINING_BYTES_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48897,10 +48897,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CAN_READ_STREAM& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48928,10 +48928,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CAN_READ_STREAM_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48959,10 +48959,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CAN_READ_STREAM_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -48990,10 +48990,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ARRAY_SIZE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49021,10 +49021,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ARRAY_SIZE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49052,10 +49052,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ARRAY_SIZE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49083,10 +49083,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49114,10 +49114,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49145,10 +49145,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ENUM_IS_DEFINED_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49176,10 +49176,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IS_ERROR& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49207,10 +49207,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IS_ERROR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49238,10 +49238,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_IS_ERROR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49269,10 +49269,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_MAX_VALUE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49300,10 +49300,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_MAX_VALUE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49331,10 +49331,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_MAX_VALUE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49362,10 +49362,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_READ_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49393,10 +49393,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_READ_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49424,10 +49424,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_READ_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49455,10 +49455,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_WRITE_DATA& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49486,10 +49486,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_WRITE_DATA_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49517,10 +49517,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_WRITE_DATA_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49548,10 +49548,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49579,10 +49579,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49610,10 +49610,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CONDITIONAL_STATEMENT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49641,10 +49641,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CONDITIONAL& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49672,10 +49672,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CONDITIONAL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49703,10 +49703,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_CONDITIONAL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49734,10 +49734,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_AVAILABLE& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49765,10 +49765,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_AVAILABLE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49796,10 +49796,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_AVAILABLE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49827,10 +49827,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SIZEOF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49858,10 +49858,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SIZEOF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49889,10 +49889,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SIZEOF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49920,10 +49920,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49951,10 +49951,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -49982,10 +49982,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SUB_RANGE_INIT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50013,10 +50013,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_OR_COND& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50044,10 +50044,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_OR_COND_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50075,10 +50075,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_OR_COND_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50106,10 +50106,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ADDRESS_OF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50137,10 +50137,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ADDRESS_OF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50168,10 +50168,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_ADDRESS_OF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50199,10 +50199,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_OPTIONAL_OF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50230,10 +50230,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_OPTIONAL_OF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50261,10 +50261,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_OPTIONAL_OF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50292,10 +50292,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SETTER_STATUS& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50323,10 +50323,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SETTER_STATUS_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50354,10 +50354,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SETTER_STATUS_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50385,10 +50385,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SELF& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50416,10 +50416,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SELF_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50447,10 +50447,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_SELF_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_SELF_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50478,10 +50478,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_AS_ARG& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50509,10 +50509,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_AS_ARG_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50540,10 +50540,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_AS_ARG_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50571,10 +50571,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50602,10 +50602,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50633,10 +50633,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expression_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50664,10 +50664,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expressions& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50695,10 +50695,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expressions_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50726,10 +50726,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Expressions_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_EXPRESSIONS_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50757,10 +50757,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_INT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50788,10 +50788,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_INT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50819,10 +50819,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_INT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_INT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50850,10 +50850,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_UINT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50881,10 +50881,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_UINT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50912,10 +50912,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_UINT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_UINT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50943,10 +50943,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_USIZE& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -50974,10 +50974,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_USIZE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51005,10 +51005,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_USIZE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_USIZE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51036,10 +51036,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_FLOAT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51067,10 +51067,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_FLOAT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51098,10 +51098,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_FLOAT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FLOAT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51129,10 +51129,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_STRUCT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51160,10 +51160,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_STRUCT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51191,10 +51191,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_STRUCT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_STRUCT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51222,10 +51222,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51253,10 +51253,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51284,10 +51284,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_RECURSIVE_STRUCT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51315,10 +51315,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_BOOL& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51346,10 +51346,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_BOOL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51377,10 +51377,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_BOOL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BOOL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51408,10 +51408,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VOID& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51439,10 +51439,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VOID_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51470,10 +51470,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VOID_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VOID_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51501,10 +51501,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_META& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51532,10 +51532,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_META_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51563,10 +51563,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_META_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_META_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51594,10 +51594,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENUM& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51625,10 +51625,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENUM_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51656,10 +51656,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENUM_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENUM_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51687,10 +51687,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ARRAY& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51718,10 +51718,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ARRAY_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51749,10 +51749,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ARRAY_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ARRAY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51780,10 +51780,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VECTOR& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51811,10 +51811,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VECTOR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51842,10 +51842,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VECTOR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VECTOR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51873,10 +51873,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VARIANT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51904,10 +51904,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VARIANT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51935,10 +51935,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_VARIANT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_VARIANT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51966,10 +51966,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_RANGE& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -51997,10 +51997,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_RANGE_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52028,10 +52028,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_RANGE_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_RANGE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52059,10 +52059,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENCODER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52090,10 +52090,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENCODER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52121,10 +52121,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENCODER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52152,10 +52152,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_DECODER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52183,10 +52183,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_DECODER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52214,10 +52214,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_DECODER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52245,10 +52245,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENCODER_INPUT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52276,10 +52276,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENCODER_INPUT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52307,10 +52307,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_ENCODER_INPUT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52338,10 +52338,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_DECODER_INPUT& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52369,10 +52369,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_DECODER_INPUT_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52400,10 +52400,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_DECODER_INPUT_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52431,10 +52431,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52462,10 +52462,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52493,10 +52493,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_PROPERTY_SETTER_RETURN_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52524,10 +52524,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_OPTIONAL& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52555,10 +52555,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_OPTIONAL_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52586,10 +52586,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_OPTIONAL_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_OPTIONAL_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52617,10 +52617,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_PTR& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52648,10 +52648,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_PTR_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52679,10 +52679,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_PTR_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_PTR_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52710,10 +52710,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_FUNCTION& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52741,10 +52741,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_FUNCTION_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52772,10 +52772,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_FUNCTION_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_FUNCTION_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52803,10 +52803,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52834,10 +52834,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52865,10 +52865,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Type_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPE_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52896,10 +52896,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Types& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52927,10 +52927,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Types_before<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52958,10 +52958,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
     expected<Result> visit(Context_Types_after<Result>& ctx) {
         EBM2Z3_DECONSTRUCT_TYPES_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
-        auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
         auto& output = ctx.visitor.output;
         auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
         __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
         // for backward compatibility
         auto& root = wm.root;
@@ -52983,6 +52983,10 @@ struct ebm2z3::Visitor<ebm2z3::DefaultCodegenVisitorInlinedHook<ebm2z3::VisitorT
 namespace ebm2z3 {
     template <typename Tag>
     struct GeneratorDefaultHook {}; // Hook tag
+    #define CODEGEN_MAY_HIJACK(value) \
+    if (ebmcodegen::util::needs_return(value)) { \
+        return ebmcodegen::util::wrap_return(std::move(value)); \
+    }
     template<typename Result,typename Context>
     expected<Result> dispatch_entry(Context&& ctx){
         auto main_logic = [&]() -> expected<Result>{
@@ -52996,14 +53000,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_entry_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53011,14 +53008,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53040,14 +53030,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_pre_visitor_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53056,14 +53039,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53085,14 +53061,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_post_entry_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53101,14 +53070,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53139,14 +53101,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_BLOCK_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53157,14 +53112,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53211,14 +53159,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ASSIGNMENT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53231,14 +53172,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53293,14 +53227,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_YIELD_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53313,14 +53240,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53369,14 +53289,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_APPEND_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53388,14 +53301,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53444,14 +53350,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_RETURN_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53463,14 +53362,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53519,14 +53411,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ERROR_RETURN_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53539,14 +53424,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53583,14 +53461,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ASSERT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53601,14 +53472,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53645,14 +53509,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_READ_DATA_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53663,14 +53520,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53745,14 +53595,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_WRITE_DATA_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53763,14 +53606,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53845,14 +53681,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_RESERVE_DATA_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53863,14 +53692,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53909,14 +53731,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_IF_STATEMENT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -53927,14 +53742,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -53983,14 +53791,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_LOOP_STATEMENT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54001,14 +53802,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54085,14 +53879,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_MATCH_STATEMENT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54103,14 +53890,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54151,14 +53931,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_MATCH_BRANCH_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54169,14 +53942,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54219,14 +53985,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_BREAK_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54237,14 +53996,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54275,14 +54027,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_CONTINUE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54293,14 +54038,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54331,14 +54069,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_FUNCTION_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54349,14 +54080,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54403,14 +54127,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_VARIABLE_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54421,14 +54138,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54471,14 +54181,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_PARAMETER_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54489,14 +54192,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54533,14 +54229,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_FIELD_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54551,14 +54240,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54595,14 +54277,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_COMPOSITE_FIELD_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54613,14 +54288,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54661,14 +54329,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ENUM_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54679,14 +54340,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54727,14 +54381,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ENUM_MEMBER_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54745,14 +54392,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54789,14 +54429,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_STRUCT_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54807,14 +54440,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54895,14 +54521,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_UNION_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54912,14 +54531,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54944,14 +54556,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_UNION_MEMBER_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -54961,14 +54566,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -54999,14 +54597,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_PROGRAM_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55017,14 +54608,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55059,14 +54643,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_PROPERTY_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55077,14 +54654,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55143,14 +54713,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_PROPERTY_MEMBER_DECL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55161,14 +54724,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55217,14 +54773,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_METADATA_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55235,14 +54784,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55277,14 +54819,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_IMPORT_MODULE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55295,14 +54830,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55339,14 +54867,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_EXPRESSION_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55357,14 +54878,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55401,14 +54915,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ERROR_REPORT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55419,14 +54926,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55461,14 +54961,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_LOWERED_IO_STATEMENTS_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55479,14 +54972,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55517,14 +55003,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_SUB_BYTE_RANGE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55535,14 +55014,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55609,14 +55081,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_INIT_CHECK_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55627,14 +55092,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55677,14 +55135,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ENDIAN_VARIABLE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55695,14 +55146,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55741,14 +55185,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_ARRAY_TO_INT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55759,14 +55196,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55809,14 +55239,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_INT_TO_ARRAY_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55827,14 +55250,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55870,14 +55286,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Statement_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55887,14 +55296,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55920,14 +55322,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Block_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -55936,14 +55331,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -55981,14 +55369,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_LITERAL_INT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56000,14 +55381,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56047,14 +55421,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_LITERAL_INT64_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56066,14 +55433,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56113,14 +55473,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_LITERAL_BOOL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56132,14 +55485,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56179,14 +55525,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_LITERAL_STRING_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56198,14 +55537,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56245,14 +55577,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_LITERAL_TYPE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56264,14 +55589,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56317,14 +55635,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_LITERAL_CHAR_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56336,14 +55647,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56383,14 +55687,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_IDENTIFIER_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56402,14 +55699,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56461,14 +55751,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_BINARY_OP_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56482,14 +55765,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56547,14 +55823,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_UNARY_OP_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56567,14 +55836,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56620,14 +55882,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_CALL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56639,14 +55894,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56702,14 +55950,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_INDEX_ACCESS_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56722,14 +55963,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56787,14 +56021,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_MEMBER_ACCESS_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56807,14 +56034,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56872,14 +56092,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_ENUM_MEMBER_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56892,14 +56105,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -56951,14 +56157,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_TYPE_CAST_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -56970,14 +56169,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57035,14 +56227,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_RANGE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57055,14 +56240,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57108,14 +56286,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_DEFAULT_VALUE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57126,14 +56297,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57173,14 +56337,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_IS_LITTLE_ENDIAN_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57192,14 +56349,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57257,14 +56407,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_GET_STREAM_OFFSET_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57278,14 +56421,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57337,14 +56473,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_GET_REMAINING_BYTES_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57357,14 +56486,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57422,14 +56544,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_CAN_READ_STREAM_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57443,14 +56558,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57504,14 +56612,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_ARRAY_SIZE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57523,14 +56624,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57582,14 +56676,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_ENUM_IS_DEFINED_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57602,14 +56689,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57655,14 +56735,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_IS_ERROR_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57674,14 +56747,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57727,14 +56793,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_MAX_VALUE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57746,14 +56805,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57799,14 +56851,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_READ_DATA_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57819,14 +56864,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57884,14 +56922,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_WRITE_DATA_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57904,14 +56935,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -57969,14 +56993,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_CONDITIONAL_STATEMENT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -57989,14 +57006,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58066,14 +57076,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_CONDITIONAL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58088,14 +57091,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58159,14 +57155,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_AVAILABLE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58179,14 +57168,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58238,14 +57220,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_SIZEOF_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58258,14 +57233,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58311,14 +57279,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_SUB_RANGE_INIT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58330,14 +57291,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58377,14 +57331,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_OR_COND_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58396,14 +57343,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58447,14 +57387,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_ADDRESS_OF_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58466,14 +57399,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58519,14 +57445,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_OPTIONAL_OF_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58538,14 +57457,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58591,14 +57503,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_SETTER_STATUS_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58610,14 +57515,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58651,14 +57549,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_SELF_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58669,14 +57560,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58716,14 +57600,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_AS_ARG_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58735,14 +57612,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58778,14 +57648,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expression_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58795,14 +57658,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58828,14 +57684,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Expressions_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58844,14 +57693,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58886,14 +57728,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_INT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58904,14 +57739,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58942,14 +57770,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_UINT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -58960,14 +57781,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -58992,14 +57806,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_USIZE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59009,14 +57816,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59047,14 +57847,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_FLOAT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59065,14 +57858,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59103,14 +57889,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_STRUCT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59121,14 +57900,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59159,14 +57931,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_RECURSIVE_STRUCT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59177,14 +57942,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59209,14 +57967,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_BOOL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59226,14 +57977,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59258,14 +58002,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_VOID_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59275,14 +58012,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59307,14 +58037,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_META_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59324,14 +58047,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59368,14 +58084,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_ENUM_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59387,14 +58096,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59443,14 +58145,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_ARRAY_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59463,14 +58158,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59507,14 +58195,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_VECTOR_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59525,14 +58206,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59569,14 +58243,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_VARIANT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59587,14 +58254,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59635,14 +58295,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_RANGE_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59653,14 +58306,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59691,14 +58337,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_ENCODER_RETURN_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59708,14 +58347,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59740,14 +58372,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_DECODER_RETURN_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59757,14 +58382,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59789,14 +58407,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_ENCODER_INPUT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59806,14 +58417,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59838,14 +58442,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_DECODER_INPUT_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59855,14 +58452,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59887,14 +58477,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_PROPERTY_SETTER_RETURN_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59904,14 +58487,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -59942,14 +58518,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_OPTIONAL_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -59960,14 +58529,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -60004,14 +58566,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_PTR_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -60022,14 +58577,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -60066,14 +58614,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_FUNCTION_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -60084,14 +58625,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -60125,14 +58659,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Type_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -60142,14 +58669,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -60175,14 +58695,7 @@ namespace ebm2z3 {
             .main_logic = main_logic,
         };
         expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
-        if (!before_result) {
-            if(!ebmcodegen::util::is_pass_error(before_result.error())) {
-                return ebmgen::unexpect_error(std::move(before_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return before_result;
-        }
+        CODEGEN_MAY_HIJACK(before_result);
         expected<Result> main_result = main_logic();
         Context_Types_after<Result> after_ctx{
             .visitor = get_visitor_arg_from_context(ctx),
@@ -60191,14 +58704,7 @@ namespace ebm2z3 {
             .result = main_result,
         };
         expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
-        if (!after_result) {
-            if(!ebmcodegen::util::is_pass_error(after_result.error())) {
-                return ebmgen::unexpect_error(std::move(after_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return after_result;
-        }
+        CODEGEN_MAY_HIJACK(after_result);
         return main_result;
     }
     template<typename Result, typename UserContext,typename TypeContext>
@@ -74344,7 +72850,7 @@ namespace ebm2z3 {
         }
     };
     struct MergedVisitor : BaseVisitor {
-        MergedVisitor(ebmgen::EBMProxy module_,Flags& flags,Output& output,futils::binary::writer& wm,VisitorsImpl& impl) :BaseVisitor(this, module_, flags, output, wm),impl(impl){}
+        MergedVisitor(Flags& flags,Output& output,futils::binary::writer& wm,ebmgen::EBMProxy module_,VisitorsImpl& impl) :BaseVisitor(this, flags, output, wm, module_),impl(impl){}
     
         VisitorsImpl& impl;
         expected<Result> visit(Context_entry& ctx) {
@@ -75645,31 +74151,17 @@ namespace ebm2z3 {
 }  // namespace ebm2z3
 DEFINE_ENTRY(ebm2z3::Flags, ebm2z3::Output) {
     ebm2z3::VisitorsImpl visitors_impl;
-    ebm2z3::MergedVisitor visitor{ebm,flags,output,w,visitors_impl};
+    ebm2z3::MergedVisitor visitor{flags,output,w,ebm,visitors_impl};
     auto entry_function = [&]() -> ebmgen::expected<ebm2z3::Result> {
         ebm2z3::InitialContext initial_ctx{.visitor = visitor};
         auto pre_visit_result = ebm2z3::dispatch_pre_visitor(initial_ctx,ebm);
-        if (!pre_visit_result) {
-            if(!ebmcodegen::util::is_pass_error(pre_visit_result.error())) {
-                return ebmgen::unexpect_error(std::move(pre_visit_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return pre_visit_result;
-        }
+        CODEGEN_MAY_HIJACK(pre_visit_result);
         if(!visitor.module_.valid()) {
             visitor.module_.build_maps(); // initialize mapping tables if not yet
         }
         auto entry_result = ebm2z3::dispatch_entry(initial_ctx);
         auto post_visit_result = ebm2z3::dispatch_post_entry(initial_ctx,entry_result);
-        if (!post_visit_result) {
-            if(!ebmcodegen::util::is_pass_error(post_visit_result.error())) {
-                return ebmgen::unexpect_error(std::move(post_visit_result.error())); // for trace
-            }
-        }
-        else { // if hijacked
-            return post_visit_result;
-        }
+        CODEGEN_MAY_HIJACK(post_visit_result);
         return entry_result;
     };
     auto result = entry_function();

@@ -1145,7 +1145,7 @@ namespace ebmcodegen {
     void generate_namespace_injection(CodeWriter& w) {
         w.writeln("using namespace ebmgen;");
         w.writeln("using namespace ebmcodegen::util;");
-        w.writeln("using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;");
+        // w.writeln("using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;");
     }
 
     void generate_namespace(CodeWriter& w, std::string_view ns_name, bool open) {
@@ -1879,16 +1879,17 @@ namespace ebmcodegen {
             generate_user_include_before(hdr, includes_info);
         }
         generate_namespace(hdr, ns_name, true);
-        generate_undef_dummy_macros(src);
         if (!ebmgen_mode) {
+            generate_undef_dummy_macros(src);
             generate_forward_declaration_source(src, ns_name, result_type, is_codegen);
             generate_user_implemented_includes(src, ns_name, hooks, locations, context_classes, result_type, utility_classes);
+            generate_namespace(src, ns_name, true);
         }
-        generate_namespace(src, ns_name, true);
         auto ns_scope_hdr = hdr.indent_scope();
         auto ns_scope_src = src.indent_scope();
-        generate_forward_declaration_header(hdr);
-
+        if (!ebmgen_mode) {
+            generate_forward_declaration_header(hdr);
+        }
         generate_namespace_injection(hdr);
         generate_Result(hdr, is_codegen, includes_info);
         if (!ebmgen_mode) {
@@ -1914,7 +1915,9 @@ namespace ebmcodegen {
         generate_generic_traversal_children(hdr, src, context_classes, result_type);
         generate_user_interface(hdr, context_classes, result_type);
         generate_impl_getter_header(hdr);
-        generate_Contexts_forward_declaration(hdr, context_classes);
+        if (!ebmgen_mode) {
+            generate_Contexts_forward_declaration(hdr, context_classes);
+        }
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"], ebmgen_mode);
         generate_initial_context(hdr);
 
@@ -1922,9 +1925,9 @@ namespace ebmcodegen {
         for (auto& cls_group : context_classes) {
             for (auto& cls : cls_group.classes) {
                 generate_context_class(hdr, cls);
-                generate_visitor_tag(hdr, cls);
-                deconstruct_context_fields_macro(hdr, ns_name, cls);
                 if (!ebmgen_mode) {
+                    generate_visitor_tag(hdr, cls);
+                    deconstruct_context_fields_macro(hdr, ns_name, cls);
                     generate_generator_default_hook(src, hooks.back(), hooks.size() - 1, cls, is_codegen, result_type);
                 }
             }
@@ -1943,12 +1946,19 @@ namespace ebmcodegen {
 
         ns_scope_hdr.execute();
         ns_scope_src.execute();
-        generate_namespace(hdr, ns_name, false);
+        if (!ebmgen_mode) {
+            generate_namespace(hdr, ns_name, false);
+        }
         generate_namespace(src, ns_name, false);
         if (!ebmgen_mode) {
             generate_user_include_after(hdr, includes_info);
         }
-        generate_common_include_guard(hdr, false);
+        if (ebmgen_mode) {
+            generate_common_include_guard(src, false);
+        }
+        else {
+            generate_common_include_guard(hdr, false);
+        }
         if (!ebmgen_mode) {
             generate_entry_point(src, ns_name);
         }

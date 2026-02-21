@@ -1,8 +1,8 @@
 /*license*/
-#pragma once
 #include "ebm/extended_binary_module.hpp"
 #include "../access.hpp"
 #include "../converter.hpp"
+#include "../visitor/visitor.hpp"
 
 namespace ebmgen {
     struct ArrayLengthInfo {
@@ -53,6 +53,10 @@ namespace ebmgen {
         ebm::StatementRef field_ref;
         ebm::StatementRef assign_ref;
         ebm::StatementRef branch_ref;
+    };
+
+    struct PropertySetterDetector {
+        TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(PropertySetterDetector, visitor::BaseVisitor);
     };
 
     expected<void> derive_array_setter(TransformContext& tctx) {

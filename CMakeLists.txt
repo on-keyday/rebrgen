@@ -97,6 +97,8 @@ endif()
 
 add_library(ebm SHARED "src/ebm/extended_binary_module.cpp")
 
+if(NOT "$ENV{CODEGEN_ONLY}" STREQUAL "1")
+
 add_executable(ebmgen
     "src/ebmgen/main.cpp"
 )
@@ -138,6 +140,26 @@ target_link_libraries(ebm_mapping ebm futils)
 target_link_libraries(ebmgen_lib ebm futils ebm_mapping)
 target_link_libraries(ebmgen ebmgen_lib)
 
+target_link_libraries(ebmgen futils ebm)
+install(TARGETS ebmgen DESTINATION tool)
+target_compile_options(ebmgen PRIVATE -ftime-trace)
+
+target_precompile_headers(ebmgen PRIVATE
+    <format>
+    <string>
+    <vector>
+    <variant>
+    <optional>
+    <ebm/extended_binary_module.hpp>
+    <ebmcodegen/stub/util.hpp>
+    <ebmgen/common.hpp>
+    <ebmgen/convert/helper.hpp>
+    <ebmgen/mapping.hpp>
+    <ebmgen/visitor/visitor.hpp>
+    <concepts>
+    <strutil/append.h>
+)
+endif()
 
 add_library(ebmcodegen_lib STATIC
     "src/ebmcodegen/body_subset.cpp"
@@ -153,7 +175,8 @@ add_executable(ebmcodegen
 )
 
 target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
-
+#target_link_libraries(gen_template2 futils bm)
+install(TARGETS ebm ebmcodegen DESTINATION tool)
 
 
 #add_subdirectory("src/ebmgen/test")
@@ -162,37 +185,32 @@ add_subdirectory("src/ebmcg")
 add_subdirectory("src/ebmip")
 endif()
 
-target_link_libraries(ebmgen futils ebm)
 
-#target_link_libraries(gen_template2 futils bm)
-install(TARGETS ebmgen ebm ebmcodegen DESTINATION tool)
+
+
+
 #install(TARGETS gen_template2 COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
-if(UNIX)
+if(NOT "$ENV{CODEGEN_ONLY}" STREQUAL "1")
     add_custom_command(
     TARGET ebmgen POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_SOURCE_DIR}/tool/libfutils.so"
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_SOURCE_DIR}/tool/libfutils${CMAKE_SHARED_LIBRARY_SUFFIX}"
     )
     # if BRGEN_PATH environment variable exists, copy libs2j.so 
     if(DEFINED ENV{BRGEN_DIR})
-    add_custom_command(
-    TARGET ebmgen POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{BRGEN_DIR}/tool/libs2j.so" "${CMAKE_SOURCE_DIR}/tool/libs2j.so"
-    )
-    endif()
-elseif(WIN32)
-    add_custom_command(
-    TARGET ebmgen POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.dll" "${CMAKE_SOURCE_DIR}/tool/libfutils.dll"
-    )
-    if(DEFINED ENV{BRGEN_DIR})
         add_custom_command(
         TARGET ebmgen POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "$ENV{BRGEN_DIR}/tool/libs2j.dll" "${CMAKE_SOURCE_DIR}/tool/libs2j.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy "$ENV{BRGEN_DIR}/tool/libs2j${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_SOURCE_DIR}/tool/libs2j${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
     endif()
+else()
+    add_custom_command(
+    TARGET ebmcodegen POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils${CMAKE_SHARED_LIBRARY_SUFFIX}" "${CMAKE_SOURCE_DIR}/tool/libfutils${CMAKE_SHARED_LIBRARY_SUFFIX}"
+    )
 endif()
+
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
 if("$ENV{BUILD_OLD_BMGEN}" STREQUAL "1")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)

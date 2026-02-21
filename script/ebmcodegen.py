@@ -34,7 +34,18 @@ def do_default_dummy_header(lang_name: str, mode: str):
             ],
             None,
         )
-        with open(os.path.join(DEFAULT_VISITOR_LOCATION, "codegen.hpp"), "wb") as f:
+        TARGET_PATH = os.path.join(DEFAULT_VISITOR_LOCATION, "codegen.hpp")
+        with open(TARGET_PATH, "rb") as f:
+            existing_content = f.read() if os.path.exists(TARGET_PATH) else None
+            if (
+                existing_content is not None
+                and existing_content == CODE_GENERATOR_HEADER
+            ):
+                print(
+                    f"Default dummy header for {lang_name} in {TARGET_PATH} is already up to date."
+                )
+                return
+        with open(TARGET_PATH, "wb") as f:
             f.write(CODE_GENERATOR_HEADER)
         print(
             f"Generated default dummy header for {lang_name} in {DEFAULT_VISITOR_LOCATION}/codegen.hpp"
@@ -43,8 +54,10 @@ def do_default_dummy_header(lang_name: str, mode: str):
         print(f"No dummy header needed for non-class-based mode for {lang_name}")
 
 
+TOOL_PATH = "tool/ebmcodegen"
+
+
 def do_setup(lang_name: str, mode: str, file_extension: str):
-    TOOL_PATH = "tool/ebmcodegen"
     isInterpreter = mode == "interpret" or mode == "interpret-class"
     isClassBased = mode == "codegen-class" or mode == "interpret-class"
     if isInterpreter:
@@ -108,7 +121,11 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
         execute(
             [
                 "python",
-                "./script/ebmtemplate.py" if not isInterpreter else "./script/ebmtemplate_ip.py",
+                (
+                    "./script/ebmtemplate.py"
+                    if not isInterpreter
+                    else "./script/ebmtemplate_ip.py"
+                ),
                 "Flags",
                 lang_name,
             ],
@@ -157,8 +174,8 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
             f.write("    with open(OUTPUT_FILE, 'wb') as f:\n")
             f.write("        f.write(data)\n")
             f.write("    print('Test logic is not implemented yet.')\n")
-            f.write("    print(\"for VSCode debugging\")\n")
-            f.write("    executable_path = pl.Path(\"/path/to/executable\")\n")
+            f.write('    print("for VSCode debugging")\n')
+            f.write('    executable_path = pl.Path("/path/to/executable")\n')
             f.write("    print(")
             f.write(
                 f"""
@@ -262,6 +279,46 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
     print(f"Generated files are located in: {OUTPUT_DIR}")
 
 
+def do_ebmgen_generate():
+    TARGET_DIR = "src/ebmgen/visitor"
+    os.makedirs(TARGET_DIR, exist_ok=True)
+    VISITOR_HEADER = execute(
+        [
+            TOOL_PATH,
+            "--mode",
+            "ebmgen-visitor",
+            "--program-name",
+            "ebmgen::visitor",
+        ],
+        None,
+    )
+    TARRGET_PATH = os.path.join(TARGET_DIR, "visitor.hpp")
+    with open(TARRGET_PATH, "rb") as f:
+        existing_content = f.read() if os.path.exists(TARRGET_PATH) else None
+        if existing_content is not None and existing_content == VISITOR_HEADER:
+            print(f"Visitor header at {TARRGET_PATH} is already up to date.")
+            return
+    with open(TARRGET_PATH, "wb") as f:
+        f.write(VISITOR_HEADER)
+    print("Code generation for ebmgen visitor completed successfully.")
+    print(f"Generated visitor header is located in: {TARRGET_PATH}")
+
+
+def do_all(mode: str):
+    # scan src/${mode} for all existing languages
+    parent_dir = (
+        f"src/ebmip"
+        if (mode == "interpret" or mode == "interpret-class")
+        else f"src/ebmcg"
+    )
+    do_default_dummy_header("all", mode)
+    for entry in os.listdir(parent_dir):
+        entry_path = os.path.join(parent_dir, entry)
+        if os.path.isdir(entry_path) and entry.startswith("ebm2"):
+            lang = entry[4:]  # remove "ebm2" prefix
+            do_setup(lang, mode, "." + lang)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generate code generator or interpreter."
@@ -285,17 +342,12 @@ if __name__ == "__main__":
     if file_extension is None:
         file_extension = "." + lang_name
     if lang_name == "all":
-        # scan src/${mode} for all existing languages
-        parent_dir = (
-            f"src/ebmip"
-            if (mode == "interpret" or mode == "interpret-class")
-            else f"src/ebmcg"
-        )
-        do_default_dummy_header(lang_name, mode)
-        for entry in os.listdir(parent_dir):
-            entry_path = os.path.join(parent_dir, entry)
-            if os.path.isdir(entry_path) and entry.startswith("ebm2"):
-                lang = entry[4:]  # remove "ebm2" prefix
-                do_setup(lang, mode, file_extension)
+        for m in ["codegen-class", "interpret-class"]:
+            do_all(m)
+        do_ebmgen_generate()
+    elif lang_name == "all-mode":
+        do_all(mode)
+    elif lang_name == "ebmgen":
+        do_ebmgen_generate()
     else:
         do_setup(lang_name, mode, file_extension)

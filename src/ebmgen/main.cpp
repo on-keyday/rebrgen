@@ -1,3 +1,4 @@
+/*license*/
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
@@ -35,7 +36,6 @@
 #include <unordered_set>
 #include <testutil/timer.h>
 #include <number/hex/bin2hex.h>
-#include "access.hpp"
 
 enum class DebugOutputFormat {
     Text,

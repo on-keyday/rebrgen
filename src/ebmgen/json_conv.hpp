@@ -61,6 +61,8 @@ namespace ebm {
     
     bool from_json(JumpOffset& obj, const futils::json::JSON& j);
     
+    bool from_json(LengthCheck& obj, const futils::json::JSON& j);
+    
     bool from_json(Loc& obj, const futils::json::JSON& j);
     
     bool from_json(LoopFlowControl& obj, const futils::json::JSON& j);
@@ -152,6 +154,8 @@ namespace ebm {
     bool from_json(FunctionKind& obj, const futils::json::JSON& j);
     
     bool from_json(InitCheckType& obj, const futils::json::JSON& j);
+    
+    bool from_json(LengthCheckType& obj, const futils::json::JSON& j);
     
     bool from_json(LoopType& obj, const futils::json::JSON& j);
     

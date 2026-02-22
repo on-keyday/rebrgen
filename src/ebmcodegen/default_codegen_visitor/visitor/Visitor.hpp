@@ -131,6 +131,7 @@ std::function<expected<Result>(Context_Statement_ASSIGNMENT& ctx)> assignment_cu
 std::function<expected<Result>(Context_Statement_VARIABLE_DECL& ctx)> variable_decl_custom;
 
 std::function<expected<Result>(Context_Expression_MAX_VALUE& ctx)> max_value_custom;
+std::function<expected<Result>(Context_Statement_LENGTH_CHECK& ctx)> length_check_custom;
 
 template <class Kind>
 struct MemoizationConfig {

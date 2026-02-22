@@ -3042,6 +3042,78 @@ static_assert(sizeof(ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Stateme
 template <>
 struct ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
+#if __has_include("visitor/Statement_LENGTH_CHECK_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK
+#include "visitor/Statement_LENGTH_CHECK_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 0
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_LENGTH_CHECK_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK_before<Result>
+#include "visitor/Statement_LENGTH_CHECK_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 0
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_LENGTH_CHECK_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK_after<Result>
+#include "visitor/Statement_LENGTH_CHECK_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 0
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {}; // Unimplemented
+#endif
 #if __has_include("visitor/Statement_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserHook<ebm2go::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
@@ -11627,6 +11699,99 @@ static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_
 #else
 template <>
 struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_LENGTH_CHECK.hpp")
+// Inlined hook for Statement_LENGTH_CHECK for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "visitor/Statement_LENGTH_CHECK.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 1
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_LENGTH_CHECK_before.hpp")
+// Inlined hook for Statement_LENGTH_CHECK_before for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK_before<Result>& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "visitor/Statement_LENGTH_CHECK_before.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 1
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/Statement_LENGTH_CHECK_after.hpp")
+// Inlined hook for Statement_LENGTH_CHECK_after for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK_after<Result>& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "visitor/Statement_LENGTH_CHECK_after.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 1
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/Statement_dispatch.hpp")
 // Inlined hook for Statement for backward compatibility
@@ -20697,6 +20862,78 @@ static_assert(sizeof(ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Stat
 template <>
 struct ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
+#if __has_include("visitor/dsl/Statement_LENGTH_CHECK_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK
+#include "visitor/dsl/Statement_LENGTH_CHECK_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 2
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_LENGTH_CHECK_before_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK_before<Result>
+#include "visitor/dsl/Statement_LENGTH_CHECK_before_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 2
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_LENGTH_CHECK_after_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK_after<Result>
+#include "visitor/dsl/Statement_LENGTH_CHECK_after_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 2
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {}; // Unimplemented
+#endif
 #if __has_include("visitor/dsl/Statement_dispatch_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::UserDSLHook<ebm2go::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
@@ -29282,6 +29519,99 @@ static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorT
 #else
 template <>
 struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_LENGTH_CHECK_dsl.hpp")
+// Inlined hook for Statement_LENGTH_CHECK for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "visitor/dsl/Statement_LENGTH_CHECK_dsl.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 3
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_LENGTH_CHECK_before_dsl.hpp")
+// Inlined hook for Statement_LENGTH_CHECK_before for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK_before<Result>& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "visitor/dsl/Statement_LENGTH_CHECK_before_dsl.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 3
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {}; // Unimplemented
+#endif
+#if __has_include("visitor/dsl/Statement_LENGTH_CHECK_after_dsl.hpp")
+// Inlined hook for Statement_LENGTH_CHECK_after for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK_after<Result>& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "visitor/dsl/Statement_LENGTH_CHECK_after_dsl.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 3
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::UserInlinedDSLHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/dsl/Statement_dispatch_dsl.hpp")
 // Inlined hook for Statement for backward compatibility
@@ -38352,6 +38682,78 @@ static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::V
 template <>
 struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 4
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK_before<Result>
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK_before<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 4
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_Statement_LENGTH_CHECK_after<Result>
+#include "ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_Statement_LENGTH_CHECK_after<Result>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_CONTEXT
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>"))
+#define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
+PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
+#undef TEMPORARY_CHECK_MACRO
+#undef PASS_TO_CHECK
+#undef CODEGEN_VISITOR
+static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 4
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {}; // Unimplemented
+#endif
 #if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2go::Visitor<ebm2go::DefaultCodegenVisitorHook<ebm2go::VisitorTag_Statement>>
 #define CODEGEN_CONTEXT(dummy_name) Context_Statement
@@ -46938,6 +47340,99 @@ static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<eb
 template <>
 struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_INT_TO_ARRAY_after>> {}; // Unimplemented
 #endif
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK.hpp")
+// Inlined hook for Statement_LENGTH_CHECK for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK.hpp"
+        return {};
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 5
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_before.hpp")
+// Inlined hook for Statement_LENGTH_CHECK_before for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK_before<Result>& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK_BEFORE(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_before.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 5
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_before>> {}; // Unimplemented
+#endif
+#if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_after.hpp")
+// Inlined hook for Statement_LENGTH_CHECK_after for backward compatibility
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {
+    // for backward compatibility
+    ebm2go::MergedVisitor* __legacy_compat_ptr = nullptr;
+    expected<Result> visit(Context_Statement_LENGTH_CHECK_after<Result>& ctx) {
+        EBM2GO_DECONSTRUCT_STATEMENT_LENGTH_CHECK_AFTER(ctx);
+        auto& program_name = ctx.visitor.program_name;
+        auto& flags = ctx.visitor.flags;
+        auto& output = ctx.visitor.output;
+        auto& wm = ctx.visitor.wm;
+        auto& module_ = ctx.visitor.module_;
+        __legacy_compat_ptr = ctx.visitor.__legacy_compat_ptr;
+        // for backward compatibility
+        auto& root = wm.root;
+        auto add_writer = [&]{ return wm.add_writer(); };
+        auto get_writer = [&]{ return wm.get_writer(); };
+        using namespace ebm2go;
+        #include "ebmcodegen/default_codegen_visitor/visitor/Statement_LENGTH_CHECK_after.hpp"
+        return pass;
+    }
+};
+static_assert(sizeof(ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 5
+#endif
+#else
+template <>
+struct ebm2go::Visitor<ebm2go::DefaultCodegenVisitorInlinedHook<ebm2go::VisitorTag_Statement_LENGTH_CHECK_after>> {}; // Unimplemented
+#endif
 #if __has_include("ebmcodegen/default_codegen_visitor/visitor/Statement_dispatch.hpp")
 // Inlined hook for Statement for backward compatibility
 template <>
@@ -55273,6 +55768,60 @@ namespace ebm2go {
         return {};
     }
     template<typename Result,typename Context>
+    expected<Result> dispatch_Statement_LENGTH_CHECK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
+        auto& kind = in.body.kind;
+        if (!in.body.length_check()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::length_check");
+        }
+        auto& length_check = *in.body.length_check();
+        auto main_logic = [&]() -> expected<Result>{
+            Context_Statement_LENGTH_CHECK new_ctx{
+                .visitor = get_visitor_arg_from_context(ctx),
+                .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+                .kind = kind,
+                .length_check = length_check,
+            };
+            return get_visitor_from_context<Result>(ctx,new_ctx).visit(new_ctx);
+        };
+        Context_Statement_LENGTH_CHECK_before<Result> before_ctx{
+            .visitor = get_visitor_arg_from_context(ctx),
+            .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+            .kind = kind,
+            .length_check = length_check,
+            .main_logic = main_logic,
+        };
+        expected<Result> before_result = get_visitor_from_context<Result>(ctx,before_ctx).visit(before_ctx);
+        CODEGEN_MAY_HIJACK(before_result);
+        expected<Result> main_result = main_logic();
+        Context_Statement_LENGTH_CHECK_after<Result> after_ctx{
+            .visitor = get_visitor_arg_from_context(ctx),
+            .item_id = is_nil(alias_ref) ? in.id : alias_ref,
+            .kind = kind,
+            .length_check = length_check,
+            .main_logic = main_logic,
+            .result = main_result,
+        };
+        expected<Result> after_result = get_visitor_from_context<Result>(ctx,after_ctx).visit(after_ctx);
+        CODEGEN_MAY_HIJACK(after_result);
+        return main_result;
+    }
+    template<typename Result, typename UserContext,typename TypeContext>
+    expected<Result> traverse_children_Statement_LENGTH_CHECK(UserContext&& ctx,TypeContext&& type_ctx) {
+        if (!is_nil(type_ctx.length_check.target)) {
+            auto result_target = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.length_check.target);
+            if (!result_target) {
+                return unexpect_error(std::move(result_target.error()));
+            }
+        }
+        if (!is_nil(type_ctx.length_check.expected_length)) {
+            auto result_expected_length = visit_Object<Result>(std::forward<UserContext>(ctx),type_ctx.length_check.expected_length);
+            if (!result_expected_length) {
+                return unexpect_error(std::move(result_expected_length.error()));
+            }
+        }
+        return {};
+    }
+    template<typename Result,typename Context>
     expected<Result> dispatch_Statement(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref){
         auto main_logic = [&]() -> expected<Result>{
             Context_Statement new_ctx{
@@ -58848,6 +59397,9 @@ namespace ebm2go {
         else if constexpr (std::is_same_v<TypeContextType,Context_Statement_INT_TO_ARRAY> || std::is_same_v<TypeContextType,Context_Statement_INT_TO_ARRAY_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_INT_TO_ARRAY_after<Result>>) {
             return traverse_children_Statement_INT_TO_ARRAY<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
         }
+        else if constexpr (std::is_same_v<TypeContextType,Context_Statement_LENGTH_CHECK> || std::is_same_v<TypeContextType,Context_Statement_LENGTH_CHECK_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_LENGTH_CHECK_after<Result>>) {
+            return traverse_children_Statement_LENGTH_CHECK<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+        }
         else if constexpr (std::is_same_v<TypeContextType,Context_Statement> || std::is_same_v<TypeContextType,Context_Statement_before<Result>> || std::is_same_v<TypeContextType,Context_Statement_after<Result>>) {
             return traverse_children_Statement<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
         }
@@ -60306,6 +60858,36 @@ namespace ebm2go {
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER)
     #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_LENGTH_CHECK>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_LENGTH_CHECK",get_id(ctx.item_id));
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_LENGTH_CHECK_before>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return pass;
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE 6
+    #endif
+    template <>
+    struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_LENGTH_CHECK_after>> {
+        template<typename Context>
+        auto visit(Context&& ctx) {
+            return pass;
+        }
+    };
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER)
+    #define CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER 6
     #endif
     template <>
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement>> {
@@ -66414,6 +66996,105 @@ namespace ebm2go {
             }
             else {
                 static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY_AFTER < 7, "No suitable visitor hook found for Statement_INT_TO_ARRAY_after");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_LENGTH_CHECK>> visitor_Statement_LENGTH_CHECK_GeneratorDefaultHook;
+        auto& get_visitor_Statement_LENGTH_CHECK(const Context_Statement_LENGTH_CHECK&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 0) {
+                return visitor_Statement_LENGTH_CHECK_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 1) {
+                return visitor_Statement_LENGTH_CHECK_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 2) {
+                return visitor_Statement_LENGTH_CHECK_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 3) {
+                return visitor_Statement_LENGTH_CHECK_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 4) {
+                return visitor_Statement_LENGTH_CHECK_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 5) {
+                return visitor_Statement_LENGTH_CHECK_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK == 6) {
+                return visitor_Statement_LENGTH_CHECK_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK < 7, "No suitable visitor hook found for Statement_LENGTH_CHECK");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_LENGTH_CHECK_before>> visitor_Statement_LENGTH_CHECK_before_GeneratorDefaultHook;
+        auto& get_visitor_Statement_LENGTH_CHECK_before(const Context_Statement_LENGTH_CHECK_before<Result>&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 0) {
+                return visitor_Statement_LENGTH_CHECK_before_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 1) {
+                return visitor_Statement_LENGTH_CHECK_before_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 2) {
+                return visitor_Statement_LENGTH_CHECK_before_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 3) {
+                return visitor_Statement_LENGTH_CHECK_before_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 4) {
+                return visitor_Statement_LENGTH_CHECK_before_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 5) {
+                return visitor_Statement_LENGTH_CHECK_before_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE == 6) {
+                return visitor_Statement_LENGTH_CHECK_before_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_BEFORE < 7, "No suitable visitor hook found for Statement_LENGTH_CHECK_before");
+            }
+        }
+        Visitor<UserHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_UserHook;
+        Visitor<UserInlinedHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_UserInlinedHook;
+        Visitor<UserDSLHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_UserDSLHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_DefaultCodegenVisitorHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_Statement_LENGTH_CHECK_after>> visitor_Statement_LENGTH_CHECK_after_GeneratorDefaultHook;
+        auto& get_visitor_Statement_LENGTH_CHECK_after(const Context_Statement_LENGTH_CHECK_after<Result>&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 0) {
+                return visitor_Statement_LENGTH_CHECK_after_UserHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 1) {
+                return visitor_Statement_LENGTH_CHECK_after_UserInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 2) {
+                return visitor_Statement_LENGTH_CHECK_after_UserDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 3) {
+                return visitor_Statement_LENGTH_CHECK_after_UserInlinedDSLHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 4) {
+                return visitor_Statement_LENGTH_CHECK_after_DefaultCodegenVisitorHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 5) {
+                return visitor_Statement_LENGTH_CHECK_after_DefaultCodegenVisitorInlinedHook;
+            }
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER == 6) {
+                return visitor_Statement_LENGTH_CHECK_after_GeneratorDefaultHook;
+            }
+            else {
+                static_assert(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_STATEMENT_LENGTH_CHECK_AFTER < 7, "No suitable visitor hook found for Statement_LENGTH_CHECK_after");
             }
         }
         Visitor<UserHook<VisitorTag_Statement>> visitor_Statement_UserHook;
@@ -73358,6 +74039,18 @@ namespace ebm2go {
         }
         expected<Result> visit(Context_Statement_INT_TO_ARRAY_after<Result>& ctx) {
             auto visitor = impl.get_visitor_Statement_INT_TO_ARRAY_after(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_LENGTH_CHECK& ctx) {
+            auto visitor = impl.get_visitor_Statement_LENGTH_CHECK(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_LENGTH_CHECK_before<Result>& ctx) {
+            auto visitor = impl.get_visitor_Statement_LENGTH_CHECK_before(ctx);
+            return visitor.visit(ctx);
+        }
+        expected<Result> visit(Context_Statement_LENGTH_CHECK_after<Result>& ctx) {
+            auto visitor = impl.get_visitor_Statement_LENGTH_CHECK_after(ctx);
             return visitor.visit(ctx);
         }
         expected<Result> visit(Context_Statement& ctx) {

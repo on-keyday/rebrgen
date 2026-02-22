@@ -532,6 +532,7 @@ enum StatementKind:
     ENDIAN_VARIABLE
     ARRAY_TO_INT # for endian conversion on decode
     INT_TO_ARRAY # for endian conversion on encode
+    LENGTH_CHECK # checking length context
 
 
 
@@ -618,6 +619,18 @@ format ReserveData:
     write_data :WeakStatementRef # reference to WRITE_DATA
     size :Size # size to reserve
 
+enum LengthCheckType:
+    :u8
+    ENCODE_VECTOR_LENGTH
+    SETTER_VECTOR_LENGTH
+
+format LengthCheck: # marker statement for length check context (e.g., vector length check, string length check)
+    target :ExpressionRef # Expression to check length of (e.g., vector or string)
+    expected_length :ExpressionRef # Expected length expression
+    related_function :WeakStatementRef # Reference to the related function declaration
+    lowered_statement :LoweredStatementRef # Optional lowered statement for the length check (e.g., for vector length check)
+    length_check_type :LengthCheckType # Type of length check
+
 format StatementBody:
     kind :StatementKind
     match kind:
@@ -703,6 +716,8 @@ format StatementBody:
             endian_convert :EndianConvertDesc
         StatementKind.INT_TO_ARRAY:
             endian_convert :EndianConvertDesc
+        StatementKind.LENGTH_CHECK:
+            length_check :LengthCheck
 
 format Expressions:
     len :Varint

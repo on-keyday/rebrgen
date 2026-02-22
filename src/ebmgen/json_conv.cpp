@@ -1451,6 +1451,50 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(LengthCheck& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("target")) {
+            if(!futils::json::convert_from_json(*got, obj.target)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("expected_length")) {
+            if(!futils::json::convert_from_json(*got, obj.expected_length)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("related_function")) {
+            if(!futils::json::convert_from_json(*got, obj.related_function)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("lowered_statement")) {
+            if(!futils::json::convert_from_json(*got, obj.lowered_statement)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("length_check_type")) {
+            if(!futils::json::convert_from_json(*got, obj.length_check_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(Loc& obj, const futils::json::JSON& j) {
         if (auto got = j.at("ident")) {
             if(!futils::json::convert_from_json(*got, obj.ident)) {
@@ -2228,6 +2272,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.init_check(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("length_check")) {
+            LengthCheck tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.length_check(std::move(tmp))) {
                 return false;
             }
         }
@@ -3541,6 +3594,22 @@ namespace ebm {
         return false;
     }
     
+    bool from_json(LengthCheckType& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "ENCODE_VECTOR_LENGTH") {
+                obj = LengthCheckType::ENCODE_VECTOR_LENGTH;
+                return true;
+            }
+            if (s == "SETTER_VECTOR_LENGTH") {
+                obj = LengthCheckType::SETTER_VECTOR_LENGTH;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
     bool from_json(LoopType& obj, const futils::json::JSON& j) {
         if (auto got = j.get_holder().as_str()) {
             auto& s = *got;
@@ -4162,6 +4231,10 @@ namespace ebm {
             }
             if (s == "INT_TO_ARRAY") {
                 obj = StatementKind::INT_TO_ARRAY;
+                return true;
+            }
+            if (s == "LENGTH_CHECK") {
+                obj = StatementKind::LENGTH_CHECK;
                 return true;
             }
             return false;

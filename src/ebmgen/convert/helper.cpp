@@ -449,4 +449,17 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_length_check(ebm::LengthCheckType type, ebm::ExpressionRef target, ebm::ExpressionRef expected_length, ebm::StatementRef related_function, ebm::StatementRef lowered_statement) {
+        ebm::StatementBody body;
+        ebm::LengthCheck length_check;
+        length_check.length_check_type = type;
+        length_check.target = target;
+        length_check.expected_length = expected_length;
+        length_check.related_function = to_weak(related_function);
+        length_check.lowered_statement = ebm::LoweredStatementRef{lowered_statement};
+        body.kind = ebm::StatementKind::LENGTH_CHECK;
+        body.length_check(std::move(length_check));
+        return body;
+    }
+
 }  // namespace ebmgen

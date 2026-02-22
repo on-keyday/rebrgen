@@ -808,5 +808,15 @@ DEFINE_VISITOR(entry_before) {
         }
         return pass;
     };
+    ctx.config().length_check_custom = [](Context_Statement_LENGTH_CHECK& lctx) -> expected<Result> {
+        if (lctx.length_check.length_check_type == ebm::LengthCheckType::SETTER_VECTOR_LENGTH) {
+            auto size = lctx.get_field<"type_cast_desc.source_expr.type.size.optional">(lctx.length_check.expected_length);
+            if (size && size->value() >= 64) {
+                // for large vectors, skip length check to avoid large memory allocation in Go runtime
+                return "";
+            }
+        }
+        return pass;
+    };
     return pass;
 }

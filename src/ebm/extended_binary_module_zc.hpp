@@ -828,6 +828,7 @@ namespace ebm::zc {
         ENDIAN_VARIABLE = 36,
         ARRAY_TO_INT = 37,
         INT_TO_ARRAY = 38,
+        LENGTH_CHECK = 39,
     };
     constexpr const char* to_string(StatementKind e, bool origin_form = false) {
         switch(e) {
@@ -870,6 +871,7 @@ namespace ebm::zc {
             case StatementKind::ENDIAN_VARIABLE: return origin_form ? "ENDIAN_VARIABLE":"ENDIAN_VARIABLE" ;
             case StatementKind::ARRAY_TO_INT: return origin_form ? "ARRAY_TO_INT":"ARRAY_TO_INT" ;
             case StatementKind::INT_TO_ARRAY: return origin_form ? "INT_TO_ARRAY":"INT_TO_ARRAY" ;
+            case StatementKind::LENGTH_CHECK: return origin_form ? "LENGTH_CHECK":"LENGTH_CHECK" ;
         }
         return "";
     }
@@ -994,6 +996,9 @@ namespace ebm::zc {
         }
         if (str == "INT_TO_ARRAY") {
             return StatementKind::INT_TO_ARRAY;
+        }
+        if (str == "LENGTH_CHECK") {
+            return StatementKind::LENGTH_CHECK;
         }
         return std::nullopt;
     }
@@ -1130,6 +1135,33 @@ namespace ebm::zc {
     }
     constexpr const char* visit_enum(InitCheckType) {
         return "InitCheckType";
+    }
+    enum class LengthCheckType : std::uint8_t {
+        ENCODE_VECTOR_LENGTH = 0,
+        SETTER_VECTOR_LENGTH = 1,
+    };
+    constexpr const char* to_string(LengthCheckType e, bool origin_form = false) {
+        switch(e) {
+            case LengthCheckType::ENCODE_VECTOR_LENGTH: return origin_form ? "ENCODE_VECTOR_LENGTH":"ENCODE_VECTOR_LENGTH" ;
+            case LengthCheckType::SETTER_VECTOR_LENGTH: return origin_form ? "SETTER_VECTOR_LENGTH":"SETTER_VECTOR_LENGTH" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<LengthCheckType> LengthCheckType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "ENCODE_VECTOR_LENGTH") {
+            return LengthCheckType::ENCODE_VECTOR_LENGTH;
+        }
+        if (str == "SETTER_VECTOR_LENGTH") {
+            return LengthCheckType::SETTER_VECTOR_LENGTH;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(LengthCheckType) {
+        return "LengthCheckType";
     }
     enum class CastType : std::uint8_t {
         ENUM_TO_INT = 0,
@@ -1977,6 +2009,7 @@ namespace ebm::zc {
     struct ErrorReport;
     struct SubByteRange;
     struct InitCheck;
+    struct LengthCheck;
     struct StatementBody;
     struct Statement;
     struct Types;
@@ -4310,6 +4343,45 @@ namespace ebm::zc {
             v(v, "related_function",visitor_tag<decltype(std::declval<InitCheck>().related_function),false>{});
         }
     };
+    struct EBM_API LengthCheck{
+        ExpressionRef target;
+        ExpressionRef expected_length;
+        WeakStatementRef related_function;
+        LoweredStatementRef lowered_statement;
+        LengthCheckType length_check_type{};
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "LengthCheck";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "target",(*this).target);
+            v(v, "expected_length",(*this).expected_length);
+            v(v, "related_function",(*this).related_function);
+            v(v, "lowered_statement",(*this).lowered_statement);
+            v(v, "length_check_type",(*this).length_check_type);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "target",(*this).target);
+            v(v, "expected_length",(*this).expected_length);
+            v(v, "related_function",(*this).related_function);
+            v(v, "lowered_statement",(*this).lowered_statement);
+            v(v, "length_check_type",(*this).length_check_type);
+        }
+        template<typename T,bool rvalue = false>
+        struct visitor_tag {
+            using type = T;
+            static constexpr bool is_rvalue = rvalue;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "target",visitor_tag<decltype(std::declval<LengthCheck>().target),false>{});
+            v(v, "expected_length",visitor_tag<decltype(std::declval<LengthCheck>().expected_length),false>{});
+            v(v, "related_function",visitor_tag<decltype(std::declval<LengthCheck>().related_function),false>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<LengthCheck>().lowered_statement),false>{});
+            v(v, "length_check_type",visitor_tag<decltype(std::declval<LengthCheck>().length_check_type),false>{});
+        }
+    };
     struct EBM_API StatementBody{
         StatementKind kind{};
         struct EBM_API union_struct_120{
@@ -4431,7 +4503,10 @@ namespace ebm::zc {
         struct EBM_API union_struct_156{
             EndianConvertDesc endian_convert;
         };
-        std::variant<std::monostate, union_struct_120, union_struct_121, union_struct_122, union_struct_123, union_struct_124, union_struct_125, union_struct_126, union_struct_127, union_struct_128, union_struct_129, union_struct_130, union_struct_131, union_struct_132, union_struct_133, union_struct_134, union_struct_135, union_struct_136, union_struct_137, union_struct_138, union_struct_139, union_struct_140, union_struct_141, union_struct_142, union_struct_143, union_struct_144, union_struct_145, union_struct_146, union_struct_147, union_struct_148, union_struct_149, union_struct_150, union_struct_151, union_struct_152, union_struct_153, union_struct_154, union_struct_155, union_struct_156> union_variant_119;
+        struct EBM_API union_struct_157{
+            LengthCheck length_check;
+        };
+        std::variant<std::monostate, union_struct_120, union_struct_121, union_struct_122, union_struct_123, union_struct_124, union_struct_125, union_struct_126, union_struct_127, union_struct_128, union_struct_129, union_struct_130, union_struct_131, union_struct_132, union_struct_133, union_struct_134, union_struct_135, union_struct_136, union_struct_137, union_struct_138, union_struct_139, union_struct_140, union_struct_141, union_struct_142, union_struct_143, union_struct_144, union_struct_145, union_struct_146, union_struct_147, union_struct_148, union_struct_149, union_struct_150, union_struct_151, union_struct_152, union_struct_153, union_struct_154, union_struct_155, union_struct_156, union_struct_157> union_variant_119;
         const AssertDesc* assert_desc() const;
         AssertDesc* assert_desc();
         bool assert_desc(AssertDesc&& v);
@@ -4496,6 +4571,10 @@ namespace ebm::zc {
         InitCheck* init_check();
         bool init_check(InitCheck&& v);
         bool init_check(const InitCheck& v);
+        const LengthCheck* length_check() const;
+        LengthCheck* length_check();
+        bool length_check(LengthCheck&& v);
+        bool length_check(const LengthCheck& v);
         const LoopStatement* loop() const;
         LoopStatement* loop();
         bool loop(LoopStatement&& v);
@@ -4595,6 +4674,7 @@ namespace ebm::zc {
             v(v, "if_statement",(*this).if_statement());
             v(v, "import_decl",(*this).import_decl());
             v(v, "init_check",(*this).init_check());
+            v(v, "length_check",(*this).length_check());
             v(v, "loop",(*this).loop());
             v(v, "lowered_io_statements",(*this).lowered_io_statements());
             v(v, "match_branch",(*this).match_branch());
@@ -4634,6 +4714,7 @@ namespace ebm::zc {
             v(v, "if_statement",(*this).if_statement());
             v(v, "import_decl",(*this).import_decl());
             v(v, "init_check",(*this).init_check());
+            v(v, "length_check",(*this).length_check());
             v(v, "loop",(*this).loop());
             v(v, "lowered_io_statements",(*this).lowered_io_statements());
             v(v, "match_branch",(*this).match_branch());
@@ -4678,6 +4759,7 @@ namespace ebm::zc {
             v(v, "if_statement",visitor_tag<decltype(std::declval<StatementBody>().if_statement()),false>{});
             v(v, "import_decl",visitor_tag<decltype(std::declval<StatementBody>().import_decl()),false>{});
             v(v, "init_check",visitor_tag<decltype(std::declval<StatementBody>().init_check()),false>{});
+            v(v, "length_check",visitor_tag<decltype(std::declval<StatementBody>().length_check()),false>{});
             v(v, "loop",visitor_tag<decltype(std::declval<StatementBody>().loop()),false>{});
             v(v, "lowered_io_statements",visitor_tag<decltype(std::declval<StatementBody>().lowered_io_statements()),false>{});
             v(v, "match_branch",visitor_tag<decltype(std::declval<StatementBody>().match_branch()),false>{});
@@ -4787,9 +4869,9 @@ namespace ebm::zc {
     struct EBM_API FuncTypeDesc{
         TypeRef return_type;
         Types params;
-        ::futils::binary::flags_t<std::uint8_t, 2, 6> flags_157_;
-        bits_flag_alias_method_with_enum(flags_157_,0,annotation,FuncTypeAnnotation);
-        bits_flag_alias_method(flags_157_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 2, 6> flags_158_;
+        bits_flag_alias_method_with_enum(flags_158_,0,annotation,FuncTypeAnnotation);
+        bits_flag_alias_method(flags_158_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "FuncTypeDesc";
@@ -4822,9 +4904,6 @@ namespace ebm::zc {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_160{
-            Varint size;
-        };
         struct EBM_API union_struct_161{
             Varint size;
         };
@@ -4832,41 +4911,44 @@ namespace ebm::zc {
             Varint size;
         };
         struct EBM_API union_struct_163{
+            Varint size;
         };
         struct EBM_API union_struct_164{
+        };
+        struct EBM_API union_struct_165{
             TypeRef element_type;
             Varint length;
             ArrayAnnotation array_annotation{};
         };
-        struct EBM_API union_struct_165{
-            TypeRef element_type;
-        };
         struct EBM_API union_struct_166{
-            WeakStatementRef id;
+            TypeRef element_type;
         };
         struct EBM_API union_struct_167{
             WeakStatementRef id;
         };
         struct EBM_API union_struct_168{
             WeakStatementRef id;
-            TypeRef base_type;
         };
         struct EBM_API union_struct_169{
-            VariantDesc variant_desc;
-        };
-        struct EBM_API union_struct_170{
-            TypeRef inner_type;
-        };
-        struct EBM_API union_struct_171{
-            TypeRef pointee_type;
-        };
-        struct EBM_API union_struct_172{
+            WeakStatementRef id;
             TypeRef base_type;
         };
+        struct EBM_API union_struct_170{
+            VariantDesc variant_desc;
+        };
+        struct EBM_API union_struct_171{
+            TypeRef inner_type;
+        };
+        struct EBM_API union_struct_172{
+            TypeRef pointee_type;
+        };
         struct EBM_API union_struct_173{
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_174{
             FuncTypeDesc func_desc;
         };
-        std::variant<std::monostate, union_struct_160, union_struct_161, union_struct_162, union_struct_163, union_struct_164, union_struct_165, union_struct_166, union_struct_167, union_struct_168, union_struct_169, union_struct_170, union_struct_171, union_struct_172, union_struct_173> union_variant_159;
+        std::variant<std::monostate, union_struct_161, union_struct_162, union_struct_163, union_struct_164, union_struct_165, union_struct_166, union_struct_167, union_struct_168, union_struct_169, union_struct_170, union_struct_171, union_struct_172, union_struct_173, union_struct_174> union_variant_160;
         const ArrayAnnotation* array_annotation() const;
         ArrayAnnotation* array_annotation();
         bool array_annotation(ArrayAnnotation&& v);
@@ -5120,9 +5202,6 @@ namespace ebm::zc {
     };
     struct EBM_API Instruction{
         OpCode op{};
-        struct EBM_API union_struct_176{
-            JumpOffset target;
-        };
         struct EBM_API union_struct_177{
             JumpOffset target;
         };
@@ -5130,22 +5209,22 @@ namespace ebm::zc {
             JumpOffset target;
         };
         struct EBM_API union_struct_179{
-            Varint arg_num;
+            JumpOffset target;
         };
         struct EBM_API union_struct_180{
-            StringRef msg_id;
+            Varint arg_num;
         };
         struct EBM_API union_struct_181{
             StringRef msg_id;
         };
         struct EBM_API union_struct_182{
-            Varint value;
+            StringRef msg_id;
         };
         struct EBM_API union_struct_183{
-            StringRef str_id;
+            Varint value;
         };
         struct EBM_API union_struct_184{
-            RegisterIndex reg;
+            StringRef str_id;
         };
         struct EBM_API union_struct_185{
             RegisterIndex reg;
@@ -5154,7 +5233,7 @@ namespace ebm::zc {
             RegisterIndex reg;
         };
         struct EBM_API union_struct_187{
-            OptionalImmediateSize imm;
+            RegisterIndex reg;
         };
         struct EBM_API union_struct_188{
             OptionalImmediateSize imm;
@@ -5163,21 +5242,24 @@ namespace ebm::zc {
             OptionalImmediateSize imm;
         };
         struct EBM_API union_struct_190{
-            SetEndian set_endian;
-        };
-        struct EBM_API union_struct_191{
-            CastType cast_type{};
-        };
-        struct EBM_API union_struct_192{
-            StatementRef struct_id;
-        };
-        struct EBM_API union_struct_193{
-            StatementRef member_id;
-        };
-        struct EBM_API union_struct_194{
             OptionalImmediateSize imm;
         };
-        std::variant<std::monostate, union_struct_176, union_struct_177, union_struct_178, union_struct_179, union_struct_180, union_struct_181, union_struct_182, union_struct_183, union_struct_184, union_struct_185, union_struct_186, union_struct_187, union_struct_188, union_struct_189, union_struct_190, union_struct_191, union_struct_192, union_struct_193, union_struct_194> union_variant_175;
+        struct EBM_API union_struct_191{
+            SetEndian set_endian;
+        };
+        struct EBM_API union_struct_192{
+            CastType cast_type{};
+        };
+        struct EBM_API union_struct_193{
+            StatementRef struct_id;
+        };
+        struct EBM_API union_struct_194{
+            StatementRef member_id;
+        };
+        struct EBM_API union_struct_195{
+            OptionalImmediateSize imm;
+        };
+        std::variant<std::monostate, union_struct_177, union_struct_178, union_struct_179, union_struct_180, union_struct_181, union_struct_182, union_struct_183, union_struct_184, union_struct_185, union_struct_186, union_struct_187, union_struct_188, union_struct_189, union_struct_190, union_struct_191, union_struct_192, union_struct_193, union_struct_194, union_struct_195> union_variant_176;
         const Varint* arg_num() const;
         Varint* arg_num();
         bool arg_num(Varint&& v);

@@ -25,6 +25,7 @@ namespace ebmcodegen {
             body.if_statement({});
             body.import_decl({});
             body.init_check({});
+            body.length_check({});
             body.loop({});
             body.lowered_io_statements({});
             body.match_branch({});

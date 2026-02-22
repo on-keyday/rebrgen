@@ -22,6 +22,9 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Expression_MAX_VALUE) {
     using namespace CODEGEN_NAMESPACE;
+    if (ctx.config().max_value_custom) {
+        CALL_OR_PASS(max_value, ctx.config().max_value_custom(ctx));
+    }
     MAYBE(result, ctx.visit(ctx.lowered_expr.id));
     return result;
 }

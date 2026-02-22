@@ -7,10 +7,10 @@
     ctx: Context_entry
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 #include "../codegen.hpp"

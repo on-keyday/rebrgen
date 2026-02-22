@@ -731,6 +731,7 @@ namespace ebmcodegen::util {
         switch (kind) {
             case ebm::FunctionKind::PROPERTY_SETTER:
             case ebm::FunctionKind::COMPOSITE_SETTER:
+            case ebm::FunctionKind::VECTOR_SETTER:
                 return true;
             default:
                 return false;

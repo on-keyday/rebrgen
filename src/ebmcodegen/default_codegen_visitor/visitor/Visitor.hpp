@@ -130,6 +130,8 @@ std::function<expected<Result>(Context_Statement_IF_STATEMENT& ctx)> if_statemen
 std::function<expected<Result>(Context_Statement_ASSIGNMENT& ctx)> assignment_custom;
 std::function<expected<Result>(Context_Statement_VARIABLE_DECL& ctx)> variable_decl_custom;
 
+std::function<expected<Result>(Context_Expression_MAX_VALUE& ctx)> max_value_custom;
+
 template <class Kind>
 struct MemoizationConfig {
     bool enable = false;

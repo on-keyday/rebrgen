@@ -7,10 +7,10 @@
     ctx: Context_Statement_STRUCT_DECL_after<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       item_id: ebm::StatementRef
       kind: const ebm::StatementKind&
       struct_decl: const ebm::StructDecl&

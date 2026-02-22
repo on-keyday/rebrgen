@@ -7,10 +7,10 @@
     ctx: Context_Statement_IF_STATEMENT
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       item_id: ebm::StatementRef
       kind: const ebm::StatementKind&
       if_statement: const ebm::IfStatement&

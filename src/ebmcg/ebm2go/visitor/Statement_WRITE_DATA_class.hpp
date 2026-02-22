@@ -7,10 +7,10 @@
     ctx: Context_Statement_WRITE_DATA
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       item_id: ebm::StatementRef
       kind: const ebm::StatementKind&
       write_data: const ebm::IOData&
@@ -39,39 +39,6 @@
 
 #include "../codegen.hpp"
 
-namespace CODEGEN_NAMESPACE {
-    inline ebmgen::expected<void> derive_array_setter(Context_Statement_WRITE_DATA& wctx, ArrayLengthInfo info) {
-        auto array_field = info.vector_field;
-        auto length_field = info.length_field;
-        auto length_type = info.length_type;
-        MAYBE(array_type_str, wctx.visit(array_field->field_type));
-        ebm::Expression array_size_expr;
-        array_size_expr.body.kind = ebm::ExpressionKind::ARRAY_SIZE;
-        array_size_expr.body.array_expr(info.write_data->target);
-        MAYBE(original_len, wctx.visit(array_size_expr));
-        MAYBE(length_bit_size, length_type->body.size());
-        MAYBE(target_expr, wctx.visit(info.write_data->target));
-        MAYBE(length_expr, get_size_str(wctx, info.write_data->size));
-        MAYBE(length_type_str, wctx.visit(length_field->field_type));
-
-        // set size field
-        CodeWriter w;
-        w.writeln("func (", wctx.config().self_value, " *", wctx.identifier(array_field->parent_struct), ") Set", wctx.identifier(info.write_data->field), "(value ", std::move(array_type_str.to_writer()), ") bool ", wctx.config().begin_block);
-        {
-            auto scope = w.indent_scope();
-            // check length bit size
-            w.writeln("if len(value) > ", std::to_string((1ULL << length_bit_size.value()) - 1), " {");
-            w.indent_writeln("return false");
-            w.writeln("}");
-            w.writeln(target_expr.to_writer(), " = value");
-            w.writeln(length_expr, " = ", length_type_str.to_writer(), "(", original_len.to_writer(), ")");
-            w.writeln("return true");
-        }
-        w.writeln("}");
-        wctx.config().decl_toplevel.push_back(std::move(w));
-        return {};
-    }
-}  // namespace CODEGEN_NAMESPACE
 DEFINE_VISITOR(Statement_WRITE_DATA) {
     using namespace CODEGEN_NAMESPACE;
     auto& wctx = ctx;
@@ -79,13 +46,6 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
     if (auto low = wctx.write_data.lowered_statement()) {
         if (low->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
             return wctx.visit(low->io_statement.id);
-        }
-    }
-    if (auto found = ctx.config().array_length_setters.find(get_id(wctx.write_data.field));
-        found != ctx.config().array_length_setters.end()) {
-        if (!ctx.config().array_length_set_done.contains(get_id(wctx.write_data.field))) {
-            MAYBE_VOID(ok, derive_array_setter(wctx, found->second));
-            ctx.config().array_length_set_done.insert(get_id(wctx.write_data.field));
         }
     }
     if (is_single_byte_io(ctx, ctx.write_data) && (ctx.config().use_io_reader_writer)) {  // currently, only for u8

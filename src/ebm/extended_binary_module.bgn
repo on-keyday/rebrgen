@@ -421,6 +421,7 @@ enum FunctionKind:
     COMPOSITE_GETTER = 6 # Composite field getter function
     COMPOSITE_SETTER = 7 # Composite field setter function
     CAST = 8 # Type cast function (also a method)
+    VECTOR_SETTER = 9 # Setter function for vector fields that need length check and assignment
 
 format FunctionDecl:
     name :IdentifierRef # Function name
@@ -428,8 +429,8 @@ format FunctionDecl:
     params: Block
     parent_format :WeakStatementRef # Reference to parent format (maybe null) (e.g., struct, union)
     kind :FunctionKind # Kind of the function
-    if kind == FunctionKind.PROPERTY_GETTER || kind == FunctionKind.PROPERTY_SETTER:
-        property :WeakStatementRef # Reference to the associated PropertyDecl
+    if kind == FunctionKind.PROPERTY_GETTER || kind == FunctionKind.PROPERTY_SETTER || kind == FunctionKind.VECTOR_SETTER:
+        property :WeakStatementRef # Reference to the associated PropertyDecl or FieldDecl 
     body :StatementRef
 
 format EnumDecl:

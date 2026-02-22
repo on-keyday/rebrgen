@@ -7,10 +7,10 @@
     ctx: Context_entry_after<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       main_logic: ebmcodegen::util::MainLogicWrapper<Result>
       result: expected<Result>&
 */

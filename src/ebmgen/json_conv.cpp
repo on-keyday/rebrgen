@@ -3500,6 +3500,10 @@ namespace ebm {
                 obj = FunctionKind::CAST;
                 return true;
             }
+            if (s == "VECTOR_SETTER") {
+                obj = FunctionKind::VECTOR_SETTER;
+                return true;
+            }
             return false;
         }
         return false;

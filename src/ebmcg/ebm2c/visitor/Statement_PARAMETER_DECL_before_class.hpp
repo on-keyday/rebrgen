@@ -7,10 +7,10 @@
     ctx: Context_Statement_PARAMETER_DECL_before<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       item_id: ebm::StatementRef
       kind: const ebm::StatementKind&
       param_decl: const ebm::ParameterDecl&

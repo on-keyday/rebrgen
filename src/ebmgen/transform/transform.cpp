@@ -49,6 +49,10 @@ namespace ebmgen {
         if (timer) {
             timer("add cast function");
         }
+        MAYBE_VOID(array_setter, derive_array_setter(ctx));
+        if (timer) {
+            timer("derive array setter");
+        }
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx, timer));
             ctx.recalculate_id_index_map();

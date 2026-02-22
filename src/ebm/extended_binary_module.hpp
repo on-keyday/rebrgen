@@ -637,6 +637,7 @@ namespace ebm {
         COMPOSITE_GETTER = 6,
         COMPOSITE_SETTER = 7,
         CAST = 8,
+        VECTOR_SETTER = 9,
     };
     constexpr const char* to_string(FunctionKind e, bool origin_form = false) {
         switch(e) {
@@ -649,6 +650,7 @@ namespace ebm {
             case FunctionKind::COMPOSITE_GETTER: return origin_form ? "COMPOSITE_GETTER":"COMPOSITE_GETTER" ;
             case FunctionKind::COMPOSITE_SETTER: return origin_form ? "COMPOSITE_SETTER":"COMPOSITE_SETTER" ;
             case FunctionKind::CAST: return origin_form ? "CAST":"CAST" ;
+            case FunctionKind::VECTOR_SETTER: return origin_form ? "VECTOR_SETTER":"VECTOR_SETTER" ;
         }
         return "";
     }
@@ -683,6 +685,9 @@ namespace ebm {
         }
         if (str == "CAST") {
             return FunctionKind::CAST;
+        }
+        if (str == "VECTOR_SETTER") {
+            return FunctionKind::VECTOR_SETTER;
         }
         return std::nullopt;
     }

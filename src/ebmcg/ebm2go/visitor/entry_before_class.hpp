@@ -7,10 +7,10 @@
     ctx: Context_entry_before<Result>
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       main_logic: ebmcodegen::util::MainLogicWrapper<Result>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
@@ -19,6 +19,7 @@
 #include <string>
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/make_visitor.hpp"
 #include "ebmcodegen/stub/util.hpp"
 #include "ebmgen/common.hpp"
 #include "escape/escape.h"
@@ -26,74 +27,6 @@
 #include "number/parse.h"
 
 namespace CODEGEN_NAMESPACE {
-    inline std::optional<ebm2go::ArrayLengthInfo> is_setter_target(Context_Statement_WRITE_DATA& wctx) {
-        if (is_nil(wctx.write_data.field)) {
-            return std::nullopt;
-        }
-        auto length_field = wctx.get_field<"member.body.id.field_decl">(wctx.write_data.size.ref());
-        if (!length_field) {
-            return std::nullopt;
-        }
-        auto length_type = wctx.get_field<"field_type.instance">(length_field);
-        if (!length_type) {
-            return std::nullopt;
-        }
-        // length must be int or uint
-        if (length_type->body.kind != ebm::TypeKind::INT &&
-            length_type->body.kind != ebm::TypeKind::UINT) {
-            return std::nullopt;
-        }
-        auto array_field = wctx.get_field<"member.body.id.field_decl">(wctx.write_data.target);
-        if (!array_field) {
-            return std::nullopt;
-        }
-        auto array_type = wctx.get_field<"field_type.instance">(array_field);
-        if (!array_type) {
-            return std::nullopt;
-        }
-        if (array_type->body.kind != ebm::TypeKind::VECTOR) {
-            return std::nullopt;
-        }
-        return ebm2go::ArrayLengthInfo{
-            &wctx.write_data,
-            array_field,
-            length_field,
-            array_type,
-            length_type,
-        };
-    }
-
-    struct ArraySetterDetector {
-        TRAVERSAL_VISITOR_BASE_WITHOUT_FUNC(ArraySetterDetector, BaseVisitor);
-        expected<void> visit(Context_Statement_WRITE_DATA& ctx) {
-            if (auto info = is_setter_target(ctx); info) {
-                ctx.config().array_length_setters[get_id(ctx.write_data.field)] = *info;
-            }
-            if (ctx.write_data.size.unit == ebm::SizeUnit::BYTE_FIXED &&
-                ctx.write_data.size.size()->value() == 1) {
-                has_byte_write = true;
-            }
-            return {};
-        }
-        bool has_byte_write = false;
-        MetadataSet meta;
-
-        expected<void> visit(Context_Statement_METADATA& ctx) {
-            return meta.try_add_metadata(ctx, &ctx.metadata);
-        }
-
-        template <typename Ctx>
-        expected<void> visit(Ctx&& ctx) {
-            if (ctx.is_before_or_after()) {
-                return pass;
-            }
-            if (ctx.context_name.contains("Type")) {
-                return {};
-            }
-            return traverse_children<void>(*this, std::forward<Ctx>(ctx));
-        }
-    };
-    static_assert(HasVisitor<void, ArraySetterDetector, Context_Statement_WRITE_DATA&>);
 
     inline expected<std::pair<CodeWriter, CodeWriter>> get_additional_parameters(Context_Statement_STRUCT_DECL& ctx, ebm::StatementRef func) {
         MAYBE(decl, ctx.get_field<"func_decl">(func));
@@ -138,14 +71,33 @@ DEFINE_VISITOR(entry_before) {
         w.writeln_with_loc(to_any_ref(sctx.item_id), "type ", name, " struct ", ctx.config().begin_block);
         ctx.config().no_heap_mode.push_back(false);
         if (auto enc = sctx.struct_decl.encode_fn()) {
-            ArraySetterDetector detector{ctx.visitor};
+            MetadataSet meta;
+            bool has_byte_write = false;
+            auto detector =
+                make_visitor<void>(ctx.visitor)
+                    .name("MetaDataDetector")
+                    .not_context("Type")
+                    .not_context("Expression")
+                    .not_before_or_after()
+                    .on([&](auto&& self, Context_Statement_METADATA& ctx) {
+                        return meta.try_add_metadata(self, &ctx.metadata);
+                    })
+                    .on([&](auto&& self, Context_Statement_WRITE_DATA& ctx) {
+                        if (ctx.write_data.size.unit == ebm::SizeUnit::BYTE_FIXED &&
+                            ctx.write_data.size.size()->value() == 1) {
+                            has_byte_write = true;
+                        }
+                        return expected<void>{};
+                    })
+                    .on_default_traverse_children()
+                    .build();
             MAYBE_VOID(detected, ctx.visit<void>(detector, *enc));
-            if (auto conf = detector.meta.get_first("config.go.union")) {
+            if (auto conf = meta.get_first("config.go.union")) {
                 if (conf->get_string(ctx, 0) == "noheap") {
                     ctx.config().no_heap_mode.back() = true;
                 }
             }
-            ctx.config().has_byte_io = detector.has_byte_write;
+            ctx.config().has_byte_io = has_byte_write;
         }
         if (!is_nil(sctx.struct_decl.name)) {
             ctx.output().struct_names.push_back(name);
@@ -423,11 +375,7 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().function_definition_start_wrapper = [&](Result return_type, std::string_view name, CodeWriter params, Context_Statement_FUNCTION_DECL& fctx) -> expected<Result> {
         CodeWriter w;
         std::string_view name_prefix;
-        ctx.config().inner_prop_setter = false;
         if (is_setter_func(fctx.func_decl.kind)) {
-            if (fctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
-                ctx.config().inner_prop_setter = true;
-            }
             name_prefix = "Set";
             if (is_nil(fctx.func_decl.name)) {
                 name_prefix = "set";  // unexported

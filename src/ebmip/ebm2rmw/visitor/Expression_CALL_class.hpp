@@ -7,10 +7,10 @@
     ctx: Context_Expression_CALL
       visitor: MergedVisitor&
         program_name: static constexpr const char*
-        module_: ebmgen::MappingTable
         flags: Flags&
         output: Output&
         wm: ebmcodegen::WriterManager<CodeWriter>
+        module_: ebmgen::MappingTable
       item_id: ebm::ExpressionRef
       type: const ebm::TypeRef&
       kind: const ebm::ExpressionKind&

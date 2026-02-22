@@ -59051,7 +59051,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_entry>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"entry",0);
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"entry",0);
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_ENTRY)
@@ -59141,7 +59141,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_BLOCK>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_BLOCK",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_BLOCK",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_BLOCK)
@@ -59171,7 +59171,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ASSIGNMENT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ASSIGNMENT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ASSIGNMENT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ASSIGNMENT)
@@ -59201,7 +59201,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_YIELD>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_YIELD",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_YIELD",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_YIELD)
@@ -59231,7 +59231,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_APPEND>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_APPEND",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_APPEND",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_APPEND)
@@ -59261,7 +59261,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_RETURN>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_RETURN",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_RETURN",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_RETURN)
@@ -59291,7 +59291,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ERROR_RETURN>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ERROR_RETURN",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ERROR_RETURN",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ERROR_RETURN)
@@ -59321,7 +59321,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ASSERT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ASSERT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ASSERT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ASSERT)
@@ -59351,7 +59351,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_READ_DATA>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_READ_DATA",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_READ_DATA",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_READ_DATA)
@@ -59381,7 +59381,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_WRITE_DATA>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_WRITE_DATA",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_WRITE_DATA",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_WRITE_DATA)
@@ -59411,7 +59411,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_RESERVE_DATA>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_RESERVE_DATA",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_RESERVE_DATA",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_RESERVE_DATA)
@@ -59441,7 +59441,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_IF_STATEMENT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_IF_STATEMENT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_IF_STATEMENT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_IF_STATEMENT)
@@ -59471,7 +59471,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_LOOP_STATEMENT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_LOOP_STATEMENT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_LOOP_STATEMENT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LOOP_STATEMENT)
@@ -59501,7 +59501,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_MATCH_STATEMENT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_MATCH_STATEMENT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_MATCH_STATEMENT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_MATCH_STATEMENT)
@@ -59531,7 +59531,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_MATCH_BRANCH>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_MATCH_BRANCH",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_MATCH_BRANCH",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_MATCH_BRANCH)
@@ -59561,7 +59561,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_BREAK>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_BREAK",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_BREAK",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_BREAK)
@@ -59591,7 +59591,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_CONTINUE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_CONTINUE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_CONTINUE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_CONTINUE)
@@ -59621,7 +59621,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_FUNCTION_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_FUNCTION_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_FUNCTION_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_FUNCTION_DECL)
@@ -59651,7 +59651,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_VARIABLE_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_VARIABLE_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_VARIABLE_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_VARIABLE_DECL)
@@ -59681,7 +59681,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_PARAMETER_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_PARAMETER_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_PARAMETER_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_PARAMETER_DECL)
@@ -59711,7 +59711,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_FIELD_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_FIELD_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_FIELD_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_FIELD_DECL)
@@ -59741,7 +59741,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_COMPOSITE_FIELD_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_COMPOSITE_FIELD_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_COMPOSITE_FIELD_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_COMPOSITE_FIELD_DECL)
@@ -59771,7 +59771,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ENUM_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ENUM_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ENUM_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENUM_DECL)
@@ -59801,7 +59801,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ENUM_MEMBER_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ENUM_MEMBER_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ENUM_MEMBER_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENUM_MEMBER_DECL)
@@ -59831,7 +59831,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_STRUCT_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_STRUCT_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_STRUCT_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_STRUCT_DECL)
@@ -59861,7 +59861,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_UNION_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_UNION_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_UNION_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_UNION_DECL)
@@ -59891,7 +59891,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_UNION_MEMBER_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_UNION_MEMBER_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_UNION_MEMBER_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_UNION_MEMBER_DECL)
@@ -59921,7 +59921,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_PROGRAM_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_PROGRAM_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_PROGRAM_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_PROGRAM_DECL)
@@ -59951,7 +59951,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_PROPERTY_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_PROPERTY_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_PROPERTY_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_PROPERTY_DECL)
@@ -59981,7 +59981,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_PROPERTY_MEMBER_DECL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_PROPERTY_MEMBER_DECL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_PROPERTY_MEMBER_DECL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_PROPERTY_MEMBER_DECL)
@@ -60011,7 +60011,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_METADATA>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_METADATA",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_METADATA",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_METADATA)
@@ -60041,7 +60041,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_IMPORT_MODULE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_IMPORT_MODULE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_IMPORT_MODULE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_IMPORT_MODULE)
@@ -60071,7 +60071,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_EXPRESSION>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_EXPRESSION",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_EXPRESSION",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_EXPRESSION)
@@ -60101,7 +60101,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ERROR_REPORT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ERROR_REPORT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ERROR_REPORT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ERROR_REPORT)
@@ -60131,7 +60131,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_LOWERED_IO_STATEMENTS>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_LOWERED_IO_STATEMENTS",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_LOWERED_IO_STATEMENTS",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_LOWERED_IO_STATEMENTS)
@@ -60161,7 +60161,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_SUB_BYTE_RANGE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_SUB_BYTE_RANGE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_SUB_BYTE_RANGE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_SUB_BYTE_RANGE)
@@ -60191,7 +60191,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_INIT_CHECK>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_INIT_CHECK",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_INIT_CHECK",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INIT_CHECK)
@@ -60221,7 +60221,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ENDIAN_VARIABLE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ENDIAN_VARIABLE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ENDIAN_VARIABLE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ENDIAN_VARIABLE)
@@ -60251,7 +60251,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_ARRAY_TO_INT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_ARRAY_TO_INT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_ARRAY_TO_INT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_ARRAY_TO_INT)
@@ -60281,7 +60281,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_INT_TO_ARRAY>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Statement_INT_TO_ARRAY",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Statement_INT_TO_ARRAY",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_STATEMENT_INT_TO_ARRAY)
@@ -60371,7 +60371,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_LITERAL_INT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_LITERAL_INT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_LITERAL_INT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_LITERAL_INT)
@@ -60401,7 +60401,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_LITERAL_INT64>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_LITERAL_INT64",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_LITERAL_INT64",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_LITERAL_INT64)
@@ -60431,7 +60431,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_LITERAL_BOOL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_LITERAL_BOOL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_LITERAL_BOOL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_LITERAL_BOOL)
@@ -60461,7 +60461,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_LITERAL_STRING>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_LITERAL_STRING",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_LITERAL_STRING",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_LITERAL_STRING)
@@ -60491,7 +60491,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_LITERAL_TYPE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_LITERAL_TYPE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_LITERAL_TYPE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_LITERAL_TYPE)
@@ -60521,7 +60521,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_LITERAL_CHAR>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_LITERAL_CHAR",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_LITERAL_CHAR",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_LITERAL_CHAR)
@@ -60551,7 +60551,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_IDENTIFIER>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_IDENTIFIER",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_IDENTIFIER",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_IDENTIFIER)
@@ -60581,7 +60581,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_BINARY_OP>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_BINARY_OP",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_BINARY_OP",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_BINARY_OP)
@@ -60611,7 +60611,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_UNARY_OP>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_UNARY_OP",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_UNARY_OP",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_UNARY_OP)
@@ -60641,7 +60641,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_CALL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_CALL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_CALL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_CALL)
@@ -60671,7 +60671,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_INDEX_ACCESS>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_INDEX_ACCESS",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_INDEX_ACCESS",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_INDEX_ACCESS)
@@ -60701,7 +60701,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_MEMBER_ACCESS>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_MEMBER_ACCESS",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_MEMBER_ACCESS",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_MEMBER_ACCESS)
@@ -60731,7 +60731,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_ENUM_MEMBER>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_ENUM_MEMBER",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_ENUM_MEMBER",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_ENUM_MEMBER)
@@ -60761,7 +60761,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_TYPE_CAST>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_TYPE_CAST",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_TYPE_CAST",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_TYPE_CAST)
@@ -60791,7 +60791,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_RANGE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_RANGE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_RANGE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_RANGE)
@@ -60821,7 +60821,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_DEFAULT_VALUE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_DEFAULT_VALUE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_DEFAULT_VALUE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_DEFAULT_VALUE)
@@ -60851,7 +60851,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_IS_LITTLE_ENDIAN>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_IS_LITTLE_ENDIAN",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_IS_LITTLE_ENDIAN",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_IS_LITTLE_ENDIAN)
@@ -60881,7 +60881,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_GET_STREAM_OFFSET>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_GET_STREAM_OFFSET",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_GET_STREAM_OFFSET",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_GET_STREAM_OFFSET)
@@ -60911,7 +60911,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_GET_REMAINING_BYTES>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_GET_REMAINING_BYTES",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_GET_REMAINING_BYTES",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_GET_REMAINING_BYTES)
@@ -60941,7 +60941,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_CAN_READ_STREAM>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_CAN_READ_STREAM",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_CAN_READ_STREAM",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_CAN_READ_STREAM)
@@ -60971,7 +60971,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_ARRAY_SIZE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_ARRAY_SIZE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_ARRAY_SIZE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_ARRAY_SIZE)
@@ -61001,7 +61001,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_ENUM_IS_DEFINED>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_ENUM_IS_DEFINED",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_ENUM_IS_DEFINED",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_ENUM_IS_DEFINED)
@@ -61031,7 +61031,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_IS_ERROR>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_IS_ERROR",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_IS_ERROR",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_IS_ERROR)
@@ -61061,7 +61061,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_MAX_VALUE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_MAX_VALUE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_MAX_VALUE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_MAX_VALUE)
@@ -61091,7 +61091,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_READ_DATA>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_READ_DATA",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_READ_DATA",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_READ_DATA)
@@ -61121,7 +61121,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_WRITE_DATA>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_WRITE_DATA",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_WRITE_DATA",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_WRITE_DATA)
@@ -61151,7 +61151,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_CONDITIONAL_STATEMENT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_CONDITIONAL_STATEMENT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_CONDITIONAL_STATEMENT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_CONDITIONAL_STATEMENT)
@@ -61181,7 +61181,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_CONDITIONAL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_CONDITIONAL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_CONDITIONAL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_CONDITIONAL)
@@ -61211,7 +61211,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_AVAILABLE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_AVAILABLE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_AVAILABLE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_AVAILABLE)
@@ -61241,7 +61241,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_SIZEOF>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_SIZEOF",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_SIZEOF",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_SIZEOF)
@@ -61271,7 +61271,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_SUB_RANGE_INIT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_SUB_RANGE_INIT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_SUB_RANGE_INIT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_SUB_RANGE_INIT)
@@ -61301,7 +61301,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_OR_COND>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_OR_COND",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_OR_COND",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_OR_COND)
@@ -61331,7 +61331,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_ADDRESS_OF>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_ADDRESS_OF",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_ADDRESS_OF",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_ADDRESS_OF)
@@ -61361,7 +61361,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_OPTIONAL_OF>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_OPTIONAL_OF",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_OPTIONAL_OF",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_OPTIONAL_OF)
@@ -61391,7 +61391,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_SETTER_STATUS>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_SETTER_STATUS",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_SETTER_STATUS",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_SETTER_STATUS)
@@ -61421,7 +61421,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_SELF>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_SELF",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_SELF",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_SELF)
@@ -61451,7 +61451,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Expression_AS_ARG>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Expression_AS_ARG",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Expression_AS_ARG",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_EXPRESSION_AS_ARG)
@@ -61541,7 +61541,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_INT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_INT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_INT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_INT)
@@ -61571,7 +61571,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_UINT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_UINT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_UINT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_UINT)
@@ -61601,7 +61601,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_USIZE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_USIZE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_USIZE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_USIZE)
@@ -61631,7 +61631,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_FLOAT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_FLOAT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_FLOAT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_FLOAT)
@@ -61661,7 +61661,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_STRUCT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_STRUCT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_STRUCT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_STRUCT)
@@ -61691,7 +61691,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_RECURSIVE_STRUCT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_RECURSIVE_STRUCT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_RECURSIVE_STRUCT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_RECURSIVE_STRUCT)
@@ -61721,7 +61721,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_BOOL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_BOOL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_BOOL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_BOOL)
@@ -61751,7 +61751,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_VOID>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_VOID",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_VOID",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_VOID)
@@ -61781,7 +61781,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_META>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_META",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_META",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_META)
@@ -61811,7 +61811,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_ENUM>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_ENUM",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_ENUM",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_ENUM)
@@ -61841,7 +61841,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_ARRAY>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_ARRAY",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_ARRAY",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_ARRAY)
@@ -61871,7 +61871,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_VECTOR>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_VECTOR",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_VECTOR",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_VECTOR)
@@ -61901,7 +61901,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_VARIANT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_VARIANT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_VARIANT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_VARIANT)
@@ -61931,7 +61931,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_RANGE>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_RANGE",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_RANGE",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_RANGE)
@@ -61961,7 +61961,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_ENCODER_RETURN>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_ENCODER_RETURN",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_ENCODER_RETURN",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_ENCODER_RETURN)
@@ -61991,7 +61991,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_DECODER_RETURN>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_DECODER_RETURN",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_DECODER_RETURN",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_DECODER_RETURN)
@@ -62021,7 +62021,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_ENCODER_INPUT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_ENCODER_INPUT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_ENCODER_INPUT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_ENCODER_INPUT)
@@ -62051,7 +62051,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_DECODER_INPUT>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_DECODER_INPUT",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_DECODER_INPUT",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_DECODER_INPUT)
@@ -62081,7 +62081,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_PROPERTY_SETTER_RETURN>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_PROPERTY_SETTER_RETURN",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_PROPERTY_SETTER_RETURN",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_PROPERTY_SETTER_RETURN)
@@ -62111,7 +62111,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_OPTIONAL>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_OPTIONAL",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_OPTIONAL",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_OPTIONAL)
@@ -62141,7 +62141,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_PTR>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_PTR",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_PTR",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_PTR)
@@ -62171,7 +62171,7 @@ namespace ebm2c {
     struct Visitor<GeneratorDefaultHook<VisitorTag_Type_FUNCTION>> {
         template<typename Context>
         auto visit(Context&& ctx) {
-            return visit_unimplemented(get_visitor_arg_from_context(ctx),"Type_FUNCTION",get_id(ctx.item_id));
+            return visit_unimplemented(get_visitor_from_context<void>(ctx,ctx),"Type_FUNCTION",get_id(ctx.item_id));
         }
     };
     #if !defined(CODEGEN_EXPECTED_PRIORITY_TYPE_FUNCTION)

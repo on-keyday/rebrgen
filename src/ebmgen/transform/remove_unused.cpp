@@ -11,15 +11,19 @@ namespace ebmgen {
 
     using InverseRefs = std::unordered_map<size_t, std::vector<ebm::AnyRef>>;
 
+    EBMProxy to_mapping_table(TransformContext& ctx) {
+        return EBMProxy(ctx.statement_repository().get_all(),
+                        ctx.expression_repository().get_all(),
+                        ctx.type_repository().get_all(),
+                        ctx.identifier_repository().get_all(),
+                        ctx.string_repository().get_all(),
+                        ctx.alias_vector(),
+                        ctx.debug_locations());
+    }
+
     expected<InverseRefs> mark_and_sweep(TransformContext& ctx, std::function<void(const char*)> timer) {
-        MappingTable table{
-            EBMProxy(ctx.statement_repository().get_all(),
-                     ctx.expression_repository().get_all(),
-                     ctx.type_repository().get_all(),
-                     ctx.identifier_repository().get_all(),
-                     ctx.string_repository().get_all(),
-                     ctx.alias_vector(),
-                     ctx.debug_locations())};
+        MappingTable table{to_mapping_table(ctx), lazy_init};
+        table.build_maps(mapping::BuildMapOption::NONE);
         std::unordered_set<size_t> reachable;
         InverseRefs inverse_refs;  // ref -> item.id
         auto search = [&](auto&& search, const auto& item) -> void {

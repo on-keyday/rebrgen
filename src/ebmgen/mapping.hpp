@@ -48,6 +48,22 @@ namespace ebmgen {
 
     constexpr lazy_init_tag lazy_init{};
 
+    namespace mapping {
+        enum class BuildMapOption {
+            NONE = 0,
+            BUILD_MAP_USE_DEBUG_LOC = 1 << 0,
+            BUILD_MAP_USE_INVERSE_REF = 1 << 1,
+            BUILD_MAP_SKIP_IF_UNCHANGED = 1 << 2,
+        };
+        constexpr BuildMapOption operator|(BuildMapOption a, BuildMapOption b) {
+            return static_cast<BuildMapOption>(static_cast<int>(a) | static_cast<int>(b));
+        }
+
+        constexpr bool operator&(BuildMapOption a, BuildMapOption b) {
+            return (static_cast<int>(a) & static_cast<int>(b)) != 0;
+        }
+    }  // namespace mapping
+
     struct MappingTable {
         explicit MappingTable(EBMProxy module)
             : module_(module) {
@@ -141,7 +157,7 @@ namespace ebmgen {
 
         void directly_map_statement_identifier(ebm::StatementRef ref, std::string&& name);
         void remove_directly_mapped_statement_identifier(ebm::StatementRef ref);
-        void build_maps();
+        void build_maps(mapping::BuildMapOption options = mapping::BuildMapOption::BUILD_MAP_USE_DEBUG_LOC | mapping::BuildMapOption::BUILD_MAP_USE_INVERSE_REF);
 
         void set_identifier_modifier(std::function<void(ebm::StatementRef, std::string&)>&& modifier) {
             identifier_modifier = std::move(modifier);

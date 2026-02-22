@@ -562,46 +562,6 @@ namespace ebm2go {
     expected<Result> traverse_children_Statement(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Block(Context&& ctx,const ebm::Block& in);
-    template<typename Result>
-    struct ListDispatcher_Block {
-        template<typename Context>
-        expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            return {}; // Default no-op implementation
-        }
-        template<typename Context>
-        expected<Result> finalize(Context&& ctx, const ebm::Block& in) {
-            return {}; // Default no-op implementation
-        }
-    };
-    
-    template<>
-    struct ListDispatcher_Block<Result> {
-        CodeWriter result;
-        template<typename Context>
-        expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            this->result.write(std::move(result->to_writer()));
-            return {};
-        }
-        template<typename Context>
-        expected<Result> finalize(Context&& ctx, const ebm::Block& in) {
-            return std::move(result);
-        }
-    };
-    template<typename Result = Result, typename Context>
-    expected<Result> dispatch_Block_default(Context&& ctx,const ebm::Block& in) {
-        ListDispatcher_Block<Result> dispatcher;
-        for(auto& elem:in.container) {
-            auto result = visit_Statement<Result>(ctx,elem);
-            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
-        }
-        return dispatcher.finalize(std::forward<Context>(ctx),in);
-    }
     template<typename Result = Result, typename UserContext,typename TypeContext>
     expected<Result> traverse_children_Block(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
@@ -877,46 +837,6 @@ namespace ebm2go {
     expected<Result> traverse_children_Expression(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Expressions(Context&& ctx,const ebm::Expressions& in);
-    template<typename Result>
-    struct ListDispatcher_Expressions {
-        template<typename Context>
-        expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            return {}; // Default no-op implementation
-        }
-        template<typename Context>
-        expected<Result> finalize(Context&& ctx, const ebm::Expressions& in) {
-            return {}; // Default no-op implementation
-        }
-    };
-    
-    template<>
-    struct ListDispatcher_Expressions<Result> {
-        CodeWriter result;
-        template<typename Context>
-        expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            this->result.write(std::move(result->to_writer()));
-            return {};
-        }
-        template<typename Context>
-        expected<Result> finalize(Context&& ctx, const ebm::Expressions& in) {
-            return std::move(result);
-        }
-    };
-    template<typename Result = Result, typename Context>
-    expected<Result> dispatch_Expressions_default(Context&& ctx,const ebm::Expressions& in) {
-        ListDispatcher_Expressions<Result> dispatcher;
-        for(auto& elem:in.container) {
-            auto result = visit_Expression<Result>(ctx,elem);
-            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
-        }
-        return dispatcher.finalize(std::forward<Context>(ctx),in);
-    }
     template<typename Result = Result, typename UserContext,typename TypeContext>
     expected<Result> traverse_children_Expressions(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
@@ -1087,46 +1007,6 @@ namespace ebm2go {
     expected<Result> traverse_children_Type(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result,typename Context>
     expected<Result> dispatch_Types(Context&& ctx,const ebm::Types& in);
-    template<typename Result>
-    struct ListDispatcher_Types {
-        template<typename Context>
-        expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            return {}; // Default no-op implementation
-        }
-        template<typename Context>
-        expected<Result> finalize(Context&& ctx, const ebm::Types& in) {
-            return {}; // Default no-op implementation
-        }
-    };
-    
-    template<>
-    struct ListDispatcher_Types<Result> {
-        CodeWriter result;
-        template<typename Context>
-        expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
-            if (!result) {
-                return unexpect_error(std::move(result.error()));
-            }
-            this->result.write(std::move(result->to_writer()));
-            return {};
-        }
-        template<typename Context>
-        expected<Result> finalize(Context&& ctx, const ebm::Types& in) {
-            return std::move(result);
-        }
-    };
-    template<typename Result = Result, typename Context>
-    expected<Result> dispatch_Types_default(Context&& ctx,const ebm::Types& in) {
-        ListDispatcher_Types<Result> dispatcher;
-        for(auto& elem:in.container) {
-            auto result = visit_Type<Result>(ctx,elem);
-            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
-        }
-        return dispatcher.finalize(std::forward<Context>(ctx),in);
-    }
     template<typename Result = Result, typename UserContext,typename TypeContext>
     expected<Result> traverse_children_Types(UserContext&& ctx,TypeContext&& type_ctx);
     template<typename Result = Result, typename UserContext, typename TypeContext>
@@ -1225,6 +1105,126 @@ namespace ebm2go {
     template<typename Result = Result, typename Context>
     expected<Result> visit_Object(Context&& ctx,const ebm::Types& in)  {
         return visit_Types<Result>(std::forward<Context>(ctx),in);
+    }
+    template<typename Result>
+    struct ListDispatcher_Block {
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            return {}; // Default no-op implementation
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Block& in) {
+            return {}; // Default no-op implementation
+        }
+    };
+    
+    template<>
+    struct ListDispatcher_Block<Result> {
+        CodeWriter result;
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Block& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            this->result.write(std::move(result->to_writer()));
+            return {};
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Block& in) {
+            return std::move(result);
+        }
+    };
+    template<typename Result = Result, typename Context>
+    expected<Result> dispatch_Block_default(Context&& ctx,const ebm::Block& in) {
+        ListDispatcher_Block<Result> dispatcher;
+        for(auto& elem:in.container) {
+            auto result = visit_Statement<Result>(ctx,elem);
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
+        }
+        return dispatcher.finalize(std::forward<Context>(ctx),in);
+    }
+    template<typename Result>
+    struct ListDispatcher_Expressions {
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            return {}; // Default no-op implementation
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Expressions& in) {
+            return {}; // Default no-op implementation
+        }
+    };
+    
+    template<>
+    struct ListDispatcher_Expressions<Result> {
+        CodeWriter result;
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Expressions& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            this->result.write(std::move(result->to_writer()));
+            return {};
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Expressions& in) {
+            return std::move(result);
+        }
+    };
+    template<typename Result = Result, typename Context>
+    expected<Result> dispatch_Expressions_default(Context&& ctx,const ebm::Expressions& in) {
+        ListDispatcher_Expressions<Result> dispatcher;
+        for(auto& elem:in.container) {
+            auto result = visit_Expression<Result>(ctx,elem);
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
+        }
+        return dispatcher.finalize(std::forward<Context>(ctx),in);
+    }
+    template<typename Result>
+    struct ListDispatcher_Types {
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            return {}; // Default no-op implementation
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Types& in) {
+            return {}; // Default no-op implementation
+        }
+    };
+    
+    template<>
+    struct ListDispatcher_Types<Result> {
+        CodeWriter result;
+        template<typename Context>
+        expected<void> on_dispatch(Context&& ctx,const ebm::Types& in,expected<Result>&& result) {
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            this->result.write(std::move(result->to_writer()));
+            return {};
+        }
+        template<typename Context>
+        expected<Result> finalize(Context&& ctx, const ebm::Types& in) {
+            return std::move(result);
+        }
+    };
+    template<typename Result = Result, typename Context>
+    expected<Result> dispatch_Types_default(Context&& ctx,const ebm::Types& in) {
+        ListDispatcher_Types<Result> dispatcher;
+        for(auto& elem:in.container) {
+            auto result = visit_Type<Result>(ctx,elem);
+            MAYBE_VOID(dispatch,dispatcher.on_dispatch(std::forward<Context>(ctx),in,std::move(result)));
+        }
+        return dispatcher.finalize(std::forward<Context>(ctx),in);
     }
     template<class R = void, typename Context,typename Callback>
     R get_visitor_impl(Context&& ctx,Callback&& cb);
@@ -1366,6 +1366,15 @@ namespace ebm2go {
     };
     template<typename V>
     concept BaseVisitorLike = std::derived_from<V,BaseVisitor>;
+    // for adl lookup for sub-visitor
+    template<typename Result = Result, typename Context>
+    auto visit_Object_adl(Context&& ctx,auto&& obj,BaseVisitor&) {
+        return visit_Object<Result>(std::forward<Context>(ctx),std::forward<decltype(obj)>(obj));
+    }
+    template<typename Result = Result, typename UserContext, typename TypeContext>
+    auto traverse_children_adl(UserContext&& uctx, TypeContext&& type_ctx,BaseVisitor&) {
+        return traverse_children<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));
+    }
     struct InitialContext : ebmcodegen::util::ContextBase<InitialContext> {
         BaseVisitor& visitor;
     };

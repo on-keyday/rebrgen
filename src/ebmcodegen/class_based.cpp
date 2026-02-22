@@ -1325,7 +1325,7 @@ namespace ebmcodegen {
                     if (cls.has(ContextClassKind_Special)) {
                         third_arg = "0";
                     }
-                    src.writeln("return visit_unimplemented(", get_visitor_arg_fn, "(ctx),\"", cls.class_name(), "\",", third_arg, ");");
+                    src.writeln("return visit_unimplemented(", get_visitor_fn, "<void>(ctx,ctx),\"", cls.class_name(), "\",", third_arg, ");");
                 }
             }
             src.writeln("}");
@@ -1660,6 +1660,25 @@ namespace ebmcodegen {
         }
     }
 
+    void generate_adl_lookup_helper(CodeWriter& hdr) {
+        hdr.writeln("// for adl lookup for sub-visitor");
+        hdr.writeln("template<", template_param_result(true), ", typename Context>");
+        hdr.writeln("auto visit_Object_adl(Context&& ctx,auto&& obj,BaseVisitor&) {");
+        {
+            auto scope = hdr.indent_scope();
+            hdr.writeln("return visit_Object<Result>(std::forward<Context>(ctx),std::forward<decltype(obj)>(obj));");
+        }
+        hdr.writeln("}");
+
+        hdr.writeln("template<", template_param_result(true), ", typename UserContext, typename TypeContext>");
+        hdr.writeln("auto traverse_children_adl(UserContext&& uctx, TypeContext&& type_ctx,BaseVisitor&) {");
+        {
+            auto scope = hdr.indent_scope();
+            hdr.writeln("return traverse_children<Result>(std::forward<UserContext>(uctx),std::forward<TypeContext>(type_ctx));");
+        }
+        hdr.writeln("}");
+    }
+
     void generate_entry_point(CodeWriter& w, std::string_view ns_name) {
         auto fq_result_type = std::format("ebmgen::expected<{}::{}>", ns_name, "Result");
         w.writeln("DEFINE_ENTRY(", ns_name, "::Flags, ", ns_name, "::Output) {");
@@ -1908,17 +1927,20 @@ namespace ebmcodegen {
         generate_hijack_logic_macro(src);
         for (auto& cls_group : context_classes) {
             generate_dispatcher_function(hdr, src, cls_group, result_type);
-            generate_list_dispatch_default(hdr, cls_group.main(), is_codegen, result_type);
             generate_generic_dispatch_default(hdr, cls_group.main(), result_type);
             generate_traversal_children_for_class(hdr, src, cls_group.main(), result_type, structs);
         }
         generate_generic_traversal_children(hdr, src, context_classes, result_type);
         generate_user_interface(hdr, context_classes, result_type);
+        for (auto& cls_group : context_classes) {
+            generate_list_dispatch_default(hdr, cls_group.main(), is_codegen, result_type);
+        }
         generate_impl_getter_header(hdr);
         if (!ebmgen_mode) {
             generate_Contexts_forward_declaration(hdr, context_classes);
         }
         generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"], ebmgen_mode);
+        generate_adl_lookup_helper(hdr);
         generate_initial_context(hdr);
 
         generate_visitor_customization_point(hdr);

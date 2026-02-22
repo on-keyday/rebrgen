@@ -6,10 +6,19 @@
 namespace ebmgen {
     bool verbose_error;
     // Builds maps from vector data for faster access
-    void MappingTable::build_maps() {
+    void MappingTable::build_maps(mapping::BuildMapOption options) {
+        if (options & mapping::BuildMapOption::BUILD_MAP_SKIP_IF_UNCHANGED) {
+            if (original_id_count() == mapped_id_count()) {
+                return;
+            }
+        }
+
         auto map_to = [&](auto& map, const auto& vec, ebm::AliasHint hint) {
             for (const auto& item : vec) {
                 map[get_id(item.id)] = &item;
+                if (!(options & mapping::BuildMapOption::BUILD_MAP_USE_INVERSE_REF)) {
+                    continue;
+                }
                 item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
                     if constexpr (AnyRef<decltype(val)>) {
                         if (!is_nil(val)) {
@@ -68,8 +77,10 @@ namespace ebmgen {
                     break;
             }
         }
-        for (const auto& debug_loc : module_.locs) {
-            debug_loc_map_[get_id(debug_loc.ident)] = &debug_loc;
+        if (options & mapping::BuildMapOption::BUILD_MAP_USE_DEBUG_LOC) {
+            for (const auto& debug_loc : module_.locs) {
+                debug_loc_map_[get_id(debug_loc.ident)] = &debug_loc;
+            }
         }
     }
 

@@ -297,7 +297,7 @@ namespace ebmcodegen::util {
 
         template <class R = void>
         ebmgen::expected<R> visit(auto&& visitor, auto&& c) {
-            return visit_Object<R>(visitor, std::forward<decltype(c)>(c));
+            return visit_Object_adl<R>(visitor, std::forward<decltype(c)>(c), visitor.visitor);
         }
     };
 
@@ -315,7 +315,7 @@ namespace ebmcodegen::util {
     template <typename Context>
     decltype(auto) get_visitor_arg_from_context(Context&& ctx) {
         if constexpr (HasVisitorInContext<Context>) {
-            return *ctx.visitor.__legacy_compat_ptr;
+            return ctx.visitor;
         }
         else if constexpr (HasLegacyVisitorInContext<Context>) {
             return *ctx.__legacy_compat_ptr;
@@ -329,8 +329,14 @@ namespace ebmcodegen::util {
         if constexpr (HasVisitor<Result, UserContext, TypeContext>) {
             return uctx;
         }
+        else if constexpr (HasVisitorInContext<UserContext>) {
+            return *uctx.visitor.__legacy_compat_ptr;
+        }
+        else if constexpr (HasLegacyVisitorInContext<UserContext>) {
+            return *uctx.__legacy_compat_ptr;
+        }
         else {
-            return get_visitor_arg_from_context(uctx);
+            static_assert(dependent_false<UserContext>, "No visitor found in context");
         }
     }
 

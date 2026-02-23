@@ -42,7 +42,8 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
     MAYBE(body_str, ctx.visit(ctx.func_decl.body));
 
     CodeWriter w;
-    if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+    if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER ||
+        ctx.func_decl.kind == ebm::FunctionKind::VECTOR_SETTER) {
         if (name.starts_with("r#")) {
             name = name.substr(2);
         }

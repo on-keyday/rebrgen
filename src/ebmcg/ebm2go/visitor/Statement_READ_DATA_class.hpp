@@ -47,8 +47,11 @@ DEFINE_VISITOR(Statement_READ_DATA) {
             return rctx.visit(low->io_statement.id);
         }
     }
-    if (is_single_byte_io(ctx,ctx.read_data)&&ctx.config().decoder_input_type == "io.Reader" ) {  // currently, only for u8
+    if (is_single_byte_io(ctx, ctx.read_data) && ctx.config().decoder_input_type == "io.Reader") {  // currently, only for u8
         MAYBE(target, rctx.visit(rctx.read_data.target));
+        if (ctx.is(ebm::TypeKind::ARRAY, rctx.read_data.data_type)) {
+            target = CODE(target.to_writer(), "[0]");  // for single-byte array, read into the first element
+        }
         auto io_ = rctx.identifier(rctx.read_data.io_ref);
         MAYBE(layer_str, get_identifier_layer_str(rctx, from_weak(rctx.read_data.field)));
         layer_str = "\\\"" + layer_str + "\\\"";

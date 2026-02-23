@@ -83,12 +83,9 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         params.write(param.to_writer());
     }
 
-    if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_GETTER ||
-        ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER ||
-        ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER ||
-        ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
-        if (ctx.func_decl.kind == ebm::FunctionKind::COMPOSITE_SETTER ||
-            ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+    if (is_setter_func(ctx.func_decl.kind) ||
+        is_getter_func(ctx.func_decl.kind)) {
+        if (is_setter_func(ctx.func_decl.kind)) {
             func_prefix += "set_";
         }
         else {

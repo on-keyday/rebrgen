@@ -57,20 +57,26 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         }
     }
 
-    if (multi_arg.empty()) {
-        if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
-            w.writeln("@property");
-        }
-        else if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
-            w.writeln("@", func_name, ".setter");
-        }
+    // if vector setter,
+    if (ctx.func_decl.kind == ebm::FunctionKind::VECTOR_SETTER) {
+        func_name = "set_" + func_name;
     }
     else {
-        if (auto prop = ctx.func_decl.property()) {
-            ctx.config().multi_arg_property[get_id(*prop)] = multi_arg;
+        if (multi_arg.empty()) {
+            if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+                w.writeln("@property");
+            }
+            else if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+                w.writeln("@", func_name, ".setter");
+            }
         }
-        if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
-            func_name = "set_" + func_name;
+        else {
+            if (auto prop = ctx.func_decl.property()) {
+                ctx.config().multi_arg_property[get_id(*prop)] = multi_arg;
+            }
+            if (ctx.func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+                func_name = "set_" + func_name;
+            }
         }
     }
     w.writeln("def ", func_name, "(", params_str, ") -> \"", return_type_str.to_writer(), "\":");

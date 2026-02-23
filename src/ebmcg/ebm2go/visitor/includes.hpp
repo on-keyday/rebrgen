@@ -53,10 +53,11 @@ namespace ebm2go {
     }
 
     inline bool is_single_byte_io(auto&& ctx, const ebm::IOData& io_) {
+        auto kind = ctx.get_kind(io_.data_type);
         return ctx.config().has_byte_io &&
                io_.size.unit == ebm::SizeUnit::BYTE_FIXED &&
                io_.size.size()->value() == 1 &&
-               ctx.get_kind(io_.data_type) == ebm::TypeKind::UINT;
+               (kind == ebm::TypeKind::UINT || kind == ebm::TypeKind::ARRAY);
     }
 
 }  // namespace ebm2go

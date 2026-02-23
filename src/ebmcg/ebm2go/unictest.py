@@ -65,7 +65,7 @@ func main() {{
 	// Decode
 	var target {TEST_TARGET_FORMAT}
 	reader := bytes.NewReader(inputData)
-	err = target.Decode(reader)
+	err = target.Read(reader)
 	if err != nil {{
 		fmt.Fprintf(os.Stderr, "Decode error: %v\\n", err)
 		os.Exit(10)
@@ -73,7 +73,7 @@ func main() {{
 
 	// Encode
 	var buf bytes.Buffer
-	err = target.Encode(&buf)
+	err = target.Write(&buf)
 	if err != nil {{
 		fmt.Fprintf(os.Stderr, "Encode error: %v\\n", err)
 		os.Exit(20)

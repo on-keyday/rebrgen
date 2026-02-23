@@ -38,6 +38,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 
 DEFINE_VISITOR(Statement_WRITE_DATA) {
     using namespace CODEGEN_NAMESPACE;
@@ -50,6 +51,9 @@ DEFINE_VISITOR(Statement_WRITE_DATA) {
     }
     if (is_single_byte_io(ctx, ctx.write_data) && (ctx.config().use_io_reader_writer)) {  // currently, only for u8
         MAYBE(target, ctx.visit(ctx.write_data.target));
+        if (ctx.is(ebm::TypeKind::ARRAY, ctx.write_data.data_type)) {
+            target = CODE(target.to_writer(), "[0]");  // for single-byte array, write the first element
+        }
         auto io_ = ctx.identifier(ctx.write_data.io_ref);
         MAYBE(layer_str, get_identifier_layer_str(ctx, from_weak(ctx.write_data.field)));
         layer_str = "\\\"" + layer_str + "\\\"";

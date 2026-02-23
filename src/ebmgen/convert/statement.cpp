@@ -793,7 +793,8 @@ namespace ebmgen {
             ebm_enum_member_decl.value = value_expr_ref;
         }
         if (node->str_literal) {
-            EBMA_ADD_STRING(str_ref, node->str_literal->value);
+            MAYBE(decoded_str, decode_base64(node->str_literal));
+            EBMA_ADD_STRING(str_ref, decoded_str);
             ebm_enum_member_decl.string_repr = str_ref;
         }
         body.kind = ebm::StatementKind::ENUM_MEMBER_DECL;

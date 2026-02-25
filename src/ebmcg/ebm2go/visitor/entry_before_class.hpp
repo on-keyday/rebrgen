@@ -755,7 +755,7 @@ DEFINE_VISITOR(entry_before) {
             }
             return CODE("true");
         }
-        return CODE("len(", stream, ") >= ", size_str);
+        return CODE("len(", stream, ") - ", offset_ref(stream), " >= ", size_str);
     };
     ctx.config().pointer_type_wrapper = [](Result r) -> expected<Result> {
         return CODE("*", r.to_writer());

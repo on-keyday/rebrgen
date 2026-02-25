@@ -37,12 +37,21 @@ inline std::string to_camel_case(const std::string& s, bool upper_first) {
     return result;
 }
 
+inline bool is_full_upper(const std::string& s) {
+    for (char ch : s) {
+        if (std::isalpha(ch) && !std::isupper(ch)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 DEFINE_VISITOR(pre_visitor) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     ctx.module().set_identifier_modifier(
         [](ebm::StatementRef ref, std::string& name) {
-            if (name.contains(".")) {
+            if (name.contains(".") || is_full_upper(name)) {
                 return;
             }
             name = to_camel_case(name, true);

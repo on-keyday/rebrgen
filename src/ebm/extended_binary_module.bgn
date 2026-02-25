@@ -371,7 +371,7 @@ format StructDecl:
     if has_functions == 1:
         methods :Block # List of method FunctionDecl
     if has_properties == 1:
-        properties :Block # List of PropertyDecl
+        properties :Block # List of PropertyDecl or FunctionDecl(for array setter)
     if has_parent == 1:
         parent_struct :WeakStatementRef
     if has_nested_types == 1:

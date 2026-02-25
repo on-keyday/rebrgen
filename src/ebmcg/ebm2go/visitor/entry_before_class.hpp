@@ -104,9 +104,53 @@ DEFINE_VISITOR(entry_before) {
         }
         return w;
     };
-    ctx.config().struct_definition_end_wrapper = [](Context_Statement_STRUCT_DECL& ctx, CodeWriter& result) {
+    ctx.config().struct_definition_end_wrapper = [](Context_Statement_STRUCT_DECL& ctx, CodeWriter& result) -> expected<Result> {
         ctx.config().no_heap_mode.pop_back();
-        return result;
+        if (ctx.flags().visitor && !is_nil(ctx.struct_decl.name)) {
+            auto name = ctx.identifier();
+            result.writeln("func (g *", name, ") Visit(fn func(name string,value any) error) error {");
+            {
+                auto scope = result.indent_scope();
+                result.writeln("if err := fn(\"\", g); err != nil {");
+                result.indent_writeln("return err");
+                result.writeln("}");
+                auto res = handle_fields(ctx, ctx.struct_decl.fields, true, [&](ebm::StatementRef field_stmt, const ebm::Statement& decl) -> expected<void> {
+                    MAYBE(field_decl, decl.body.field_decl());
+                    if (is_nil(field_decl.name)) {
+                        return {};
+                    }
+                    if (auto found = field_decl.composite_getter()) {
+                        auto field_name = ctx.identifier(field_stmt);
+                        result.writeln("if err := fn(\"", field_name, "\", g.", field_name, "()); err != nil {");
+                        result.indent_writeln("return err");
+                        result.writeln("}");
+                        return {};
+                    }
+                    auto field_name = ctx.identifier(field_stmt);
+                    result.writeln("if err := fn(\"", field_name, "\", &g.", field_name, "); err != nil {");
+                    result.indent_writeln("return err");
+                    result.writeln("}");
+                    return {};
+                });
+                if (!res) {
+                    return unexpect_error(std::move(res.error()));
+                }
+                if (auto props = ctx.struct_decl.properties()) {
+                    for (auto& prop_ref : props->container) {
+                        MAYBE(prop_stmt, ctx.get(prop_ref));
+                        if (auto prop = prop_stmt.body.property_decl()) {
+                            auto prop_name = ctx.identifier(prop_ref);
+                            result.writeln("if err := fn(\"", prop_name, "\", g.", prop_name, "()); err != nil {");
+                            result.indent_writeln("return err");
+                            result.writeln("}");
+                        }
+                    }
+                }
+                result.writeln("return nil");
+            }
+            result.writeln("}");
+        }
+        return std::move(result);
     };
     ctx.config().function_define_keyword = "func";
     ctx.config().function_return_type_separator = "";

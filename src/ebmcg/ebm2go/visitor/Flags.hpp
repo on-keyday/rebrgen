@@ -33,3 +33,4 @@ DEFINE_BOOL_FLAG(no_slice_io, false, "no-slice-io", "No sliced based io");
 DEFINE_BOOL_FLAG(no_std_io, false, "no-std-io", "No standard io based io");
 DEFINE_BOOL_FLAG(bytes_io, false, "bytes-io", "Generates *bytes.Buffer based io");
 CONFIG_MAP("config.go.package", package_name);
+DEFINE_BOOL_FLAG(visitor, false, "visitor", "Generates visitor pattern for each field");

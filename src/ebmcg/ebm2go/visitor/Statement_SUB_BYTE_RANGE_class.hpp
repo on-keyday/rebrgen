@@ -42,7 +42,7 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
         if (ctx.config().use_io_reader_writer) {
             if (ctx.sub_byte_range.stream_type == ebm::StreamType::INPUT) {
                 // Decode: read length bytes from reader, wrap in bytes.Reader for child
-                w.writeln(io_, " := io.LimitReader(", io_base_, ",int64(", length_str.to_writer(), "))");
+                w.writeln(io_, " := io.LimitReader(", parent_io_, ",int64(", length_str.to_writer(), "))");
             }
             else {
                 // Encode: create bytes.Buffer for child to write to
@@ -79,9 +79,9 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
             w.writeln("if len(", parent_io_, ") - ", offset_ref(parent_io_), " < int(", length_str.to_writer(), ") {");
             w.indent_writeln("return errors.New(\"not enough data for subrange\")");
             w.writeln("}");
-            w.writeln(io_base_, " := ", parent_io_, "[", offset_ref(parent_io_), ":int(", offset_ref(parent_io_), " + ", length_str.to_writer(), ")]");
-            w.writeln(io_, " := &", io_base_);
-            w.writeln(offset_var(io_), " := 0");
+            w.writeln(io_, " := ", parent_io_, "[", offset_ref(parent_io_), ":", offset_ref(parent_io_), " + int(", length_str.to_writer(), ")]");
+            w.writeln(offset_var(io_), "Base := 0");
+            w.writeln(offset_var(io_), " := &", offset_var(io_), "Base");
             w.writeln(offset_ref(parent_io_), " += int(", length_str.to_writer(), ")");
         }
         else if (ctx.config().append_io) {
@@ -115,7 +115,7 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
                 // After encoding: verify length and copy to parent
                 ctx.config().imports.insert("fmt");
                 w.writeln("if ", offset_ref(io_), " - ", offset_var(io_), "Base != int(", length_str.to_writer(), ") {");
-                w.indent_writeln("return fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), "), len(*", io_, "))");
+                w.indent_writeln("return fmt.Errorf(\"subrange length mismatch: expected %d, got %d\", int(", length_str.to_writer(), "), len(", io_, "))");
                 w.writeln("}");
                 w.writeln(offset_ref(parent_io_), "+= int(", length_str.to_writer(), ")");
             }
@@ -130,7 +130,7 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
         if (ctx.sub_byte_range.stream_type == ebm::StreamType::INPUT) {
             // Decode: slice from offset with length, no parent advancement
             w.writeln(io_base_, " := ", parent_io_, "[int(", offset_str.to_writer(), "):int(", offset_str.to_writer(), " + ", length_str.to_writer(), ")]");
-            w.writeln(io_, " := &", io_base_);
+            w.writeln(io_, " := ", io_base_);
         }
         else {
             // Encode: slice from offset with length for writing

@@ -140,8 +140,13 @@ DEFINE_VISITOR(entry_before) {
                         MAYBE(prop_stmt, ctx.get(prop_ref));
                         if (auto prop = prop_stmt.body.property_decl()) {
                             auto prop_name = ctx.identifier(prop_ref);
-                            result.writeln("if err := fn(\"", prop_name, "\", g.", prop_name, "()); err != nil {");
-                            result.indent_writeln("return err");
+                            result.writeln("if val := g.", prop_name, "(); val != nil {");
+                            {
+                                auto scope = result.indent_scope();
+                                result.writeln("if err := fn(\"", prop_name, "\", val); err != nil {");
+                                result.indent_writeln("return err");
+                                result.writeln("}");
+                            }
                             result.writeln("}");
                         }
                     }

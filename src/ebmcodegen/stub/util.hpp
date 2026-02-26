@@ -635,8 +635,8 @@ namespace ebmcodegen::util {
 
         ebmgen::expected<std::string_view> get_string(auto&& visitor, size_t index) const {
             ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
-            if (!data->values.container.size()) {
-                return ebmgen::unexpect_error("metadata {} has no values", name);
+            if (index >= data->values.container.size()) {
+                return ebmgen::unexpect_error("metadata {} has no value at index {}", name, index);
             }
             auto expr = module_.get_expression(data->values.container[index]);
             if (!expr) {
@@ -649,6 +649,11 @@ namespace ebmcodegen::util {
             MAYBE(string_lit, module_.get_string_literal(*str_value));
             return string_lit.body.data;
         }
+    };
+
+    enum class MetadataPriority {
+        CommandFlag,  // get from visitor flags
+        Metadata,     // get from metadata
     };
 
     struct MetadataSet {
@@ -668,6 +673,48 @@ namespace ebmcodegen::util {
                 return &it->second[0];
             }
             return nullptr;
+        }
+
+        std::string_view get_first_string(auto&& visitor, std::string_view name, size_t index = 0) const {
+            auto meta = get_first(name);
+            if (!meta) {
+                return {};
+            }
+            auto str = meta->get_string(visitor, index);
+            if (!str) {
+                return {};
+            }
+            return *str;
+        }
+
+        // ensure visitor is
+        std::string_view get_flag_or_first_string(auto&& visitor, std::string_view name, MetadataPriority priority) const {
+            if (priority == MetadataPriority::CommandFlag) {
+                auto got = get_visitor(visitor).flags.get_config(name);
+                if (!got.empty()) {
+                    return got;
+                }
+                auto meta = get_first(name);
+                if (!meta) {
+                    return {};
+                }
+                auto str = meta->get_string(visitor, 0);
+                if (str) {
+                    return *str;
+                }
+                return {};
+            }
+            else {
+                auto meta = get_first(name);
+                if (!meta) {
+                    return get_visitor(visitor).flags.get_config(name);
+                }
+                auto str = meta->get_string(visitor, 0);
+                if (str) {
+                    return *str;
+                }
+                return get_visitor(visitor).flags.get_config(name);
+            }
         }
 
         ebmgen::expected<void> try_add_metadata(auto&& visitor, const ebm::Metadata* meta_decl) {

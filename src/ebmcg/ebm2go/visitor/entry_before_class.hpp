@@ -23,8 +23,6 @@
 #include "ebmcodegen/stub/util.hpp"
 #include "ebmgen/common.hpp"
 #include "escape/escape.h"
-#include "json/stringer.h"
-#include "number/parse.h"
 
 namespace CODEGEN_NAMESPACE {
 
@@ -50,16 +48,18 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().io_mode.slice_io = !ctx.flags().no_slice_io;
     ctx.config().io_mode.std_io = !ctx.flags().no_std_io;
     ctx.config().io_mode.bytes_io = ctx.flags().bytes_io;
-    ctx.config().array_type_wrapper = [&](Result r, size_t size, ebm::ArrayAnnotation anno) -> expected<Result> {
-        if (!ctx.config().use_io_reader_writer && anno != ebm::ArrayAnnotation::none) {
+    ctx.config().array_type_wrapper = [&](Context_Type_ARRAY& ctx) -> expected<Result> {
+        MAYBE(elem_type, ctx.visit(ctx.element_type));
+        if (!ctx.config().use_io_reader_writer && ctx.array_annotation != ebm::ArrayAnnotation::none) {
             // In *[]byte mode, annotated arrays are slices (they borrow from the IO buffer)
-            return CODE("[]", r.to_writer());
+            return CODE("[]", elem_type.to_writer());
         }
         // In io.Writer mode, all arrays are fixed-size (including annotated ones for lowered IO)
-        return CODE("[", std::to_string(size), "]", r.to_writer());
+        return CODE("[", std::to_string(ctx.length.value()), "]", elem_type.to_writer());
     };
-    ctx.config().vector_type_wrapper = [](Result r) -> expected<Result> {
-        return CODE("[]", r.to_writer());
+    ctx.config().vector_type_wrapper = [](Context_Type_VECTOR& ctx) -> expected<Result> {
+        MAYBE(elem_type, ctx.visit(ctx.element_type));
+        return CODE("[]", elem_type.to_writer());
     };
     ctx.config().field_name_prior_to_type = true;
     ctx.config().int_prefix = "int";
@@ -161,8 +161,8 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().function_return_type_separator = "";
     ctx.config().encoder_return_type = "error";
     ctx.config().decoder_return_type = "error";
-    ctx.config().param_type_wrapper = [](Result type, bool is_state_variable) -> expected<Result> {
-        if (is_state_variable) {
+    ctx.config().param_type_wrapper = [](Context_Statement_PARAMETER_DECL& ctx, Result type) -> expected<Result> {
+        if (ctx.param_decl.is_state_variable()) {
             return CODE("*", type.to_writer());
         }
         return type;

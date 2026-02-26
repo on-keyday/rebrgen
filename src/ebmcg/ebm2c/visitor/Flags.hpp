@@ -26,3 +26,16 @@
 
 FILE_EXTENSIONS(".c");
 WEB_UI_NAME("c3");
+BEGIN_MAP_FLAG(output_mode, OutputMode, OutputMode::HeaderOnly, "output-mode", "Output mode (header/source)")
+MAP_FLAG_ITEM("header", OutputMode::Header)
+MAP_FLAG_ITEM("header-only", OutputMode::HeaderOnly)
+MAP_FLAG_ITEM("source", OutputMode::Source);
+END_MAP_FLAG();
+DEFINE_STRING_FLAG(specifier, "", "specifier", "Specifier to prefix function declarations", "e.g: static, inline");
+DEFINE_BOOL_FLAG(no_std_header, false, "no-std-header", "Do not include standard headers like <stdint.h>");
+DEFINE_BOOL_FLAG(omit_destructor, false, "omit-destructor", "Do not generate destructor functions for structs");
+DEFINE_STRING_FLAG(uint_form, "", "uint-form", "Form of unsigned integer types", "e.g: uintN_t, uN");
+DEFINE_STRING_FLAG(int_form, "", "int-form", "Form of signed integer types", "e.g: intN_t, iN");
+CONFIG_MAP("config.c.specifier", specifier);
+CONFIG_MAP("config.c.uint_form", uint_form);
+CONFIG_MAP("config.c.int_form", int_form);

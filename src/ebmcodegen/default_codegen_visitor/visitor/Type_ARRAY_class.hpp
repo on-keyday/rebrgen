@@ -22,9 +22,9 @@
 #include "../codegen.hpp"
 DEFINE_VISITOR(Type_ARRAY) {
     using namespace CODEGEN_NAMESPACE;
-    MAYBE(elem_type, ctx.visit(ctx.element_type));
     if (ctx.config().array_type_wrapper) {
-        return ctx.config().array_type_wrapper(elem_type, ctx.length.value(), ctx.array_annotation);
+        return ctx.config().array_type_wrapper(ctx);
     }
+    MAYBE(elem_type, ctx.visit(ctx.element_type));
     return CODE(elem_type.to_writer(), "[", std::to_string(ctx.length.value()), "]");
 }

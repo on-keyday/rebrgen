@@ -27,23 +27,43 @@ DEFINE_VISITOR(entry_before) {
     ctx.config().variable_type_separator = " ";
     ctx.config().field_name_prior_to_type = false;
     ctx.config().variable_name_prior_to_type = false;
-    ctx.config().array_type_wrapper = [&](Result elem_type, size_t size, ebm::ArrayAnnotation anot) -> expected<Result> {
-        if (anot == ebm::ArrayAnnotation::read_temporary) {
+    ctx.config().array_type_wrapper = [&](Context_Type_ARRAY& ctx) -> expected<Result> {
+        bool old_inner = ctx.config().inner_element_type;
+        ctx.config().inner_element_type = true;
+        auto inner = futils::helper::defer([&] {
+            ctx.config().inner_element_type = old_inner;
+        });
+        MAYBE(elem_type, ctx.visit(ctx.element_type));
+        if (ctx.array_annotation == ebm::ArrayAnnotation::read_temporary) {
             // directly reference to original input buffer
             return CODE("const ", elem_type.to_writer(), "*");
         }
-        if (anot == ebm::ArrayAnnotation::write_temporary) {
+        if (ctx.array_annotation == ebm::ArrayAnnotation::write_temporary) {
             // writable temporary array
             return CODE(elem_type.to_writer(), "*");
         }
+        if (old_inner) {
+            // to avoid parse error, use ArrayOf_<inner_type> form
+            return CODE("ArrayOf_", elem_type.to_writer(), "_", std::to_string(ctx.length.value()));
+        }
         // placeholder $ will be replaced by declared variable name
-        return CODE("ARRAY_OF(", elem_type.to_writer(), ", ", std::to_string(size), ")");
+        return CODE("ARRAY_OF(", elem_type.to_writer(), ", ", std::to_string(ctx.length.value()), ")");
     };
-    ctx.config().vector_type_wrapper = [&](Result elem_type) -> expected<Result> {
+    ctx.config().vector_type_wrapper = [&](Context_Type_VECTOR& ctx) -> expected<Result> {
+        bool old_inner = ctx.config().inner_element_type;
+        ctx.config().inner_element_type = true;
+        auto inner = futils::helper::defer([&] {
+            ctx.config().inner_element_type = old_inner;
+        });
+        MAYBE(elem_type, ctx.visit(ctx.element_type));
+        if (old_inner) {
+            // to avoid parse error, use VectorOf_<inner_type> form
+            return CODE("VectorOf_", elem_type.to_writer());
+        }
         return CODE("VECTOR_OF(", elem_type.to_writer(), ")");
     };
-    ctx.config().param_type_wrapper = [&](Result typ, bool is_state_variable) -> expected<Result> {
-        if (is_state_variable) {
+    ctx.config().param_type_wrapper = [&](Context_Statement_PARAMETER_DECL& ctx, Result typ) -> expected<Result> {
+        if (ctx.param_decl.is_state_variable()) {
             return CODE(typ.to_writer(), "*");  // In C, parameters are passed as pointers
         }
         return typ;

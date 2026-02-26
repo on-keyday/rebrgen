@@ -43,10 +43,12 @@ namespace ebm2c {
     };
 
     struct VectorType {
+        ebm::TypeRef self_type;
         ebm::TypeRef elem_type;
     };
 
     struct ArrayType {
+        ebm::TypeRef self_type;
         ebm::TypeRef elem_type;
         size_t size;
     };
@@ -93,4 +95,10 @@ namespace ebm2c {
         }
         return false;
     }
+
+    enum class OutputMode {
+        Header,
+        HeaderOnly,
+        Source
+    };
 }  // namespace ebm2c

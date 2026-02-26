@@ -14,3 +14,4 @@ bool is_on_encode_decode = false;
 bool ptr_to_optional = false;
 std::unordered_set<std::uint64_t> ptr_to_optional_targets;
 std::unordered_set<std::uint64_t> float_cast_map;
+bool inner_element_type = false;

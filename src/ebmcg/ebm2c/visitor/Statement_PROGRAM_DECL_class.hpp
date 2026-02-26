@@ -61,20 +61,25 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             return res; \
         } \
     } while(0)
+    #define APPEND_HANDLER int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size,const char* type_str)
     #endif
 )a");
     }
 
     void write_decoder_macros(CodeWriter & w) {
         w.write_unformatted(R"a(
+    #ifndef DECODER_CAN_READ_PRIMITIVE
+    #define DECODER_CAN_READ_PRIMITIVE(io, num_bytes)  (((io)->data + (io)->offset + (num_bytes)) <= (io)->data_end)
+    #endif
     #ifndef DECODER_CAN_READ
-    #define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : ((io)->data_end - ((io)->data + (io)->offset)) >= (num_bytes))
+    #define DECODER_CAN_READ(io, num_bytes) ((io)->can_read ? (io)->can_read(io, num_bytes) : DECODER_CAN_READ_PRIMITIVE(io, num_bytes))
+    #define CAN_READ_HANDLER int (*can_read)(struct DecoderInput* self, size_t num_bytes)
     #endif
 
     #define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value,field_str) do { \
         if (DECODER_CAN_READ((io), (size))) { \
             if ((offset_value) == 0) { \
-                (target) = (uint8_t*)((io)->data + (io)->offset); \
+                (target) = (EBM_U8_TYPE*)((io)->data + (io)->offset); \
             }  \
             (io)->offset += (size); \
         } else { \
@@ -86,7 +91,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #define EBM_READ_BYTES(io, target, size_value, offset_value,field_str) do { \
         if (DECODER_CAN_READ((io), (size_value))) { \
             if ((offset_value) == 0) { \
-                (target).data = (uint8_t*)((io)->data + (io)->offset); \
+                (target).data = (EBM_U8_TYPE*)((io)->data + (io)->offset); \
                 (target).size = (size_value); \
                 (target).capacity = (target).size; \
             }  \
@@ -119,22 +124,23 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         w.write_unformatted(R"a(
     #ifndef EBM_ALLOCATE
     #define EBM_ALLOCATE(io,type) (type*)(io->allocate ? io->allocate(io, sizeof(type)) : NULL)
+    #define ALLOCATE_HANDLER void* (*allocate)(struct DecoderInput* self, size_t size)
     #endif
 )a");
     }
 
     void write_encoder_macros(CodeWriter & w) {
         w.write_unformatted(R"a(
-    #define EBM_RESERVE_DATA(io,target, size, field_str) do { \
-        if ((io)->offset + (size) > (size_t)((io)->data_end - (io)->data)) { \
+    #define EBM_RESERVE_DATA(io,target, size_value, field_str) do { \
+        if ((size_t)((io)->data + (io)->offset + (size_value)) <= (size_t)(io)->data_end) { \
             EBM_EMIT_ERROR(field_str ": Not enough space to reserve data"); \
             return -1; \
         } \
-        target = (uint8_t*)((io)->data + (io)->offset); \
+        target = (EBM_U8_TYPE*)((io)->data + (io)->offset); \
     } while(0)
 
     #define EBM_WRITE_ARRAY_BYTES_TEMPORARY(io, source, size_value, offset_value,field_str) do { \
-        if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
+        if ((size_t)((io)->data + (io)->offset + (size_value)) <= (size_t)(io)->data_end) { \
             (io)->offset += (size_value); \
         } else { \
             EBM_EMIT_ERROR(field_str ": Not enough space to write array bytes temporary"); \
@@ -153,7 +159,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 return res; \
             } \
         } \
-        else if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
+        else if ((size_t)((io)->data + (io)->offset + (size_value)) <= (size_t)(io)->data_end) { \
             if((source).size != (size_value)) { \
                 EBM_EMIT_ERROR(field_str ": Source size does not match size value in write bytes"); \
                 return -1; \
@@ -167,7 +173,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     } while(0)
 
     #define EBM_WRITE_ARRAY_BYTES(io, source, size_value, offset_value,field_str) do { \
-        if ((io)->offset + (size_value) <= (size_t)((io)->data_end - (io)->data)) { \
+        if ((size_t)((io)->data + (io)->offset + (size_value)) <= (size_t)(io)->data_end) { \
             MEMCPY((io)->data + (io)->offset, (source), (size_value)); \
             (io)->offset += (size_value); \
         } else { \
@@ -206,79 +212,155 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }
         };
         CodeWriter w;
-        w.writeln("#include <stdint.h>");
-        w.writeln("#include <stddef.h>");
-        w.writeln("");
-        w.writeln("// Forward declarations");
-        for (auto& s : c_ctx.structs) {
-            auto ident = ctx.identifier(s.id);
-            w.writeln("typedef struct ", ident, " ", ident, ";");
-            // for recursive struct, add _ptr typedef
-            if (s.is_recursive) {
-                w.writeln("typedef ", ident, "* ", ident, "_ptr;");
+
+        std::vector<ebm::StatementRef> composite_fns;
+        std::unordered_set<std::uint64_t> parents_set;
+
+        MAYBE(meta, get_metadata(ctx, ctx.item_id));
+
+        auto uint_form = meta.get_flag_or_first_string(ctx, "config.c.uint_form", MetadataPriority::CommandFlag);
+        if (!uint_form.empty()) {
+            // split and assign to prefix and suffix
+            auto pos = uint_form.find("$");
+            if (pos != std::string_view::npos) {
+                ctx.config().uint_prefix = uint_form.substr(0, pos);
+                ctx.config().uint_suffix = uint_form.substr(pos + 1);
+            }
+            else {
+                ctx.config().uint_prefix = uint_form;
+            }
+        }
+        auto int_form = meta.get_flag_or_first_string(ctx, "config.c.int_form", MetadataPriority::CommandFlag);
+        if (!int_form.empty()) {
+            // split and assign to prefix and suffix
+            auto pos = int_form.find("$");
+            if (pos != std::string_view::npos) {
+                ctx.config().int_prefix = int_form.substr(0, pos);
+                ctx.config().int_suffix = int_form.substr(pos + 1);
+            }
+            else {
+                ctx.config().int_prefix = int_form;
             }
         }
 
-        // enums first
-        for (auto& e : c_ctx.enums) {
-            MAYBE(enum_, ctx.visit(e.id));
-            w.writeln(enum_.to_writer());
-        }
-        for (auto& e : c_ctx.enums) {
-            auto ident = ctx.identifier(e.id);
-            w.writeln("typedef enum ", ident, " ", ident, ";");
-        }
-        w.writeln("");
+        auto u8_type = ctx.config().uint_prefix + "8" + ctx.config().uint_suffix;
 
-        if (c_ctx.vector_types.size() > 0) {
-            w.writeln("// Vector type definitions");
-            w.writeln("#ifndef VECTOR_OF");
-            w.writeln("#define VECTOR_OF(type) type##_vector");
-            w.writeln("typedef struct {");
-            {
-                auto scope = w.indent_scope();
-                w.writeln("void* data;");
-                w.writeln("size_t size;");
-                w.writeln("size_t capacity;");
+        auto insert_user_include = [&]() {
+            auto includes = meta.get("config.c.include");
+            if (includes) {
+                for (size_t i = 0; i < includes->size(); ++i) {
+                    auto inc = (*includes)[i].get_string(ctx, 0);
+                    if (!inc || inc->empty()) {
+                        continue;
+                    }
+                    w.writeln("#include ", *inc);
+                }
+                w.writeln("");
             }
-            w.writeln("} VECTOR_OF(void);");
-            for (auto& v : c_ctx.vector_types) {
-                MAYBE(elem_type, ctx.visit(v.elem_type));
+
+            auto macros = meta.get("config.c.macro");
+            if (macros) {
+                for (size_t i = 0; i < macros->size(); ++i) {
+                    auto macro = (*macros)[i].get_string(ctx, 0);
+                    if (!macro || macro->empty()) {
+                        continue;
+                    }
+                    auto value = (*macros)[i].get_string(ctx, 1);
+                    if (value && !value->empty()) {
+                        w.writeln("#define ", *macro, " ", *value);
+                    }
+                    else {
+                        w.writeln("#define ", *macro);
+                    }
+                }
+                w.writeln("");
+            }
+            w.writeln("#ifndef EBM_U8_TYPE");
+            w.writeln("#define EBM_U8_TYPE ", u8_type);
+            w.writeln("#endif");
+        };
+
+        auto header_prologue = [&]() -> expected<void> {
+            w.writeln("#pragma once");
+            if (!ctx.flags().no_std_header) {
+                w.writeln("#include <stdint.h>");
+                w.writeln("#include <stddef.h>");
+                w.writeln("#include <stdbool.h>");
+            }
+            w.writeln("");
+            insert_user_include();
+            w.writeln("// Forward declarations");
+            for (auto& s : c_ctx.structs) {
+                auto ident = ctx.identifier(s.id);
+                w.writeln("typedef struct ", ident, " ", ident, ";");
+                // for recursive struct, add _ptr typedef
+                if (s.is_recursive) {
+                    w.writeln("typedef ", ident, "* ", ident, "_ptr;");
+                }
+            }
+
+            // enums first
+            for (auto& e : c_ctx.enums) {
+                MAYBE(enum_, ctx.visit(e.id));
+                w.writeln(enum_.to_writer());
+            }
+            for (auto& e : c_ctx.enums) {
+                auto ident = ctx.identifier(e.id);
+                w.writeln("typedef enum ", ident, " ", ident, ";");
+            }
+            w.writeln("");
+
+            if (c_ctx.array_types.size() > 0) {
+                w.writeln("// Array type definitions");
+                w.writeln("#ifndef ARRAY_OF");
+                w.writeln("#define ARRAY_OF(type, size) ArrayOf_##type##_##size");
+                for (auto& a : c_ctx.array_types) {
+                    MAYBE(elem_type, ctx.visit(a.elem_type));
+                    MAYBE(self_type, ctx.visit(a.self_type));
+                    auto size_str = std::to_string(a.size);
+                    w.writeln("typedef ", elem_type.to_writer(), " ", self_type.to_writer(), "[", size_str, "];");
+                    w.writeln("");
+                }
+                w.writeln("#endif");
+            }
+            if (c_ctx.vector_types.size() > 0) {
+                w.writeln("// Vector type definitions");
+                w.writeln("#ifndef VECTOR_OF");
+                w.writeln("#define VECTOR_OF(type) type##_vector");
                 w.writeln("typedef struct {");
                 {
                     auto scope = w.indent_scope();
-                    w.writeln(elem_type.to_writer(), "* data;");
-                    w.writeln(ctx.config().usize_type_name, " size;");
-                    w.writeln(ctx.config().usize_type_name, " capacity;");
+                    w.writeln("void* data;");
+                    w.writeln("size_t size;");
+                    w.writeln("size_t capacity;");
                 }
-                w.writeln("} VECTOR_OF(", elem_type.to_writer(), ");");
+                w.writeln("} VECTOR_OF(void);");
+                for (auto& v : c_ctx.vector_types) {
+                    MAYBE(self_type, ctx.visit(v.self_type));
+                    MAYBE(elem_type, ctx.visit(v.elem_type));
+                    w.writeln("typedef struct {");
+                    {
+                        auto scope = w.indent_scope();
+                        w.writeln(elem_type.to_writer(), "* data;");
+                        w.writeln(ctx.config().usize_type_name, " size;");
+                        w.writeln(ctx.config().usize_type_name, " capacity;");
+                    }
+                    w.writeln("} ", self_type.to_writer(), ";");
+                    w.writeln("");
+                }
+                w.writeln("#endif");
                 w.writeln("");
+                write_vector_macros(w);
             }
-            w.writeln("#endif");
-            w.writeln("");
-            write_vector_macros(w);
-        }
-        if (c_ctx.array_types.size() > 0) {
-            w.writeln("// Array type definitions");
-            w.writeln("#ifndef ARRAY_OF");
-            w.writeln("#define ARRAY_OF(type, size) ArrayOf_##type##_##size");
-            for (auto& a : c_ctx.array_types) {
-                MAYBE(elem_type, ctx.visit(a.elem_type));
-                auto size_str = std::to_string(a.size);
-                w.writeln("typedef ", elem_type.to_writer(), " ARRAY_OF(", elem_type.to_writer(), ", ", size_str, ")[", size_str, "];");
-                w.writeln("");
-            }
-            w.writeln("#endif");
-        }
 
-        w.writeln("#ifndef EBM_EMIT_ERROR");
-        w.write_unformatted(&R"(
+            w.writeln("#ifndef EBM_EMIT_ERROR");
+            w.write_unformatted(&R"(
         #define EBM_EMIT_ERROR(msg) \
             do { if (input->set_last_error) input->set_last_error(msg); } while(0)
         #define LAST_ERROR_HANDLER void(*set_last_error)(const char* msg)
         )"[1]);
-        w.writeln("#endif");
-        w.write_unformatted(&R"(
+            w.writeln("#endif");
+            w.write_unformatted(&R"(
         #ifndef EBM_FUNCTION_PROLOGUE
         #define EBM_FUNCTION_PROLOGUE() do {} while(0)
         #endif
@@ -287,193 +369,194 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         #endif
         )"[1]);
 
-        w.writeln("typedef struct EncoderInput {");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("uint8_t* data;");
-            w.writeln("uint8_t* data_end;");
-            w.writeln("size_t offset;");
-            if (c_ctx.vector_types.size() > 0) {
-                w.writeln("int (*emit)(struct EncoderInput* self, const VECTOR_OF(uint8_t)* data, size_t size);");
-            }
-            w.writeln("LAST_ERROR_HANDLER;");
-        }
-        w.writeln("} EncoderInput;");
-        w.writeln("");
-
-        write_encoder_macros(w);
-        w.writeln("typedef struct DecoderInput {");
-        {
-            auto scope = w.indent_scope();
-            w.write_unformatted(&R"a(
-            const uint8_t* data;
-            const uint8_t* data_end;
-            size_t offset;
-        )a"[1]);
-            if (c_ctx.vector_types.size() > 0) {
-                w.writeln("int (*append)(struct DecoderInput* self, VECTOR_OF(void)* vector, const void* data,size_t size,const char* type_str);");
-            }
-            w.writeln("int (*can_read)(struct DecoderInput* self, size_t num_bytes);");
-            if (c_ctx.has_recursive_struct) {
-                w.writeln("void* (*allocate)(struct DecoderInput* self, size_t size);");
-            }
-            w.writeln("LAST_ERROR_HANDLER;");
-        }
-        w.writeln("} DecoderInput;");
-
-        w.writeln("typedef struct FreeFunctionInput {");
-        {
-            auto scope = w.indent_scope();
-            if (c_ctx.vector_types.size() > 0) {
-                w.writeln("void (*free)(struct FreeFunctionInput* self, VECTOR_OF(void)* vector, size_t elem_size);");
-            }
-            w.writeln("LAST_ERROR_HANDLER;");
-        }
-        w.writeln("} FreeFunctionInput;");
-
-        write_decoder_macros(w);
-        if (c_ctx.has_recursive_struct) {
-            write_allocate_macros(w);
-        }
-
-        w.writeln("");
-        std::vector<ebm::StatementRef> composite_fns;
-        std::unordered_set<std::uint64_t> parents_set;
-        auto collect_composite_fn = [&](ebm::StatementRef composite) -> expected<void> {
-            auto comp = ctx.get_field<"composite_field_decl">(composite);
-            if (!comp) {
-                return {};
-            }
-            for (auto& f : comp->fields.container) {
-                auto decl = ctx.get_field<"field_decl">(f);
-                if (!decl) {
-                    continue;
-                }
-                auto getter = decl->composite_getter();
-                auto setter = decl->composite_setter();
-                if (getter) {
-                    composite_fns.push_back(getter->id);
-                    parents_set.insert(get_id(decl->parent_struct));
-                }
-                if (setter) {
-                    composite_fns.push_back(setter->id);
-                    parents_set.insert(get_id(decl->parent_struct));
-                }
-            }
-            return {};
-        };
-        auto write_union = [&](Union& u) -> expected<void> {
-            auto ident = std::format("{}{}", ctx.config().variant_prefix, get_id(u.id));
-            for (auto& v : u.variants) {
-                for (auto& f : v.fields) {
-                    MAYBE_VOID(ok, collect_composite_fn(f.id));
-                }
-            }
-            CodeWriter parent;
-            CodeWriter union_w;
-            union_w.writeln("typedef union ", ident, " {");
-            auto scope = union_w.indent_scope();
-            for (auto& v : u.variants) {
-                auto var_ident = ctx.identifier(v.id);
-                auto for_each_field = [&](CodeWriter& w) -> expected<void> {
-                    auto var_scope = w.indent_scope();
-                    for (auto& f : v.fields) {
-                        auto field_ident = ctx.identifier(f.id);
-                        MAYBE(typ, get_field_type(f.id));
-                        w.writeln(typ.first.to_writer(), " ", field_ident, ";");
-                    }
-                    return {};
-                };
-                parent.writeln("typedef struct ", var_ident, "{");
-                MAYBE_VOID(ok, for_each_field(parent));
-                parent.writeln("}", var_ident, ";");
-                union_w.writeln("struct ", var_ident, " ", var_ident, ";");
-            }
-            scope.execute();
-            union_w.writeln("}", ident, ";");
-            union_w.writeln("");
-            w.write(parent);
-            w.write(union_w);
-            return {};
-        };
-
-        auto write_variant = [&](Variant& v) -> expected<void> {
-            auto ident = std::format("{}{}", ctx.config().variant_prefix, get_id(v.id));
-            CodeWriter w_var;
-            w_var.writeln("typedef struct {");
+            w.writeln("typedef struct EncoderInput {");
             {
-                auto scope = w_var.indent_scope();
-                w_var.writeln("uint32_t tag;");
-                w_var.writeln("union {");
-                {
-                    auto u_scope = w_var.indent_scope();
-                    size_t idx = 0;
-                    for (auto& m : v.members) {
-                        MAYBE(type, ctx.visit(m));
-                        w_var.writeln(type.to_writer(), " v", std::to_string(idx), ";");
-                        idx++;
-                    }
+                auto scope = w.indent_scope();
+                w.writeln("EBM_U8_TYPE* data;");
+                w.writeln("EBM_U8_TYPE* data_end;");
+                w.writeln("size_t offset;");
+                if (c_ctx.vector_types.size() > 0) {
+                    w.writeln("int (*emit)(struct EncoderInput* self, const VECTOR_OF(", u8_type, ")* data, size_t size);");
                 }
-                w_var.writeln("} value;");
+                w.writeln("LAST_ERROR_HANDLER;");
             }
-            w_var.writeln("} ", ident, ";");
-            w_var.writeln("");
-            w.write(w_var);
-            return {};
-        };
-
-        for (auto& s : c_ctx.structs) {
-            auto ident = ctx.identifier(s.id);
-            // first lookup unions used in this struct
-            for (auto& f : s.fields) {
-                MAYBE(typ, get_field_type(f.id));
-                if (auto found = c_ctx.unions.find(get_id(typ.second)); found != c_ctx.unions.end()) {
-                    MAYBE_VOID(ok, write_union(found->second));
-                }
-            }
-            w.writeln("struct ", ident, " {");
-            auto scope = w.indent_scope();
-            for (auto& f : s.fields) {
-                auto field_ident = ctx.identifier(f.id);
-                MAYBE(typ, get_field_type(f.id));
-                w.writeln(typ.first.to_writer(), " ", field_ident, ";");
-                MAYBE_VOID(ok, collect_composite_fn(f.id));
-            }
-            scope.execute();
-            w.writeln("};");
+            w.writeln("} EncoderInput;");
             w.writeln("");
 
-            for (auto& prop_ref : s.properties) {
-                auto prop = ctx.get_field<"property_decl">(prop_ref);
-                if (!prop) continue;
-                auto typ_ref = prop->property_type;
-                auto typ = ctx.module().get_type(typ_ref);
-                if (typ && typ->body.kind == ebm::TypeKind::VARIANT) {
-                    auto id = get_id(typ->id);
-                    if (auto found = c_ctx.variants.find(id); found != c_ctx.variants.end()) {
-                        MAYBE_VOID(ok, write_variant(found->second));
+            write_encoder_macros(w);
+            w.writeln("typedef struct DecoderInput {");
+            {
+                auto scope = w.indent_scope();
+                w.write_unformatted(&R"a(
+            const EBM_U8_TYPE* data;
+            const EBM_U8_TYPE* data_end;
+            size_t offset;
+        )a"[1]);
+                if (c_ctx.vector_types.size() > 0) {
+                    w.writeln("APPEND_HANDLER;");
+                }
+                w.writeln("CAN_READ_HANDLER;");
+                if (c_ctx.has_recursive_struct) {
+                    w.writeln("ALLOCATE_HANDLER;");
+                }
+                w.writeln("LAST_ERROR_HANDLER;");
+            }
+            w.writeln("} DecoderInput;");
+
+            w.writeln("typedef struct FreeFunctionInput {");
+            {
+                auto scope = w.indent_scope();
+                if (c_ctx.vector_types.size() > 0) {
+                    w.writeln("void (*free)(struct FreeFunctionInput* self, VECTOR_OF(void)* vector, size_t elem_size);");
+                }
+                w.writeln("LAST_ERROR_HANDLER;");
+            }
+            w.writeln("} FreeFunctionInput;");
+
+            write_decoder_macros(w);
+            if (c_ctx.has_recursive_struct) {
+                write_allocate_macros(w);
+            }
+
+            w.writeln("");
+
+            auto collect_composite_fn = [&](ebm::StatementRef composite) -> expected<void> {
+                auto comp = ctx.get_field<"composite_field_decl">(composite);
+                if (!comp) {
+                    return {};
+                }
+                for (auto& f : comp->fields.container) {
+                    auto decl = ctx.get_field<"field_decl">(f);
+                    if (!decl) {
+                        continue;
+                    }
+                    auto getter = decl->composite_getter();
+                    auto setter = decl->composite_setter();
+                    if (getter) {
+                        composite_fns.push_back(getter->id);
+                        parents_set.insert(get_id(decl->parent_struct));
+                    }
+                    if (setter) {
+                        composite_fns.push_back(setter->id);
+                        parents_set.insert(get_id(decl->parent_struct));
+                    }
+                }
+                return {};
+            };
+            auto write_union = [&](Union& u) -> expected<void> {
+                auto ident = std::format("{}{}", ctx.config().variant_prefix, get_id(u.id));
+                for (auto& v : u.variants) {
+                    for (auto& f : v.fields) {
+                        MAYBE_VOID(ok, collect_composite_fn(f.id));
+                    }
+                }
+                CodeWriter parent;
+                CodeWriter union_w;
+                union_w.writeln("typedef union ", ident, " {");
+                auto scope = union_w.indent_scope();
+                for (auto& v : u.variants) {
+                    auto var_ident = ctx.identifier(v.id);
+                    auto for_each_field = [&](CodeWriter& w) -> expected<void> {
+                        auto var_scope = w.indent_scope();
+                        for (auto& f : v.fields) {
+                            auto field_ident = ctx.identifier(f.id);
+                            MAYBE(typ, get_field_type(f.id));
+                            w.writeln(typ.first.to_writer(), " ", field_ident, ";");
+                        }
+                        return {};
+                    };
+                    parent.writeln("typedef struct ", var_ident, "{");
+                    MAYBE_VOID(ok, for_each_field(parent));
+                    parent.writeln("}", var_ident, ";");
+                    union_w.writeln("struct ", var_ident, " ", var_ident, ";");
+                }
+                scope.execute();
+                union_w.writeln("}", ident, ";");
+                union_w.writeln("");
+                w.write(parent);
+                w.write(union_w);
+                return {};
+            };
+
+            auto write_variant = [&](Variant& v) -> expected<void> {
+                auto ident = std::format("{}{}", ctx.config().variant_prefix, get_id(v.id));
+                CodeWriter w_var;
+                w_var.writeln("typedef struct {");
+                {
+                    auto scope = w_var.indent_scope();
+                    w_var.writeln("uint32_t tag;");
+                    w_var.writeln("union {");
+                    {
+                        auto u_scope = w_var.indent_scope();
+                        size_t idx = 0;
+                        for (auto& m : v.members) {
+                            MAYBE(type, ctx.visit(m));
+                            w_var.writeln(type.to_writer(), " v", std::to_string(idx), ";");
+                            idx++;
+                        }
+                    }
+                    w_var.writeln("} value;");
+                }
+                w_var.writeln("} ", ident, ";");
+                w_var.writeln("");
+                w.write(w_var);
+                return {};
+            };
+
+            for (auto& s : c_ctx.structs) {
+                auto ident = ctx.identifier(s.id);
+                // first lookup unions used in this struct
+                for (auto& f : s.fields) {
+                    MAYBE(typ, get_field_type(f.id));
+                    if (auto found = c_ctx.unions.find(get_id(typ.second)); found != c_ctx.unions.end()) {
+                        MAYBE_VOID(ok, write_union(found->second));
+                    }
+                }
+                w.writeln("struct ", ident, " {");
+                auto scope = w.indent_scope();
+                for (auto& f : s.fields) {
+                    auto field_ident = ctx.identifier(f.id);
+                    MAYBE(typ, get_field_type(f.id));
+                    w.writeln(typ.first.to_writer(), " ", field_ident, ";");
+                    MAYBE_VOID(ok, collect_composite_fn(f.id));
+                }
+                scope.execute();
+                w.writeln("};");
+                w.writeln("");
+
+                for (auto& prop_ref : s.properties) {
+                    auto prop = ctx.get_field<"property_decl">(prop_ref);
+                    if (!prop) continue;
+                    auto typ_ref = prop->property_type;
+                    auto typ = ctx.module().get_type(typ_ref);
+                    if (typ && typ->body.kind == ebm::TypeKind::VARIANT) {
+                        auto id = get_id(typ->id);
+                        if (auto found = c_ctx.variants.find(id); found != c_ctx.variants.end()) {
+                            MAYBE_VOID(ok, write_variant(found->second));
+                        }
                     }
                 }
             }
-        }
 
-        if (c_ctx.optional_types.size() > 0) {
-            w.writeln("// Optional type definitions");
-            w.writeln("#ifndef OPTIONAL_OF");
-            w.writeln("#define OPTIONAL_OF(type) Optional_##type");
-            for (auto& o : c_ctx.optional_types) {
-                MAYBE(elem_type, ctx.visit(o.elem_type));
-                w.writeln("typedef struct {");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("bool has_value;");
-                    w.writeln(elem_type.to_writer(), " value;");
+            if (c_ctx.optional_types.size() > 0) {
+                w.writeln("// Optional type definitions");
+                w.writeln("#ifndef OPTIONAL_OF");
+                w.writeln("#define OPTIONAL_OF(type) Optional_##type");
+                for (auto& o : c_ctx.optional_types) {
+                    MAYBE(elem_type, ctx.visit(o.elem_type));
+                    w.writeln("typedef struct {");
+                    {
+                        auto scope = w.indent_scope();
+                        w.writeln("bool has_value;");
+                        w.writeln(elem_type.to_writer(), " value;");
+                    }
+                    w.writeln("} OPTIONAL_OF(", elem_type.to_writer(), ");");
+                    w.writeln("");
                 }
-                w.writeln("} OPTIONAL_OF(", elem_type.to_writer(), ");");
-                w.writeln("");
+                w.writeln("#endif");
             }
-            w.writeln("#endif");
-        }
+            return {};
+        };
         auto foreach_function = [&] -> expected<void> {
             for (auto& composite_fn_ref : composite_fns) {
                 MAYBE(func, ctx.visit(composite_fn_ref));
@@ -491,12 +574,14 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 if (s.encode_function) {
                     MAYBE(func, ctx.visit(*s.encode_function));
                     w.writeln(func.to_writer());
-                    ctx.config().on_destructor_generation = true;
-                    ctx.config().encoder_input_type = "FreeFunctionInput*";
-                    MAYBE(free_func, ctx.visit(*s.encode_function));
-                    w.writeln(free_func.to_writer());
-                    ctx.config().on_destructor_generation = false;
-                    ctx.config().encoder_input_type = "EncoderInput*";
+                    if (!ctx.flags().omit_destructor) {
+                        ctx.config().on_destructor_generation = true;
+                        ctx.config().encoder_input_type = "FreeFunctionInput*";
+                        MAYBE(free_func, ctx.visit(*s.encode_function));
+                        w.writeln(free_func.to_writer());
+                        ctx.config().on_destructor_generation = false;
+                        ctx.config().encoder_input_type = "EncoderInput*";
+                    }
                 }
                 if (s.decode_function) {
                     MAYBE(func, ctx.visit(*s.decode_function));
@@ -505,10 +590,18 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
             }
             return {};
         };
-        ctx.config().forward_decl = true;
-        MAYBE_VOID(fwd, foreach_function());
-        ctx.config().forward_decl = false;
-        MAYBE_VOID(def, foreach_function());
+        if (ctx.flags().output_mode != OutputMode::Source) {
+            MAYBE_VOID(ok, header_prologue());
+            ctx.config().forward_decl = true;
+            MAYBE_VOID(fwd, foreach_function());
+        }
+        if (ctx.flags().output_mode != OutputMode::Header) {
+            if (ctx.flags().output_mode == OutputMode::Source) {
+                insert_user_include();
+            }
+            ctx.config().forward_decl = false;
+            MAYBE_VOID(def, foreach_function());
+        }
         return w;
     };
 
@@ -567,7 +660,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         for (auto& s : ctx.module().module().types) {
             if (s.body.kind == ebm::TypeKind::VECTOR) {
                 MAYBE(elem_type, s.body.element_type());
-                ebm2c::VectorType v{.elem_type = elem_type};
+                ebm2c::VectorType v{.self_type = s.id, .elem_type = elem_type};
                 c_ctx.vector_types.push_back(v);
                 continue;
             }
@@ -582,7 +675,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
                 if (annotation == ebm::ArrayAnnotation::read_temporary || annotation == ebm::ArrayAnnotation::write_temporary) {
                     continue;
                 }
-                ebm2c::ArrayType a{.elem_type = elem_type, .size = static_cast<size_t>(length.value())};
+                ebm2c::ArrayType a{.self_type = s.id, .elem_type = elem_type, .size = static_cast<size_t>(length.value())};
                 c_ctx.array_types.push_back(a);
                 continue;
             }

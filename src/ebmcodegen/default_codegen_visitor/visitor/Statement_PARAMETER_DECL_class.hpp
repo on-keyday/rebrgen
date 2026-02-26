@@ -27,7 +27,7 @@ DEFINE_VISITOR(Statement_PARAMETER_DECL) {
     /*here to write the hook*/
     MAYBE(type, ctx.visit(ctx.param_decl.param_type));
     if (ctx.config().param_type_wrapper) {
-        MAYBE(wrapped, ctx.config().param_type_wrapper(type, ctx.param_decl.is_state_variable()));
+        MAYBE(wrapped, ctx.config().param_type_wrapper(ctx, std::move(type)));
         type = std::move(wrapped);
     }
     if (ctx.config().param_visitor) {

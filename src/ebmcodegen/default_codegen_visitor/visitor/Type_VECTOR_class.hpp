@@ -21,9 +21,9 @@
 DEFINE_VISITOR(Type_VECTOR) {
     using namespace CODEGEN_NAMESPACE;
     using namespace CODEGEN_NAMESPACE;
-    MAYBE(elem_type, ctx.visit(ctx.element_type));
     if (ctx.config().vector_type_wrapper) {
-        return ctx.config().vector_type_wrapper(elem_type);
+        return ctx.config().vector_type_wrapper(ctx);
     }
+    MAYBE(elem_type, ctx.visit(ctx.element_type));
     return CODE(elem_type.to_writer(), "[]");
 }

@@ -29,6 +29,7 @@
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmcodegen/stub/util.hpp"
+#include "ebmcodegen/stub/make_visitor.hpp"
 
 namespace CODEGEN_NAMESPACE {
     struct BitFieldPointerGetterMarker {
@@ -43,6 +44,7 @@ namespace CODEGEN_NAMESPACE {
             }
             return {};
         }
+
         template <typename Ctx>
         expected<void> visit(Ctx&& ctx) {
             if (ctx.is_before_or_after()) {
@@ -102,12 +104,31 @@ DEFINE_VISITOR(Statement_FUNCTION_DECL) {
         }
     }
 
+    MetadataSet meta;
+    auto meta_detector =
+        make_visitor<void>(ctx.visitor)
+            .name("MetaDataDetector")
+            .not_context("Type")
+            .not_context("Expression")
+            .not_before_or_after()
+            .on([&](auto&& self, Context_Statement_METADATA& ctx) {
+                return meta.try_add_metadata(self, &ctx.metadata);
+            })
+            .on_default_traverse_children()
+            .build();
+
+    MAYBE_VOID(ok, ctx.visit(meta_detector, ctx.func_decl.body));
+    inline_prefix = meta.get_flag_or_first_string(ctx, "config.c.specifier", MetadataPriority::Metadata);
+
+    if (!inline_prefix.empty() && !inline_prefix.ends_with(" ")) {
+        inline_prefix += " ";
+    }
+
     // first, traverse body to detect bitfield pointer getters
-    ctx.config().ptr_to_optional = ctx.config().ptr_to_optional_targets.contains(get_id(ctx.item_id));
+    ctx.config()
+        .ptr_to_optional = ctx.config().ptr_to_optional_targets.contains(get_id(ctx.item_id));
 
     MAYBE(ret_type, ctx.visit(ctx.func_decl.return_type));
-
-    inline_prefix = "static inline ";  // TODO: currently, generateing all functions in header
 
     w.write(inline_prefix, ret_type.to_writer(), " ", func_prefix, name, "(", params, ")");
     if (ctx.config().forward_decl) {

@@ -53,7 +53,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #ifndef VECTOR_APPEND
     #define VECTOR_APPEND(vector, elem,typ_str) do { \
         if (!input->append) {\
-            EBM_EMIT_ERROR("EncoderInput append function is not set"); \
+            EBM_EMIT_ERROR("DecoderInput append function is not set"); \
             return -1; \
         } \
         int res = input->append(input, (VECTOR_OF(void)*)(void*)&(vector),&(elem), sizeof(elem), typ_str); \

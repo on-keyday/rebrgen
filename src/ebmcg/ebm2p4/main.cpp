@@ -54749,6 +54749,12 @@ namespace ebm2p4 {
                 return unexpect_error(std::move(result_field_type.error()));
             }
         }
+        if (auto ptr = type_ctx.field_decl.metadata()) {
+            auto result_metadata = dispatch_Block_default<Result>(std::forward<UserContext>(ctx),(*ptr));
+            if (!result_metadata) {
+                return unexpect_error(std::move(result_metadata.error()));
+            }
+        }
         return {};
     }
     template<typename Result,typename Context>

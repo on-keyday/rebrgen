@@ -893,6 +893,16 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("has_metadata")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.has_metadata(std::move(tmp));
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("reserved")) {
             std::uint8_t tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -929,6 +939,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.composite_setter(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("metadata")) {
+            Block tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.metadata(std::move(tmp))) {
                 return false;
             }
         }

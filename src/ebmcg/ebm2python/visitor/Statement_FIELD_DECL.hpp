@@ -16,10 +16,14 @@
       parent_struct: WeakStatementRef
       is_state_variable: bool
       inner_composite: bool
+      has_metadata: bool
       reserved: std::uint8_t
       composite_field: *WeakStatementRef
       composite_getter: *LoweredStatementRef
       composite_setter: *LoweredStatementRef
+      metadata: *Block
+        len: Varint
+        container: std::vector<StatementRef>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 auto name = module_.get_associated_identifier(item_id);

@@ -344,11 +344,14 @@ format FieldDecl:
     parent_struct :WeakStatementRef # Reference to parent struct/format
     is_state_variable :u1 # 0: regular, 1: state variable
     inner_composite :u1 # 0: normal field, 1: part of composite field
-    reserved :u6  # Reserved for future use    
+    has_metadata :u1
+    reserved :u5  # Reserved for future use    
     if inner_composite == 1:
         composite_field :WeakStatementRef # Reference to CompositeFieldDecl
         composite_getter :LoweredStatementRef # Getter function for composite field
         composite_setter :LoweredStatementRef # Setter function for composite field
+    if has_metadata == 1:
+        metadata :Block # Metadata
 
 format StructDecl:
     name :IdentifierRef # Struct name

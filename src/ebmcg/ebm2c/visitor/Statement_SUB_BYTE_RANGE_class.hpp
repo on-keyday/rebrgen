@@ -51,12 +51,14 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
 
     if (ctx.sub_byte_range.range_type == ebm::SubByteRangeType::bytes) {
         MAYBE(len, ctx.visit(*ctx.sub_byte_range.length()));
-        w.write(io_name_base, ".data = ", parent_io_name, "->data + ", parent_io_name, "->offset;");
-        w.writeln("");
-        w.write(io_name_base, ".data_end = ", io_name_base, ".data + ", len.to_writer(), ";");
-        w.writeln("");
-        w.write(io_name_base, ".offset = 0;");
-        w.writeln("");
+        w.writeln(io_name_base, ".data = ", parent_io_name, "->data + ", parent_io_name, "->offset;");
+        w.writeln(io_name_base, ".data_end = ", io_name_base, ".data + ", len.to_writer(), ";");
+        // strictly clamp to data_end of parent here
+        w.writeln("if (", parent_io_name, "->data_end < ", io_name_base, ".data_end) {");
+        w.indent_writeln("EBM_EMIT_ERROR(\"Sub-byte range exceeds parent IO data end\");");
+        w.indent_writeln("return -1;");
+        w.writeln("}");
+        w.writeln(io_name_base, ".offset = 0;");
         // Advance parent
         w.write(parent_io_name, "->offset += ", len.to_writer(), ";");
         w.writeln("");
@@ -68,6 +70,11 @@ DEFINE_VISITOR(Statement_SUB_BYTE_RANGE) {
         w.writeln("");
         w.write(io_name_base, ".data_end = ", io_name_base, ".data + ", len.to_writer(), ";");
         w.writeln("");
+        // strictly clamp to data_end of parent here
+        w.writeln("if (", parent_io_name, "->data_end < ", io_name_base, ".data_end) {");
+        w.indent_writeln("EBM_EMIT_ERROR(\"Sub-byte range exceeds parent IO data end\");");
+        w.indent_writeln("return -1;");
+        w.writeln("}");
         w.write(io_name_base, ".offset = 0;");
         w.writeln("");
     }

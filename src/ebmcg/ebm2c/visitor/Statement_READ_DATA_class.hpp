@@ -38,6 +38,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 #include "../codegen.hpp"
+#include "ebm/extended_binary_module.hpp"
 #include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
@@ -67,6 +68,16 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         return CODELINE("EBM_READ_ARRAY_BYTES(", io_, ", ", target.to_writer(), ", ", size_str, ", ", offset_val, ", ", layer_str, ");");
     }
     if (auto lw = ctx.read_data.lowered_statement()) {
+        if (lw->lowering_type == ebm::LoweringIOType::ARRAY_FOR_EACH && ctx.read_data.size.unit != ebm::SizeUnit::DYNAMIC) {
+            MAYBE(target, ctx.visit(ctx.read_data.target));
+            if (auto length = get_element_count_default(ctx, ctx.read_data.data_type, ctx.read_data.size)) {
+                CodeWriter w;
+                w.writeln("EBM_RESERVE_VECTOR(", target.to_writer(), ", ", *length, ");");
+                MAYBE(lowered, ctx.visit(lw->io_statement.id));
+                w.write(std::move(lowered.to_writer()));
+                return w;
+            }
+        }
         return ctx.visit(lw->io_statement.id);
     }
     return CODELINE("// READ_DATA not implemented in ebm2c");

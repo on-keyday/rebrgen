@@ -284,6 +284,7 @@ namespace ebmgen {
 
                     EBMA_ADD_STATEMENT(loop_ref, loop_id, std::move(loop));
                     cond_loop = loop_ref;
+                    io_desc.size.unit = ebm::SizeUnit::DYNAMIC;
                 }
                 else {
                     return unexpect_error("Invalid follow type: {}, {}", to_string(field->follow), to_string(field->eventual_follow));

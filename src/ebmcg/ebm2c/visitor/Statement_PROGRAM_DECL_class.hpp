@@ -76,10 +76,31 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
     #define CAN_READ_HANDLER int (*can_read)(struct DecoderInput* self, size_t num_bytes)
     #endif
 
+    #ifndef EBM_RESERVE_VECTOR
+    #define EBM_RESERVE_VECTOR(vector, size) do { \
+        if (input->reserve) {\
+            int res = input->reserve(input, (VECTOR_OF(void)*)(void*)&(vector), (size), sizeof((vector)[0])); \
+            if (res != 0) { \
+                return res; \
+            } \
+        } \
+    } while(0)
+    #define RESERVE_HANDLER int (*reserve)(struct DecoderInput* self, VECTOR_OF(void)* vector, size_t size, size_t elem_size)
+    #endif
+
+    #ifndef EBM_FORCE_ASSERT_VERIFY
+    #define EBM_FORCE_ASSERT_VERIFY(io,target,length)
+    #endif
+    
+    #ifndef EBM_LOOP_HARDLIMIT
+    #define EBM_LOOP_HARDLIMIT(limit)
+    #endif
+
     #define EBM_READ_ARRAY_BYTES_TEMPORARY(io, target, size, offset_value,field_str) do { \
         if (DECODER_CAN_READ((io), (size))) { \
             if ((offset_value) == 0) { \
                 (target) = (EBM_U8_TYPE*)((io)->data + (io)->offset); \
+                EBM_FORCE_ASSERT_VERIFY(io,target,(size)); \
             }  \
             (io)->offset += (size); \
         } else { \
@@ -394,6 +415,7 @@ DEFINE_VISITOR_CLASS(Statement_PROGRAM_DECL) {
         )a"[1]);
                 if (c_ctx.vector_types.size() > 0) {
                     w.writeln("APPEND_HANDLER;");
+                    w.writeln("RESERVE_HANDLER;");
                 }
                 w.writeln("CAN_READ_HANDLER;");
                 if (c_ctx.has_recursive_struct) {

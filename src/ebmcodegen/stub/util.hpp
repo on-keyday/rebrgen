@@ -6,6 +6,7 @@
 #include <ebmgen/common.hpp>
 #include <string_view>
 #include <type_traits>
+#include "ebmgen/access.hpp"
 #include "helper/template_instance.h"
 #include "ebmgen/mapping.hpp"
 #include <unordered_set>
@@ -145,6 +146,82 @@ namespace ebmcodegen::util {
             return expr.to_writer();
         }
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
+    }
+
+    ebmgen::expected<size_t> get_type_size_bit(auto&& ctx, ebm::TypeRef type_ref) {
+        ebmgen::MappingTable& m = get_visitor(ctx).module_;
+        MAYBE(type, m.get_type(type_ref));
+        if (auto size = type.body.size()) {
+            return size->value();
+        }
+        if (auto element_type_ref = type.body.element_type()) {
+            if (auto length = type.body.length()) {
+                MAYBE(element_size, get_type_size_bit(ctx, *element_type_ref));
+                return element_size * length->value();
+            }
+        }
+        if (auto base_type_ref = type.body.base_type()) {
+            MAYBE(base_size, get_type_size_bit(ctx, *base_type_ref));
+            return base_size;
+        }
+        if (auto id = type.body.id()) {
+            MAYBE(stmt, m.get_statement(*id));
+            if (auto struct_decl = stmt.body.struct_decl()) {
+                if (auto size = struct_decl->size()) {
+                    if (size->unit == ebm::SizeUnit::BIT_FIXED) {
+                        MAYBE(val, size->size());
+                        return val.value();
+                    }
+                    if (size->unit == ebm::SizeUnit::BYTE_FIXED) {
+                        MAYBE(val, size->size());
+                        return val.value() * 8;
+                    }
+                }
+            }
+        }
+        return ebmgen::unexpect_error("cannot determine size of type");
+    }
+
+    // do_div(x,x_scale,y) returns (x*x_scale)/y
+    ebmgen::expected<CodeWriter> get_element_count(auto&& ctx, ebm::TypeRef array_type, const ebm::Size& s, auto&& do_div) {
+        if (s.unit == ebm::SizeUnit::DYNAMIC || s.unit == ebm::SizeUnit::UNKNOWN) {
+            return ebmgen::unexpect_error("Dynamic or unknown size is not supported for getting element size");
+        }
+        if (s.unit == ebm::SizeUnit::ELEMENT_FIXED || s.unit == ebm::SizeUnit::ELEMENT_DYNAMIC) {
+            return get_size_str(ctx, s);
+        }
+        MAYBE(size_str, get_size_str(ctx, s));
+        ebmgen::MappingTable& m = get_visitor(ctx).module_;
+        auto element_type = ebmgen::access_field<"element_type">(m, array_type);
+        if (!element_type) {
+            return ebmgen::unexpect_error("array type does not have element type");
+        }
+        MAYBE(element_size_bit, get_type_size_bit(ctx, *element_type));
+        if (element_size_bit == 0) {
+            return ebmgen::unexpect_error("element size cannot be determined or is zero, maybe bug");
+        }
+        if (s.unit == ebm::SizeUnit::BIT_FIXED || s.unit == ebm::SizeUnit::BIT_DYNAMIC) {
+            return do_div(size_str, 1, CODE(std::format("{}", element_size_bit)));
+        }
+        if (s.unit == ebm::SizeUnit::BYTE_FIXED || s.unit == ebm::SizeUnit::BYTE_DYNAMIC) {
+            if (element_size_bit % 8 != 0) {  // for case [4]u4 /* 2byte*/
+                return do_div(size_str, 8, CODE(std::format("{}", element_size_bit)));
+            }
+            if (element_size_bit == 8) {
+                return size_str;
+            }
+            return do_div(size_str, 1, CODE(std::format("{}", element_size_bit / 8)));
+        }
+        return ebmgen::unexpect_error("unsupported size unit for getting element size: {}", to_string(s.unit));
+    }
+
+    ebmgen::expected<CodeWriter> get_element_count_default(auto&& ctx, ebm::TypeRef array_type, const ebm::Size& s, const char* mul = "*", const char* div = "/") {
+        return get_element_count(ctx, array_type, s, [&](auto&& x, size_t scale, auto&& y) {
+            if (scale != 1) {
+                return CODE("((", x, mul, std::to_string(scale), ")", div, y, ")");
+            }
+            return CODE("(", x, div, y, ")");
+        });
     }
 
     auto as_IDENTIFIER(auto&& visitor, ebm::StatementRef stmt) {

@@ -87,6 +87,11 @@ std::function<expected<Result>(Context_Type_VARIANT& ctx)> variant_type_custom;
 std::function<expected<Result>(size_t bit_size)> make_int_type;
 std::function<expected<Result>(size_t bit_size)> make_uint_type;
 std::function<expected<Result>(size_t bit_size)> make_float_type;
+
+std::function<expected<Result>(Context_Statement_LOOP_STATEMENT& ctx)> loop_statement_custom;
+std::function<expected<Result>(Context_Statement_LOOP_STATEMENT& ctx)> before_loop_body_wrapper;
+std::function<expected<Result>(Context_Statement_LOOP_STATEMENT& ctx)> before_loop_wrapper;
+std::function<expected<Result>(Context_Statement_LOOP_STATEMENT& ctx)> after_loop_body_wrapper;
 std::string variant_prefix = "Variant";
 bool func_style_cast = true;
 

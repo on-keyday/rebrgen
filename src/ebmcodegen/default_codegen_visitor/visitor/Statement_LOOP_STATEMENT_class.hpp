@@ -29,6 +29,9 @@
 /*license*/
 #include "../codegen.hpp"
 DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
+    if (ctx.config().loop_statement_custom) {
+        return ctx.config().loop_statement_custom(ctx);
+    }
     auto& loop = ctx.loop;
     if (!is_nil(loop.lowered_statement.id)) {
         return ctx.visit(loop.lowered_statement.id);
@@ -55,6 +58,11 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
         }
     }
 
+    if (ctx.config().before_loop_wrapper) {
+        MAYBE(before, ctx.config().before_loop_wrapper(ctx));
+        w.write(before.to_writer());
+    }
+
     if (cond) {
         if (ctx.config().use_brace_for_condition) {
             w.writeln(ctx.config().conditional_loop_keyword, " (", tidy_condition_brace(std::move(*cond)), ") ", ctx.config().begin_block);
@@ -68,6 +76,10 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
     }
     {
         auto body_indent = w.indent_scope();
+        if (ctx.config().before_loop_body_wrapper) {
+            MAYBE(before, ctx.config().before_loop_body_wrapper(ctx));
+            w.write(before.to_writer());
+        }
         MAYBE(body, ctx.visit(loop.body));
         bool empty_body = body.to_writer().empty();
         w.write(body.to_writer());
@@ -76,8 +88,12 @@ DEFINE_VISITOR(Statement_LOOP_STATEMENT) {
             w.write(step.to_writer());
             empty_body = empty_body && step.to_writer().empty();
         }
-        empty_body = empty_body && condition_related.empty();
         w.write(condition_related);
+        if (ctx.config().after_loop_body_wrapper) {
+            MAYBE(after, ctx.config().after_loop_body_wrapper(ctx));
+            w.write(after.to_writer());
+        }
+        empty_body = empty_body && body.to_writer().empty();
         if (empty_body && ctx.config().empty_block_marker.size()) {
             w.writeln(ctx.config().empty_block_marker);
         }

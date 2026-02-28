@@ -110,5 +110,11 @@ DEFINE_VISITOR(entry_before) {
         return CODE("(&", elem_type.to_writer(), ")");
     };
     ctx.config().default_value_option.pointer_init = "NULL";
+    ctx.config().before_loop_wrapper = [&](Context_Statement_LOOP_STATEMENT& ctx) -> expected<Result> {
+        return CODELINE("int hardlimit_", std::to_string(get_id(ctx.item_id)), " = 0;");
+    };
+    ctx.config().before_loop_body_wrapper = [&](Context_Statement_LOOP_STATEMENT& ctx) -> expected<Result> {
+        return CODE("EBM_LOOP_HARDLIMIT(hardlimit_", std::to_string(get_id(ctx.item_id)), ");");
+    };
     return pass;
 }

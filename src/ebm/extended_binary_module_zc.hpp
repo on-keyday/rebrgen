@@ -5258,6 +5258,7 @@ namespace ebm::zc {
         };
         struct EBM_API union_struct_193{
             OptionalImmediateSize imm;
+            Varint offset;
         };
         struct EBM_API union_struct_194{
             SetEndian set_endian;
@@ -5295,6 +5296,10 @@ namespace ebm::zc {
         StringRef* msg_id();
         bool msg_id(StringRef&& v);
         bool msg_id(const StringRef& v);
+        const Varint* offset() const;
+        Varint* offset();
+        bool offset(Varint&& v);
+        bool offset(const Varint& v);
         const RegisterIndex* reg() const;
         RegisterIndex* reg();
         bool reg(RegisterIndex&& v);
@@ -5331,6 +5336,7 @@ namespace ebm::zc {
             v(v, "imm",(*this).imm());
             v(v, "member_id",(*this).member_id());
             v(v, "msg_id",(*this).msg_id());
+            v(v, "offset",(*this).offset());
             v(v, "reg",(*this).reg());
             v(v, "set_endian",(*this).set_endian());
             v(v, "str_id",(*this).str_id());
@@ -5346,6 +5352,7 @@ namespace ebm::zc {
             v(v, "imm",(*this).imm());
             v(v, "member_id",(*this).member_id());
             v(v, "msg_id",(*this).msg_id());
+            v(v, "offset",(*this).offset());
             v(v, "reg",(*this).reg());
             v(v, "set_endian",(*this).set_endian());
             v(v, "str_id",(*this).str_id());
@@ -5366,6 +5373,7 @@ namespace ebm::zc {
             v(v, "imm",visitor_tag<decltype(std::declval<Instruction>().imm()),false>{});
             v(v, "member_id",visitor_tag<decltype(std::declval<Instruction>().member_id()),false>{});
             v(v, "msg_id",visitor_tag<decltype(std::declval<Instruction>().msg_id()),false>{});
+            v(v, "offset",visitor_tag<decltype(std::declval<Instruction>().offset()),false>{});
             v(v, "reg",visitor_tag<decltype(std::declval<Instruction>().reg()),false>{});
             v(v, "set_endian",visitor_tag<decltype(std::declval<Instruction>().set_endian()),false>{});
             v(v, "str_id",visitor_tag<decltype(std::declval<Instruction>().str_id()),false>{});

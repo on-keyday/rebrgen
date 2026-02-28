@@ -1379,6 +1379,15 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("offset")) {
+            Varint tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.offset(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("reg")) {
             RegisterIndex tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {

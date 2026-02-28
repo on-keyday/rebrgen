@@ -1501,6 +1501,9 @@ namespace ebmcodegen {
             else if constexpr (FieldIndex == 115) {
                 return in.msg_id();
             }
+            else if constexpr (FieldIndex == 101) {
+                return in.offset();
+            }
             else if constexpr (FieldIndex == 116) {
                 return in.reg();
             }
@@ -1557,6 +1560,12 @@ namespace ebmcodegen {
                     return decltype(in->msg_id())();
                 }
                 return in->msg_id();
+            }
+            else if constexpr (FieldIndex == 101) {
+                if (!in) {
+                    return decltype(in->offset())();
+                }
+                return in->offset();
             }
             else if constexpr (FieldIndex == 116) {
                 if (!in) {
@@ -4121,6 +4130,9 @@ namespace ebmcodegen {
         }
         if (field_name == "msg_id") {
             return 115;
+        }
+        if (field_name == "offset") {
+            return 101;
         }
         if (field_name == "reg") {
             return 116;
@@ -8926,6 +8938,9 @@ namespace ebmcodegen {
             }
             if (field_index == get_field_index<24>("msg_id")) {
                 return {.index = 63, .is_array = false, .is_ptr = true};
+            }
+            if (field_index == get_field_index<24>("offset")) {
+                return {.index = 65, .is_array = false, .is_ptr = true};
             }
             if (field_index == get_field_index<24>("reg")) {
                 return {.index = 42, .is_array = false, .is_ptr = true};

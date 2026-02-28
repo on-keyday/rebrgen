@@ -33,8 +33,7 @@ DEFINE_VISITOR(Statement_IF_STATEMENT) {
                                      std::format("if ({}) {{", tidy_condition_brace(std::move(cond_expr.str_repr))));
     auto current_instr_index = ctx.config().env.access_instructions().size() - 1;
     MAYBE(then_res, ctx.visit(ctx.if_statement.then_block));
-    auto then_block_end_index = ctx.config().env.access_instructions().size();
-    auto insert_jump_if_false = [&]() -> expected<void> {
+    auto insert_jump_if_false = [&](size_t then_block_end_index) -> expected<void> {
         ebm::Instruction& jump_if_false_instr = ctx.config().env.access_instructions()[current_instr_index].instr;
         ebm::JumpOffset jump_offset;
         MAYBE(offset, varint(then_block_end_index - current_instr_index));
@@ -43,9 +42,10 @@ DEFINE_VISITOR(Statement_IF_STATEMENT) {
         return {};
     };
     if (!is_nil(ctx.if_statement.else_block)) {
-        ctx.config().env.add_instruction({.op = ebm::OpCode::JUMP}, "} else { ");
-        insert_jump_if_false();
+        ctx.config().env.add_instruction({.op = ebm::OpCode::JUMP}, "}");
         auto jump_instr_index = ctx.config().env.access_instructions().size() - 1;
+        insert_jump_if_false(ctx.config().env.access_instructions().size());
+        ctx.config().env.add_instruction({.op = ebm::OpCode::NOP}, "else {");
         MAYBE(else_res, ctx.visit(ctx.if_statement.else_block));
         auto else_block_end_index = ctx.config().env.access_instructions().size();
         ebm::Instruction& jump_instr = ctx.config().env.access_instructions()[jump_instr_index].instr;
@@ -55,7 +55,7 @@ DEFINE_VISITOR(Statement_IF_STATEMENT) {
         jump_instr.target(else_jump_offset);
     }
     else {
-        insert_jump_if_false();
+        insert_jump_if_false(ctx.config().env.access_instructions().size());
     }
     ctx.config().env.add_instruction({.op = ebm::OpCode::NOP}, "}");
     return {};

@@ -1077,6 +1077,11 @@ namespace ebmgen {
                 MAYBE(parent_member_ref, ctx.get_statement_converter().convert_struct_decl(locked));
                 field_decl.parent_struct = to_weak(parent_member_ref);
             }
+            if (auto args = node->arguments) {
+                std::vector<ebm::StatementRef> metadata;
+                for (auto& meta : args->metadata) {
+                }
+            }
             body.field_decl(std::move(field_decl));
             temporary.execute();
             MAYBE_VOID(ok, set_self_ref(self_ref, type_ref));

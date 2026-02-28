@@ -26,3 +26,5 @@
 DEFINE_STRING_FLAG(entry_point, "", "entry-point", "entry point format to parse", "FORMAT");
 DEFINE_STRING_FLAG(binary_file, "", "binary-file", "input binary file", "FILE");
 FILE_EXTENSIONS(".txt", ".json", ".md");
+DEFINE_BOOL_FLAG(dump_code, false, "dump-code", "dump generated code");
+DEFINE_BOOL_FLAG(print_step, false, "print-step", "print each step of execution");

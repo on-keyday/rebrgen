@@ -94,13 +94,19 @@ namespace ebm2rmw {
             return obj;
         }
 
-        ebmgen::expected<void> interpret(InitialContext& ctx, ebm::StatementRef self_type, std::map<std::uint64_t, std::shared_ptr<Value>>& params) {
-            size_t ip = 0;
-            call_stack.emplace_back();
-            auto _end = futils::helper::defer([&] {
+       private:
+        auto new_frame() {
+            call_stack.emplace_back(std::make_shared<StackFrame>());
+            return futils::helper::defer([&] {
                 call_stack.pop_back();
             });
-            auto& this_ = call_stack.back();
+        }
+
+       public:
+        ebmgen::expected<void> interpret(InitialContext& ctx, ebm::StatementRef self_type, std::map<std::uint64_t, std::shared_ptr<Value>>& params) {
+            size_t ip = 0;
+            const auto frame = new_frame();
+            auto& this_ = *call_stack.back();
             this_.params = params;
             MAYBE(self_obj, new_object(ctx, self_type));
             this_.self = self_obj;
@@ -114,24 +120,20 @@ namespace ebm2rmw {
         }
 
        private:
-        std::vector<StackFrame> call_stack;
-
-        auto new_frame() {
-            call_stack.emplace_back();
-            return futils::helper::defer([&] {
-                call_stack.pop_back();
-            });
-        }
+        std::vector<std::shared_ptr<StackFrame>> call_stack;
 
         ebmgen::expected<void> interpret_impl(InitialContext& ctx, size_t& ip) {
             auto& env = ctx.config().env;
-            auto& this_ = call_stack.back();
+            auto& this_ = *call_stack.back();
             auto& self = this_.self;
             auto& params = this_.params;
             auto& stack = this_.stack;
             auto& heap = this_.heap;
             while (ip < env.get_instructions().size()) {
                 auto& instr = env.get_instructions()[ip];
+                if (ctx.flags().print_step) {
+                    futils::wrap::cout_wrap() << "ip=" << ip << ", op=" << to_string(instr.instr.op, true) << ", str_repr=" << instr.str_repr << ", stack_size=" << stack.size() << ", call_stack_size=" << call_stack.size() << "\n";
+                }
                 if (auto bop = OpCode_to_BinaryOp(instr.instr.op)) {
                     if (stack.size() < 2) {
                         return ebmgen::unexpect_error("stack underflow on binary operation");
@@ -183,6 +185,8 @@ namespace ebm2rmw {
                     continue;
                 }
                 switch (instr.instr.op) {
+                    case ebm::OpCode::NOP:
+                        break;
                     case ebm::OpCode::HALT:
                         return {};
                     case ebm::OpCode::PUSH_IMM_INT: {
@@ -314,23 +318,28 @@ namespace ebm2rmw {
                         if (stack.empty()) {
                             return ebmgen::unexpect_error("stack underflow on READ_BYTES target");
                         }
+                        size_t offset_value = 0;
+                        auto offset = instr.instr.offset();
+                        if (offset) {
+                            offset_value = offset->value();
+                        }
                         auto target = stack.back();
                         stack.pop_back();
                         if (!std::holds_alternative<std::shared_ptr<Value>>(target.value)) {
                             return ebmgen::unexpect_error("READ_BYTES target is not an object");
                         }
                         auto& arr = std::get<std::shared_ptr<Value>>(target.value);
-                        arr->may_bytes(size);
+                        arr->may_bytes(offset_value + size);
                         if (!std::holds_alternative<std::string>(arr->value)) {
                             return ebmgen::unexpect_error("READ_BYTES target is not a byte array");
                         }
                         auto& byte_array = std::get<std::string>(arr->value);
-                        byte_array.resize(size);  // Simulate reading bytes by resizing
+                        byte_array.resize(offset_value + size);  // Simulate reading bytes by resizing
                         auto read = input.substr(input_pos, size);
                         if (read.size() < size) {
                             return ebmgen::unexpect_error("expected {} bytes, but only {} bytes available in input", size, read.size());
                         }
-                        std::copy(read.begin(), read.end(), byte_array.begin());
+                        std::copy(read.begin(), read.end(), byte_array.begin() + offset_value);
                         input_pos += size;
                         stack.push_back(Value{std::move(arr)});
                         break;
@@ -354,6 +363,9 @@ namespace ebm2rmw {
                         auto& ref = obj[member_id->id.value()];
                         if (!ref) {
                             ref = std::make_shared<Value>();
+                            if (ctx.config().env.has_function(*member_id)) {
+                                *ref = Value{Function{member_id->id}};
+                            }
                         }
                         stack.push_back(Value{ref});
                         break;
@@ -396,10 +408,52 @@ namespace ebm2rmw {
                             auto param_ref = decl.params.container[i];
                             call_params[param_ref.id.value()] = arg_ptr;
                         }
-
+                        auto new_self = stack.back();
+                        stack.pop_back();
+                        if (!std::holds_alternative<std::shared_ptr<Value>>(new_self.value)) {
+                            return ebmgen::unexpect_error("CALL new self is not an object");
+                        }
+                        auto func_enter = ctx.config().env.new_function(func.id);
+                        const auto frame = new_frame();
+                        auto& new_this = *call_stack.back();
+                        new_this.params = std::move(call_params);
+                        new_this.self = std::get<std::shared_ptr<Value>>(new_self.value);
                         size_t func_ip = 0;
                         MAYBE_VOID(r, interpret_impl(ctx, func_ip));
                         break;
+                    }
+                    case ebm::OpCode::JUMP_IF_FALSE: {
+                        if (stack.empty()) {
+                            return ebmgen::unexpect_error("stack underflow on JUMP_IF_FALSE");
+                        }
+                        auto cond = stack.back();
+                        stack.pop_back();
+                        cond.unref();
+                        if (!std::holds_alternative<std::uint64_t>(cond.value)) {
+                            return ebmgen::unexpect_error("JUMP_IF_FALSE condition is not an integer");
+                        }
+                        auto cond_val = std::get<std::uint64_t>(cond.value);
+                        if (cond_val == 0) {
+                            MAYBE(offset, instr.instr.target());
+                            if (offset.backward()) {
+                                ip -= offset.offset.value();
+                            }
+                            else {
+                                ip += offset.offset.value();
+                            }
+                            continue;
+                        }
+                        break;
+                    }
+                    case ebm::OpCode::JUMP: {
+                        MAYBE(offset, instr.instr.target());
+                        if (offset.backward()) {
+                            ip -= offset.offset.value();
+                        }
+                        else {
+                            ip += offset.offset.value();
+                        }
+                        continue;
                     }
                     case ebm::OpCode::NEW_STRUCT: {
                         auto struct_id = instr.instr.struct_id();
@@ -408,6 +462,31 @@ namespace ebm2rmw {
                         }
                         MAYBE(obj, new_object(ctx, *struct_id));
                         stack.push_back(Value{obj});
+                        break;
+                    }
+                    case ebm::OpCode::PUSH_SUCCESS: {
+                        stack.push_back(Value{std::uint64_t(1)});
+                        break;
+                    }
+                    case ebm::OpCode::RET: {
+                        if (!stack.empty()) {
+                            auto ret_val = stack.back();
+                            stack.pop_back();
+                            if (call_stack.size() > 1) {
+                                call_stack[call_stack.size() - 2]->stack.push_back(std::move(ret_val));
+                            }
+                        }
+                        return {};
+                    }
+                    case ebm::OpCode::IS_ERROR: {
+                        if (stack.empty()) {
+                            return ebmgen::unexpect_error("stack underflow on IS_ERROR");
+                        }
+                        auto val = stack.back();
+                        stack.pop_back();
+                        val.unref();
+                        bool is_error = std::holds_alternative<std::string>(val.value);
+                        stack.push_back(Value{std::uint64_t(is_error ? 1 : 0)});
                         break;
                     }
                     default:

@@ -41,8 +41,13 @@
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmcodegen/stub/util.hpp"
+#include "number/parse.h"
 DEFINE_VISITOR(Statement_READ_DATA) {
     using namespace CODEGEN_NAMESPACE;
+    if (auto lowered = ctx.read_data.lowered_statement();
+        lowered && lowered->lowering_type == ebm::LoweringIOType::VECTORIZED_IO) {
+        return ctx.visit(lowered->io_statement.id);
+    }
     auto is_bytes = is_bytes_type(ctx, ctx.read_data.data_type);
     if (!is_bytes) {
         if (auto lowered = ctx.read_data.lowered_statement()) {
@@ -63,6 +68,14 @@ DEFINE_VISITOR(Statement_READ_DATA) {
         else if (auto ref = ctx.read_data.size.ref()) {
             MAYBE(size_expr, ctx.visit(*ref));
             str_repr = std::format("read_bytes({}, {})", target.str_repr, size_expr.str_repr);
+        }
+        auto offset = ctx.read_data.attribute.has_offset() ? ctx.read_data.offset() : nullptr;
+        if (offset) {
+            auto value = ctx.get_field<"int_value">(*offset);
+            if (!value) {
+                return unexpect_error("Offset expression must be an integer literal");
+            }
+            instr.offset(*value);
         }
         instr.imm(imm);
         ctx.config().env.add_instruction(instr, str_repr);

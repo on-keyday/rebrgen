@@ -16807,6 +16807,155 @@ namespace ebm {
         }
         return false;
     }
+    const Varint* Instruction::offset() const {
+        if (OpCode::JUMP==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::JUMP_IF_TRUE==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::JUMP_IF_FALSE==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::CALL==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::ERROR==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::ASSERT==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::PUSH_IMM_INT==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::PUSH_IMM_STR==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::LOAD_LOCAL==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::STORE_LOCAL==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::LOAD_PARAM==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::READ_BITS_U==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::READ_BITS_I==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::READ_BYTES==(*this).op) {
+        if(!std::holds_alternative<union_struct_193>(union_variant_179)) {
+            return nullptr;
+        }
+        return std::addressof(std::get<14>((*this).union_variant_179).offset);
+        }
+        return nullptr;
+    }
+    Varint* Instruction::offset() {
+        return const_cast<Varint*>(std::as_const(*this).offset());
+    }
+    bool Instruction::offset(const Varint& v) {
+        if (OpCode::JUMP==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_TRUE==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_FALSE==(*this).op) {
+            return false;
+        }
+        if (OpCode::CALL==(*this).op) {
+            return false;
+        }
+        if (OpCode::ERROR==(*this).op) {
+            return false;
+        }
+        if (OpCode::ASSERT==(*this).op) {
+            return false;
+        }
+        if (OpCode::PUSH_IMM_INT==(*this).op) {
+            return false;
+        }
+        if (OpCode::PUSH_IMM_STR==(*this).op) {
+            return false;
+        }
+        if (OpCode::LOAD_LOCAL==(*this).op) {
+            return false;
+        }
+        if (OpCode::STORE_LOCAL==(*this).op) {
+            return false;
+        }
+        if (OpCode::LOAD_PARAM==(*this).op) {
+            return false;
+        }
+        if (OpCode::READ_BITS_U==(*this).op) {
+            return false;
+        }
+        if (OpCode::READ_BITS_I==(*this).op) {
+            return false;
+        }
+        if (OpCode::READ_BYTES==(*this).op) {
+            if(!std::holds_alternative<union_struct_193>(union_variant_179)) {
+                union_variant_179 = union_struct_193();
+            }
+            std::get<14>((*this).union_variant_179).offset = v;
+            return true;
+        }
+        return false;
+    }
+    bool Instruction::offset(Varint&& v) {
+        if (OpCode::JUMP==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_TRUE==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_FALSE==(*this).op) {
+            return false;
+        }
+        if (OpCode::CALL==(*this).op) {
+            return false;
+        }
+        if (OpCode::ERROR==(*this).op) {
+            return false;
+        }
+        if (OpCode::ASSERT==(*this).op) {
+            return false;
+        }
+        if (OpCode::PUSH_IMM_INT==(*this).op) {
+            return false;
+        }
+        if (OpCode::PUSH_IMM_STR==(*this).op) {
+            return false;
+        }
+        if (OpCode::LOAD_LOCAL==(*this).op) {
+            return false;
+        }
+        if (OpCode::STORE_LOCAL==(*this).op) {
+            return false;
+        }
+        if (OpCode::LOAD_PARAM==(*this).op) {
+            return false;
+        }
+        if (OpCode::READ_BITS_U==(*this).op) {
+            return false;
+        }
+        if (OpCode::READ_BITS_I==(*this).op) {
+            return false;
+        }
+        if (OpCode::READ_BYTES==(*this).op) {
+            if(!std::holds_alternative<union_struct_193>(union_variant_179)) {
+                union_variant_179 = union_struct_193();
+            }
+            std::get<14>((*this).union_variant_179).offset = std::move(v);
+            return true;
+        }
+        return false;
+    }
     const RegisterIndex* Instruction::reg() const {
         if (OpCode::JUMP==(*this).op) {
         return nullptr;
@@ -21320,6 +21469,9 @@ namespace ebm {
             if (auto err = std::get<14>((*this).union_variant_179).imm.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<14>((*this).union_variant_179).offset.encode(w)) {
+                return err;
+            }
         }
         else if (OpCode::SET_ENDIAN==(*this).op) {
             if(!std::holds_alternative<union_struct_194>(union_variant_179)) {
@@ -21479,6 +21631,9 @@ namespace ebm {
                 union_variant_179 = union_struct_193();
             }
             if (auto err = std::get<14>((*this).union_variant_179).imm.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<14>((*this).union_variant_179).offset.decode(r)) {
                 return err;
             }
         }

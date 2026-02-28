@@ -41,7 +41,7 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     auto entry_decode_fn = *entry_stmt.body.struct_decl()->decode_fn();
     auto f = ctx.config().env.new_function(entry_decode_fn);
     auto res = ctx.visit(entry_decode_fn);
-    if (ctx.flags().debug_unimplemented) {
+    if (ctx.flags().dump_code) {
         for (auto& instr : ctx.config().env.get_instructions()) {
             futils::wrap::cerr_wrap() << to_string(instr.instr.op, true) << " // " << tidy_condition_brace(instr.str_repr) << "\n";
         }

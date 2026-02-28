@@ -1094,6 +1094,7 @@ format Instruction:
             imm :OptionalImmediateSize
         OpCode.READ_BYTES:
             imm :OptionalImmediateSize
+            offset :Varint
 
         OpCode.SET_ENDIAN:
             set_endian :SetEndian

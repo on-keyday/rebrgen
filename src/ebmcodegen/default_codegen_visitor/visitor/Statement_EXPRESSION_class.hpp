@@ -22,6 +22,9 @@ DEFINE_VISITOR(Statement_EXPRESSION) {
     auto writer_added = ctx.add_writer();
     MAYBE(r, ctx.visit(ctx.expression));
     MAYBE(got, ctx.get_writer());
-    got.get().write(std::move(r.to_writer()));
+    bool empty = r.to_writer().empty();
+    if (!empty) {
+        got.get().writeln(std::move(r.to_writer()));
+    }
     return std::move(got.get());
 }

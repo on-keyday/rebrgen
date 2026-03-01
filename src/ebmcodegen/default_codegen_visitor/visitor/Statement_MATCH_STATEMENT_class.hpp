@@ -20,4 +20,8 @@
       lowered_if_statement: LoweredStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-return visit_Statement(*this, match_statement.lowered_if_statement.id);
+#include "../codegen.hpp"
+DEFINE_VISITOR(Statement_MATCH_STATEMENT) {
+    using namespace CODEGEN_NAMESPACE;
+    return ctx.visit(ctx.match_statement.lowered_if_statement.id);
+}

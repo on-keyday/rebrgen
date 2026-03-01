@@ -69,6 +69,21 @@ DEFINE_VISITOR(Expression_DEFAULT_VALUE) {
         ctx.config().env.add_instruction(instr, "<success>");
         return Result{.str_repr = "<success>"};
     }
+    if (ctx.is(ebm::TypeKind::OPTIONAL)) {
+        MAYBE(inner_type, ctx.get_field<"inner_type">(ctx.type));
+        auto inner_default = as_DEFAULT_VALUE(ctx, inner_type);
+        if (!inner_default) {
+            return ebmgen::unexpect_error("failed to get default value for optional inner type: {}", inner_default.error().error());
+        }
+        auto str_repr = std::format("OPTIONAL_OF({}){{.has_value = false}}", inner_default->str_repr);
+        return Result{.str_repr = str_repr};
+    }
+    if (ctx.is(ebm::TypeKind::VARIANT)) {
+        MAYBE(variant, ctx.get_field<"variant_desc">(ctx.type));
+        if (!is_nil(variant.common_type)) {
+            return as_DEFAULT_VALUE(ctx, variant.common_type);
+        }
+    }
     auto k = ctx.get_kind(ctx.type);
     return unexpect_error("unsupported default value type: {}", k ? to_string(*k) : "unknown");
 }

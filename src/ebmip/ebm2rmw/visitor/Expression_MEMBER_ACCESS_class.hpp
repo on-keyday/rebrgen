@@ -36,6 +36,15 @@ DEFINE_VISITOR(Expression_MEMBER_ACCESS) {
             MAYBE(_, ctx.visit(id));  // add function to instructions
         }
     }
+    if (ctx.is(ebm::StatementKind::PROPERTY_DECL, id)) {
+        auto prop = ctx.get_field<"property_decl">(id);
+        if (prop) {
+            if (!ctx.config().env.has_function(prop->getter_function.id)) {
+                auto f = ctx.config().env.new_function(prop->getter_function.id);
+                MAYBE(_, ctx.visit(prop->getter_function.id));  // add function to instructions
+            }
+        }
+    }
     ebm::Instruction instr;
     instr.op = ebm::OpCode::LOAD_MEMBER;
     instr.member_id(id);

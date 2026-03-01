@@ -26,6 +26,10 @@
 DEFINE_VISITOR(Expression_CALL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
+    // if member function, also push base at first
+    if (auto base = ctx.get_field<"base">(ctx.call_desc.callee)) {
+        MAYBE(base_res, ctx.visit(*base));
+    }
     std::vector<std::string> arg_strs;
     for (auto& arg : ctx.call_desc.arguments.container | std::views::reverse) {
         MAYBE(arg_res, ctx.visit(arg));

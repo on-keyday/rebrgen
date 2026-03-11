@@ -1,5 +1,9 @@
 # RE:brgen
 
+> **This repository has been archived.**
+> Development has moved to the [brgen](https://github.com/on-keyday/brgen) monorepo (under the `rebrgen/` directory).
+> All future development, issues, and pull requests should be directed there.
+
 RE:brgen (rebrgen) is a generator construction project for brgen(https://github.com/on-keyday/brgen)
 
 while original brgen code generator is designed as AST-to-Code model,

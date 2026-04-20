@@ -148,12 +148,12 @@ jobs:
       - name: Install libc++-dev and libc++abi-dev
         run: sudo apt-get install libc++-dev libc++abi-dev -y
       - name: Download Native Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: bmgen-native-${{ github.sha }}
           path: tool
       - name: Download WASM Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: bmgen-wasm-${{ github.sha }}
           path: web
